@@ -1,0 +1,15 @@
+{
+	"folders":
+	[
+		{
+			"path": "C:\\laragon\\www\\snappeejobs",
+			"folder_exclude_patterns": ["node_modules"],
+		}
+	],
+	"settings":
+	{
+		"FuzzyFilePath":
+		{
+		}
+	}
+}

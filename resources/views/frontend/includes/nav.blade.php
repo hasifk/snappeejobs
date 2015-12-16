@@ -25,7 +25,7 @@
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ Auth::user()->name }} <span class="caret"></span></a>
 							<ul class="dropdown-menu" role="menu">
-							    <li>{!! link_to('dashboard', trans('navs.dashboard')) !!}</li>
+							    <li>{!! link_to('dashboard', trans('navs.profile')) !!}</li>
 							    <li>{!! link_to('auth/password/change', trans('navs.change_password')) !!}</li>
 
 							    @permission('view-backend')

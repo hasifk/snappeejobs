@@ -28,6 +28,19 @@ class UpdateProfileRequest extends Request {
 		return [
 			'name'	=> 'required',
 			'email'	=> 'sometimes|required|email',
+			'avatar'=> 'image|max:1024|mimes:jpeg,jpg,png'
 		];
 	}
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'avatar.max' => 'Avatar image may not be more than :max KB'
+        ];
+    }
 }

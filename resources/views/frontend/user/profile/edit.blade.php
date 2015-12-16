@@ -10,7 +10,13 @@
 
 				<div class="panel-body">
 
-                       {!! Form::model($user, ['route' => 'frontend.profile.update', 'class' => 'form-horizontal', 'method' => 'PATCH']) !!}
+                       {!! Form::model($user, [
+                            'route' => 'frontend.profile.update',
+                            'class' => 'form-horizontal',
+                            'method' => 'PATCH',
+                            'encrypt' => 'multipart/form-data',
+                            'accept-charset' => 'UTF-8'
+                            ]) !!}
 
                               <div class="form-group">
                                     {!! Form::label('name', trans('validation.attributes.name'), ['class' => 'col-md-4 control-label']) !!}
@@ -27,6 +33,56 @@
                                       </div>
                                   </div>
                               @endif
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="">Avatar</label>
+                                <div class="col-md-6">
+                                    <input type="file" class="form-control" name="avatar" placeholder="Avatar">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="">About me</label>
+                                <div class="col-md-6">
+                                    <textarea name="about_me" cols="30" rows="10"
+                                              class="form-control">{{ $user->about_me }}</textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="">Country</label>
+                                <div class="col-md-6">
+                                    <select name="country_id" id="country_id" class="form-control">
+                                        <option value="">Please select</option>
+                                        @foreach($countries as $country)
+                                            <option
+                                                    value="{{ $country->id }}"
+                                                    {{ $user->country_id == $country->id ? 'selected="selected"' : '' }}
+                                                    {{ !$user->country_id && $country->id == 222 ? 'selected="selected"' : '' }}
+                                            >
+                                                {{ $country->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-4 control-label" for="">State</label>
+                                <div class="col-md-6">
+                                    <select name="state_id" id="state_id" class="form-control">
+                                        <option value="">Please select</option>
+                                        @foreach($states as $state)
+                                            <option
+                                                    value="{{ $state->id }}"
+                                                    {{ $user->state_id == $state->id ? 'selected="selected"' : '' }}
+                                            >
+                                                {{ $state->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
 
                               <div class="form-group">
                                   <div class="col-md-6 col-md-offset-4">

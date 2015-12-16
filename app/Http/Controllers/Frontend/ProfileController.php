@@ -3,6 +3,7 @@
 use App\Http\Controllers\Controller;
 use App\Repositories\Frontend\User\UserContract;
 use App\Http\Requests\Frontend\User\UpdateProfileRequest;
+use DB;
 
 /**
  * Class ProfileController
@@ -14,8 +15,21 @@ class ProfileController extends Controller {
 	 * @return mixed
      */
 	public function edit() {
-		return view('frontend.user.profile.edit')
-			->withUser(auth()->user());
+
+		$user = auth()->user();
+		$countries = DB::table('countries')->select(['id', 'name'])->get();
+		if ( auth()->user()->country_id ) {
+			$states = DB::table('states')->where('country_id', auth()->user()->country_id)->select(['id', 'name'])->get();
+		} else {
+			$states = DB::table('states')->where('country_id', 222)->select(['id', 'name'])->get();
+		}
+		$data = [
+			'user'      => $user,
+			'countries' => $countries,
+			'states'    => $states
+		];
+
+		return view('frontend.user.profile.edit', $data);
 	}
 
 	/**

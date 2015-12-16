@@ -13,4 +13,14 @@ composer.phar
 error.log
 Todo.rtf
 .idea
+/public/js/backend.js
+/public/js/backend.js.map
+/public/js/frontend.js
+/public/js/frontend.js.map
+/public/css/backend.css
+/public/css/backend.css.map
+/public/css/frontend.css
+/public/css/frontend.css.map
+/resources/assets/css/backend/main.css
+/resources/assets/css/frontend/main.css
 snappeejobs.sublime-workspace

@@ -10,18 +10,14 @@
 
 				<div class="panel-body">
 
-                       {!! Form::model($user, [
-                            'route' => 'frontend.profile.update',
-                            'class' => 'form-horizontal',
-                            'method' => 'PATCH',
-                            'encrypt' => 'multipart/form-data',
-                            'accept-charset' => 'UTF-8'
-                            ]) !!}
+                    <form class="form-horizontal" enctype="multipart/form-data" accept-charset="UTF-8" action="{{ route('frontend.profile.update') }}" method="POST" role="form">
+
+                        {{ csrf_field() }}
 
                               <div class="form-group">
                                     {!! Form::label('name', trans('validation.attributes.name'), ['class' => 'col-md-4 control-label']) !!}
                                     <div class="col-md-6">
-                                        {!! Form::input('text', 'name', null, ['class' => 'form-control']) !!}
+                                        {!! Form::input('text', 'name', $user->name, ['class' => 'form-control']) !!}
                                     </div>
                               </div>
 
@@ -99,4 +95,21 @@
 		</div><!-- col-md-10 -->
 
 	</div><!-- row -->
+@endsection
+
+@section('after-scripts-end')
+    <script>
+        $(document).ready(function(){
+            $('#country_id').on('change', function(){
+                $.getJSON('/admin/get-states/'+$(this).val(), function(json){
+                    var listitems = '<option value="">Please select</option>';
+                    $.each(json,function(key, value)
+                    {
+                        listitems += '<option value=' + value.id + '>' + value.name + '</option>';
+                    });
+                    $('#state_id').html(listitems);
+                });
+            });
+        });
+    </script>
 @endsection

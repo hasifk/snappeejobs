@@ -141,6 +141,15 @@ class EloquentUserRepository implements UserContract {
 	public function updateProfile($input) {
 		$user = access()->user();
 		$user->name = $input['name'];
+		if ($input['about_me']) {
+			$user->about_me = $input['about_me'];
+		}
+		if ($input['country_id']) {
+			$user->country_id = $input['country_id'];
+		}
+		if ($input['state_id']) {
+			$user->state_id = $input['state_id'];
+		}
 
 		if ($user->canChangeEmail()) {
 			//Address is not current address

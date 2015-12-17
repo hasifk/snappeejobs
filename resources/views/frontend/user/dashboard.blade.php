@@ -29,6 +29,24 @@
                                     <td>{!! $user->email !!}</td>
                                 </tr>
                                 <tr>
+                                    <th>{{ trans('validation.attributes.profile_image') }}</th>
+                                    <td>
+                                        <img style="height: 20px; width: 20px;" src="{!! $user->getAvatarImage(25) !!}" alt="{{ $user->name }}">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>{{ trans('validation.attributes.about_me') }}</th>
+                                    <td>{!! $user->about_me !!}</td>
+                                </tr>
+                                <tr>
+                                    <th>{{ trans('validation.attributes.country') }}</th>
+                                    <td>{!! $user->country_name !!}</td>
+                                </tr>
+                                <tr>
+                                    <th>{{ trans('validation.attributes.state') }}</th>
+                                    <td>{!! $user->state_name !!}</td>
+                                </tr>
+                                <tr>
                                     <th>{{ trans('validation.attributes.created_at') }}</th>
                                     <td>{!! $user->created_at !!} ({!! $user->created_at->diffForHumans() !!})</td>
                                 </tr>

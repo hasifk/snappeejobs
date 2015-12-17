@@ -19,6 +19,7 @@ return [
     'dashboard' => 'Dashboard',
     'profile' => 'Profile',
     'home' => 'Home',
+    'employers' => 'For Employers',
     'login' => 'Login',
     'logout' => 'Logout',
     'macros' => 'Macros',

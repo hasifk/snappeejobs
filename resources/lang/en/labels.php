@@ -22,6 +22,7 @@ return [
     'login_button' => 'Login',
     'login_with' => 'Login with :social_media',
     'macro_examples' => 'Macro Examples',
+    'employers' => 'For Employers',
     'register_box_title' => 'Register',
     'register_button' => 'Register',
     'remember_me' => 'Remember Me',

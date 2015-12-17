@@ -108,6 +108,10 @@ return [
     'attributes' => [
         'name' => 'Name',
         'email' => 'E-mail',
+        'about_me' => 'About Me',
+        'country' => 'Country',
+        'state' => 'State',
+        'profile_image' => 'Profile Image',
         'password' => 'Password',
         'password_confirmation' => 'Password Confirmation',
         'old_password' => 'Old Password',

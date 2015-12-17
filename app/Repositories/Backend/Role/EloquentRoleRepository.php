@@ -181,4 +181,13 @@ class EloquentRoleRepository implements RoleRepositoryContract {
 			return Role::where('id', (int)config('access.users.default_role'))->first();
 		return Role::where('name', config('access.users.default_role'))->first();
 	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getDefaultEmployerRole() {
+		if (is_numeric(config('access.employers.default_role')))
+			return Role::where('id', (int)config('access.employers.default_role'))->first();
+		return Role::where('name', config('access.employers.default_role'))->first();
+	}
 }

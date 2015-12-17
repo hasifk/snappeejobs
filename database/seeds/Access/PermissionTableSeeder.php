@@ -58,6 +58,122 @@ class PermissionTableSeeder extends Seeder {
 		 */
 
 		/**
+		 * Employer Permissions
+		 */
+        $permission_model = config('access.permission');
+        $companyProfileView = new $permission_model;
+        $companyProfileView->name = 'company-profile-view';
+        $companyProfileView->display_name = 'Company Profile View';
+        $companyProfileView->system = true;
+        $companyProfileView->group_id = 2;
+        $companyProfileView->sort = 1;
+        $companyProfileView->created_at = Carbon::now();
+        $companyProfileView->updated_at = Carbon::now();
+        $companyProfileView->save();
+
+        $permission_model = config('access.permission');
+        $companyProfileEdit = new $permission_model;
+        $companyProfileEdit->name = 'company-profile-edit';
+        $companyProfileEdit->display_name = 'Company Profile Edit';
+        $companyProfileEdit->system = true;
+        $companyProfileEdit->group_id = 2;
+        $companyProfileEdit->sort = 2;
+        $companyProfileEdit->created_at = Carbon::now();
+        $companyProfileEdit->updated_at = Carbon::now();
+        $companyProfileEdit->save();
+
+        $permission_model = config('access.permission');
+        $jobsView = new $permission_model;
+        $jobsView->name = 'jobs-view';
+        $jobsView->display_name = 'Jobs View';
+        $jobsView->system = true;
+        $jobsView->group_id = 2;
+        $jobsView->sort = 3;
+        $jobsView->created_at = Carbon::now();
+        $jobsView->updated_at = Carbon::now();
+        $jobsView->save();
+
+        $permission_model = config('access.permission');
+        $jobsAdd = new $permission_model;
+        $jobsAdd->name = 'jobs-add';
+        $jobsAdd->display_name = 'Jobs Add';
+        $jobsAdd->system = true;
+        $jobsAdd->group_id = 2;
+        $jobsAdd->sort = 4;
+        $jobsAdd->created_at = Carbon::now();
+        $jobsAdd->updated_at = Carbon::now();
+        $jobsAdd->save();
+
+        $permission_model = config('access.permission');
+        $jobsEdit = new $permission_model;
+        $jobsEdit->name = 'jobs-edit';
+        $jobsEdit->display_name = 'Jobs Edit';
+        $jobsEdit->system = true;
+        $jobsEdit->group_id = 2;
+        $jobsEdit->sort = 5;
+        $jobsEdit->created_at = Carbon::now();
+        $jobsEdit->updated_at = Carbon::now();
+        $jobsEdit->save();
+
+        $permission_model = config('access.permission');
+        $jobsChangeStatus = new $permission_model;
+        $jobsChangeStatus->name = 'jobs-change-status';
+        $jobsChangeStatus->display_name = 'Jobs Change Status';
+        $jobsChangeStatus->system = true;
+        $jobsChangeStatus->group_id = 2;
+        $jobsChangeStatus->sort = 6;
+        $jobsChangeStatus->created_at = Carbon::now();
+        $jobsChangeStatus->updated_at = Carbon::now();
+        $jobsChangeStatus->save();
+
+        $permission_model = config('access.permission');
+        $jobsChangeStatus = new $permission_model;
+        $jobsChangeStatus->name = 'jobs-delete';
+        $jobsChangeStatus->display_name = 'Jobs Delete';
+        $jobsChangeStatus->system = true;
+        $jobsChangeStatus->group_id = 2;
+        $jobsChangeStatus->sort = 7;
+        $jobsChangeStatus->created_at = Carbon::now();
+        $jobsChangeStatus->updated_at = Carbon::now();
+        $jobsChangeStatus->save();
+
+        $permission_model = config('access.permission');
+        $mailSendMessage = new $permission_model;
+        $mailSendMessage->name = 'mail-send-private-message';
+        $mailSendMessage->display_name = 'Mail Send Private Message';
+        $mailSendMessage->system = true;
+        $mailSendMessage->group_id = 2;
+        $mailSendMessage->sort = 8;
+        $mailSendMessage->created_at = Carbon::now();
+        $mailSendMessage->updated_at = Carbon::now();
+        $mailSendMessage->save();
+
+        $permission_model = config('access.permission');
+        $mailViewMessages = new $permission_model;
+        $mailViewMessages->name = 'mail-view-private-messages';
+        $mailViewMessages->display_name = 'Mail View Private Messages';
+        $mailViewMessages->system = true;
+        $mailViewMessages->group_id = 2;
+        $mailViewMessages->sort = 9;
+        $mailViewMessages->created_at = Carbon::now();
+        $mailViewMessages->updated_at = Carbon::now();
+        $mailViewMessages->save();
+
+        $permission_model = config('access.permission');
+        $mailSendGroupMessages = new $permission_model;
+        $mailSendGroupMessages->name = 'mail-send-group-messages';
+        $mailSendGroupMessages->display_name = 'Mail Send Group Message';
+        $mailSendGroupMessages->system = true;
+        $mailSendGroupMessages->group_id = 2;
+        $mailSendGroupMessages->sort = 10;
+        $mailSendGroupMessages->created_at = Carbon::now();
+        $mailSendGroupMessages->updated_at = Carbon::now();
+        $mailSendGroupMessages->save();
+		/**
+		 * Employer Permissions
+		 */
+
+		/**
 		 * User
 		 */
 		$permission_model = config('access.permission');
@@ -65,7 +181,7 @@ class PermissionTableSeeder extends Seeder {
 		$createUsers->name = 'create-users';
 		$createUsers->display_name = 'Create Users';
 		$createUsers->system = true;
-		$createUsers->group_id = 2;
+		$createUsers->group_id = 3;
 		$createUsers->sort = 5;
 		$createUsers->created_at = Carbon::now();
 		$createUsers->updated_at = Carbon::now();
@@ -76,7 +192,7 @@ class PermissionTableSeeder extends Seeder {
 		$editUsers->name = 'edit-users';
 		$editUsers->display_name = 'Edit Users';
 		$editUsers->system = true;
-		$editUsers->group_id = 2;
+		$editUsers->group_id = 3;
 		$editUsers->sort = 6;
 		$editUsers->created_at = Carbon::now();
 		$editUsers->updated_at = Carbon::now();
@@ -87,7 +203,7 @@ class PermissionTableSeeder extends Seeder {
 		$deleteUsers->name = 'delete-users';
 		$deleteUsers->display_name = 'Delete Users';
 		$deleteUsers->system = true;
-		$deleteUsers->group_id = 2;
+		$deleteUsers->group_id = 3;
 		$deleteUsers->sort = 7;
 		$deleteUsers->created_at = Carbon::now();
 		$deleteUsers->updated_at = Carbon::now();
@@ -98,7 +214,7 @@ class PermissionTableSeeder extends Seeder {
 		$changeUserPassword->name = 'change-user-password';
 		$changeUserPassword->display_name = 'Change User Password';
 		$changeUserPassword->system = true;
-		$changeUserPassword->group_id = 2;
+		$changeUserPassword->group_id = 3;
 		$changeUserPassword->sort = 8;
 		$changeUserPassword->created_at = Carbon::now();
 		$changeUserPassword->updated_at = Carbon::now();
@@ -109,7 +225,7 @@ class PermissionTableSeeder extends Seeder {
 		$deactivateUser->name = 'deactivate-users';
 		$deactivateUser->display_name = 'Deactivate Users';
 		$deactivateUser->system = true;
-		$deactivateUser->group_id = 2;
+		$deactivateUser->group_id = 3;
 		$deactivateUser->sort = 9;
 		$deactivateUser->created_at = Carbon::now();
 		$deactivateUser->updated_at = Carbon::now();
@@ -120,7 +236,7 @@ class PermissionTableSeeder extends Seeder {
 		$banUsers->name = 'ban-users';
 		$banUsers->display_name = 'Ban Users';
 		$banUsers->system = true;
-		$banUsers->group_id = 2;
+		$banUsers->group_id = 3;
 		$banUsers->sort = 10;
 		$banUsers->created_at = Carbon::now();
 		$banUsers->updated_at = Carbon::now();
@@ -131,7 +247,7 @@ class PermissionTableSeeder extends Seeder {
 		$reactivateUser->name = 'reactivate-users';
 		$reactivateUser->display_name = 'Re-Activate Users';
 		$reactivateUser->system = true;
-		$reactivateUser->group_id = 2;
+		$reactivateUser->group_id = 3;
 		$reactivateUser->sort = 11;
 		$reactivateUser->created_at = Carbon::now();
 		$reactivateUser->updated_at = Carbon::now();
@@ -142,7 +258,7 @@ class PermissionTableSeeder extends Seeder {
 		$unbanUser->name = 'unban-users';
 		$unbanUser->display_name = 'Un-Ban Users';
 		$unbanUser->system = true;
-		$unbanUser->group_id = 2;
+		$unbanUser->group_id = 3;
 		$unbanUser->sort = 12;
 		$unbanUser->created_at = Carbon::now();
 		$unbanUser->updated_at = Carbon::now();
@@ -153,7 +269,7 @@ class PermissionTableSeeder extends Seeder {
 		$undeleteUser->name = 'undelete-users';
 		$undeleteUser->display_name = 'Restore Users';
 		$undeleteUser->system = true;
-		$undeleteUser->group_id = 2;
+		$undeleteUser->group_id = 3;
 		$undeleteUser->sort = 13;
 		$undeleteUser->created_at = Carbon::now();
 		$undeleteUser->updated_at = Carbon::now();
@@ -164,7 +280,7 @@ class PermissionTableSeeder extends Seeder {
 		$permanentlyDeleteUser->name = 'permanently-delete-users';
 		$permanentlyDeleteUser->display_name = 'Permanently Delete Users';
 		$permanentlyDeleteUser->system = true;
-		$permanentlyDeleteUser->group_id = 2;
+		$permanentlyDeleteUser->group_id = 3;
 		$permanentlyDeleteUser->sort = 14;
 		$permanentlyDeleteUser->created_at = Carbon::now();
 		$permanentlyDeleteUser->updated_at = Carbon::now();
@@ -175,7 +291,7 @@ class PermissionTableSeeder extends Seeder {
 		$resendConfirmationEmail->name = 'resend-user-confirmation-email';
 		$resendConfirmationEmail->display_name = 'Resend Confirmation E-mail';
 		$resendConfirmationEmail->system = true;
-		$resendConfirmationEmail->group_id = 2;
+		$resendConfirmationEmail->group_id = 3;
 		$resendConfirmationEmail->sort = 15;
 		$resendConfirmationEmail->created_at = Carbon::now();
 		$resendConfirmationEmail->updated_at = Carbon::now();
@@ -189,7 +305,7 @@ class PermissionTableSeeder extends Seeder {
 		$createRoles->name = 'create-roles';
 		$createRoles->display_name = 'Create Roles';
 		$createRoles->system = true;
-		$createRoles->group_id = 3;
+		$createRoles->group_id = 4;
 		$createRoles->sort = 2;
 		$createRoles->created_at = Carbon::now();
 		$createRoles->updated_at = Carbon::now();
@@ -200,7 +316,7 @@ class PermissionTableSeeder extends Seeder {
 		$editRoles->name = 'edit-roles';
 		$editRoles->display_name = 'Edit Roles';
 		$editRoles->system = true;
-		$editRoles->group_id = 3;
+		$editRoles->group_id = 4;
 		$editRoles->sort = 3;
 		$editRoles->created_at = Carbon::now();
 		$editRoles->updated_at = Carbon::now();
@@ -211,7 +327,7 @@ class PermissionTableSeeder extends Seeder {
 		$deleteRoles->name = 'delete-roles';
 		$deleteRoles->display_name = 'Delete Roles';
 		$deleteRoles->system = true;
-		$deleteRoles->group_id = 3;
+		$deleteRoles->group_id = 4;
 		$deleteRoles->sort = 4;
 		$deleteRoles->created_at = Carbon::now();
 		$deleteRoles->updated_at = Carbon::now();
@@ -225,7 +341,7 @@ class PermissionTableSeeder extends Seeder {
 		$createPermissionGroups->name = 'create-permission-groups';
 		$createPermissionGroups->display_name = 'Create Permission Groups';
 		$createPermissionGroups->system = true;
-		$createPermissionGroups->group_id = 4;
+		$createPermissionGroups->group_id = 5;
 		$createPermissionGroups->sort = 1;
 		$createPermissionGroups->created_at = Carbon::now();
 		$createPermissionGroups->updated_at = Carbon::now();
@@ -236,7 +352,7 @@ class PermissionTableSeeder extends Seeder {
 		$editPermissionGroups->name = 'edit-permission-groups';
 		$editPermissionGroups->display_name = 'Edit Permission Groups';
 		$editPermissionGroups->system = true;
-		$editPermissionGroups->group_id = 4;
+		$editPermissionGroups->group_id = 5;
 		$editPermissionGroups->sort = 2;
 		$editPermissionGroups->created_at = Carbon::now();
 		$editPermissionGroups->updated_at = Carbon::now();
@@ -247,7 +363,7 @@ class PermissionTableSeeder extends Seeder {
 		$deletePermissionGroups->name = 'delete-permission-groups';
 		$deletePermissionGroups->display_name = 'Delete Permission Groups';
 		$deletePermissionGroups->system = true;
-		$deletePermissionGroups->group_id = 4;
+		$deletePermissionGroups->group_id = 5;
 		$deletePermissionGroups->sort = 3;
 		$deletePermissionGroups->created_at = Carbon::now();
 		$deletePermissionGroups->updated_at = Carbon::now();
@@ -258,7 +374,7 @@ class PermissionTableSeeder extends Seeder {
 		$sortPermissionGroups->name = 'sort-permission-groups';
 		$sortPermissionGroups->display_name = 'Sort Permission Groups';
 		$sortPermissionGroups->system = true;
-		$sortPermissionGroups->group_id = 4;
+		$sortPermissionGroups->group_id = 5;
 		$sortPermissionGroups->sort = 4;
 		$sortPermissionGroups->created_at = Carbon::now();
 		$sortPermissionGroups->updated_at = Carbon::now();
@@ -272,7 +388,7 @@ class PermissionTableSeeder extends Seeder {
 		$createPermissions->name = 'create-permissions';
 		$createPermissions->display_name = 'Create Permissions';
 		$createPermissions->system = true;
-		$createPermissions->group_id = 4;
+		$createPermissions->group_id = 5;
 		$createPermissions->sort = 5;
 		$createPermissions->created_at = Carbon::now();
 		$createPermissions->updated_at = Carbon::now();
@@ -283,7 +399,7 @@ class PermissionTableSeeder extends Seeder {
 		$editPermissions->name = 'edit-permissions';
 		$editPermissions->display_name = 'Edit Permissions';
 		$editPermissions->system = true;
-		$editPermissions->group_id = 4;
+		$editPermissions->group_id = 5;
 		$editPermissions->sort = 6;
 		$editPermissions->created_at = Carbon::now();
 		$editPermissions->updated_at = Carbon::now();
@@ -294,11 +410,44 @@ class PermissionTableSeeder extends Seeder {
 		$deletePermissions->name = 'delete-permissions';
 		$deletePermissions->display_name = 'Delete Permissions';
 		$deletePermissions->system = true;
-		$deletePermissions->group_id = 4;
+		$deletePermissions->group_id = 5;
 		$deletePermissions->sort = 7;
 		$deletePermissions->created_at = Carbon::now();
 		$deletePermissions->updated_at = Carbon::now();
 		$deletePermissions->save();
+
+        /**
+         * Permission
+         */
+
+        /**
+         * Subscriptions
+         */
+        $permission_model = config('access.permission');
+        $viewSubscriptions = new $permission_model;
+        $viewSubscriptions->name = 'list-subscriptions';
+        $viewSubscriptions->display_name = 'View Subscription Plans';
+        $viewSubscriptions->system = true;
+        $viewSubscriptions->group_id = 6;
+        $viewSubscriptions->sort = 1;
+        $viewSubscriptions->created_at = Carbon::now();
+        $viewSubscriptions->updated_at = Carbon::now();
+        $viewSubscriptions->save();
+
+        $permission_model = config('access.permission');
+        $viewSubscriptions = new $permission_model;
+        $viewSubscriptions->name = 'edit-subscription-plan';
+        $viewSubscriptions->display_name = 'Edit Subscription Plan';
+        $viewSubscriptions->system = true;
+        $viewSubscriptions->group_id = 6;
+        $viewSubscriptions->sort = 2;
+        $viewSubscriptions->created_at = Carbon::now();
+        $viewSubscriptions->updated_at = Carbon::now();
+        $viewSubscriptions->save();
+
+        /**
+         * Subscriptions
+         */
 
 		if(env('DB_DRIVER') == 'mysql')
 			DB::statement('SET FOREIGN_KEY_CHECKS=1;');

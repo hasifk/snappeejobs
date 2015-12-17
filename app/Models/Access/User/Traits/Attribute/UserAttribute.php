@@ -1,6 +1,7 @@
 <?php namespace App\Models\Access\User\Traits\Attribute;
 
 use Illuminate\Support\Facades\Hash;
+use DB;
 
 /**
  * Class UserAttribute
@@ -28,6 +29,21 @@ trait UserAttribute {
         if ($this->confirmed == 1)
             return "<label class='label label-success'>Yes</label>";
         return "<label class='label label-danger'>No</label>";
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAvatarImage($size) {
+        if ( $this->avatar_filename ) {
+            return 'https://s3-'. env('AWS_S3_REGION') .'.amazonaws.com/'.
+            env('AWS_S3_BUCKET').'/'.
+            $this->avatar_path.
+            $this->avatar_filename.'.'.
+            $this->avatar_extension;
+        } else {
+            return gravatar()->get($this->email, ['size' => $size]);
+        }
     }
 
     /**
@@ -123,5 +139,13 @@ trait UserAttribute {
         $this->getStatusButtonAttribute().
         $this->getConfirmedButtonAttribute().
         $this->getDeleteButtonAttribute();
+    }
+
+    public function getCountryNameAttribute() {
+        return DB::table('countries')->where('id', $this->country_id)->value('name');
+    }
+
+    public function getStateNameAttribute() {
+        return DB::table('states')->where('id', $this->state_id)->value('name');
     }
 }

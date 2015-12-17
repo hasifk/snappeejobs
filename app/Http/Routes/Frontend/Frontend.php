@@ -5,7 +5,12 @@
  */
 get('/', 'FrontendController@index')->name('home');
 get('/home', 'FrontendController@index')->name('home');
-get('macros', 'FrontendController@macros');
+get('employers', 'FrontendController@employers');
+post('employers', 'FrontendController@employersAction');
+get('get-states/{id}', function($id){
+	$states = DB::table('states')->where('country_id', $id)->select(['id', 'name'])->get();
+	return response()->json($states);
+});
 
 /**
  * These frontend controllers require the user to be logged in

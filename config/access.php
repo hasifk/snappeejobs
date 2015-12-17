@@ -82,6 +82,13 @@ return array(
 		'change_email' => false,
 	],
 
+    /*
+	 * Configurations for the user
+	 */
+    'employers' => [
+        'default_role' => '2',
+    ],
+
 	/*
 	 * Configuration for roles
 	 */

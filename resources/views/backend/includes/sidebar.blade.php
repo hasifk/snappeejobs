@@ -37,6 +37,10 @@
                   <li class="{{ Active::pattern('admin/access/*') }}"><a href="{!!url('admin/access/users')!!}"><span>{{ trans('menus.access_management') }}</span></a></li>
                 @endauth
 
+                @role('Employer')
+                  <li class="{{ Active::pattern('admin/employer/*') }}"><a href="{!!url('admin/employer/users')!!}"><span>{{ trans('menus.company_management') }}</span></a></li>
+                @endauth
+
                  <li class="{{ Active::pattern('admin/log-viewer*') }} treeview">
                   <a href="#">
                     <span>{{ trans('menus.log-viewer.main') }}</span>

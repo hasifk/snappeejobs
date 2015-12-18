@@ -61,12 +61,23 @@ class PermissionTableSeeder extends Seeder {
 		 * Employer Permissions
 		 */
         $permission_model = config('access.permission');
+		$employerAccount = new $permission_model;
+        $employerAccount->name = 'employer-users-view';
+        $employerAccount->display_name = 'Employers List View';
+        $employerAccount->system = true;
+        $employerAccount->group_id = 2;
+        $employerAccount->sort = 1;
+        $employerAccount->created_at = Carbon::now();
+        $employerAccount->updated_at = Carbon::now();
+        $employerAccount->save();
+
+        $permission_model = config('access.permission');
         $companyProfileView = new $permission_model;
         $companyProfileView->name = 'company-profile-view';
         $companyProfileView->display_name = 'Company Profile View';
         $companyProfileView->system = true;
         $companyProfileView->group_id = 2;
-        $companyProfileView->sort = 1;
+        $companyProfileView->sort = 2;
         $companyProfileView->created_at = Carbon::now();
         $companyProfileView->updated_at = Carbon::now();
         $companyProfileView->save();
@@ -77,7 +88,7 @@ class PermissionTableSeeder extends Seeder {
         $companyProfileEdit->display_name = 'Company Profile Edit';
         $companyProfileEdit->system = true;
         $companyProfileEdit->group_id = 2;
-        $companyProfileEdit->sort = 2;
+        $companyProfileEdit->sort = 3;
         $companyProfileEdit->created_at = Carbon::now();
         $companyProfileEdit->updated_at = Carbon::now();
         $companyProfileEdit->save();
@@ -88,7 +99,7 @@ class PermissionTableSeeder extends Seeder {
         $jobsView->display_name = 'Jobs View';
         $jobsView->system = true;
         $jobsView->group_id = 2;
-        $jobsView->sort = 3;
+        $jobsView->sort = 4;
         $jobsView->created_at = Carbon::now();
         $jobsView->updated_at = Carbon::now();
         $jobsView->save();
@@ -99,7 +110,7 @@ class PermissionTableSeeder extends Seeder {
         $jobsAdd->display_name = 'Jobs Add';
         $jobsAdd->system = true;
         $jobsAdd->group_id = 2;
-        $jobsAdd->sort = 4;
+        $jobsAdd->sort = 5;
         $jobsAdd->created_at = Carbon::now();
         $jobsAdd->updated_at = Carbon::now();
         $jobsAdd->save();
@@ -110,7 +121,7 @@ class PermissionTableSeeder extends Seeder {
         $jobsEdit->display_name = 'Jobs Edit';
         $jobsEdit->system = true;
         $jobsEdit->group_id = 2;
-        $jobsEdit->sort = 5;
+        $jobsEdit->sort = 6;
         $jobsEdit->created_at = Carbon::now();
         $jobsEdit->updated_at = Carbon::now();
         $jobsEdit->save();
@@ -121,7 +132,7 @@ class PermissionTableSeeder extends Seeder {
         $jobsChangeStatus->display_name = 'Jobs Change Status';
         $jobsChangeStatus->system = true;
         $jobsChangeStatus->group_id = 2;
-        $jobsChangeStatus->sort = 6;
+        $jobsChangeStatus->sort = 7;
         $jobsChangeStatus->created_at = Carbon::now();
         $jobsChangeStatus->updated_at = Carbon::now();
         $jobsChangeStatus->save();
@@ -132,7 +143,7 @@ class PermissionTableSeeder extends Seeder {
         $jobsChangeStatus->display_name = 'Jobs Delete';
         $jobsChangeStatus->system = true;
         $jobsChangeStatus->group_id = 2;
-        $jobsChangeStatus->sort = 7;
+        $jobsChangeStatus->sort = 8;
         $jobsChangeStatus->created_at = Carbon::now();
         $jobsChangeStatus->updated_at = Carbon::now();
         $jobsChangeStatus->save();
@@ -143,7 +154,7 @@ class PermissionTableSeeder extends Seeder {
         $mailSendMessage->display_name = 'Mail Send Private Message';
         $mailSendMessage->system = true;
         $mailSendMessage->group_id = 2;
-        $mailSendMessage->sort = 8;
+        $mailSendMessage->sort = 9;
         $mailSendMessage->created_at = Carbon::now();
         $mailSendMessage->updated_at = Carbon::now();
         $mailSendMessage->save();
@@ -154,7 +165,7 @@ class PermissionTableSeeder extends Seeder {
         $mailViewMessages->display_name = 'Mail View Private Messages';
         $mailViewMessages->system = true;
         $mailViewMessages->group_id = 2;
-        $mailViewMessages->sort = 9;
+        $mailViewMessages->sort = 10;
         $mailViewMessages->created_at = Carbon::now();
         $mailViewMessages->updated_at = Carbon::now();
         $mailViewMessages->save();
@@ -165,7 +176,18 @@ class PermissionTableSeeder extends Seeder {
         $mailSendGroupMessages->display_name = 'Mail Send Group Message';
         $mailSendGroupMessages->system = true;
         $mailSendGroupMessages->group_id = 2;
-        $mailSendGroupMessages->sort = 10;
+        $mailSendGroupMessages->sort = 11;
+        $mailSendGroupMessages->created_at = Carbon::now();
+        $mailSendGroupMessages->updated_at = Carbon::now();
+        $mailSendGroupMessages->save();
+
+        $permission_model = config('access.permission');
+        $mailSendGroupMessages = new $permission_model;
+        $mailSendGroupMessages->name = 'change-plan';
+        $mailSendGroupMessages->display_name = 'Change Subscription Plan';
+        $mailSendGroupMessages->system = true;
+        $mailSendGroupMessages->group_id = 2;
+        $mailSendGroupMessages->sort = 11;
         $mailSendGroupMessages->created_at = Carbon::now();
         $mailSendGroupMessages->updated_at = Carbon::now();
         $mailSendGroupMessages->save();

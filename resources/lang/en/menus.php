@@ -56,6 +56,7 @@ return [
     'role_management' => 'Role Management',
     'user_management' => 'User Management',
     'access_management' => 'Access Management',
+    'company_management' => 'Company Management',
     'language-picker' => [
         'language' => 'Language',
         'langs' => [

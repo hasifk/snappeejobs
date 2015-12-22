@@ -24,6 +24,9 @@ class EventServiceProvider extends ServiceProvider {
 		'App\Events\Frontend\Auth\UserLoggedOut' => [
 			'App\Listeners\Frontend\Auth\UserLoggedOutHandler',
 		],
+		'App\Events\Backend\Account\UserCreated' => [
+			'App\Listeners\Backend\Account\UserCreatedHandler',
+		],
 	];
 
 	/**

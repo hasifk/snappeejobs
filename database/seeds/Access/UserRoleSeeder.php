@@ -22,10 +22,20 @@ class UserRoleSeeder extends Seeder {
 		$user_model = new $user_model;
 		$user_model::first()->attachRole(1);
 
-		//Attach user role to general user
+		//Attach employer role to silverbloom technologies
 		$user_model = config('auth.model');
 		$user_model = new $user_model;
-		$user_model::find(2)->attachRole(3);
+		$user_model::find(2)->attachRole(2);
+
+		//Attach employer role to emplyer staff - HR @ silverbloom
+		$user_model = config('auth.model');
+		$user_model = new $user_model;
+		$user_model::find(3)->attachRole(3);
+
+		//Attach normal user role to user
+		$user_model = config('auth.model');
+		$user_model = new $user_model;
+		$user_model::find(4)->attachRole(4);
 
 		if(env('DB_DRIVER') == 'mysql')
 			DB::statement('SET FOREIGN_KEY_CHECKS=1;');

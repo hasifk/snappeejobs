@@ -51,7 +51,7 @@ class AccessTest extends TestCase {
 	public function test_user_can_login_without_remember_me(){
 		$this->visit( '/auth/login' )
 			->type( 'user@user.com', 'email' )
-			->type( '1234', 'password' )
+			->type( 'asdasd', 'password' )
 			->press( 'Login' )
 			->seePageIs( '/dashboard' )
 			->see('Dashboard');
@@ -63,7 +63,7 @@ class AccessTest extends TestCase {
 	public function test_user_can_login_with_remember_me(){
 		$this->visit( '/auth/login' )
 			->type( 'user@user.com', 'email' )
-			->type( '1234', 'password' )
+			->type( 'asdasd', 'password' )
 			->check('remember')
 			->press( 'Login' )
 			->seePageIs( '/dashboard' )

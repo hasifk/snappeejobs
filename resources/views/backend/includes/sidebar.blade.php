@@ -33,12 +33,20 @@
                 <!-- Optionally, you can add icons to the links -->
                 <li class="{{ Active::pattern('admin/dashboard') }}"><a href="{!!route('backend.dashboard')!!}"><span>{{ trans('menus.dashboard') }}</span></a></li>
 
-                @permission('view-access-management')
-                  <li class="{{ Active::pattern('admin/access/*') }}"><a href="{!!url('admin/access/users')!!}"><span>{{ trans('menus.access_management') }}</span></a></li>
+                @role('Administrator')
+                    @permission('view-access-management')
+                      <li class="{{ Active::pattern('admin/access/*') }}"><a href="{!!url('admin/access/users')!!}"><span>{{ trans('menus.access_management') }}</span></a></li>
+                    @endauth
                 @endauth
 
                 @role('Employer')
-                  <li class="{{ Active::pattern('admin/employer/*') }}"><a href="{!!url('admin/employer/users')!!}"><span>{{ trans('menus.company_management') }}</span></a></li>
+                  <li class="{{ Active::pattern('admin/employer/staffs') }}"><a href="{!!url('admin/employer/staffs')!!}"><span>Staff Management</span></a></li>
+                @endauth
+
+                @roles(['Employer', 'Employer Staff'])
+                  @permission('company-profile-view')
+                    <li class="{{ Active::pattern('admin/employer/profile-view') }}"><a href="{!!url('admin/employer/profile-view')!!}"><span>Company Profile</span></a></li>
+                  @endauth
                 @endauth
 
                  <li class="{{ Active::pattern('admin/log-viewer*') }} treeview">

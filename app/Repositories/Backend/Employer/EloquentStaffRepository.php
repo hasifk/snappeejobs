@@ -1,18 +1,16 @@
-<?php namespace App\Repositories\Backend\User;
+<?php namespace App\Repositories\Backend\Employer;
 
-use App\Events\Backend\Account\UserCreated;
 use App\Models\Access\User\User;
 use App\Exceptions\GeneralException;
 use App\Repositories\Backend\Role\RoleRepositoryContract;
 use App\Repositories\Frontend\Auth\AuthenticationContract;
 use App\Exceptions\Backend\Access\User\UserNeedsRolesException;
-use Event;
 
 /**
  * Class EloquentUserRepository
  * @package App\Repositories\User
  */
-class EloquentUserRepository implements UserContract {
+class EloquentStaffRepository {
 
 	/**
 	 * @var RoleRepositoryContract
@@ -57,8 +55,12 @@ class EloquentUserRepository implements UserContract {
 	 * @param int $status
 	 * @return mixed
 	 */
-	public function getUsersPaginated($per_page, $status = 1, $order_by = 'id', $sort = 'asc') {
-		return User::where('status', $status)->orderBy($order_by, $sort)->paginate($per_page);
+	public function getUsersPaginated($per_page, $status = 1, $order_by = 'users.id', $sort = 'asc') {
+		return User::join('staff_employer', 'staff_employer.user_id', '=', 'users.id')
+            ->where('users.status', $status)
+            ->where('staff_employer.employer_id', auth()->user()->id)
+            ->orderBy($order_by, $sort)
+            ->paginate($per_page);
 	}
 
 	/**
@@ -98,8 +100,6 @@ class EloquentUserRepository implements UserContract {
 
 			//Attach other permissions
 			$user->attachPermissions($permissions['permission_user']);
-
-            Event::fire(new UserCreated($user, auth()->user() ));
 
 			//Send confirmation email if requested
 			if (isset($input['confirmation_email']) && $user->confirmed == 0)

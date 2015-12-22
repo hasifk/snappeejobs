@@ -89,6 +89,10 @@ return array(
         'default_role' => '2',
     ],
 
+    'employer_staff' => [
+        'default_role' => '3',
+    ],
+
 	/*
 	 * Configuration for roles
 	 */

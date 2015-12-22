@@ -191,6 +191,17 @@ class PermissionTableSeeder extends Seeder {
         $mailSendGroupMessages->created_at = Carbon::now();
         $mailSendGroupMessages->updated_at = Carbon::now();
         $mailSendGroupMessages->save();
+
+		$permission_model = config('access.permission');
+		$createEmployerStaff = new $permission_model;
+		$createEmployerStaff->name = 'create-employer-staff';
+		$createEmployerStaff->display_name = 'Create Employer Staff';
+		$createEmployerStaff->system = true;
+		$createEmployerStaff->group_id = 2;
+		$createEmployerStaff->sort = 12;
+		$createEmployerStaff->created_at = Carbon::now();
+		$createEmployerStaff->updated_at = Carbon::now();
+		$createEmployerStaff->save();
 		/**
 		 * Employer Permissions
 		 */

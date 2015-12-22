@@ -16,7 +16,6 @@
 
 @section('content')
     @include('backend.employer.includes.partials.header-buttons')
-
     <table class="table table-striped table-bordered table-hover">
         <thead>
         <tr>

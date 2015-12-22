@@ -59,7 +59,9 @@ class EmployerController extends Controller
      */
     public function create()
     {
-        //
+        return view('backend.employer.staff.create')
+            ->withRoles($this->roles->getAllRoles('sort', 'asc', true))
+            ->withPermissions($this->permissions->getAllPermissions());
     }
 
     /**

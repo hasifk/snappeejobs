@@ -59,6 +59,7 @@ class EloquentStaffRepository {
 		return User::join('staff_employer', 'staff_employer.user_id', '=', 'users.id')
             ->where('users.status', $status)
             ->where('staff_employer.employer_id', auth()->user()->id)
+            ->select(['users.*'])
             ->orderBy($order_by, $sort)
             ->paginate($per_page);
 	}

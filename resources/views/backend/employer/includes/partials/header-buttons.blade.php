@@ -11,9 +11,9 @@
                 </a>
             </li>
 
-            @permission('create-staffs')
+            @permission('create-employer-staff')
                 <li>
-                    <a href="{{route('admin.access.users.create')}}">
+                    <a href="{{route('admin.employer.staffs.create')}}">
                         Create Staff
                     </a>
                 </li>

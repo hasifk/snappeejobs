@@ -50,6 +50,22 @@ class EloquentRoleRepository implements RoleRepositoryContract {
 	}
 
 	/**
+	 * @param string $order_by
+	 * @param string $sort
+	 * @param bool $withPermissions
+	 * @return mixed
+	 */
+	public function getEmployerRoles($order_by = 'sort', $sort = 'asc', $withPermissions = false) {
+		if ($withPermissions)
+			return Role::whereIn('id',
+				[config('access.employers.default_role'), config('access.employer_staff.default_role')]
+			)->with('permissions')
+			->orderBy($order_by, $sort)->get();
+
+		return Role::orderBy($order_by, $sort)->get();
+	}
+
+	/**
 	 * @param $input
 	 * @return bool
 	 * @throws GeneralException

@@ -95,7 +95,7 @@ class PermissionTableSeeder extends Seeder {
 
         $permission_model = config('access.permission');
         $jobsView = new $permission_model;
-        $jobsView->name = 'jobs-view';
+        $jobsView->name = 'employer-jobs-view';
         $jobsView->display_name = 'Jobs View';
         $jobsView->system = true;
         $jobsView->group_id = 2;
@@ -106,7 +106,7 @@ class PermissionTableSeeder extends Seeder {
 
         $permission_model = config('access.permission');
         $jobsAdd = new $permission_model;
-        $jobsAdd->name = 'jobs-add';
+        $jobsAdd->name = 'employer-jobs-add';
         $jobsAdd->display_name = 'Jobs Add';
         $jobsAdd->system = true;
         $jobsAdd->group_id = 2;
@@ -117,7 +117,7 @@ class PermissionTableSeeder extends Seeder {
 
         $permission_model = config('access.permission');
         $jobsEdit = new $permission_model;
-        $jobsEdit->name = 'jobs-edit';
+        $jobsEdit->name = 'employer-jobs-edit';
         $jobsEdit->display_name = 'Jobs Edit';
         $jobsEdit->system = true;
         $jobsEdit->group_id = 2;
@@ -128,7 +128,7 @@ class PermissionTableSeeder extends Seeder {
 
         $permission_model = config('access.permission');
         $jobsChangeStatus = new $permission_model;
-        $jobsChangeStatus->name = 'jobs-change-status';
+        $jobsChangeStatus->name = 'employer-jobs-change-status';
         $jobsChangeStatus->display_name = 'Jobs Change Status';
         $jobsChangeStatus->system = true;
         $jobsChangeStatus->group_id = 2;
@@ -139,7 +139,7 @@ class PermissionTableSeeder extends Seeder {
 
         $permission_model = config('access.permission');
         $jobsChangeStatus = new $permission_model;
-        $jobsChangeStatus->name = 'jobs-delete';
+        $jobsChangeStatus->name = 'employer-jobs-delete';
         $jobsChangeStatus->display_name = 'Jobs Delete';
         $jobsChangeStatus->system = true;
         $jobsChangeStatus->group_id = 2;
@@ -202,6 +202,83 @@ class PermissionTableSeeder extends Seeder {
 		$createEmployerStaff->created_at = Carbon::now();
 		$createEmployerStaff->updated_at = Carbon::now();
 		$createEmployerStaff->save();
+
+		$permission_model = config('access.permission');
+		$editEmployerStaff = new $permission_model;
+		$editEmployerStaff->name = 'edit-employer-staff';
+		$editEmployerStaff->display_name = 'Edit Employer Staff';
+		$editEmployerStaff->system = true;
+		$editEmployerStaff->group_id = 2;
+		$editEmployerStaff->sort = 13;
+		$editEmployerStaff->created_at = Carbon::now();
+		$editEmployerStaff->updated_at = Carbon::now();
+		$editEmployerStaff->save();
+
+		$permission_model = config('access.permission');
+		$changeEmployerStaffPassword = new $permission_model;
+		$changeEmployerStaffPassword->name = 'change-employer-staff-password';
+		$changeEmployerStaffPassword->display_name = 'Change Employer Staff Password';
+		$changeEmployerStaffPassword->system = true;
+		$changeEmployerStaffPassword->group_id = 2;
+		$changeEmployerStaffPassword->sort = 13;
+		$changeEmployerStaffPassword->created_at = Carbon::now();
+		$changeEmployerStaffPassword->updated_at = Carbon::now();
+		$changeEmployerStaffPassword->save();
+
+		$permission_model = config('access.permission');
+		$deactivateEmployerStaff = new $permission_model;
+		$deactivateEmployerStaff->name = 'deactivate-employer-staff';
+		$deactivateEmployerStaff->display_name = 'Deactivate Employer Staff';
+		$deactivateEmployerStaff->system = true;
+		$deactivateEmployerStaff->group_id = 2;
+		$deactivateEmployerStaff->sort = 13;
+		$deactivateEmployerStaff->created_at = Carbon::now();
+		$deactivateEmployerStaff->updated_at = Carbon::now();
+		$deactivateEmployerStaff->save();
+
+		$permission_model = config('access.permission');
+		$reactivateEmployerStaff = new $permission_model;
+		$reactivateEmployerStaff->name = 'reactivate-employer-staff';
+		$reactivateEmployerStaff->display_name = 'Reactivate Employer Staff';
+		$reactivateEmployerStaff->system = true;
+		$reactivateEmployerStaff->group_id = 2;
+		$reactivateEmployerStaff->sort = 13;
+		$reactivateEmployerStaff->created_at = Carbon::now();
+		$reactivateEmployerStaff->updated_at = Carbon::now();
+		$reactivateEmployerStaff->save();
+
+		$permission_model = config('access.permission');
+		$banEmployerStaff = new $permission_model;
+		$banEmployerStaff->name = 'ban-employer-staff';
+		$banEmployerStaff->display_name = 'Ban Employer Staff';
+		$banEmployerStaff->system = true;
+		$banEmployerStaff->group_id = 2;
+		$banEmployerStaff->sort = 13;
+		$banEmployerStaff->created_at = Carbon::now();
+		$banEmployerStaff->updated_at = Carbon::now();
+		$banEmployerStaff->save();
+
+		$permission_model = config('access.permission');
+		$deleteEmployerStaff = new $permission_model;
+		$deleteEmployerStaff->name = 'delete-employer-staff';
+		$deleteEmployerStaff->display_name = 'Delete Employer Staff';
+		$deleteEmployerStaff->system = true;
+		$deleteEmployerStaff->group_id = 2;
+		$deleteEmployerStaff->sort = 13;
+		$deleteEmployerStaff->created_at = Carbon::now();
+		$deleteEmployerStaff->updated_at = Carbon::now();
+		$deleteEmployerStaff->save();
+
+		$permission_model = config('access.permission');
+		$EmployerResendConfirmationEmail = new $permission_model;
+		$EmployerResendConfirmationEmail->name = 'employer-resend-confirmation-email';
+		$EmployerResendConfirmationEmail->display_name = 'Employee Staff Resend Confirmation Email';
+		$EmployerResendConfirmationEmail->system = true;
+		$EmployerResendConfirmationEmail->group_id = 2;
+		$EmployerResendConfirmationEmail->sort = 13;
+		$EmployerResendConfirmationEmail->created_at = Carbon::now();
+		$EmployerResendConfirmationEmail->updated_at = Carbon::now();
+		$EmployerResendConfirmationEmail->save();
 		/**
 		 * Employer Permissions
 		 */

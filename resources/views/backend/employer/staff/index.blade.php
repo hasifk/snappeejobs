@@ -15,7 +15,7 @@
 @stop
 
 @section('content')
-    @include('backend.employer.includes.partials.header-buttons')
+    @include('backend.employer.includes.partials.staffs.header-buttons')
     <table class="table table-striped table-bordered table-hover">
         <thead>
         <tr>
@@ -24,7 +24,7 @@
             <th>{{ trans('crud.users.email') }}</th>
             <th>{{ trans('crud.users.confirmed') }}</th>
             <th>{{ trans('crud.users.roles') }}</th>
-            <th>{{ trans('crud.users.other_permissions') }}</th>
+{{--            <th>{{ trans('crud.users.other_permissions') }}</th>--}}
             <th class="visible-lg">{{ trans('crud.users.created') }}</th>
             <th class="visible-lg">{{ trans('crud.users.last_updated') }}</th>
             <th>{{ trans('crud.actions') }}</th>
@@ -46,18 +46,18 @@
                         None
                     @endif
                 </td>
-                <td>
-                    @if ($user->permissions()->count() > 0)
-                        @foreach ($user->permissions as $perm)
-                            {!! $perm->display_name !!}<br/>
-                        @endforeach
-                    @else
-                        None
-                    @endif
-                </td>
+                {{--<td>--}}
+                    {{--@if ($user->permissions()->count() > 0)--}}
+                        {{--@foreach ($user->permissions as $perm)--}}
+                            {{--{!! $perm->display_name !!}<br/>--}}
+                        {{--@endforeach--}}
+                    {{--@else--}}
+                        {{--None--}}
+                    {{--@endif--}}
+                {{--</td>--}}
                 <td class="visible-lg">{!! $user->created_at->diffForHumans() !!}</td>
                 <td class="visible-lg">{!! $user->updated_at->diffForHumans() !!}</td>
-                <td>{!! $user->action_buttons !!}</td>
+                <td>{!! $user->employer_action_buttons !!}</td>
             </tr>
         @endforeach
         </tbody>

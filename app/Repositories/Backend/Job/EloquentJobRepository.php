@@ -1,8 +1,9 @@
-<?php namespace App\Repositories\Backend\Employer;
+<?php namespace App\Repositories\Backend\Job;
 
 use App\Events\Backend\Account\UserCreated;
 use App\Models\Access\User\User;
 use App\Exceptions\GeneralException;
+use App\Models\Job\Job;
 use App\Repositories\Backend\Role\RoleRepositoryContract;
 use App\Repositories\Frontend\Auth\AuthenticationContract;
 use App\Exceptions\Backend\Access\User\UserNeedsRolesException;
@@ -12,7 +13,7 @@ use Event;
  * Class EloquentUserRepository
  * @package App\Repositories\User
  */
-class EloquentStaffRepository {
+class EloquentJobRepository {
 
 	/**
 	 * @var RoleRepositoryContract
@@ -57,12 +58,8 @@ class EloquentStaffRepository {
 	 * @param int $status
 	 * @return mixed
 	 */
-	public function getUsersPaginated($per_page, $status = 1, $order_by = 'users.id', $sort = 'asc') {
-		return User::join('staff_employer', 'staff_employer.user_id', '=', 'users.id')
-            ->where('users.status', $status)
-            ->where('staff_employer.employer_id', auth()->user()->id)
-            ->select(['users.*'])
-            ->orderBy($order_by, $sort)
+	public function getJobsPaginated($per_page, $status = 1, $order_by = 'jobs.id', $sort = 'asc') {
+		return Job::orderBy($order_by, $sort)
             ->paginate($per_page);
 	}
 

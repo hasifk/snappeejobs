@@ -16,7 +16,7 @@
 
 @section('content')
 
-    @include('backend.employer.includes.partials.header-buttons')
+    @include('backend.employer.includes.partials.staffs.header-buttons')
 
     {!! Form::open(['route' => 'admin.employer.staffs.store', 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'post']) !!}
 
@@ -100,6 +100,7 @@
         </div>
     </div><!--form control-->
 
+    @if (count($permissions))
     <div class="form-group">
         <label class="col-lg-2 control-label">{{ trans('validation.attributes.other_permissions') }}</label>
         <div class="col-lg-10">
@@ -148,6 +149,7 @@
             @endif
         </div><!--col 3-->
     </div><!--form control-->
+    @endif
 
     <div class="well">
         <div class="pull-left">
@@ -163,4 +165,9 @@
     {!! Form::close() !!}
 
     <div class="clearfix"></div>
+@stop
+
+@section('after-scripts-end')
+    {!! HTML::script('js/backend/access/permissions/script.js') !!}
+    {!! HTML::script('js/backend/access/users/script.js') !!}
 @stop

@@ -21,11 +21,11 @@ $router->group([
          * Specific Employer
          */
         $router->group(['prefix' => 'staffs/{id}', 'where' => ['id' => '[0-9]+']], function () {
-            get('delete', 'EmployerController@delete')->name('admin.access.staffs.delete-permanently');
-            get('restore', 'EmployerController@restore')->name('admin.access.staffs.restore');
-            get('mark/{status}', 'EmployerController@mark')->name('admin.access.staffs.mark')->where(['status' => '[0,1,2]']);
-            get('password/change', 'EmployerController@changePassword')->name('admin.access.staffs.change-password');
-            post('password/change', 'EmployerController@updatePassword')->name('admin.access.staffs.change-password');
+            get('delete', 'EmployerController@delete')->name('admin.employer.staffs.delete-permanently');
+            get('restore', 'EmployerController@restore')->name('admin.employer.staffs.restore');
+            get('mark/{status}', 'EmployerController@mark')->name('admin.employer.staffs.mark')->where(['status' => '[0,1,2]']);
+            get('password/change', 'EmployerController@changePassword')->name('admin.employer.staffs.change-password');
+            post('password/change', 'EmployerController@updatePassword')->name('admin.employer.staffs.change-password');
         });
     });
 });

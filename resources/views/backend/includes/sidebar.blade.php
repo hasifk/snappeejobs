@@ -49,6 +49,12 @@
                   @endauth
                 @endauth
 
+                @roles(['Employer', 'Employer Staff'])
+                  @permission('employer-jobs-view')
+                    <li class="{{ Active::pattern('admin/employer/jobs/*') }}"><a href="{!!url('admin/employer/jobs')!!}"><span>Jobs</span></a></li>
+                  @endauth
+                @endauth
+
                  <li class="{{ Active::pattern('admin/log-viewer*') }} treeview">
                   <a href="#">
                     <span>{{ trans('menus.log-viewer.main') }}</span>

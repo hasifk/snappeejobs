@@ -35,9 +35,10 @@ class UserCreatedHandler
 
         \Log::info("User created In: ".$user->name);
 
-        $userRelation = \DB::table('assigned_roles')->where('user_id', $user->id);
-
-        $userIsEmployer = $userRelation->where('role_id', config('access.employers.default_role'))->count();
+        $userIsEmployer = \DB::table('assigned_roles')
+            ->where('user_id', $user->id)
+            ->where('role_id', config('access.employers.default_role'))
+            ->count();
 
         if ( $userIsEmployer ) {
             \Log::info("Employer user is created In: ".$user->name);
@@ -51,7 +52,10 @@ class UserCreatedHandler
             ]);
         }
 
-        $userIsEmployerStaff = $userRelation->where('role_id', config('access.employer_staff.default_role'))->count();
+        $userIsEmployerStaff = \DB::table('assigned_roles')
+            ->where('user_id', $user->id)
+            ->where('role_id', config('access.employer_staff.default_role'))
+            ->count();
 
         if ( $userIsEmployerStaff ) {
             \Log::info("Employer Staff user is created In: ".$user->name);
@@ -59,7 +63,9 @@ class UserCreatedHandler
             \DB::table('staff_employer')->insert([
                 'employer_id'   => $createdUser->id,
                 'user_id'       => $user->id,
-                'is_admin'      => true
+                'is_admin'      => false,
+                'created_at'    => \Carbon\Carbon::now(),
+                'updated_at'    => \Carbon\Carbon::now()
             ]);
         }
 

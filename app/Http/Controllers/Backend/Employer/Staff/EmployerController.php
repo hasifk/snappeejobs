@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Employer\Staff;
 
+use App\Http\Requests\Backend\Employer\Staff\CreateEmployerRequest;
 use App\Models\Access\User\User;
 use App\Repositories\Backend\Employer\EloquentStaffRepository;
 use App\Repositories\Backend\Permission\PermissionRepositoryContract;
@@ -59,9 +60,12 @@ class EmployerController extends Controller
      */
     public function create()
     {
+//        return view('backend.employer.staff.create')
+//            ->withRoles($this->roles->getEmployerRoles('sort', 'asc', true));
+//            ->withPermissions($this->permissions->getAllPermissions());
         return view('backend.employer.staff.create')
-            ->withRoles($this->roles->getAllRoles('sort', 'asc', true))
-            ->withPermissions($this->permissions->getAllPermissions());
+            ->withRoles($this->roles->getEmployerRoles('sort', 'asc', true))
+            ->withPermissions([]);
     }
 
     /**
@@ -70,9 +74,15 @@ class EmployerController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateEmployerRequest $request)
     {
-        //
+        $this->staffs->create(
+            $request->except('assignees_roles', 'permission_user'),
+            $request->only('assignees_roles'),
+            ['permission_user' => []]
+        );
+
+        return redirect()->route('admin.employer.staffs.index')->withFlashSuccess(trans("alerts.users.created"));
     }
 
     /**
@@ -94,7 +104,13 @@ class EmployerController extends Controller
      */
     public function edit($id)
     {
-        //
+        $user = $this->staffs->findOrThrowException($id, true);
+        return view('backend.employer.staff.edit')
+            ->withUser($user)
+            ->withUserRoles($user->roles->lists('id')->all())
+            ->withRoles($this->roles->getAllRoles('sort', 'asc', true))
+            ->withUserPermissions($user->permissions->lists('id')->all())
+            ->withPermissions($this->permissions->getAllPermissions());
     }
 
     /**

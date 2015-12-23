@@ -6,6 +6,7 @@ use App\Models\Access\User\Traits\UserAccess;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use App\Models\Access\User\Traits\Attribute\UserAttribute;
+use App\Models\Access\User\Traits\Attribute\EmployerAttribute;
 use App\Models\Access\User\Traits\Relationship\UserRelationship;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
@@ -21,7 +22,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 		SoftDeletes,
 		UserAccess,
 		UserRelationship,
-		UserAttribute;
+		UserAttribute,
+		EmployerAttribute;
 
 	/**
 	 * The database table used by the model.

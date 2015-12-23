@@ -19,7 +19,7 @@ class PermissionRoleSeeder extends Seeder
     }
 
     public function insertEmployeeStaffRolePermission(){
-        $permissions = ['view-backend', 'view-access-management', 'employer-users-view', 'jobs-view',
+        $permissions = ['view-backend', 'view-access-management', 'employer-users-view', 'employer-jobs-view',
             'mail-send-private-message', 'mail-view-private-messages', 'mail-send-group-messages'
         ];
 
@@ -37,10 +37,15 @@ class PermissionRoleSeeder extends Seeder
     }
 
     public function insertEmployerRolePermission(){
-        $permissions = ['view-backend', 'view-access-management', 'employer-users-view', 'company-profile-view',
-            'company-profile-edit', 'jobs-view', 'jobs-add', 'jobs-edit', 'jobs-change-status', 'jobs-delete',
-            'mail-send-private-message', 'mail-view-private-messages', 'mail-send-group-messages', 'change-plan',
-            'create-employer-staff'];
+        $permissions = [
+            'view-backend', 'view-access-management', 'employer-users-view', 'company-profile-view',
+            'company-profile-edit', 'employer-jobs-view', 'employer-jobs-add', 'employer-jobs-edit',
+            'employer-jobs-change-status', 'employer-jobs-delete','mail-send-private-message',
+            'mail-view-private-messages', 'mail-send-group-messages','change-plan','create-employer-staff',
+            'edit-employer-staff', 'change-employer-staff-password','deactivate-employer-staff',
+            'reactivate-employer-staff', 'ban-employer-staff', 'delete-employer-staff',
+            'employer-resend-confirmation-email'
+        ];
 
         $employer_role_id = \DB::table('roles')->where('name', 'Employer')->value('id');
 

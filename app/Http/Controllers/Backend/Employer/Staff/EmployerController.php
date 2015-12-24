@@ -108,7 +108,7 @@ class EmployerController extends Controller
         return view('backend.employer.staff.edit')
             ->withUser($user)
             ->withUserRoles($user->roles->lists('id')->all())
-            ->withRoles($this->roles->getAllRoles('sort', 'asc', true))
+            ->withRoles($this->roles->getEmployerRoles('sort', 'asc', true))
             ->withUserPermissions($user->permissions->lists('id')->all())
             ->withPermissions($this->permissions->getAllPermissions());
     }
@@ -120,9 +120,14 @@ class EmployerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Requests\Backend\Employer\Staff\EditEmployerRequest $request, $id)
     {
-        //
+        $this->staffs->update($id,
+            $request->except('assignees_roles', 'permission_user'),
+            $request->only('assignees_roles'),
+            ['permission_user' => []]
+        );
+        return redirect()->route('admin.employer.staffs.index')->withFlashSuccess(trans("alerts.users.updated"));
     }
 
     /**

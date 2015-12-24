@@ -43,13 +43,21 @@ class UserCreatedHandler
         if ( $userIsEmployer ) {
             \Log::info("Employer user is created In: ".$user->name);
 
-            \DB::table('staff_employer')->insert([
-                'employer_id'   => $user->id,
-                'user_id'       => $user->id,
-                'is_admin'      => true,
-                'created_at'    => \Carbon\Carbon::now(),
-                'updated_at'    => \Carbon\Carbon::now()
-            ]);
+            $employer = \DB::table('staff_employer')
+                ->where('employer_id', $user->id)
+                ->where('user_id', $user->id)
+                ->where('is_admin', true)
+                ->count();
+
+            if (! $employer) {
+                \DB::table('staff_employer')->insert([
+                    'employer_id'   => $user->id,
+                    'user_id'       => $user->id,
+                    'is_admin'      => true,
+                    'created_at'    => \Carbon\Carbon::now(),
+                    'updated_at'    => \Carbon\Carbon::now()
+                ]);
+            }
         }
 
         $userIsEmployerStaff = \DB::table('assigned_roles')
@@ -60,13 +68,21 @@ class UserCreatedHandler
         if ( $userIsEmployerStaff ) {
             \Log::info("Employer Staff user is created In: ".$user->name);
 
-            \DB::table('staff_employer')->insert([
-                'employer_id'   => $createdUser->id,
-                'user_id'       => $user->id,
-                'is_admin'      => false,
-                'created_at'    => \Carbon\Carbon::now(),
-                'updated_at'    => \Carbon\Carbon::now()
-            ]);
+            $employerStaff = \DB::table('staff_employer')
+                ->where('employer_id', $user->id)
+                ->where('user_id', $user->id)
+                ->where('is_admin', false)
+                ->count();
+
+            if (! $employerStaff) {
+                \DB::table('staff_employer')->insert([
+                    'employer_id'   => $createdUser->id,
+                    'user_id'       => $user->id,
+                    'is_admin'      => false,
+                    'created_at'    => \Carbon\Carbon::now(),
+                    'updated_at'    => \Carbon\Carbon::now()
+                ]);
+            }
         }
 
 

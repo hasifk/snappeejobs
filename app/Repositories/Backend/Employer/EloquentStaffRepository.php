@@ -137,6 +137,8 @@ class EloquentStaffRepository {
 			$this->flushRoles($roles, $user);
 			$this->flushPermissions($permissions, $user);
 
+			Event::fire(new UserCreated($user, auth()->user() ));
+
 			return true;
 		}
 

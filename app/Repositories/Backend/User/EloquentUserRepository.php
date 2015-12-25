@@ -61,6 +61,13 @@ class EloquentUserRepository implements UserContract {
 		return User::where('status', $status)->orderBy($order_by, $sort)->paginate($per_page);
 	}
 
+	public function getEmployersPaginated($per_page, $order_by = 'users.id', $sort = 'asc') {
+		return User::join('staff_employer', 'staff_employer.user_id', '=', 'users.id')
+			->select(['users.*'])
+			->orderBy($order_by, $sort)
+			->paginate($per_page);
+	}
+
 	/**
 	 * @param $per_page
 	 * @return \Illuminate\Pagination\Paginator

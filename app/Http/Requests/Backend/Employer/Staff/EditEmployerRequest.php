@@ -41,7 +41,7 @@ class EditEmployerRequest extends Request
             $this->staffs = \DB::table('staff_employer')->where('employer_id', $this->employerId)->lists('user_id');
 
             if ( $this->staffs ) {
-                if ( ! in_array($this->userId, $this->staffs) ) {
+                if ( ( ! in_array($this->userId, $this->staffs) ) && ( ! in_array( auth()->user()->id , $this->staffs) ) ) {
                     $rules['user'] = 'required';
                 }
             }

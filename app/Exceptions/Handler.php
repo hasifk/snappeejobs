@@ -1,5 +1,6 @@
 <?php namespace App\Exceptions;
 
+use App\Exceptions\Backend\Access\Employer\EmployerNeedsRolesException;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -53,6 +54,11 @@ class Handler extends ExceptionHandler {
 		if ($e instanceof Backend\Access\User\UserNeedsRolesException)
 		{
 			return redirect()->route('admin.access.users.edit', $e->userID())->withInput()->withFlashDanger($e->validationErrors());
+		}
+
+		if ($e instanceof EmployerNeedsRolesException)
+		{
+			return redirect()->route('admin.employer.staffs.index')->withInput()->withFlashDanger($e->validationErrors());
 		}
 
 		//Catch all

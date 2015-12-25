@@ -1,5 +1,8 @@
     <div class="pull-right" style="margin-bottom:10px">
         <div class="btn-group">
+            <a class="btn btn-primary btn-xs" href="{{route('admin.access.users.employers')}}">Employers</a>
+        </div>
+        <div class="btn-group">
           <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
               {{ trans('menus.header_buttons.users.button') }} <span class="caret"></span>
           </button>

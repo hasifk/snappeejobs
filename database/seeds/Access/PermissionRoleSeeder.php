@@ -43,7 +43,7 @@ class PermissionRoleSeeder extends Seeder
             'employer-jobs-change-status', 'employer-jobs-delete','mail-send-private-message',
             'mail-view-private-messages', 'mail-send-group-messages','change-plan','create-employer-staff',
             'edit-employer-staff', 'change-employer-staff-password','deactivate-employer-staff',
-            'reactivate-employer-staff', 'ban-employer-staff', 'delete-employer-staff',
+            'reactivate-employer-staff', 'ban-employer-staff', 'unban-employer-staff', 'delete-employer-staff',
             'employer-resend-confirmation-email'
         ];
 

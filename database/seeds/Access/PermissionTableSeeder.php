@@ -259,6 +259,17 @@ class PermissionTableSeeder extends Seeder {
 		$banEmployerStaff->save();
 
 		$permission_model = config('access.permission');
+		$unbanEmployer = new $permission_model;
+		$unbanEmployer->name = 'unban-employer-staff';
+		$unbanEmployer->display_name = 'Un-Ban Employer Staff';
+		$unbanEmployer->system = true;
+		$unbanEmployer->group_id = 3;
+		$unbanEmployer->sort = 12;
+		$unbanEmployer->created_at = Carbon::now();
+		$unbanEmployer->updated_at = Carbon::now();
+		$unbanEmployer->save();
+
+		$permission_model = config('access.permission');
 		$deleteEmployerStaff = new $permission_model;
 		$deleteEmployerStaff->name = 'delete-employer-staff';
 		$deleteEmployerStaff->display_name = 'Delete Employer Staff';

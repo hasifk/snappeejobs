@@ -168,6 +168,14 @@ class UserController extends Controller {
 	/**
 	 * @return mixed
 	 */
+	public function employers() {
+		return view('backend.access.employers')
+			->withUsers($this->users->getEmployersPaginated(25));
+	}
+
+	/**
+	 * @return mixed
+	 */
 	public function banned() {
 		return view('backend.access.banned')
 			->withUsers($this->users->getUsersPaginated(25, 2));

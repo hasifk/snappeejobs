@@ -86,6 +86,28 @@ class EmployerController extends Controller
     }
 
     /**
+     * @param $id
+     * @param $status
+     * @param MarkEmployerRequest $request
+     * @return mixed
+     */
+    public function mark($id, $status, Requests\Backend\Employer\Staff\MarkEmployerRequest $request) {
+        $this->staffs->mark($id, $status);
+        return redirect()->back()->withFlashSuccess(trans("alerts.users.updated"));
+    }
+
+
+    /**
+     * @param $id
+     * @param PermanentlyDeleteEmployerRequest $request
+     * @return mixed
+     */
+    public function delete($id, Requests\Backend\Employer\Staff\DeleteEmployerRequest $request) {
+        $this->staffs->delete($id);
+        return redirect()->back()->withFlashSuccess(trans("alerts.users.deleted_permanently"));
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -102,7 +124,7 @@ class EmployerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, Requests\Backend\Employer\Staff\UpdateEmployerViewRequest $request)
     {
         $user = $this->staffs->findOrThrowException($id, true);
         return view('backend.employer.staff.edit')
@@ -136,8 +158,51 @@ class EmployerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, Requests\Backend\Employer\Staff\DeleteEmployerRequest $request)
     {
-        //
+        $this->staffs->destroy($id);
+        return redirect()->back()->withFlashSuccess(trans("alerts.users.deleted"));
     }
+
+    public function deactivated() {
+        return view('backend.employer.staff.deactivated')
+            ->withUsers($this->staffs->getUsersPaginated(25, 0));
+    }
+
+    /**
+     * @return mixed
+     */
+    public function deleted() {
+        return view('backend.employer.staff.deleted')
+            ->withUsers($this->staffs->getDeletedUsersPaginated(25));
+    }
+
+    /**
+     * @return mixed
+     */
+    public function banned() {
+        return view('backend.employer.staff.banned')
+            ->withUsers($this->staffs->getUsersPaginated(25, 2));
+    }
+
+    /**
+     * @param $id
+     * @param ChangeEmployerPasswordViewRequest $request
+     * @return mixed
+     */
+    public function changePassword($id, Requests\Backend\Employer\Staff\ChangeEmployerPasswordViewRequest $request) {
+        return view('backend.employer.staff.change-password')
+            ->withUser($this->staffs->findOrThrowException($id));
+    }
+
+    /**
+     * @param $id
+     * @param UpdateEmployerPasswordRequest $request
+     * @return mixed
+     */
+    public function updatePassword($id, Requests\Backend\Employer\Staff\UpdateEmployerPasswordRequest $request) {
+        $this->staffs->updatePassword($id, $request->all());
+        return redirect()->route('admin.employer.staffs.index')->withFlashSuccess(trans("alerts.users.updated_password"));
+    }
+
 }

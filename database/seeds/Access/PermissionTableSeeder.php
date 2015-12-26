@@ -290,6 +290,17 @@ class PermissionTableSeeder extends Seeder {
 		$EmployerResendConfirmationEmail->created_at = Carbon::now();
 		$EmployerResendConfirmationEmail->updated_at = Carbon::now();
 		$EmployerResendConfirmationEmail->save();
+
+		$permission_model = config('access.permission');
+		$EmployerSettings = new $permission_model;
+		$EmployerSettings->name = 'employer-settings';
+		$EmployerSettings->display_name = 'Employer Settings';
+		$EmployerSettings->system = true;
+		$EmployerSettings->group_id = 2;
+		$EmployerSettings->sort = 14;
+		$EmployerSettings->created_at = Carbon::now();
+		$EmployerSettings->updated_at = Carbon::now();
+		$EmployerSettings->save();
 		/**
 		 * Employer Permissions
 		 */

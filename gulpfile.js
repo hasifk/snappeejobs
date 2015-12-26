@@ -28,6 +28,10 @@ elixir(function(mix) {
         .styles([ // Combine pre-processed CSS files
                 'backend/main.css'
             ], 'public/css/backend.css')
+        .copy(
+            'resources/assets/sass/backend/plugin/plan/plan.css',
+            'public/css/backend/plugin/plan/plan.css'
+        )
         .scripts([ // Combine back-end scripts
                 'plugins.js',
                 'backend/main.js',

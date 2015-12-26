@@ -55,6 +55,12 @@
                   @endauth
                 @endauth
 
+                @roles(['Employer'])
+                  @permission('employer-settings')
+                    <li class="{{ Active::pattern('admin/employer/settings/dashboard') }}"><a href="{!!url('admin/employer/settings/dashboard')!!}"><span>Settings</span></a></li>
+                  @endauth
+                @endauth
+
                  <li class="{{ Active::pattern('admin/log-viewer*') }} treeview">
                   <a href="#">
                     <span>{{ trans('menus.log-viewer.main') }}</span>

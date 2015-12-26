@@ -44,7 +44,7 @@ class PermissionRoleSeeder extends Seeder
             'mail-view-private-messages', 'mail-send-group-messages','change-plan','create-employer-staff',
             'edit-employer-staff', 'change-employer-staff-password','deactivate-employer-staff',
             'reactivate-employer-staff', 'ban-employer-staff', 'unban-employer-staff', 'delete-employer-staff',
-            'employer-resend-confirmation-email'
+            'employer-resend-confirmation-email', 'employer-settings'
         ];
 
         $employer_role_id = \DB::table('roles')->where('name', 'Employer')->value('id');

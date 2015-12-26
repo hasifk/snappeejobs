@@ -10,44 +10,84 @@ return array(
         'no_plan' => [
             'id' => 'snappeejobs0',
             'name' => 'Blank',
+            'description' => 'This is the default plan when you get signed up',
             'price' => 0,
             'addons' => [
-                'job_postings' => 0,
-                'staff_members' => 0,
-                'chats_accepted' => 0,
+                'job_postings' => [
+                    'count' => 0,
+                    'label' => 'Job Postings'
+                ],
+                'staff_members' => [
+                    'count' => 0,
+                    'label' => 'Staff Members'
+                ],
+                'chats_accepted' => [
+                    'count' => 0,
+                    'label' => 'Chats Accepted'
+                ],
             ]
         ],
 
         'plan_1' => [
             'id' => 'snappeejobs1',
             'name' => 'Startup',
+            'description' => 'Startup Plan, choose this plan if your company is small',
             'price' => 10000,
             'addons' => [
-                'job_postings' => 10,
-                'staff_members' => 10,
-                'chats_accepted' => 10,
+                'job_postings' => [
+                    'count' => 10,
+                    'label' => 'Job Postings'
+                ],
+                'staff_members' => [
+                    'count' => 10,
+                    'label' => 'Staff Members'
+                ],
+                'chats_accepted' => [
+                    'count' => 10,
+                    'label' => 'Chats Accepted'
+                ],
             ]
         ],
 
         'plan_2' => [
             'id' => 'snappeejobs2',
             'name' => 'Growth',
+            'description' => 'Medium Plan, choose this plan if your company is medium',
             'price' => 50000,
             'addons' => [
-                'job_postings' => 50,
-                'staff_members' => 50,
-                'chats_accepted' => 50,
+                'job_postings' => [
+                    'count' => 50,
+                    'label' => 'Job Postings'
+                ],
+                'staff_members' => [
+                    'count' => 50,
+                    'label' => 'Staff Members'
+                ],
+                'chats_accepted' => [
+                    'count' => 50,
+                    'label' => 'Chats Accepted'
+                ],
             ]
         ],
 
         'plan_3' => [
             'id' => 'snappeejobs3',
             'name' => 'Professional',
+            'description' => 'Professinal Plan, choose this plan if your company is big',
             'price' => 200000,
             'addons' => [
-                'job_postings' => 200,
-                'staff_members' => 200,
-                'chats_accepted' => 200,
+                'job_postings' => [
+                    'count' => 200,
+                    'label' => 'Job Postings'
+                ],
+                'staff_members' => [
+                    'count' => 200,
+                    'label' => 'Staff Members'
+                ],
+                'chats_accepted' => [
+                    'count' => 200,
+                    'label' => 'Chats Accepted'
+                ],
             ]
         ],
 

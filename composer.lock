@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "38c6a4a82d3f7a5c53501d981db33308",
-    "content-hash": "6207ce6fcdc4fd99ebe6e81b78d81071",
+    "hash": "5fd6f539ff83b7b7079d877596c36d98",
+    "content-hash": "3ccc8534785222907ff89bd98b5dd859",
     "packages": [
         {
             "name": "arcanedev/log-viewer",
@@ -1597,6 +1597,66 @@
                 "laravel"
             ],
             "time": "2015-10-01 05:16:28"
+        },
+        {
+            "name": "laravel/cashier",
+            "version": "v6.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/cashier.git",
+                "reference": "9321db559c66179e84e5b75ae4b4d5ebcb61f59f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/cashier/zipball/9321db559c66179e84e5b75ae4b4d5ebcb61f59f",
+                "reference": "9321db559c66179e84e5b75ae4b4d5ebcb61f59f",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "~5.1",
+                "illuminate/support": "~5.1",
+                "nesbot/carbon": "~1.0",
+                "php": ">=5.5.9",
+                "stripe/stripe-php": "~3.0",
+                "symfony/http-kernel": "2.7.*|2.8.*|3.0.*"
+            },
+            "require-dev": {
+                "dompdf/dompdf": "^0.6.1",
+                "illuminate/http": "~5.1",
+                "illuminate/routing": "~5.1",
+                "illuminate/view": "~5.1",
+                "mockery/mockery": "~0.9",
+                "phpunit/phpunit": "~4.0",
+                "vlucas/phpdotenv": "~2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "6.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Cashier\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylorotwell@gmail.com"
+                }
+            ],
+            "description": "Laravel Cashier provides an expressive, fluent interface to Stripe's subscription billing services.",
+            "keywords": [
+                "billing",
+                "laravel",
+                "stripe"
+            ],
+            "time": "2015-11-28 22:50:38"
         },
         {
             "name": "laravel/framework",

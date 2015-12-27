@@ -166,6 +166,7 @@ return [
 		'HieuLe\Active\ActiveServiceProvider',
 		'Laracasts\Utilities\JavaScript\JavaScriptServiceProvider',
 		'Laravel\Socialite\SocialiteServiceProvider',
+		Laravel\Cashier\CashierServiceProvider::class,
 		'Potsky\LaravelLocalizationHelpers\LaravelLocalizationHelpersServiceProviderLaravel5',
 		Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,

@@ -30,7 +30,7 @@
         <div class="row-fluid">
             <div class="pricing-table row-fluid text-center">
 
-                @foreach( config('subscription.employer_plans') as $plan )
+                @foreach( config('subscription.employer_plans') as $key => $plan )
                     <div class="span3">
                         <div class="plan">
                             <div class="plan-name">
@@ -49,7 +49,7 @@
                             </div>
                             <div class="plan-action">
                                 <a
-                                    href="{!!route('admin.employer.settings.choose-plan', $plan['id'])!!}"
+                                    href="{!!route('admin.employer.settings.choose-plan', $key)!!}"
                                     class="btn btn-primary dropdown-toggle">
                                     Choose Plan
                                 </a>

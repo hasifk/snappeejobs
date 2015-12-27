@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Employer\Settings;
 
+use App\Http\Requests\Backend\Employer\Staff\EmployerChoosePlanRequest;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -27,6 +28,13 @@ class SettingsController extends Controller
     public function plan()
     {
         return view('backend.employer.settings.plan');
+    }
+
+    public function choosePlan(EmployerChoosePlanRequest $request, $plan){
+
+        $planDetails = config('subscription.employer_plans.' . $plan);
+
+        return view('backend.employer.settings.chooseplan', [ 'plan' => $planDetails ]);
     }
 
 }

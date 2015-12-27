@@ -3,7 +3,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2015-12-22.
+    * Generated on 2015-12-27.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -19,7 +19,6 @@ namespace PHPSTORM_META {
             'Illuminate\Contracts\Http\Kernel' instanceof \App\Http\Kernel,
             'Illuminate\Contracts\Console\Kernel' instanceof \App\Console\Kernel,
             'Illuminate\Contracts\Debug\ExceptionHandler' instanceof \App\Exceptions\Handler,
-            'Psr\Log\LoggerInterface' instanceof \Monolog\Logger,
             'auth' instanceof \Illuminate\Auth\AuthManager,
             'auth.driver' instanceof \Illuminate\Auth\Guard,
             'Illuminate\Contracts\Auth\Access\Gate' instanceof \Illuminate\Auth\Access\Gate,
@@ -28,6 +27,7 @@ namespace PHPSTORM_META {
             'Illuminate\Contracts\Queue\EntityResolver' instanceof \Illuminate\Database\Eloquent\QueueEntityResolver,
             'db.factory' instanceof \Illuminate\Database\Connectors\ConnectionFactory,
             'db' instanceof \Illuminate\Database\DatabaseManager,
+            'db.connection' instanceof \Illuminate\Database\MySqlConnection,
             'encrypter' instanceof \Illuminate\Encryption\McryptEncrypter,
             'files' instanceof \Illuminate\Filesystem\Filesystem,
             'filesystem' instanceof \Illuminate\Filesystem\FilesystemManager,
@@ -120,7 +120,6 @@ namespace PHPSTORM_META {
             'command.migrate.status' instanceof \Illuminate\Database\Console\Migrations\StatusCommand,
             'command.seed' instanceof \Illuminate\Database\Console\Seeds\SeedCommand,
             'command.seeder.make' instanceof \Illuminate\Database\Console\Seeds\SeederMakeCommand,
-            'seeder' instanceof \Illuminate\Database\Seeder,
             'composer' instanceof \Illuminate\Foundation\Composer,
             'command.queue.table' instanceof \Illuminate\Queue\Console\TableCommand,
             'command.queue.failed' instanceof \Illuminate\Queue\Console\ListFailedCommand,
@@ -163,7 +162,6 @@ namespace PHPSTORM_META {
             'Illuminate\Contracts\Http\Kernel' instanceof \App\Http\Kernel,
             'Illuminate\Contracts\Console\Kernel' instanceof \App\Console\Kernel,
             'Illuminate\Contracts\Debug\ExceptionHandler' instanceof \App\Exceptions\Handler,
-            'Psr\Log\LoggerInterface' instanceof \Monolog\Logger,
             'auth' instanceof \Illuminate\Auth\AuthManager,
             'auth.driver' instanceof \Illuminate\Auth\Guard,
             'Illuminate\Contracts\Auth\Access\Gate' instanceof \Illuminate\Auth\Access\Gate,
@@ -172,6 +170,7 @@ namespace PHPSTORM_META {
             'Illuminate\Contracts\Queue\EntityResolver' instanceof \Illuminate\Database\Eloquent\QueueEntityResolver,
             'db.factory' instanceof \Illuminate\Database\Connectors\ConnectionFactory,
             'db' instanceof \Illuminate\Database\DatabaseManager,
+            'db.connection' instanceof \Illuminate\Database\MySqlConnection,
             'encrypter' instanceof \Illuminate\Encryption\McryptEncrypter,
             'files' instanceof \Illuminate\Filesystem\Filesystem,
             'filesystem' instanceof \Illuminate\Filesystem\FilesystemManager,
@@ -264,7 +263,6 @@ namespace PHPSTORM_META {
             'command.migrate.status' instanceof \Illuminate\Database\Console\Migrations\StatusCommand,
             'command.seed' instanceof \Illuminate\Database\Console\Seeds\SeedCommand,
             'command.seeder.make' instanceof \Illuminate\Database\Console\Seeds\SeederMakeCommand,
-            'seeder' instanceof \Illuminate\Database\Seeder,
             'composer' instanceof \Illuminate\Foundation\Composer,
             'command.queue.table' instanceof \Illuminate\Queue\Console\TableCommand,
             'command.queue.failed' instanceof \Illuminate\Queue\Console\ListFailedCommand,
@@ -307,7 +305,6 @@ namespace PHPSTORM_META {
             'Illuminate\Contracts\Http\Kernel' instanceof \App\Http\Kernel,
             'Illuminate\Contracts\Console\Kernel' instanceof \App\Console\Kernel,
             'Illuminate\Contracts\Debug\ExceptionHandler' instanceof \App\Exceptions\Handler,
-            'Psr\Log\LoggerInterface' instanceof \Monolog\Logger,
             'auth' instanceof \Illuminate\Auth\AuthManager,
             'auth.driver' instanceof \Illuminate\Auth\Guard,
             'Illuminate\Contracts\Auth\Access\Gate' instanceof \Illuminate\Auth\Access\Gate,
@@ -316,6 +313,7 @@ namespace PHPSTORM_META {
             'Illuminate\Contracts\Queue\EntityResolver' instanceof \Illuminate\Database\Eloquent\QueueEntityResolver,
             'db.factory' instanceof \Illuminate\Database\Connectors\ConnectionFactory,
             'db' instanceof \Illuminate\Database\DatabaseManager,
+            'db.connection' instanceof \Illuminate\Database\MySqlConnection,
             'encrypter' instanceof \Illuminate\Encryption\McryptEncrypter,
             'files' instanceof \Illuminate\Filesystem\Filesystem,
             'filesystem' instanceof \Illuminate\Filesystem\FilesystemManager,
@@ -408,7 +406,6 @@ namespace PHPSTORM_META {
             'command.migrate.status' instanceof \Illuminate\Database\Console\Migrations\StatusCommand,
             'command.seed' instanceof \Illuminate\Database\Console\Seeds\SeedCommand,
             'command.seeder.make' instanceof \Illuminate\Database\Console\Seeds\SeederMakeCommand,
-            'seeder' instanceof \Illuminate\Database\Seeder,
             'composer' instanceof \Illuminate\Foundation\Composer,
             'command.queue.table' instanceof \Illuminate\Queue\Console\TableCommand,
             'command.queue.failed' instanceof \Illuminate\Queue\Console\ListFailedCommand,
@@ -451,7 +448,6 @@ namespace PHPSTORM_META {
             'Illuminate\Contracts\Http\Kernel' instanceof \App\Http\Kernel,
             'Illuminate\Contracts\Console\Kernel' instanceof \App\Console\Kernel,
             'Illuminate\Contracts\Debug\ExceptionHandler' instanceof \App\Exceptions\Handler,
-            'Psr\Log\LoggerInterface' instanceof \Monolog\Logger,
             'auth' instanceof \Illuminate\Auth\AuthManager,
             'auth.driver' instanceof \Illuminate\Auth\Guard,
             'Illuminate\Contracts\Auth\Access\Gate' instanceof \Illuminate\Auth\Access\Gate,
@@ -460,6 +456,7 @@ namespace PHPSTORM_META {
             'Illuminate\Contracts\Queue\EntityResolver' instanceof \Illuminate\Database\Eloquent\QueueEntityResolver,
             'db.factory' instanceof \Illuminate\Database\Connectors\ConnectionFactory,
             'db' instanceof \Illuminate\Database\DatabaseManager,
+            'db.connection' instanceof \Illuminate\Database\MySqlConnection,
             'encrypter' instanceof \Illuminate\Encryption\McryptEncrypter,
             'files' instanceof \Illuminate\Filesystem\Filesystem,
             'filesystem' instanceof \Illuminate\Filesystem\FilesystemManager,
@@ -552,7 +549,6 @@ namespace PHPSTORM_META {
             'command.migrate.status' instanceof \Illuminate\Database\Console\Migrations\StatusCommand,
             'command.seed' instanceof \Illuminate\Database\Console\Seeds\SeedCommand,
             'command.seeder.make' instanceof \Illuminate\Database\Console\Seeds\SeederMakeCommand,
-            'seeder' instanceof \Illuminate\Database\Seeder,
             'composer' instanceof \Illuminate\Foundation\Composer,
             'command.queue.table' instanceof \Illuminate\Queue\Console\TableCommand,
             'command.queue.failed' instanceof \Illuminate\Queue\Console\ListFailedCommand,

@@ -3,7 +3,10 @@
 $router->group([
     'prefix' => 'employer',
     'namespace' => 'Employer',
-    'middleware' => 'access.routeNeedsPermission:employer-users-view'
+    'middleware' => [
+                        'access.routeNeedsPermission:employer-users-view',
+                        'access.routeNeedsSubscription'
+                    ]
 ], function() use ($router)
 {
     /**

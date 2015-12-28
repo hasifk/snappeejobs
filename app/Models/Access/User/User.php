@@ -3,6 +3,7 @@
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Access\User\Traits\UserAccess;
+use App\Models\Access\User\Traits\EmployerAccess;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use App\Models\Access\User\Traits\Attribute\UserAttribute;
@@ -10,20 +11,23 @@ use App\Models\Access\User\Traits\Attribute\EmployerAttribute;
 use App\Models\Access\User\Traits\Relationship\UserRelationship;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Laravel\Cashier\Billable;
 
 /**
  * Class User
  * @package App\Models\Access\User
  */
-class User extends Model implements AuthenticatableContract, CanResetPasswordContract {
+class User extends Model implements AuthenticatableContract, CanResetPasswordContract, \Laravel\Cashier\Contracts\Billable {
 
 	use Authenticatable,
 		CanResetPassword,
 		SoftDeletes,
 		UserAccess,
+		EmployerAccess,
 		UserRelationship,
 		UserAttribute,
-		EmployerAttribute;
+		EmployerAttribute,
+		Billable;
 
 	/**
 	 * The database table used by the model.
@@ -51,7 +55,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 *
 	 * @var array
 	 */
-	protected $dates = ['deleted_at'];
+	protected $dates = ['deleted_at', 'trial_ends_at', 'subscription_ends_at'];
 
 	/**
 	 * @return mixed

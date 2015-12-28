@@ -10,11 +10,20 @@
                     Settings Dashboard
                 </a>
             </li>
-            <li class="divider"></li>
-            @permission('create-employer-staff')
+            @permission('employer-settings')
             <li>
                 <a href="{{route('admin.employer.settings.plan')}}">
-                    Plan
+                    Subscription Plan
+                </a>
+            </li>
+            <li>
+                <a href="{{route('admin.employer.settings.creditcard')}}">
+                    Credit Card
+                </a>
+            </li>
+            <li>
+                <a href="{{route('admin.employer.settings.cancel')}}">
+                    Cancel
                 </a>
             </li>
             @endauth

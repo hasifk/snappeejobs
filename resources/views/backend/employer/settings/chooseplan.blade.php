@@ -56,14 +56,14 @@
                         Pay with your Credit Card
                     </th>
                     <td>
-                        {!! Form::open(['route' => ['admin.employer.settings.selectplan', request()->segment(5) ], 'method' => 'POST']) !!}
+                        {!! Form::open(['route' => ['admin.employer.settings.subscribe', request()->segment(5) ], 'method' => 'POST']) !!}
                             {!! csrf_field() !!}
 
-                            <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-key="{{ config('services.stripe.secret') }}"
-                                    data-amount="10000"
+                            <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-key="{{ config('services.stripe.key') }}"
+                                    data-amount="{{ $plan['price'] }}"
                                     data-email="{{ auth()->user()->email }}"
                                     data-name="SnappeeJobs"
-                                    data-description="100&pound;"
+                                    data-description="Plan Name : {{ $plan['name'] }}"
                                     data-image="/tile.png"
                                     data-label="Pay With your Credit Card"
                                     data-currency="GBP"

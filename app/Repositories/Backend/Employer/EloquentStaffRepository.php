@@ -6,6 +6,7 @@ use App\Exceptions\GeneralException;
 use App\Repositories\Backend\Role\RoleRepositoryContract;
 use App\Repositories\Frontend\Auth\AuthenticationContract;
 use App\Exceptions\Backend\Access\User\UserNeedsRolesException;
+use Carbon\Carbon;
 use Event;
 
 /**
@@ -254,6 +255,48 @@ class EloquentStaffRepository {
 		}
 	}
 
+    public function getPlanDetails(User $user){
+        $employer_id = $this->getemployerId($user);
+        return \DB::table('employer_plan')->where('employer_id', $employer_id)->first();
+    }
+
+    public function getemployerId(User $user){
+        $employer_id = \DB::table('staff_employer')
+            ->where('user_id', $user->id)
+            ->where('is_admin', true)
+            ->orderBy('created_at')
+            ->value('employer_id');
+        return $employer_id;
+    }
+
+	public function employerPlanSave($plan, User $user){
+        $employer_id = $this->getemployerId($user);
+
+        $employer_plan_exists = \DB::table('employer_plan')->where('employer_id', $employer_id)->count();
+        if ( $employer_plan_exists ) {
+
+            $plan_details = \DB::table('employer_plan')->where('employer_id', $employer_id)->first();
+
+            \DB::table('employer_plan')->where('employer_id', $employer_id)
+                ->update([
+                    'job_postings'      => ( $plan_details['job_postings'] + $plan['addons']['job_postings']['count'] ),
+                    'staff_members'     => ( $plan_details['staff_members'] + $plan['addons']['staff_members']['count'] ),
+                    'chats_accepted'    => ( $plan_details['chats_accepted'] + $plan['addons']['chats_accepted']['count'] ),
+                    'updated_at'        => Carbon::now()
+                ]);
+
+        } else {
+            \DB::table('employer_plan')->insert([
+                'employer_id'       => $employer_id,
+                'job_postings'      => $plan['addons']['job_postings']['count'],
+                'staff_members'     => $plan['addons']['staff_members']['count'],
+                'chats_accepted'    => $plan['addons']['chats_accepted']['count'],
+                'created_at'        => Carbon::now(),
+                'updated_at'        => Carbon::now()
+            ]);
+        }
+	}
+	
 	/**
 	 * @param $input
 	 * @param $user

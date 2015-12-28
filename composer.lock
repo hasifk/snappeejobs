@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5fd6f539ff83b7b7079d877596c36d98",
-    "content-hash": "3ccc8534785222907ff89bd98b5dd859",
+    "hash": "619b54b8ab1f80e5fd5389425cfc2b3e",
+    "content-hash": "1f53c0f7c3b8b4b865c502a3c1d07d10",
     "packages": [
         {
             "name": "arcanedev/log-viewer",
@@ -1600,43 +1600,40 @@
         },
         {
             "name": "laravel/cashier",
-            "version": "v6.0.0",
+            "version": "v5.0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/cashier.git",
-                "reference": "9321db559c66179e84e5b75ae4b4d5ebcb61f59f"
+                "reference": "1aa5aaadb293e2c97517bc4dcd322d6a76339292"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/cashier/zipball/9321db559c66179e84e5b75ae4b4d5ebcb61f59f",
-                "reference": "9321db559c66179e84e5b75ae4b4d5ebcb61f59f",
+                "url": "https://api.github.com/repos/laravel/cashier/zipball/1aa5aaadb293e2c97517bc4dcd322d6a76339292",
+                "reference": "1aa5aaadb293e2c97517bc4dcd322d6a76339292",
                 "shasum": ""
             },
             "require": {
-                "illuminate/database": "~5.1",
-                "illuminate/support": "~5.1",
+                "illuminate/filesystem": "~5.0",
+                "illuminate/support": "~5.0",
                 "nesbot/carbon": "~1.0",
-                "php": ">=5.5.9",
+                "php": ">=5.4.0",
                 "stripe/stripe-php": "~3.0",
-                "symfony/http-kernel": "2.7.*|2.8.*|3.0.*"
+                "symfony/http-kernel": "~2.3"
             },
             "require-dev": {
-                "dompdf/dompdf": "^0.6.1",
-                "illuminate/http": "~5.1",
-                "illuminate/routing": "~5.1",
-                "illuminate/view": "~5.1",
+                "illuminate/routing": "~5.0",
+                "illuminate/view": "~5.0",
                 "mockery/mockery": "~0.9",
-                "phpunit/phpunit": "~4.0",
-                "vlucas/phpdotenv": "~2.0"
+                "phpunit/phpunit": "~4.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "6.0-dev"
+                    "dev-master": "4.0-dev"
                 }
             },
             "autoload": {
-                "psr-4": {
+                "psr-0": {
                     "Laravel\\Cashier\\": "src/"
                 }
             },
@@ -1656,7 +1653,7 @@
                 "laravel",
                 "stripe"
             ],
-            "time": "2015-11-28 22:50:38"
+            "time": "2015-11-21 19:36:09"
         },
         {
             "name": "laravel/framework",

@@ -31,7 +31,7 @@
             <div class="pricing-table row-fluid text-center">
 
                 @foreach( config('subscription.employer_plans') as $key => $plan )
-                    <div class="span3">
+                    <div class="span4">
                         <div class="plan">
                             <div class="plan-name">
                                 <h2>{{ $plan['name'] }}</h2>
@@ -48,11 +48,15 @@
                                 @endforeach
                             </div>
                             <div class="plan-action">
-                                <a
-                                    href="{!!route('admin.employer.settings.choose-plan', $key)!!}"
-                                    class="btn btn-primary dropdown-toggle">
-                                    Choose Plan
-                                </a>
+                                @if( auth()->user()->onPlan($plan['id']) )
+                                    <a href="#" class="btn btn-success dropdown-toggle">Current Plan</a>
+                                @else
+                                    <a
+                                            href="{!!route('admin.employer.settings.choose-plan', $key)!!}"
+                                            class="btn btn-primary dropdown-toggle">
+                                        Choose Plan
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </div>

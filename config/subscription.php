@@ -7,27 +7,6 @@ return array(
      */
     'employer_plans' => [
 
-        'no_plan' => [
-            'id' => 'snappeejobs0',
-            'name' => 'Blank',
-            'description' => 'This is the default plan when you get signed up',
-            'price' => 0,
-            'addons' => [
-                'job_postings' => [
-                    'count' => 0,
-                    'label' => 'Job Postings'
-                ],
-                'staff_members' => [
-                    'count' => 0,
-                    'label' => 'Staff Members'
-                ],
-                'chats_accepted' => [
-                    'count' => 0,
-                    'label' => 'Chats Accepted'
-                ],
-            ]
-        ],
-
         'plan_1' => [
             'id' => 'snappeejobs1',
             'name' => 'Startup',

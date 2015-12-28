@@ -45,7 +45,7 @@
 
                 @roles(['Employer', 'Employer Staff'])
                   @permission('company-profile-view')
-                    <li class="{{ Active::pattern('admin/employer/profile-view') }}"><a href="{!!url('admin/employer/profile-view')!!}"><span>Company Profile</span></a></li>
+                    <li class="{{ Active::pattern('admin/employer/profile-view') }}"><a href="{!! route('admin.employer.company.showprofile') !!}"><span>Company Profile</span></a></li>
                   @endauth
                 @endauth
 

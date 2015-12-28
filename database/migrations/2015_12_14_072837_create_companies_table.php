@@ -14,6 +14,7 @@ class CreateCompaniesTable extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->increments('id')->unsigned();
+            $table->integer('employer_id')->unsigned();
             $table->string('title');
             $table->string('url_slug');
             $table->enum('size', ['small', 'medium', 'big']);
@@ -27,6 +28,11 @@ class CreateCompaniesTable extends Migration
             $table->integer('likes')->unsigned();
             $table->timestamps();
 
+            $table->foreign('employer_id')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->foreign('country_id')
                 ->references('id')
                 ->on('countries')
@@ -48,6 +54,7 @@ class CreateCompaniesTable extends Migration
     public function down()
     {
         Schema::table('companies', function (Blueprint $table) {
+            $table->dropForeign('companies_employer_id_foreign');
             $table->dropForeign('companies_country_id_foreign');
             $table->dropForeign('companies_state_id_foreign');
         });

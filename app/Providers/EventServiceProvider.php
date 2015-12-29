@@ -27,6 +27,9 @@ class EventServiceProvider extends ServiceProvider {
 		'App\Events\Backend\Account\UserCreated' => [
 			'App\Listeners\Backend\Account\UserCreatedHandler',
 		],
+		'App\Events\Backend\Company\CompanyCreated' => [
+			'App\Listeners\Backend\Company\CompanyCreated',
+		],
 	];
 
 	/**

@@ -19,7 +19,7 @@ class PermissionRoleSeeder extends Seeder
     }
 
     public function insertEmployeeStaffRolePermission(){
-        $permissions = ['view-backend', 'view-access-management', 'employer-users-view', 'employer-jobs-view',
+        $permissions = ['view-backend', 'view-access-management', 'employer-jobs-view',
             'mail-send-private-message', 'mail-view-private-messages', 'mail-send-group-messages'
         ];
 

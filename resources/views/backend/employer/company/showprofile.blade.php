@@ -21,51 +21,79 @@
 
     <div class="tab-content">
 
+        @if ($company)
         <div role="tabpanel" class="tab-pane active" id="profile">
             <table class="table table-striped table-hover table-bordered dashboard-table">
                 <tr>
-                    <th>{{ trans('validation.attributes.name') }}</th>
-                    <td>{!! $user->name !!}</td>
+                    <th>Title</th>
+                    <td>{{ $company->title }}</td>
                 </tr>
                 <tr>
-                    <th>{{ trans('validation.attributes.email') }}</th>
-                    <td>{!! $user->email !!}</td>
+                    <th>Size</th>
+                    <td>{{ $company->size }}</td>
                 </tr>
                 <tr>
-                    <th>{{ trans('validation.attributes.profile_image') }}</th>
-                    <td>
-                        <img style="height: 20px; width: 20px;" src="{!! $user->getAvatarImage(25) !!}" alt="{{ $user->name }}">
-                    </td>
+                    <th>Description</th>
+                    <td>{{ $company->description }}</td>
                 </tr>
                 <tr>
-                    <th>{{ trans('validation.attributes.about_me') }}</th>
-                    <td>{!! $user->about_me !!}</td>
+                    <th>What it does</th>
+                    <td>{{ $company->what_it_does }}</td>
                 </tr>
                 <tr>
-                    <th>{{ trans('validation.attributes.country') }}</th>
-                    <td>{!! $user->country_name !!}</td>
+                    <th>Office Life</th>
+                    <td>{{ $company->office_life }}</td>
                 </tr>
                 <tr>
-                    <th>{{ trans('validation.attributes.state') }}</th>
-                    <td>{!! $user->state_name !!}</td>
+                    <th>Country</th>
+                    <td>{{ $company->country }}</td>
+                </tr>
+                <tr>
+                    <th>State</th>
+                    <td>{{ $company->state }}</td>
+                </tr>
+                <tr>
+                    <th>Default Photo</th>
+                    <td>{{ $company->default_photo }}</td>
+                </tr>
+                <tr>
+                    <th>Logo</th>
+                    <td>{{ $company->logo_image }}</td>
+                </tr>
+                <tr>
+                    <th>Likes</th>
+                    <td>{{ $company->likes }}</td>
                 </tr>
                 <tr>
                     <th>{{ trans('validation.attributes.created_at') }}</th>
-                    <td>{!! $user->created_at !!} ({!! $user->created_at->diffForHumans() !!})</td>
+                    <td>{{ $company->created_at }} ({{ $company->created_at->diffForHumans() }})</td>
                 </tr>
                 <tr>
                     <th>{{ trans('validation.attributes.last_updated') }}</th>
-                    <td>{!! $user->updated_at !!} ({!! $user->updated_at->diffForHumans() !!})</td>
+                    <td>{{ $company->updated_at }} ({{ $company->updated_at->diffForHumans() }})</td>
                 </tr>
                 <tr>
                     <th>{{ trans('validation.attributes.actions') }}</th>
                     <td>
-                        <a href="{!!route('frontend.profile.edit')!!}" class="btn btn-primary btn-xs">{{ trans('labels.edit_information') }}</a>
-                        <a href="{!!url('auth/password/change')!!}" class="btn btn-warning btn-xs">{{ trans('navs.change_password') }}</a>
+                        <a
+                            href="{{  route('admin.employer.company.editprofile') }}"
+                            class="btn btn-primary btn-xs"
+                        >
+                            {{ trans('labels.edit_information') }}
+                        </a>
                     </td>
                 </tr>
             </table>
-        </div><!--tab panel profile-->
+        </div>
+        @else
+            There is no company information associated with this account, please fill in.
+            <a
+                    href="{{  route('admin.employer.company.editprofile') }}"
+                    class="btn btn-primary btn-xs"
+            >
+                Add Company Info
+            </a>
+        @endif
 
     </div>
 

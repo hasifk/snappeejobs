@@ -13,9 +13,9 @@ trait EmployerAccess
     public $employer = null;
 
     public function isEmployerSubscribed(){
+
         $employer_id = \DB::table('staff_employer')
             ->where('user_id', $this->id)
-            ->where('is_admin', true)
             ->orderBy('created_at')
             ->value('employer_id');
 

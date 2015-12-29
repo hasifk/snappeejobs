@@ -49,16 +49,20 @@
     <div class="form-group">
         <label for="description" class="col-lg-2 control-label">Industry</label>
         <div class="col-lg-10">
-            <select name="industries" id="industries" class="form-control" multiple>
+            @if (count($industries) > 0)
                 @foreach($industries as $industry)
-                    <option
-                            value="{{ $industry->id }}"
-                            {{ $company && $company->industry_id == $industry->id ? 'selected="selected"' : '' }}
-                    >
-                        {{ $industry->name }}
-                    </option>
+                    <input
+                            type="checkbox"
+                            value="{{$industry->id}}"
+                            name="industry_company[]"
+                            id="industry_company-{{$industry->id}}"
+                    />
+                    <label for="industry_company-{{$industry->id}}">
+                        {!! $industry->name !!}
+                    </label>
+                    <br/>
                 @endforeach
-            </select>
+            @endif
         </div>
     </div>
 
@@ -133,3 +137,20 @@
 
     <div class="clearfix"></div>
 @stop
+
+@section('after-scripts-end')
+    <script>
+        $(document).ready(function(){
+            $('#country_id').on('change', function(){
+                $.getJSON('/admin/get-states/'+$(this).val(), function(json){
+                    var listitems = '<option value="">Please select</option>';
+                    $.each(json,function(key, value)
+                    {
+                        listitems += '<option value=' + value.id + '>' + value.name + '</option>';
+                    });
+                    $('#state_id').html(listitems);
+                });
+            });
+        });
+    </script>
+@endsection

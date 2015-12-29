@@ -6,8 +6,11 @@ use App\Events\Backend\Company\CompanyCreated;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class CompanyCreated
+class CompanyCreatedHandler
 {
+    private $company;
+    private $employerId;
+
     /**
      * Create the event listener.
      *
@@ -26,6 +29,9 @@ class CompanyCreated
      */
     public function handle(CompanyCreated $event)
     {
-        //
+        $this->company = $event->company;
+        $this->employerId = $event->employerId;
+
+        \Log::info("Company created In: ".$this->company->title. " with employer id " . $this->employerId);
     }
 }

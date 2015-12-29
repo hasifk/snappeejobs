@@ -25,7 +25,7 @@ class CompanyProfileEditRequest extends Request
     {
         return [
             'title'         => 'required',
-            'size'          => 'required,in:small,medium,big',
+            'size'          => 'required|in:small,medium,big',
             'industries'    => 'required',
             'description'   => 'required',
             'what_it_does'  => 'required',

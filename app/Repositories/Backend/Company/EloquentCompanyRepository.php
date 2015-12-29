@@ -3,6 +3,7 @@
 namespace app\Repositories\Backend\Company;
 
 
+use App\Events\Backend\Company\CompanyCreated;
 use App\Exceptions\GeneralException;
 use App\Models\Company\Company;
 use App\Repositories\Backend\Role\RoleRepositoryContract;
@@ -24,6 +25,7 @@ class EloquentCompanyRepository
      * @var Guard
      */
     private $user;
+    private $employerId;
 
     /**
      * EloquentCompanyRepository constructor.
@@ -37,11 +39,12 @@ class EloquentCompanyRepository
         $this->role = $role;
         $this->auth = $auth;
         $this->user = $user;
+        $this->employerId = $this->user->user()->employer->id;
     }
 
     public function findOrThrowException($id) {
 
-        $company = Company::find($this->user->user()->employer->id);
+        $company = Company::find($this->employerId);
 
         return $company;
     }
@@ -50,7 +53,11 @@ class EloquentCompanyRepository
         $company = $this->createCompanyStub($request);
 
         if ($company->save()) {
-            Event::fire(new CompanyCreated($company, $this->user->user()->employer->id ));
+
+            $company->attachIndustries($request->get(''));
+
+            Event::fire(new CompanyCreated($company, $this->employerId ));
+            return $company;
         }
 
         throw new GeneralException('There was a problem creating this user. Please try again.');
@@ -58,6 +65,7 @@ class EloquentCompanyRepository
 
     public function createCompanyStub($input){
         $company = new Company();
+        $company->employer_id      = $this->employerId;
         $company->title            = $input['title'];
         $company->size             = $input['size'];
         $company->description      = $input['description'];

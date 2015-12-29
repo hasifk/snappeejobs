@@ -3,6 +3,7 @@
 namespace App\Events\Backend\Company;
 
 use App\Events\Event;
+use App\Models\Company\Company;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
@@ -26,7 +27,6 @@ class CompanyCreated extends Event
      */
     public function __construct(Company $company, $employerId = 0)
     {
-        //
         $this->company = $company;
         $this->employerId = $employerId;
     }

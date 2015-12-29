@@ -51,8 +51,11 @@ class CompanyController extends Controller
 
     public function updateProfile(Requests\Backend\Employer\Company\CompanyProfileEditRequest $request){
 
-        $this->company->findOrThrowException(1);
+        $this->company->create($request);
 
+        return redirect()
+            ->route('admin.employer.company.showprofile')
+            ->withFlashSuccess('Successfully updated the company profile');
     }
 
 

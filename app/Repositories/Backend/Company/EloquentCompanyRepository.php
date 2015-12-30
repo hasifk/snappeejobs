@@ -42,29 +42,75 @@ class EloquentCompanyRepository
         $this->employerId = $this->user->user()->employer->id;
     }
 
-    public function findOrThrowException($id) {
+    public function findOrThrowException() {
 
-        $company = Company::find($this->employerId);
+        $company = Company::where('employer_id', $this->employerId)->first();
 
         return $company;
     }
 
-    public function create($request){
-        $company = $this->createCompanyStub($request);
+    public function save($request){
 
-        if ($company->save()) {
+        $company = $this->findOrThrowException();
 
-            $company->attachIndustries($request->get(''));
+        if ( $company ) {
 
-            Event::fire(new CompanyCreated($company, $this->employerId ));
-            return $company;
+            $this->updateCompanyStub($request, $company);
+
+            if ($company->save()) {
+
+                $this->flushIndustries($request->get('industry_company'), $company);
+
+                $this->flushSocialMedia($request->get('social_media'), $company);
+
+                Event::fire(new CompanyCreated($company, $this->employerId ));
+                return $company;
+
+            }
+
+        } else {
+
+            $company = $this->createCompanyStub($request);
+
+            if ($company->save()) {
+
+                $company->attachIndustries($request->get('industry_company'));
+
+                $company->attachSocialMedia($request->get('social_media'));
+
+                Event::fire(new CompanyCreated($company, $this->employerId ));
+                return $company;
+            }
+
         }
 
         throw new GeneralException('There was a problem creating this user. Please try again.');
     }
 
+    private function flushIndustries($industries, $company) {
+        $company->detachIndustries($company->industries);
+        $company->attachIndustries($industries);
+    }
+
+    private function flushSocialMedia($socialmedia, $company) {
+        $company->detachSocialMedia($company->socialmedia);
+        $company->attachSocialMedia($socialmedia);
+    }
+
     public function createCompanyStub($input){
         $company = new Company();
+        $company->employer_id      = $this->employerId;
+        $company->title            = $input['title'];
+        $company->size             = $input['size'];
+        $company->description      = $input['description'];
+        $company->what_it_does     = $input['what_it_does'];
+        $company->office_life      = $input['office_life'];
+        $company->country_id       = $input['country_id'];
+        $company->state_id         = $input['state_id'];
+        return $company;
+    }
+
+    public function updateCompanyStub($input, $company){
         $company->employer_id      = $this->employerId;
         $company->title            = $input['title'];
         $company->size             = $input['size'];

@@ -10,8 +10,12 @@
 @endsection
 
 @section ('breadcrumbs')
-    <li><a href="{!!route('backend.dashboard')!!}"><i class="fa fa-dashboard"></i> {{ trans('menus.dashboard') }}</a></li>
-    <li class="active">{!! link_to_route('admin.employer.company.showprofile', 'Company Profile' ) !!}</li>
+    <li>
+        <a href="{!!route('backend.dashboard')!!}"><i class="fa fa-dashboard"></i> {{ trans('menus.dashboard') }}</a>
+    </li>
+    <li class="active">
+        {!! link_to_route('admin.employer.company.showprofile', 'Company Profile' ) !!}
+    </li>
 @stop
 
 @section('content')
@@ -19,12 +23,20 @@
 
     <h3>Company Profile</h3>
 
-    {!! Form::open(['route' => 'admin.employer.company.updateprofile', 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'post']) !!}
+    {!! Form::open(
+    ['route' => 'admin.employer.company.updateprofile',
+    'class' => 'form-horizontal',
+    'role' => 'form',
+    'method' => 'post'
+    ]) !!}
 
     <div class="form-group">
         {!! Form::label('name', 'Title', ['class' => 'col-lg-2 control-label']) !!}
         <div class="col-lg-10">
-            {!! Form::text('title', null, ['class' => 'form-control', 'placeholder' => 'Title']) !!}
+            {!! Form::text('title',
+            old("title") ? old("title") : ( $company ? $company->title : '' ),
+            ['class' => 'form-control',
+            'placeholder' => 'Title']) !!}
         </div>
     </div>
 
@@ -32,16 +44,46 @@
         <label for="description" class="col-lg-2 control-label">Company Size</label>
         <div class="col-lg-3">
             <div class="checkbox">
-                <input type="radio" name="size" value="small" />
-                Small
+                <input
+                        type="radio"
+                        name="size"
+                        id="size_small"
+                        value="small" {{
+                            old('size') ?
+                            old('size') == 'small' ? 'checked="checked"' : ''
+                                :
+                            $company && $company->size == 'small' ? 'checked="checked"' : ''
+                        }}
+                />
+                <label for="size_small">Small</label>
             </div>
             <div class="checkbox">
-                <input type="radio" name="size" value="medium" />
-                Medium
+                <input
+                        type="radio"
+                        name="size"
+                        id="size_medium"
+                        value="medium" {{
+                            old('size') ?
+                            old('size') == 'medium' ? 'checked="checked"' : ''
+                                :
+                            $company && $company->size == 'medium' ? 'checked="checked"' : ''
+                        }}
+                />
+                <label for="size_medium">Medium</label>
             </div>
             <div class="checkbox">
-                <input type="radio" name="size" value="big" />
-                Big
+                <input
+                        type="radio"
+                        name="size"
+                        id="size_big"
+                        value="big" {{
+                            old('size') ?
+                            old('size') == 'big' ? 'checked="checked"' : ''
+                                :
+                            $company && $company->size == 'big' ? 'checked="checked"' : ''
+                        }}
+                />
+                <label for="size_big">Big</label>
             </div>
         </div>
     </div>
@@ -56,6 +98,10 @@
                             value="{{$industry->id}}"
                             name="industry_company[]"
                             id="industry_company-{{$industry->id}}"
+                            {{ old('industry_company')
+                                && in_array($industry->id, old('industry_company')) ? 'checked="checked"' : '' }}
+                            {{ !old('industry_company') && ( $company && $company->industries)
+                                && in_array($industry->id, array_pluck($company->industries->toArray(), 'id')) ? 'checked="checked"' : '' }}
                     />
                     <label for="industry_company-{{$industry->id}}">
                         {!! $industry->name !!}
@@ -67,23 +113,83 @@
     </div>
 
     <div class="form-group">
+        <label for="description" class="col-lg-2 control-label">Social Media Links</label>
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="social_media_twitter" class="col-lg-2">Twitter</label>
+                    <input
+                            name="social_media[]"
+                            type="text"
+                            class="col-lg-10"
+                            value="{{ ( $company && $company->socialmedia->count() > 0 ) && $company->socialmedia->first()->url ?
+                            $company->socialmedia->first()->url : '' }}"
+                    >
+                    <br><br>
+                    <label for="social_media_facebook" class="col-lg-2">Facebook</label>
+                    <input
+                            name="social_media[]"
+                            type="text"
+                            class="col-lg-10"
+                            value="{{ ( $company && $company->socialmedia->count() > 1 ) && $company->socialmedia()->skip(1)->take(1)->first()->url ?
+                            $company->socialmedia()->skip(1)->take(1)->first()->url : '' }}"
+                    >
+                    <br><br>
+                    <label for="social_media_instagram" class="col-lg-2">Instagram</label>
+                    <input
+                            name="social_media[]"
+                            type="text"
+                            class="col-lg-10"
+                            value="{{ ( $company && $company->socialmedia->count() > 2 ) && $company->socialmedia()->skip(2)->take(1)->first()->url ?
+                            $company->socialmedia()->skip(2)->take(1)->first()->url : '' }}"
+                    >
+                    <br><br>
+                    <label for="social_media_pinterest" class="col-lg-2">Pinterest</label>
+                    <input
+                            name="social_media[]"
+                            type="text"
+                            class="col-lg-10"
+                            value="{{ ( $company && $company->socialmedia->count() > 3 ) && $company->socialmedia()->skip(3)->take(1)->first()->url ?
+                            $company->socialmedia()->skip(3)->take(1)->first()->url : '' }}"
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
         <label for="description" class="col-lg-2 control-label">Description</label>
         <div class="col-lg-10">
-            <textarea name="description" cols="30" rows="10" class="form-control"></textarea>
+            <textarea
+                    name="description"
+                    cols="30"
+                    rows="10"
+                    class="form-control">{{ old('description') ?
+                    old('description') : ( $company && $company->description ? $company->description : '' ) }}</textarea>
         </div>
     </div>
 
     <div class="form-group">
         <label for="what_it_does" class="col-lg-2 control-label">What it does</label>
         <div class="col-lg-10">
-            <textarea name="what_it_does" cols="30" rows="10" class="form-control"></textarea>
+            <textarea
+                    name="what_it_does"
+                    cols="30"
+                    rows="10"
+                    class="form-control">{{ old('what_it_does') ?
+                    old('what_it_does') : ( $company && $company->what_it_does ? $company->what_it_does : '' ) }}</textarea>
         </div>
     </div>
 
     <div class="form-group">
         <label for="office_life" class="col-lg-2 control-label">Office Life</label>
         <div class="col-lg-10">
-            <textarea name="office_life" cols="30" rows="10" class="form-control"></textarea>
+            <textarea
+                    name="office_life"
+                    cols="30"
+                    rows="10"
+                    class="form-control">{{ old('office_life') ?
+                    old('office_life') : ( $company && $company->office_life ? $company->office_life : '' ) }}</textarea>
         </div>
     </div>
 
@@ -97,6 +203,7 @@
                             value="{{ $country->id }}"
                             {{ $company && $company->country_id == $country->id ? 'selected="selected"' : '' }}
                             {{ $company && !$company->country_id && $country->id == 222 ? 'selected="selected"' : '' }}
+                            {{ old('country_id') && $country->id == old('country_id') ? 'selected="selected"' : '' }}
                     >
                         {{ $country->name }}
                     </option>
@@ -114,6 +221,7 @@
                     <option
                             value="{{ $state->id }}"
                             {{ $company && $company->state_id == $state->id ? 'selected="selected"' : '' }}
+                            {{ old('state_id') && $state->id == old('state_id') ? 'selected="selected"' : '' }}
                     >
                         {{ $state->name }}
                     </option>
@@ -124,7 +232,11 @@
 
     <div class="well">
         <div class="pull-left">
-            <a href="{{route('admin.access.users.index')}}" class="btn btn-danger btn-xs">{{ trans('strings.cancel_button') }}</a>
+            <a
+                    href="{{route('admin.access.users.index')}}"
+                    class="btn btn-danger btn-xs">
+                {{ trans('strings.cancel_button') }}
+            </a>
         </div>
 
         <div class="pull-right">

@@ -33,6 +33,30 @@
                     <td>{{ $company->size }}</td>
                 </tr>
                 <tr>
+                    <th>Industry associated</th>
+                    <td>
+                        <table>
+                            @foreach($company->industries as $industry)
+                            <tr>
+                                <td>{{ $industry->name }}</td>
+                            </tr>
+                            @endforeach
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Social Media Profiles associated</th>
+                    <td>
+                        <table>
+                            @foreach($company->socialmedia as $social)
+                            <tr>
+                                <td><a target="_blank" href="{{ $social->url }}">{{ $social->url }}</a></td>
+                            </tr>
+                            @endforeach
+                        </table>
+                    </td>
+                </tr>
+                <tr>
                     <th>Description</th>
                     <td>{{ $company->description }}</td>
                 </tr>
@@ -46,11 +70,11 @@
                 </tr>
                 <tr>
                     <th>Country</th>
-                    <td>{{ $company->country }}</td>
+                    <td>{{ $company->country_name }}</td>
                 </tr>
                 <tr>
                     <th>State</th>
-                    <td>{{ $company->state }}</td>
+                    <td>{{ $company->state_name }}</td>
                 </tr>
                 <tr>
                     <th>Default Photo</th>

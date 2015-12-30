@@ -14,4 +14,8 @@ trait CompanyRelationship
     public function socialmedia(){
         return $this->hasMany('App\Models\Company\SocialMediaCompany\SocialMediaCompany', 'company_id');
     }
+
+    public function videos(){
+        return $this->hasMany('App\Models\Company\Video\Video', 'company_id');
+    }
 }

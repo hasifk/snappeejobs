@@ -4,6 +4,7 @@ namespace App\Models\Company\Traits;
 
 
 use App\Models\Company\SocialMediaCompany\SocialMediaCompany;
+use App\Models\Company\Video\Video;
 
 trait CompanyProperties
 {
@@ -28,8 +29,20 @@ trait CompanyProperties
         }
     }
 
+    public function attachVideos($videos){
+        foreach ($videos as $video) {
+            if ( ! empty($video) ) {
+                $this->attachVideo($video);
+            }
+        }
+    }
+
     public function detachSocialMedia($social_media){
         \DB::table('socialmediainfo_company')->where('company_id', $this->id)->delete();
+    }
+
+    public function detachVideos($videos){
+        \DB::table('videos_company')->where('company_id', $this->id)->delete();
     }
 
     public function attachIndustry($industry)
@@ -63,5 +76,11 @@ trait CompanyProperties
         $item = ['url' => $item];
         $this->socialmedia()->detach($item);
     }
+
+    public function attachVideo($video){
+        $video = new Video(['url' => $video]);
+        $this->videos()->save($video);
+    }
+
 
 }

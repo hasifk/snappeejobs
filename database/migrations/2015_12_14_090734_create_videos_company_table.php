@@ -15,9 +15,7 @@ class CreateVideosCompanyTable extends Migration
         Schema::create('videos_company', function (Blueprint $table) {
             $table->increments('id')->unsigned();
             $table->integer('company_id')->unsigned();
-            $table->string('path');
-            $table->string('filename');
-            $table->string('extension');
+            $table->string('url');
             $table->timestamps();
 
             $table->foreign('company_id')

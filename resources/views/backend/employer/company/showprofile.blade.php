@@ -57,6 +57,18 @@
                     </td>
                 </tr>
                 <tr>
+                    <th>Video URLs associated</th>
+                    <td>
+                        <table>
+                            @foreach($company->videos as $video)
+                            <tr>
+                                <td><a target="_blank" href="{{ $video->url }}">{{ $video->url }}</a></td>
+                            </tr>
+                            @endforeach
+                        </table>
+                    </td>
+                </tr>
+                <tr>
                     <th>Description</th>
                     <td>{{ $company->description }}</td>
                 </tr>

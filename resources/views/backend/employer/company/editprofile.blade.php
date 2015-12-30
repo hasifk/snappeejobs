@@ -158,6 +158,21 @@
     </div>
 
     <div class="form-group">
+        <label for="video_url_1" class="col-lg-2 control-label">Video URL(s)</label>
+        <div class="col-lg-10">
+            <input
+                    id="video_url_1"
+                    name="video_url[]"
+                    type="text"
+                    class="form-control"
+                    value="{{ ( $company && $company->videos->count() > 0 ) &&
+                            $company->videos->first()->url ?
+                            $company->videos->first()->url : '' }}"
+            >
+        </div>
+    </div>
+
+    <div class="form-group">
         <label for="description" class="col-lg-2 control-label">Description</label>
         <div class="col-lg-10">
             <textarea

@@ -63,6 +63,8 @@ class EloquentCompanyRepository
 
                 $this->flushSocialMedia($request->get('social_media'), $company);
 
+                $this->flushVideos($request->get('video_url'), $company);
+
                 Event::fire(new CompanyCreated($company, $this->employerId ));
                 return $company;
 
@@ -77,6 +79,8 @@ class EloquentCompanyRepository
                 $company->attachIndustries($request->get('industry_company'));
 
                 $company->attachSocialMedia($request->get('social_media'));
+
+                $company->attachVideos($request->get('video_url'));
 
                 Event::fire(new CompanyCreated($company, $this->employerId ));
                 return $company;
@@ -95,6 +99,11 @@ class EloquentCompanyRepository
     private function flushSocialMedia($socialmedia, $company) {
         $company->detachSocialMedia($company->socialmedia);
         $company->attachSocialMedia($socialmedia);
+    }
+
+    private function flushVideos($videos, $company) {
+        $company->detachVideos($company->videos);
+        $company->attachVideos($videos);
     }
 
     public function createCompanyStub($input){

@@ -65,7 +65,25 @@ class EloquentCompanyRepository
 
                 $this->flushVideos($request->get('video_url'), $company);
 
+                $this->flushPeople(
+                    $request->get('people_name'),
+                    $request->get('job_position'),
+                    $request->get('people_about'),
+                    $request->get('people_testimonial'),
+                    $request->get('avatar_image'),
+                    $request->get('people_id'),
+                    $request->get('people_delete'),
+                    [
+                        $request->file('people_avatar_0'),
+                        $request->file('people_avatar_1'),
+                        $request->file('people_avatar_2'),
+                        $request->file('people_avatar_3')
+                    ],
+                    $company
+                );
+
                 Event::fire(new CompanyCreated($company, $this->employerId ));
+
                 return $company;
 
             }
@@ -81,6 +99,22 @@ class EloquentCompanyRepository
                 $company->attachSocialMedia($request->get('social_media'));
 
                 $company->attachVideos($request->get('video_url'));
+
+                $company->attachPeople(
+                    $request->get('people_name'),
+                    $request->get('job_position'),
+                    $request->get('people_about'),
+                    $request->get('people_testimonial'),
+                    $request->get('avatar_image'),
+                    $request->get('people_id'),
+                    $request->get('people_delete'),
+                    [
+                        $request->file('people_avatar_0'),
+                        $request->file('people_avatar_1'),
+                        $request->file('people_avatar_2'),
+                        $request->file('people_avatar_3')
+                    ]
+                );
 
                 Event::fire(new CompanyCreated($company, $this->employerId ));
                 return $company;
@@ -104,6 +138,13 @@ class EloquentCompanyRepository
     private function flushVideos($videos, $company) {
         $company->detachVideos($company->videos);
         $company->attachVideos($videos);
+    }
+
+    private function flushPeople(
+        $people_names, $job_positions, $people_about, $people_testimonial, $avatar_image, $people_id, $people_delete, $people_avatars, $company
+    ) {
+        $company->detachPeople($company->people);
+        $company->attachPeople($people_names, $job_positions, $people_about, $people_testimonial, $avatar_image, $people_id, $people_delete, $people_avatars);
     }
 
     public function createCompanyStub($input){

@@ -69,6 +69,19 @@
                     </td>
                 </tr>
                 <tr>
+                    <th>People</th>
+                    <td>
+                        @foreach($company->people as $people)
+                        <table>
+                            <tr>
+                                <td>Name</td>
+                                <td>{{ $people->name }}</td>
+                            </tr>
+                        </table>
+                        @endforeach
+                    </td>
+                </tr>
+                <tr>
                     <th>Description</th>
                     <td>{{ $company->description }}</td>
                 </tr>

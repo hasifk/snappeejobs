@@ -27,7 +27,8 @@
     ['route' => 'admin.employer.company.updateprofile',
     'class' => 'form-horizontal',
     'role' => 'form',
-    'method' => 'post'
+    'method' => 'post',
+    'files' => true
     ]) !!}
 
     <div class="form-group">
@@ -111,7 +112,7 @@
             @endif
         </div>
     </div>
-
+    <?php $social_media_old = old('social_media') ?>
     <div class="form-group">
         <label for="description" class="col-lg-2 control-label">Social Media Links</label>
         <div class="col-md-10">
@@ -122,8 +123,8 @@
                             name="social_media[]"
                             type="text"
                             class="col-lg-10"
-                            value="{{ ( $company && $company->socialmedia->count() > 0 ) && $company->socialmedia->first()->url ?
-                            $company->socialmedia->first()->url : '' }}"
+                            value="{{ $social_media_old[0] ? $social_media_old[0] : ( ( $company && $company->socialmedia->count() > 0 ) && $company->socialmedia->first()->url ?
+                            $company->socialmedia->first()->url : '' ) }}"
                     >
                     <br><br>
                     <label for="social_media_facebook" class="col-lg-2">Facebook</label>
@@ -131,8 +132,8 @@
                             name="social_media[]"
                             type="text"
                             class="col-lg-10"
-                            value="{{ ( $company && $company->socialmedia->count() > 1 ) && $company->socialmedia()->skip(1)->take(1)->first()->url ?
-                            $company->socialmedia()->skip(1)->take(1)->first()->url : '' }}"
+                            value="{{ $social_media_old[1] ? $social_media_old[1] : ( ( $company && $company->socialmedia->count() > 1 ) && $company->socialmedia()->skip(1)->take(1)->first()->url ?
+                            $company->socialmedia()->skip(1)->take(1)->first()->url : '' ) }}"
                     >
                     <br><br>
                     <label for="social_media_instagram" class="col-lg-2">Instagram</label>
@@ -140,8 +141,8 @@
                             name="social_media[]"
                             type="text"
                             class="col-lg-10"
-                            value="{{ ( $company && $company->socialmedia->count() > 2 ) && $company->socialmedia()->skip(2)->take(1)->first()->url ?
-                            $company->socialmedia()->skip(2)->take(1)->first()->url : '' }}"
+                            value="{{ $social_media_old[2] ? $social_media_old[2] : ( ( $company && $company->socialmedia->count() > 2 ) && $company->socialmedia()->skip(2)->take(1)->first()->url ?
+                            $company->socialmedia()->skip(2)->take(1)->first()->url : '' ) }}"
                     >
                     <br><br>
                     <label for="social_media_pinterest" class="col-lg-2">Pinterest</label>
@@ -149,14 +150,15 @@
                             name="social_media[]"
                             type="text"
                             class="col-lg-10"
-                            value="{{ ( $company && $company->socialmedia->count() > 3 ) && $company->socialmedia()->skip(3)->take(1)->first()->url ?
-                            $company->socialmedia()->skip(3)->take(1)->first()->url : '' }}"
+                            value="{{ $social_media_old[3] ? $social_media_old[3] : ( ( $company && $company->socialmedia->count() > 3 ) && $company->socialmedia()->skip(3)->take(1)->first()->url ?
+                            $company->socialmedia()->skip(3)->take(1)->first()->url : '' ) }}"
                     >
                 </div>
             </div>
         </div>
     </div>
 
+    <?php $video_url = old('video_url') ?>
     <div class="form-group">
         <label for="video_url_1" class="col-lg-2 control-label">Video URL(s)</label>
         <div class="col-lg-10">
@@ -165,10 +167,472 @@
                     name="video_url[]"
                     type="text"
                     class="form-control"
-                    value="{{ ( $company && $company->videos->count() > 0 ) &&
+                    value="{{ $video_url[0] ? $video_url[0] : ( ( $company && $company->videos->count() > 0 ) &&
                             $company->videos->first()->url ?
-                            $company->videos->first()->url : '' }}"
+                            $company->videos->first()->url : '' ) }}"
             >
+        </div>
+    </div>
+
+    <?php $people_name          = old('people_name') ?>
+    <?php $job_position         = old('job_position') ?>
+    <?php $people_about         = old('people_about') ?>
+    <?php $people_testimonial   = old('people_testimonial') ?>
+
+    <div class="form-group">
+        <label for="description" class="col-lg-2 control-label">People</label>
+        <div class="col-md-10">
+            <div class="row">
+                @if(( $company && $company->people->count() > 0 ))
+                <div class="col-md-12">
+                    <label for="people_delete_1" class="col-lg-2">
+                        Delete this person
+                    </label>
+                    <div class="col-md-10">
+                        <input type="checkbox" value="{{ $company->people->first()->id }}" name="people_delete[]" id="people_delete_1" >
+                    </div>
+                </div>
+                @endif
+                <div class="col-md-12">
+                    <label for="people_avatar_1" class="col-lg-2">
+                        Avatar
+                    </label>
+                    <div class="col-md-10">
+                        <input
+                                type="file"
+                                class="form-control"
+                                name="people_avatar_0"
+                                id="people_avatar_1"
+                                placeholder="People Photo"
+                        >
+                        <input type="hidden" name="people_id[]" value="{{
+                        ( $company && $company->people->count() > 0 ) ? $company->people->first()->id : ''
+                        }}">
+                        <input type="hidden" name="avatar_image[]" value="{{
+                        ( $company && $company->people->count() > 0 ) ? $company->people->first()->id : ''
+                        }}">
+                    </div>
+                </div>
+                @if (( $company && $company->people->count() > 0 ) &&
+                            ( $company->people->first()->path &&
+                            $company->people->first()->filename &&
+                            $company->people->first()->extension
+                            ))
+                <div class="col-md-12">
+                    <label for="people_avatar_1" class="col-lg-2">
+                        Thumbnail
+                    </label>
+                    <div class="col-md-10">
+                        {!! '<img style="height: 25px; width: 25px;" src="'. $company->people->first()->image .'" alt="'.$company->people->first()->filename.'">' !!}
+                    </div>
+                </div>
+                @endif
+                <div class="col-md-12">
+                    <label for="people_name_1" class="col-lg-2">
+                        Name
+                    </label>
+                    <div class="col-md-10">
+                        <input
+                                type="text"
+                                class="form-control"
+                                name="people_name[]"
+                                id="people_name_1"
+                                placeholder="Name"
+                                value="{{ $people_name[0] ? $people_name[0] : ( ( $company && $company->people->count() > 0 ) &&
+                            $company->people->first()->name ?
+                            $company->people->first()->name : '' ) }}"
+                        >
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label for="job_position_1" class="col-lg-2">
+                        Job Position
+                    </label>
+                    <div class="col-md-10">
+                        <input
+                                type="text"
+                                class="form-control"
+                                name="job_position[]"
+                                id="job_position_1"
+                                placeholder="Job Position"
+                                value="{{ $job_position[0] ? $job_position[0] : ( ( $company && $company->people->count() > 0 ) &&
+                            $company->people->first()->designation ?
+                            $company->people->first()->designation : '' ) }}"
+                        >
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label for="people_about_1" class="col-lg-2">
+                        About
+                    </label>
+                    <div class="col-md-10">
+                        <textarea class="form-control"
+                                  name="people_about[]"
+                                  id="people_about_1"
+                                  placeholder="About"
+                                  cols="30"
+                                  rows="10"
+                        >{{ $people_about[0] ? $people_about[0] : ( ( $company && $company->people->count() > 0 ) &&
+                            $company->people->first()->about_me ?
+                            $company->people->first()->about_me : '' ) }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label for="people_testimonial_1" class="col-lg-2">
+                        Testimonial
+                    </label>
+                    <div class="col-md-10">
+                        <textarea class="form-control"
+                                  name="people_testimonial[]"
+                                  id="people_testimonial_1"
+                                  placeholder="Testimonial"
+                                  cols="30"
+                                  rows="10"
+                        >{{ $people_testimonial[0] ? $people_testimonial[0] : ( ( $company && $company->people->count() > 0 ) &&
+                            $company->people->first()->testimonial ?
+                            $company->people->first()->testimonial : '' ) }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">&nbsp;</div>
+                @if(( $company && $company->people->count() > 1 ))
+                    <div class="col-md-12">
+                        <label for="people_delete_2" class="col-lg-2">
+                            Delete this person
+                        </label>
+                        <div class="col-md-10">
+                            <input type="checkbox" value="{{ $company->people()->skip(1)->take(1)->first()->id }}" name="people_delete[]" id="people_delete_2" >
+                        </div>
+                    </div>
+                @endif
+                <div class="col-md-12">
+                    <label for="people_avatar_2" class="col-lg-2">
+                        Avatar
+                    </label>
+                    <div class="col-md-10">
+                        <input
+                                type="file"
+                                class="form-control"
+                                name="people_avatar_1"
+                                id="people_avatar_2"
+                                placeholder="People Photo"
+                        >
+                        <input type="hidden" name="people_id[]" value="{{
+                        ( $company && $company->people->count() > 1 ) ? $company->people()->skip(1)->take(1)->first()->id : ''
+                        }}">
+                        <input type="hidden" name="avatar_image[]" value="{{
+                        ( $company && $company->people->count() > 1 ) ? $company->people()->skip(1)->take(1)->first()->id : ''
+                        }}">
+                    </div>
+                </div>
+                @if (( $company && $company->people->count() > 1 ) &&
+                        ( $company->people()->skip(1)->take(1)->first()->path &&
+                                $company->people()->skip(1)->take(1)->first()->filename &&
+                                $company->people()->skip(1)->take(1)->first()->extension
+                        ))
+                <div class="col-md-12">
+                    <label for="people_avatar_1" class="col-lg-2">
+                        Thumbnail
+                    </label>
+                    <div class="col-md-10">
+                        {!! '<img style="height: 25px; width: 25px;" src="'.
+                                $company->people()->skip(1)->take(1)->first()->image
+                                .'" alt="'.$company->people()->skip(1)->take(1)->first()->filename.'">' !!}
+                    </div>
+                </div>
+                @endif
+                <div class="col-md-12">
+                    <label for="people_name_2" class="col-lg-2">
+                        Name
+                    </label>
+                    <div class="col-md-10">
+                        <input
+                                type="text"
+                                class="form-control"
+                                name="people_name[]"
+                                id="people_name_2"
+                                placeholder="Name"
+                                value="{{ $people_name[1] ? $people_name[1] : ( ( $company && $company->people->count() > 1 ) &&
+                            $company->people()->skip(1)->take(1)->first()->name ?
+                            $company->people()->skip(1)->take(1)->first()->name : '' ) }}"
+                        >
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label for="job_position_2" class="col-lg-2">
+                        Job Position
+                    </label>
+                    <div class="col-md-10">
+                        <input
+                                type="text"
+                                class="form-control"
+                                name="job_position[]"
+                                id="job_position_2"
+                                placeholder="Job Position"
+                                value="{{ $job_position[1] ? $job_position[1] : ( ( $company && $company->people->count() > 1 ) &&
+                            $company->people()->skip(1)->take(1)->first()->designation ?
+                            $company->people()->skip(1)->take(1)->first()->designation : '' ) }}"
+                        >
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label for="people_about_2" class="col-lg-2">
+                        About
+                    </label>
+                    <div class="col-md-10">
+                        <textarea class="form-control"
+                                  name="people_about[]"
+                                  id="people_about_2"
+                                  placeholder="About"
+                                  cols="30"
+                                  rows="10"
+                        >{{ $people_about[1] ? $people_about[1] : ( ( $company && $company->people->count() > 1 ) &&
+                            $company->people()->skip(1)->take(1)->first()->about_me ?
+                            $company->people()->skip(1)->take(1)->first()->about_me : '' ) }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label for="people_testimonial_2" class="col-lg-2">
+                        Testimonial
+                    </label>
+                    <div class="col-md-10">
+                        <textarea class="form-control"
+                                  name="people_testimonial[]"
+                                  id="people_testimonial_2"
+                                  placeholder="Testimonial"
+                                  cols="30"
+                                  rows="10"
+                        >{{ $people_testimonial[1] ? $people_testimonial[1] : ( ( $company && $company->people->count() > 1 ) &&
+                            $company->people()->skip(1)->take(1)->first()->testimonial ?
+                            $company->people()->skip(1)->take(1)->first()->testimonial : '' ) }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">&nbsp;</div>
+                @if(( $company && $company->people->count() > 2 ))
+                    <div class="col-md-12">
+                        <label for="people_delete_3" class="col-lg-2">
+                            Delete this person
+                        </label>
+                        <div class="col-md-10">
+                            <input type="checkbox" value="{{ $company->people()->skip(2)->take(1)->first()->id }}" name="people_delete[]" id="people_delete_3" >
+                        </div>
+                    </div>
+                @endif
+                <div class="col-md-12">
+                    <label for="people_avatar_3" class="col-lg-2">
+                        Avatar
+                    </label>
+                    <div class="col-md-10">
+                        <input
+                                type="file"
+                                class="form-control"
+                                name="people_avatar_2"
+                                id="people_avatar_3"
+                                placeholder="People Photo"
+                        >
+                        <input type="hidden" name="people_id[]" value="{{
+                        ( $company && $company->people->count() > 2 ) ? $company->people()->skip(2)->take(1)->first()->id : ''
+                        }}">
+                        <input type="hidden" name="avatar_image[]" value="{{
+                        ( $company && $company->people->count() > 2 ) ? $company->people()->skip(2)->take(1)->first()->id : ''
+                        }}">
+                    </div>
+                </div>
+                @if (( $company && $company->people->count() > 2 ) &&
+                        ( $company->people()->skip(2)->take(1)->first()->path &&
+                                $company->people()->skip(2)->take(1)->first()->filename &&
+                                $company->people()->skip(2)->take(1)->first()->extension
+                        ))
+                <div class="col-md-12">
+                    <label for="people_avatar_1" class="col-lg-2">
+                        Thumbnail
+                    </label>
+                    <div class="col-md-10">
+                        {!! '<img style="height: 25px; width: 25px;" src="'.
+                                $company->people()->skip(2)->take(1)->first()->image
+                                .'" alt="'.$company->people()->skip(2)->take(1)->first()->filename.'">' !!}
+                    </div>
+                </div>
+                @endif
+                <div class="col-md-12">
+                    <label for="people_name_3" class="col-lg-2">
+                        Name
+                    </label>
+                    <div class="col-md-10">
+                        <input
+                                type="text"
+                                class="form-control"
+                                name="people_name[]"
+                                id="people_name_3"
+                                placeholder="Name"
+                                value="{{ $people_name[2] ? $people_name[2] : ( ( $company && $company->people->count() > 2 ) &&
+                            $company->people()->skip(2)->take(1)->first()->name ?
+                            $company->people()->skip(2)->take(1)->first()->name : '' ) }}"
+                        >
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label for="job_position_3" class="col-lg-2">
+                        Job Position
+                    </label>
+                    <div class="col-md-10">
+                        <input
+                                type="text"
+                                class="form-control"
+                                name="job_position[]"
+                                id="job_position_3"
+                                placeholder="Job Position"
+                                value="{{ $job_position[2] ? $job_position[2] : ( ( $company && $company->people->count() > 2 ) &&
+                            $company->people()->skip(2)->take(1)->first()->designation ?
+                            $company->people()->skip(2)->take(1)->first()->designation : '' ) }}"
+                        >
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label for="people_about_3" class="col-lg-2">
+                        About
+                    </label>
+                    <div class="col-md-10">
+                        <textarea class="form-control"
+                                  name="people_about[]"
+                                  id="people_about_3"
+                                  placeholder="About"
+                                  cols="30"
+                                  rows="10"
+                        >{{ $people_about[2] ? $people_about[2] : ( ( $company && $company->people->count() > 2 ) &&
+                            $company->people()->skip(2)->take(1)->first()->about_me ?
+                            $company->people()->skip(2)->take(1)->first()->about_me : '' ) }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label for="people_testimonial_3" class="col-lg-2">
+                        Testimonial
+                    </label>
+                    <div class="col-md-10">
+                        <textarea class="form-control"
+                                  name="people_testimonial[]"
+                                  id="people_testimonial_3"
+                                  placeholder="Testimonial"
+                                  cols="30"
+                                  rows="10"
+                        >{{ $people_testimonial[2] ? $people_testimonial[2] : ( ( $company && $company->people->count() > 2 ) &&
+                            $company->people()->skip(2)->take(1)->first()->testimonial ?
+                            $company->people()->skip(2)->take(1)->first()->testimonial : '' ) }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">&nbsp;</div>
+                @if(( $company && $company->people->count() > 3 ))
+                    <div class="col-md-12">
+                        <label for="people_delete_4" class="col-lg-2">
+                            Delete this person
+                        </label>
+                        <div class="col-md-10">
+                            <input type="checkbox" value="{{ $company->people()->skip(3)->take(1)->first()->id }}" name="people_delete[]" id="people_delete_4" >
+                        </div>
+                    </div>
+                @endif
+                <div class="col-md-12">
+                    <label for="people_avatar_4" class="col-lg-2">
+                        Avatar
+                    </label>
+                    <div class="col-md-10">
+                        <input
+                                type="file"
+                                class="form-control"
+                                name="people_avatar_3"
+                                id="people_avatar_4"
+                                placeholder="People Photo"
+                        >
+                        <input type="hidden" name="people_id[]" value="{{
+                        ( $company && $company->people->count() > 3 ) ? $company->people()->skip(3)->take(1)->first()->id : ''
+                        }}">
+                        <input type="hidden" name="avatar_image[]" value="{{
+                        ( $company && $company->people->count() > 3 ) ? $company->people()->skip(3)->take(1)->first()->id : ''
+                        }}">
+                    </div>
+                </div>
+                @if (( $company && $company->people->count() > 3 ) &&
+                        ( $company->people()->skip(3)->take(1)->first()->path &&
+                                $company->people()->skip(3)->take(1)->first()->filename &&
+                                $company->people()->skip(3)->take(1)->first()->extension
+                        ))
+                <div class="col-md-12">
+                    <label for="people_avatar_1" class="col-lg-2">
+                        Thumbnail
+                    </label>
+                    <div class="col-md-10">
+                        {!! '<img style="height: 25px; width: 25px;" src="'.
+                                $company->people()->skip(3)->take(1)->first()->image
+                                .'" alt="'.$company->people()->skip(3)->take(1)->first()->filename.'">' !!}
+                    </div>
+                </div>
+                @endif
+                <div class="col-md-12">
+                    <label for="people_name_4" class="col-lg-2">
+                        Name
+                    </label>
+                    <div class="col-md-10">
+                        <input
+                                type="text"
+                                class="form-control"
+                                name="people_name[]"
+                                id="people_name_4"
+                                placeholder="Name"
+                                value="{{ $people_name[3] ? $people_name[3] : ( ( $company && $company->people->count() > 3 ) &&
+                            $company->people()->skip(3)->take(1)->first()->name ?
+                            $company->people()->skip(3)->take(1)->first()->name : '' ) }}"
+                        >
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label for="job_position_4" class="col-lg-2">
+                        Job Position
+                    </label>
+                    <div class="col-md-10">
+                        <input
+                                type="text"
+                                class="form-control"
+                                name="job_position[]"
+                                id="job_position_4"
+                                placeholder="Job Position"
+                                value="{{ $job_position[3] ? $job_position[3] : ( ( $company && $company->people->count() > 3 ) &&
+                            $company->people()->skip(3)->take(1)->first()->designation ?
+                            $company->people()->skip(3)->take(1)->first()->designation : '' ) }}"
+                        >
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label for="people_about_4" class="col-lg-2">
+                        About
+                    </label>
+                    <div class="col-md-10">
+                        <textarea class="form-control"
+                                  name="people_about[]"
+                                  id="people_about_4"
+                                  placeholder="About"
+                                  cols="30"
+                                  rows="10"
+                        >{{ $people_about[3] ? $people_about[3] : ( ( $company && $company->people->count() > 3 ) &&
+                            $company->people()->skip(3)->take(1)->first()->about_me ?
+                            $company->people()->skip(3)->take(1)->first()->about_me : '' ) }}</textarea>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <label for="people_testimonial_4" class="col-lg-2">
+                        Testimonial
+                    </label>
+                    <div class="col-md-10">
+                        <textarea class="form-control"
+                                  name="people_testimonial[]"
+                                  id="people_testimonial_4"
+                                  placeholder="Testimonial"
+                                  cols="30"
+                                  rows="10"
+                        >{{ $people_testimonial[3] ? $people_testimonial[3] : ( ( $company && $company->people->count() > 3 ) &&
+                            $company->people()->skip(3)->take(1)->first()->testimonial ?
+                            $company->people()->skip(3)->take(1)->first()->testimonial : '' ) }}</textarea>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

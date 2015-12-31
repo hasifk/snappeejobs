@@ -18,4 +18,8 @@ trait CompanyRelationship
     public function videos(){
         return $this->hasMany('App\Models\Company\Video\Video', 'company_id');
     }
+
+    public function people(){
+        return $this->hasMany('App\Models\Company\People\People', 'company_id');
+    }
 }

@@ -30,6 +30,9 @@ class EventServiceProvider extends ServiceProvider {
 		'App\Events\Backend\Company\CompanyCreated' => [
 			'App\Listeners\Backend\Company\CompanyCreatedHandler',
 		],
+		'App\Events\Backend\Job\JobCreated' => [
+			'App\Listeners\Backend\Job\JobCreatedHandler',
+		],
 	];
 
 	/**

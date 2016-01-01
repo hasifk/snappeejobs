@@ -15,11 +15,14 @@ class CreateJobsTable extends Migration
         Schema::create('jobs', function (Blueprint $table) {
             $table->increments('id')->unsigned();
             $table->integer('company_id')->unsigned();
+            $table->string('title');
+            $table->string('title_url_slug');
             $table->enum('level', ['internship', 'entry', 'mid', 'senior']);
             $table->integer('country_id')->unsigned();
             $table->integer('state_id')->unsigned();
             $table->integer('likes')->unsigned();
             $table->text('description');
+            $table->boolean('status');
             $table->timestamps();
 
             $table->foreign('company_id')

@@ -68,19 +68,47 @@
                         </table>
                     </td>
                 </tr>
-                <tr>
-                    <th>People</th>
-                    <td>
-                        @foreach($company->people as $people)
-                        <table>
-                            <tr>
-                                <td>Name</td>
-                                <td>{{ $people->name }}</td>
-                            </tr>
-                        </table>
+            </table>
+            <?php $poeple_count = $company->people->count(); ?>
+            @if ($poeple_count)
+            <div class="row">
+                <div class="col-md-2">People</div>
+                <div class="col-md-10">
+                    @foreach($company->people as $people)
+                        <div class="col-md-{{ 12/$poeple_count }}">
+                            <table class="table table-striped table-hover table-bordered dashboard-table">
+                                <tr>
+                                    <th>Name</th>
+                                    <td>{{ $people->name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Designation</th>
+                                    <td>{{ $people->designation }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Image</th>
+                                    <td><img style="width: 25px; height: 25px;" src="{{ $people->image}}" alt="{{ $people->name}}"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+            <?php $photo_count = $company->photos->count(); ?>
+            @if ($photo_count)
+                <div class="row">
+                    <div class="col-md-2">Photos</div>
+                    <div class="col-md-10">
+                        @foreach($company->photos as $photo)
+                            <div class="col-md-{{ 12/$photo_count }}">
+                                <img style="max-width: 250px; max-height: 250px;" src="{{ $photo->image}}" alt="{{ $photo->name}}">
+                            </div>
                         @endforeach
-                    </td>
-                </tr>
+                    </div>
+                </div>
+            @endif
+            <table class="table table-striped table-hover table-bordered dashboard-table">
                 <tr>
                     <th>Description</th>
                     <td>{{ $company->description }}</td>
@@ -103,11 +131,26 @@
                 </tr>
                 <tr>
                     <th>Default Photo</th>
-                    <td>{{ $company->default_photo }}</td>
+                    <td>
+                        @if($company->photos()->count())
+                        <img
+                                style="height: 25px; width: 25px;"
+                                src="{{ $company->photos()->first()->image }}"
+                                alt="{{ $company->photos()->first()->filename }}"
+                        >
+                        @endif
+                    </td>
                 </tr>
                 <tr>
                     <th>Logo</th>
-                    <td>{{ $company->logo_image }}</td>
+                    <td>
+                        <img
+                                style="height: 25px;
+                                width: 25px;"
+                                src="{{ $company->logo_image }}"
+                                alt="{{ $company->logo_image }}"
+                        >
+                    </td>
                 </tr>
                 <tr>
                     <th>Likes</th>

@@ -13,9 +13,10 @@ class IndustriesTableSeeder extends Seeder
     {
 
         $industries = [
-            "Business & Strategy","Creative & Design","Customer Service","Editorial","Education","Engineering",
-            "Finance & Data","Fundraising & Development","HR & Recruiting","Legal","Marketing & PR","Operations",
-            "Project & Product Management","Research & Medicine","Sales","Social Media & Community"
+            "Advertising and Agencies","Arts and Music","Client Services","Consumer","Education",
+            "Entertainment &amp; Gaming","Fashion and Beauty","Finance","Food","Government",
+            "Healthcare","Law","Media","Real Estate &amp; Construction","Social Good",
+            "Social Media","Tech","Telecom","Travel and Hospitality"
         ];
 
         foreach ($industries as $industry) {

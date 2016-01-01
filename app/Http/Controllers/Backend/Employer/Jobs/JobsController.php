@@ -54,9 +54,30 @@ class JobsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Requests\Backend\Employer\Job\CreateJobPageViewRequest $request)
     {
-        //
+        $job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
+        $countries = \DB::table('countries')->select(['id', 'name'])->get();
+
+        if ( $request->old('country_id') ) {
+            $states = \DB::table('states')
+                ->where('country_id', $request->old('country_id'))
+                ->select(['id', 'name'])
+                ->get();
+        } else {
+            $states = \DB::table('states')
+                ->where('country_id', 222)
+                ->select(['id', 'name'])
+                ->get();
+        }
+
+        $view = [
+            'countries'         => $countries,
+            'states'            => $states,
+            'job_categories'    => $job_categories
+        ];
+
+        return view('backend.employer.jobs.create', $view);
     }
 
     /**
@@ -65,9 +86,14 @@ class JobsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Requests\Backend\Employer\Job\CreateJobRequest $request)
     {
-        //
+
+        $this->jobs->create($request);
+
+        return redirect()
+            ->route('admin.employer.jobs.index')
+            ->withFlashSuccess('Successfully created the job');
     }
 
     /**

@@ -22,4 +22,8 @@ trait CompanyRelationship
     public function people(){
         return $this->hasMany('App\Models\Company\People\People', 'company_id');
     }
+
+    public function photos(){
+        return $this->hasMany('App\Models\Company\Photo\Photo', 'company_id');
+    }
 }

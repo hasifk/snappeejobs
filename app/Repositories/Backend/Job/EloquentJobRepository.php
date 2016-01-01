@@ -1,6 +1,6 @@
 <?php namespace App\Repositories\Backend\Job;
 
-use App\Events\Backend\Account\UserCreated;
+use App\Events\Backend\Job\JobCreated;
 use App\Models\Access\User\User;
 use App\Exceptions\GeneralException;
 use App\Models\Job\Job;
@@ -8,6 +8,7 @@ use App\Repositories\Backend\Role\RoleRepositoryContract;
 use App\Repositories\Frontend\Auth\AuthenticationContract;
 use App\Exceptions\Backend\Access\User\UserNeedsRolesException;
 use Event;
+use Illuminate\Auth\Guard;
 
 /**
  * Class EloquentUserRepository
@@ -24,15 +25,23 @@ class EloquentJobRepository {
 	 * @var AuthenticationContract
 	 */
 	protected $auth;
+    private $companyId;
+    /**
+     * @var Guard
+     */
+    private $user;
 
-	/**
-	 * @param RoleRepositoryContract $role
-	 * @param AuthenticationContract $auth
-	 */
-	public function __construct(RoleRepositoryContract $role, AuthenticationContract $auth) {
+    /**
+     * @param RoleRepositoryContract $role
+     * @param AuthenticationContract $auth
+     * @param Guard $user
+     */
+	public function __construct(RoleRepositoryContract $role, AuthenticationContract $auth, Guard $user) {
 		$this->role = $role;
 		$this->auth = $auth;
-	}
+        $this->user = $user;
+        $this->companyId = $this->user->user() ? $this->user->user()->employerCompany->id : null;
+    }
 
 	/**
 	 * @param $id
@@ -88,29 +97,21 @@ class EloquentJobRepository {
 	 * @throws GeneralException
 	 * @throws UserNeedsRolesException
 	 */
-	public function create($input, $roles, $permissions) {
-		$user = $this->createUserStub($input);
+	public function create($input) {
 
-		if ($user->save()) {
-			//User Created, Validate Roles
-			$this->validateRoleAmount($user, $roles['assignees_roles']);
+		$job = $this->createJobStub($input);
+
+		if ($job->save()) {
 
 			//Attach new roles
-			$user->attachRoles($roles['assignees_roles']);
+			//$job->attachCategories($input['categories']);
 
-			//Attach other permissions
-			$user->attachPermissions($permissions['permission_user']);
-
-            Event::fire(new UserCreated($user, auth()->user() ));
-
-			//Send confirmation email if requested
-			if (isset($input['confirmation_email']) && $user->confirmed == 0)
-				$this->auth->resendConfirmationEmail($user->id);
+            Event::fire(new JobCreated($job, auth()->user() ));
 
 			return true;
 		}
 
-		throw new GeneralException('There was a problem creating this user. Please try again.');
+		throw new GeneralException('There was a problem creating this job. Please try again.');
 	}
 
 	/**
@@ -304,15 +305,17 @@ class EloquentJobRepository {
 	 * @param $input
 	 * @return mixed
 	 */
-	private function createUserStub($input)
+	private function createJobStub($input)
 	{
-		$user = new User;
-		$user->name = $input['name'];
-		$user->email = $input['email'];
-		$user->password = $input['password'];
-		$user->status = isset($input['status']) ? 1 : 0;
-		$user->confirmation_code = md5(uniqid(mt_rand(), true));
-		$user->confirmed = isset($input['confirmed']) ? 1 : 0;
+		$user = new Job;
+		$user->company_id           = $this->companyId;
+		$user->title                = $input['title'];
+		$user->title_url_slug       = str_slug($input['title']);
+		$user->level                = $input['level'];
+		$user->country_id           = $input['country_id'];
+		$user->state_id             = $input['state_id'];
+		$user->likes                = 0;
+		$user->status               = false;
 		return $user;
 	}
 }

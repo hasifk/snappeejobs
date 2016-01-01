@@ -98,6 +98,58 @@ trait CompanyProperties
         }
     }
 
+    public function attachPhotos($photos, $photos_delete){
+
+        if ( $photos_delete ) {
+            foreach ($photos_delete as $photo) {
+                $photoModel = $this->photos()->where('id', $photo)->first();
+                \Storage::deleteDirectory("companies/" . $this->id."/photos/". $photoModel->id);
+                $photoModel->delete();
+            }
+        }
+
+        foreach ($photos as $key => $photo) {
+
+            if ( $photo && $photo->isValid() ) {
+
+                $avatar = $photos[$key];
+
+                $photo = new \App\Models\Company\Photo\Photo([
+                    'filename' => pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME),
+                    'extension' => $avatar->getClientOriginalExtension()
+                ]);
+
+                $photoModel = $this->photos()->save($photo);
+
+                $filePath = "companies/" . $this->id."/photos/". $photoModel->id ."/";
+
+                $photoModel->path = $filePath;
+                $photoModel->save();
+
+                \Storage::put($filePath. $avatar->getClientOriginalName() , file_get_contents($avatar));
+                \Storage::setVisibility($filePath. $avatar->getClientOriginalName(), 'public');
+
+            }
+
+        }
+
+    }
+
+    public function attachLogo($logoFile){
+
+        $this->logo = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME)
+            .'.'.
+            $logoFile->getClientOriginalExtension();
+
+        $this->save();
+
+        $filePath = "companies/" . $this->id."/logo/";
+
+        \Storage::put($filePath. $logoFile->getClientOriginalName() , file_get_contents($logoFile));
+        \Storage::setVisibility($filePath. $logoFile->getClientOriginalName(), 'public');
+
+    }
+
     public function detachPeople($people){
 
     }

@@ -11,6 +11,8 @@ trait EmployerAccess
 
     public $employerSubscribed = false;
     public $employer = null;
+    public $employerHasCompany = null;
+    public $employerCompany = null;
 
     public function isEmployerSubscribed(){
 
@@ -35,4 +37,29 @@ trait EmployerAccess
         $this->employer = \DB::table('employer_plan')->where('employer_id', $employer_id)->first();
         return true;
     }
+
+    public function employerHasCompany(){
+
+        $employer_id = \DB::table('staff_employer')
+            ->where('user_id', $this->id)
+            ->orderBy('created_at')
+            ->value('employer_id');
+
+        if (! $employer_id) {
+            return false;
+        }
+
+        $employer_company_exists = \DB::table('companies')
+            ->where('employer_id', $employer_id)
+            ->count();
+
+        if (! $employer_company_exists ) {
+            return false;
+        }
+
+        $this->employerHasCompany = true;
+        $this->employerCompany = \DB::table('companies')->where('employer_id', $employer_id)->first();
+        return true;
+    }
+
 }

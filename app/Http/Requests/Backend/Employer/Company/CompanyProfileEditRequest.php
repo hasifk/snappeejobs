@@ -120,6 +120,13 @@ class CompanyProfileEditRequest extends Request
             }
         }
 
+        $rules['photo_1']       = 'image|max:1024|mimes:jpeg,jpg,png';
+        $rules['photo_2']       = 'image|max:1024|mimes:jpeg,jpg,png';
+        $rules['photo_3']       = 'image|max:1024|mimes:jpeg,jpg,png';
+        $rules['photo_3']       = 'image|max:1024|mimes:jpeg,jpg,png';
+
+        $rules['logo']          = 'image|max:512|mimes:jpeg,jpg,png';
+
         return $rules;
     }
 

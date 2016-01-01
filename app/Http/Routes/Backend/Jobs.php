@@ -5,7 +5,8 @@ $router->group([
     'namespace' => 'Employer',
     'middleware' => [
                         'access.routeNeedsPermission:employer-jobs-view',
-                        'access.routeNeedsSubscription'
+                        'access.routeNeedsSubscription',
+                        'access.routeNeedsCompany'
                     ]
 ], function() use ($router)
 {

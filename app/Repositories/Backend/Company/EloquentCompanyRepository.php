@@ -39,7 +39,7 @@ class EloquentCompanyRepository
         $this->role = $role;
         $this->auth = $auth;
         $this->user = $user;
-        $this->employerId = $this->user->user()->employer->id;
+        $this->employerId = $this->user->user() ? $this->user->user()->employer->employer_id : null;
     }
 
     public function findOrThrowException() {
@@ -82,6 +82,15 @@ class EloquentCompanyRepository
                     $company
                 );
 
+                $company->attachPhotos([
+                    $request->file('photo_1'),
+                    $request->file('photo_2'),
+                    $request->file('photo_3'),
+                    $request->file('photo_4')
+                ], $request->get('photos_delete'));
+
+                $company->attachLogo($request->file('logo'));
+
                 Event::fire(new CompanyCreated($company, $this->employerId ));
 
                 return $company;
@@ -115,6 +124,15 @@ class EloquentCompanyRepository
                         $request->file('people_avatar_3')
                     ]
                 );
+
+                $company->attachPhotos([
+                    $request->file('photo_1'),
+                    $request->file('photo_2'),
+                    $request->file('photo_3'),
+                    $request->file('photo_4')
+                ], $request->get('photos_delete'));
+
+                $company->attachLogo($request->file('logo'));
 
                 Event::fire(new CompanyCreated($company, $this->employerId ));
                 return $company;

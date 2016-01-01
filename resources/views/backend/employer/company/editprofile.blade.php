@@ -637,6 +637,135 @@
     </div>
 
     <div class="form-group">
+        <label for="photo_1" class="col-lg-2 control-label">Photo 1</label>
+        <div class="col-lg-5">
+            <input
+                    type="file"
+                    class="form-control"
+                    name="photo_1"
+                    id="photo_1"
+                    placeholder="Company Photo 1"
+            >
+        </div>
+        @if(( $company && $company->photos->count() > 0 ))
+            <div class="col-lg-5">
+                {!! '<img style="height: 25px; width: 25px;" src="'.
+                                $company->photos()->first()->image
+                                .'" alt="'.$company->photos()->first()->filename.'">' !!}
+                <input
+                        type="checkbox"
+                        value="{{ $company->photos()->first()->id }}"
+                        name="photos_delete[]"
+                        id="photos_delete_1"
+                >
+                <label for="people_delete_1">
+                    Delete ?
+                </label>
+            </div>
+
+        @endif
+    </div>
+
+    <div class="form-group">
+        <label for="photo_2" class="col-lg-2 control-label">Photo 2</label>
+        <div class="col-lg-5">
+            <input
+                    type="file"
+                    class="form-control"
+                    name="photo_2"
+                    id="photo_2"
+                    placeholder="Company Photo 2"
+            >
+        </div>
+        @if(( $company && $company->photos->count() > 1 ))
+            <div class="col-lg-5">
+                {!! '<img style="height: 25px; width: 25px;" src="'.
+                                $company->photos()->skip(1)->take(1)->first()->image
+                                .'" alt="'.$company->photos()->skip(1)->take(1)->first()->filename.'">' !!}
+                <input
+                        type="checkbox"
+                        value="{{ $company->photos()->skip(1)->take(1)->first()->id }}"
+                        name="photos_delete[]"
+                        id="photos_delete_2"
+                >
+                <label for="people_delete_2">
+                    Delete ?
+                </label>
+            </div>
+        @endif
+    </div>
+
+    <div class="form-group">
+        <label for="photo_3" class="col-lg-2 control-label">Photo 3</label>
+        <div class="col-lg-5">
+            <input
+                    type="file"
+                    class="form-control"
+                    name="photo_3"
+                    id="photo_3"
+                    placeholder="Company Photo 3"
+            >
+        </div>
+        @if(( $company && $company->photos->count() > 2 ))
+            <div class="col-lg-5">
+                {!! '<img style="height: 25px; width: 25px;" src="'.
+                                $company->photos()->skip(2)->take(1)->first()->image
+                                .'" alt="'.$company->photos()->skip(2)->take(1)->first()->filename.'">' !!}
+                <input
+                        type="checkbox"
+                        value="{{ $company->photos()->skip(2)->take(1)->first()->id }}"
+                        name="photos_delete[]"
+                        id="photos_delete_3"
+                >
+                <label for="people_delete_3">
+                    Delete ?
+                </label>
+            </div>
+        @endif
+    </div>
+
+    <div class="form-group">
+        <label for="photo_4" class="col-lg-2 control-label">Photo 4</label>
+        <div class="col-lg-5">
+            <input
+                    type="file"
+                    class="form-control"
+                    name="photo_4"
+                    id="photo_4"
+                    placeholder="Company Photo 4"
+            >
+        </div>
+        @if(( $company && $company->photos->count() > 3 ))
+            <div class="col-lg-5">
+                {!! '<img style="height: 25px; width: 25px;" src="'.
+                                $company->photos()->skip(3)->take(1)->first()->image
+                                .'" alt="'.$company->photos()->skip(3)->take(1)->first()->filename.'">' !!}
+                <input
+                        type="checkbox"
+                        value="{{ $company->photos()->skip(3)->take(1)->first()->id }}"
+                        name="photos_delete[]"
+                        id="photos_delete_4"
+                >
+                <label for="people_delete_4">
+                    Delete ?
+                </label>
+            </div>
+        @endif
+    </div>
+
+    <div class="form-group">
+        <label for="logo" class="col-lg-2 control-label">Logo</label>
+        <div class="col-lg-10">
+            <input
+                    class="form-control"
+                    type="file"
+                    name="logo"
+                    id="logo"
+            >
+        </div>
+    </div>
+
+    <div class="form-group">
         <label for="description" class="col-lg-2 control-label">Description</label>
         <div class="col-lg-10">
             <textarea

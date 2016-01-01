@@ -1,6 +1,6 @@
 @extends ('backend.layouts.master')
 
-@section ('title', trans('menus.user_management'))
+@section ('title', "Job Management")
 
 @section('page-header')
     <h1>

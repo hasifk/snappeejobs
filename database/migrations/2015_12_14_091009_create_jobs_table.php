@@ -23,6 +23,7 @@ class CreateJobsTable extends Migration
             $table->integer('likes')->unsigned();
             $table->text('description');
             $table->boolean('status');
+            $table->boolean('published')->default(false);
             $table->timestamps();
 
             $table->foreign('company_id')

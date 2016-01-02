@@ -49,15 +49,11 @@ class EloquentJobRepository {
 	 * @return mixed
 	 * @throws GeneralException
 	 */
-	public function findOrThrowException($id, $withRoles = false) {
-		if ($withRoles)
-			$user = User::with('roles')->withTrashed()->find($id);
-		else
-			$user = User::withTrashed()->find($id);
+	public function findOrThrowException($id) {
+		$job = Job::where('company_id', $this->companyId)->find($id);
+		if (! is_null($job)) return $job;
 
-		if (! is_null($user)) return $user;
-
-		throw new GeneralException('That user does not exist.');
+		throw new GeneralException('That job does not exist.');
 	}
 
 	/**
@@ -68,7 +64,7 @@ class EloquentJobRepository {
 	 * @return mixed
 	 */
 	public function getJobsPaginated($per_page, $status = 1, $order_by = 'jobs.id', $sort = 'asc') {
-		return Job::orderBy($order_by, $sort)
+		return Job::where('company_id', $this->companyId)->orderBy($order_by, $sort)
             ->paginate($per_page);
 	}
 
@@ -103,8 +99,9 @@ class EloquentJobRepository {
 
 		if ($job->save()) {
 
-			//Attach new roles
-			//$job->attachCategories($input['categories']);
+			//Attach new job categories
+			$job->attachCategories($input['job_category']);
+			$job->attachPrerequisites($input['prerequisites']);
 
             Event::fire(new JobCreated($job, auth()->user() ));
 
@@ -121,24 +118,25 @@ class EloquentJobRepository {
 	 * @return bool
 	 * @throws GeneralException
 	 */
-	public function update($id, $input, $roles, $permissions) {
-		$user = $this->findOrThrowException($id);
-		$this->checkUserByEmail($input, $user);
+	public function update($id, $input) {
+		$job = $this->findOrThrowException($id);
 
-		if ($user->update($input)) {
-			//For whatever reason this just wont work in the above call, so a second is needed for now
-			$user->status = isset($input['status']) ? 1 : 0;
-			$user->confirmed = isset($input['confirmed']) ? 1 : 0;
-			$user->save();
+		$job = $this->updateJobStub($job, $input);
 
-			$this->checkUserRolesCount($roles);
-			$this->flushRoles($roles, $user);
-			$this->flushPermissions($permissions, $user);
+		if ( $job->save() ) {
+
+			//Update new job categories
+			$job->detachCategories($input['job_category']);
+			$job->attachCategories($input['job_category']);
+
+			//Update new job prerequisites
+			$job->detachCategories();
+			$job->attachCategories($input['prerequisites']);
 
 			return true;
 		}
 
-		throw new GeneralException('There was a problem updating this user. Please try again.');
+		throw new GeneralException('There was a problem updating this job. Please try again.');
 	}
 
 	/**
@@ -214,16 +212,43 @@ class EloquentJobRepository {
 	 * @throws GeneralException
 	 */
 	public function mark($id, $status) {
-		if (auth()->id() == $id && ($status == 0 || $status == 2))
-			throw new GeneralException("You can not do that to yourself.");
+		$job = $this->findOrThrowException($id);
+		$job->status = $status;
 
-		$user = $this->findOrThrowException($id);
-		$user->status = $status;
-
-		if ($user->save())
+		if ($job->save())
 			return true;
 
-		throw new GeneralException("There was a problem updating this user. Please try again.");
+		throw new GeneralException("There was a problem updating this job. Please try again.");
+	}
+
+	/**
+	 * @param $id
+	 * @return bool
+	 * @throws GeneralException
+	 */
+	public function publish($id) {
+		$job = $this->findOrThrowException($id);
+		$job->published = true;
+
+		if ($job->save())
+			return true;
+
+		throw new GeneralException("There was a problem updating this job. Please try again.");
+	}
+
+	/**
+	 * @param $id
+	 * @return bool
+	 * @throws GeneralException
+	 */
+	public function hide($id) {
+		$job = $this->findOrThrowException($id);
+		$job->published = false;
+
+		if ($job->save())
+			return true;
+
+		throw new GeneralException("There was a problem updating this job. Please try again.");
 	}
 
 	/**
@@ -307,15 +332,30 @@ class EloquentJobRepository {
 	 */
 	private function createJobStub($input)
 	{
-		$user = new Job;
-		$user->company_id           = $this->companyId;
-		$user->title                = $input['title'];
-		$user->title_url_slug       = str_slug($input['title']);
-		$user->level                = $input['level'];
-		$user->country_id           = $input['country_id'];
-		$user->state_id             = $input['state_id'];
-		$user->likes                = 0;
-		$user->status               = false;
-		return $user;
+		$job = new Job;
+		$job->company_id           = $this->companyId;
+		$job->title                = $input['title'];
+		$job->title_url_slug       = str_slug($input['title']);
+		$job->level                = $input['level'];
+		$job->country_id           = $input['country_id'];
+		$job->state_id             = $input['state_id'];
+		$job->likes                = 0;
+		$job->status               = false;
+		$job->published            = $input['published'] ? true : false;
+		$job->description          = $input['description'];
+		return $job;
+	}
+
+	private function updateJobStub($job, $input)
+	{
+		$job->company_id           = $this->companyId;
+		$job->title                = $input['title'];
+		$job->title_url_slug       = str_slug($input['title']);
+		$job->level                = $input['level'];
+		$job->country_id           = $input['country_id'];
+		$job->state_id             = $input['state_id'];
+		$job->description          = $input['description'];
+        $job->published            = $input['published'] ? true : false;
+		return $job;
 	}
 }

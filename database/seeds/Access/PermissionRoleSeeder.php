@@ -40,7 +40,7 @@ class PermissionRoleSeeder extends Seeder
         $permissions = [
             'view-backend', 'view-access-management', 'employer-users-view', 'company-profile-view',
             'company-profile-edit', 'employer-jobs-view', 'employer-jobs-add', 'employer-jobs-edit',
-            'employer-jobs-change-status', 'employer-jobs-delete','mail-send-private-message',
+            'employer-jobs-change-status', 'employer-jobs-publish', 'employer-jobs-delete','mail-send-private-message',
             'mail-view-private-messages', 'mail-send-group-messages','change-plan','create-employer-staff',
             'edit-employer-staff', 'change-employer-staff-password','deactivate-employer-staff',
             'reactivate-employer-staff', 'ban-employer-staff', 'unban-employer-staff', 'delete-employer-staff',

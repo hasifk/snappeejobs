@@ -138,6 +138,17 @@ class PermissionTableSeeder extends Seeder {
         $jobsChangeStatus->save();
 
         $permission_model = config('access.permission');
+        $jobsPublish = new $permission_model;
+        $jobsPublish->name = 'employer-jobs-publish';
+        $jobsPublish->display_name = 'Jobs Publish';
+        $jobsPublish->system = true;
+        $jobsPublish->group_id = 2;
+        $jobsPublish->sort = 7;
+        $jobsPublish->created_at = Carbon::now();
+        $jobsPublish->updated_at = Carbon::now();
+        $jobsPublish->save();
+
+        $permission_model = config('access.permission');
         $jobsChangeStatus = new $permission_model;
         $jobsChangeStatus->name = 'employer-jobs-delete';
         $jobsChangeStatus->display_name = 'Jobs Delete';

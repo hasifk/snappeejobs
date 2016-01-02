@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests\Backend\Employer\Job;
 
+use App\Exceptions\Backend\Access\Employer\EmployerNeedsRolesException;
 use App\Http\Requests\Request;
 
-class CreateJobRequest extends Request
+class UpdateJobRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +14,7 @@ class CreateJobRequest extends Request
      */
     public function authorize()
     {
-        return access()->can('employer-jobs-add');
+        return access()->can('employer-jobs-edit');
     }
 
     /**
@@ -23,6 +24,11 @@ class CreateJobRequest extends Request
      */
     public function rules()
     {
+        $companyId = \DB::table('jobs')->where('id', $this->segment(4))->value('company_id');
+        if ( auth()->user()->employerCompany->id != $companyId ) {
+            $this->throwException();
+        }
+
         return [
             'title'                 => 'required',
             'level'                 => 'required|in:internship,entry,mid,senior',
@@ -30,19 +36,14 @@ class CreateJobRequest extends Request
             'description'           => 'required',
             'country_id'            => 'required',
             'state_id'              => 'required',
-            'published'             => 'required',
         ];
     }
 
-    public function messages(){
-        return [
-            'title.required'                => 'Title is required',
-            'level.required'                => 'Level is required',
-            'job_category.required'         => 'Any of the job category is required',
-            'description.required'          => 'Description is required',
-            'country_id.required'           => 'Country is required',
-            'state_id.required'             => 'State is required',
-            'published.required'            => 'Published is required',
-        ];
+    private function throwException(){
+        $exception = new EmployerNeedsRolesException();
+        $exception->setValidationErrors('You are not authorized to do that');
+
+        throw $exception;
     }
+
 }

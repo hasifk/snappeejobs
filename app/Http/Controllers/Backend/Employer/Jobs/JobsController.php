@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Backend\Employer\Jobs;
 
+use App\Http\Requests\Backend\Employer\Job\HideJobRequest;
+use App\Http\Requests\Backend\Employer\Job\MarkJobRequest;
+use App\Http\Requests\Backend\Employer\Job\PublishJobRequest;
 use App\Repositories\Backend\Job\EloquentJobRepository;
 use App\Repositories\Backend\Permission\PermissionRepositoryContract;
 use App\Repositories\Backend\Role\RoleRepositoryContract;
@@ -113,9 +116,29 @@ class JobsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Requests\Backend\Employer\Job\EditJobViewRequest $request, $id)
     {
-        //
+
+        $job = $this->jobs->findOrThrowException($id);
+
+        $job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
+        $countries = \DB::table('countries')->select(['id', 'name'])->get();
+
+        if ( $request->old('country_id') || ( $job && $job->country_id ) ) {
+            $country_id = $request->old('country_id') ? $request->old('country_id') : $job->country_id;
+            $states = \DB::table('states')->where('country_id', $country_id)->select(['id', 'name'])->get();
+        } else {
+            $states = \DB::table('states')->where('country_id', 222)->select(['id', 'name'])->get();
+        }
+
+        $view = [
+            'job'                   => $job,
+            'countries'             => $countries,
+            'states'                => $states,
+            'job_categories'        => $job_categories
+        ];
+
+        return view('backend.employer.jobs.edit', $view);
     }
 
     /**
@@ -125,9 +148,11 @@ class JobsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Requests\Backend\Employer\Job\UpdateJobRequest $request, $id)
     {
-        //
+        $this->jobs->update($id,$request->all());
+
+        return redirect()->route('admin.employer.jobs.index')->withFlashSuccess("The job was successfully updated.");
     }
 
     /**
@@ -139,5 +164,31 @@ class JobsController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * @param $id
+     * @param $status
+     * @param MarkJobRequest $request
+     * @return mixed
+     */
+    public function mark($id, $status, MarkJobRequest $request) {
+        $this->jobs->mark($id, $status);
+
+        return redirect(route('admin.employer.jobs.index'))->withFlashSuccess('The job was successfully updated.');
+    }
+
+    public function publish($id, PublishJobRequest $request)
+    {
+        $this->jobs->publish($id);
+
+        return redirect(route('admin.employer.jobs.index'))->withFlashSuccess('The job was successfully updated.');
+    }
+
+    public function hide($id, HideJobRequest $request)
+    {
+        $this->jobs->hide($id);
+
+        return redirect(route('admin.employer.jobs.index'))->withFlashSuccess('The job was successfully updated.');
     }
 }

@@ -21,5 +21,13 @@ $router->group([
         get('jobs/banned', 'JobsController@banned')->name('admin.employer.jobs.banned');
         get('jobs/deleted', 'JobsController@deleted')->name('admin.employer.jobs.deleted');
 
+        $router->group(['prefix' => 'jobs/{id}', 'where' => ['id' => '[0-9]+']], function () {
+            get('delete', 'JobsController@delete')->name('admin.employer.jobs.delete-permanently');
+            get('restore', 'JobsController@restore')->name('admin.employer.jobs.restore');
+            get('mark/{status}', 'JobsController@mark')->name('admin.employer.jobs.mark')->where(['status' => '[0,1,2]']);
+            get('publish', 'JobsController@publish')->name('admin.employer.jobs.publish');
+            get('hide', 'JobsController@hide')->name('admin.employer.jobs.hide');
+        });
+
     });
 });

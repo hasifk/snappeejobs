@@ -4,7 +4,7 @@
 
 @section('page-header')
     <h1>
-        Add New Job
+        Edit Job
     </h1>
 @endsection
 
@@ -17,12 +17,12 @@
 
     @include('backend.employer.includes.partials.jobs.header-buttons')
 
-    {!! Form::open(['route' => 'admin.employer.jobs.store', 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'post']) !!}
+    {!! Form::open(['route' => [ 'admin.employer.jobs.update', $job->id ], 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'PATCH']) !!}
 
     <div class="form-group">
         {!! Form::label('name', 'Title', ['class' => 'col-lg-2 control-label']) !!}
         <div class="col-lg-10">
-            {!! Form::text('title', ( old('title') ? old('title') : '' ), ['class' => 'form-control', 'placeholder' => 'Job Title']) !!}
+            {!! Form::text('title', ( old('title') ? old('title') : $job->title ), ['class' => 'form-control', 'placeholder' => 'Job Title']) !!}
         </div>
     </div><!--form control-->
 
@@ -34,7 +34,10 @@
                         type="radio"
                         name="level"
                         id="level_internship"
-                        value="internship" {{ old('level') == 'internship' ? 'checked="checked"' : '' }}
+                        value="internship" {{
+                            old('level') ? old('level') == 'internship' ? 'checked="checked"' : '' :
+                            $job && $job->level == 'internship' ? 'checked="checked"' : ''
+                        }}
                 />
                 <label for="level_internship">Internship</label>
             </div>
@@ -43,7 +46,10 @@
                         type="radio"
                         name="level"
                         id="level_entry"
-                        value="entry" {{ old('level') == 'entry' ? 'checked="checked"' : '' }}
+                        value="entry" {{
+                            old('level') ? old('level') == 'entry' ? 'checked="checked"' : '' :
+                            $job && $job->level == 'entry' ? 'checked="checked"' : ''
+                        }}
                 />
                 <label for="level_entry">Entry</label>
             </div>
@@ -52,7 +58,10 @@
                         type="radio"
                         name="level"
                         id="level_mid"
-                        value="mid" {{ old('level') == 'mid' ? 'checked="checked"' : '' }}
+                        value="mid" {{
+                            old('level') ? old('level') == 'mid' ? 'checked="checked"' : '' :
+                            $job && $job->level == 'mid' ? 'checked="checked"' : ''
+                        }}
                 />
                 <label for="level_mid">Mid</label>
             </div>
@@ -61,7 +70,10 @@
                         type="radio"
                         name="level"
                         id="level_senior"
-                        value="senior" {{ old('level') == 'senior' ? 'checked="checked"' : '' }}
+                        value="senior" {{
+                            old('level') ? old('level') == 'senior' ? 'checked="checked"' : '' :
+                            $job && $job->level == 'senior' ? 'checked="checked"' : ''
+                        }}
                 />
                 <label for="level_senior">Senior</label>
             </div>
@@ -80,6 +92,8 @@
                             id="job_category-{{$job_category->id}}"
                             {{ old('job_category')
                                 && in_array($job_category->id, old('job_category')) ? 'checked="checked"' : '' }}
+                            {{ !old('job_category') && ( $job && $job->categories)
+                                && in_array($job_category->id, array_pluck($job->categories->toArray(), 'id')) ? 'checked="checked"' : '' }}
                     />
                     <label for="job_category-{{$job_category->id}}">
                         {!! $job_category->name !!}
@@ -97,7 +111,8 @@
                     name="description"
                     cols="30"
                     rows="10"
-                    class="form-control">{{ old('description') ? old('description') : '' }}</textarea>
+                    class="form-control">{{ old('description') ?
+                    old('description') : ( $job && $job->description ? $job->description : '' ) }}</textarea>
         </div>
     </div>
 
@@ -109,6 +124,8 @@
                 @foreach($countries as $country)
                     <option
                             value="{{ $country->id }}"
+                            {{ $job && $job->country_id == $country->id ? 'selected="selected"' : '' }}
+                            {{ $job && !$job->country_id && $country->id == 222 ? 'selected="selected"' : '' }}
                             {{ old('country_id') && $country->id == old('country_id') ? 'selected="selected"' : '' }}
                     >
                         {{ $country->name }}
@@ -126,104 +143,13 @@
                 @foreach($states as $state)
                     <option
                             value="{{ $state->id }}"
+                            {{ $job && $job->state_id == $state->id ? 'selected="selected"' : '' }}
                             {{ old('state_id') && $state->id == old('state_id') ? 'selected="selected"' : '' }}
                     >
                         {{ $state->name }}
                     </option>
                 @endforeach
             </select>
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-lg-2 control-label">Published</label>
-        <div class="col-lg-3">
-            <div class="checkbox">
-                <input
-                        type="radio"
-                        name="published"
-                        id="published_yes"
-                        value="1" {{ old('published') == '1' ? 'checked="checked"' : '' }}
-                />
-                <label for="published_yes">Yes</label>
-            </div>
-            <div class="checkbox">
-                <input
-                        type="radio"
-                        name="published"
-                        id="published_no"
-                        value="0" {{ old('published') == '0' ? 'checked="checked"' : '' }}
-                />
-                <label for="published_no">No</label>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="form-group">
-        <label class="col-lg-2 control-label">Prerequisites</label>
-        <div class="col-md-10">
-            <div class="row">
-                <div class="col-md-12">
-                    <label for="prerequisites_1" class="col-lg-2">
-                        Prerequisite 1
-                    </label>
-                    <div class="col-md-10">
-                        <input
-                                type="text"
-                                class="form-control"
-                                name="prerequisites[]"
-                                id="prerequisites_1"
-                                placeholder="Prerequisites 1"
-                        >
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    <label for="prerequisites_2" class="col-lg-2">
-                        Prerequisite 2
-                    </label>
-                    <div class="col-md-10">
-                        <input
-                                type="text"
-                                class="form-control"
-                                name="prerequisites[]"
-                                id="prerequisites_2"
-                                placeholder="Prerequisites 2"
-                        >
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    <label for="prerequisites_3" class="col-lg-2">
-                        Prerequisite 3
-                    </label>
-                    <div class="col-md-10">
-                        <input
-                                type="text"
-                                class="form-control"
-                                name="prerequisites[]"
-                                id="prerequisites_3"
-                                placeholder="Prerequisites 3"
-                        >
-                    </div>
-                </div>
-
-                <div class="col-md-12">
-                    <label for="prerequisites_4" class="col-lg-2">
-                        Prerequisite 4
-                    </label>
-                    <div class="col-md-10">
-                        <input
-                                type="text"
-                                class="form-control"
-                                name="prerequisites[]"
-                                id="prerequisites_4"
-                                placeholder="Prerequisites 4"
-                        >
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 

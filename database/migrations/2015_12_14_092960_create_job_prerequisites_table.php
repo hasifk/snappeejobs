@@ -15,7 +15,7 @@ class CreateJobPrerequisitesTable extends Migration
         Schema::create('job_prerequisites', function (Blueprint $table) {
             $table->increments('id')->unsigned();
             $table->integer('job_id')->unsigned();
-            $table->string('text');
+            $table->string('content');
             $table->timestamps();
 
             $table->foreign('job_id')

@@ -153,6 +153,75 @@
         </div>
     </div>
 
+    <?php $prerequisites = $job->prerequisites; $old_prerequisites = old('prerequisites'); ?>
+    <div class="form-group">
+        <label class="col-lg-2 control-label">Prerequisites</label>
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="prerequisites_1" class="col-lg-2">
+                        Prerequisite 1
+                    </label>
+                    <div class="col-md-10">
+                        <input
+                                type="text"
+                                class="form-control"
+                                name="prerequisites[]"
+                                id="prerequisites_1"
+                                placeholder="Prerequisites 1"
+                                value="{{ $prerequisites->count() > 0 ? $prerequisites->first()->text : '' }}"
+                        >
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="prerequisites_2" class="col-lg-2">
+                        Prerequisite 2
+                    </label>
+                    <div class="col-md-10">
+                        <input
+                                type="text"
+                                class="form-control"
+                                name="prerequisites[]"
+                                id="prerequisites_2"
+                                placeholder="Prerequisites 2"
+                        >
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="prerequisites_3" class="col-lg-2">
+                        Prerequisite 3
+                    </label>
+                    <div class="col-md-10">
+                        <input
+                                type="text"
+                                class="form-control"
+                                name="prerequisites[]"
+                                id="prerequisites_3"
+                                placeholder="Prerequisites 3"
+                        >
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <label for="prerequisites_4" class="col-lg-2">
+                        Prerequisite 4
+                    </label>
+                    <div class="col-md-10">
+                        <input
+                                type="text"
+                                class="form-control"
+                                name="prerequisites[]"
+                                id="prerequisites_4"
+                                placeholder="Prerequisites 4"
+                        >
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="well">
         <div class="pull-left">
             <a href="{{route('admin.access.users.index')}}" class="btn btn-danger btn-xs">{{ trans('strings.cancel_button') }}</a>

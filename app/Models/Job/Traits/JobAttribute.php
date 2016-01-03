@@ -53,7 +53,7 @@ trait JobAttribute
      * @param $prerequisite
      */
     public function attachPrerequisite($prerequisite){
-        $this->prerequisites()->save(new JobPrerequisites(['text' => $prerequisite]));
+        $this->prerequisites()->save(new JobPrerequisites(['content' => $prerequisite]));
     }
 
     public function detachCategory($category)

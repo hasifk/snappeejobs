@@ -159,7 +159,7 @@
         </div>
     </div>
 
-
+    <?php $prerequisites = old('prerequisites'); ?>
     <div class="form-group">
         <label class="col-lg-2 control-label">Prerequisites</label>
         <div class="col-md-10">
@@ -175,6 +175,7 @@
                                 name="prerequisites[]"
                                 id="prerequisites_1"
                                 placeholder="Prerequisites 1"
+                                value="{{ $prerequisites[0] }}"
                         >
                     </div>
                 </div>
@@ -190,6 +191,7 @@
                                 name="prerequisites[]"
                                 id="prerequisites_2"
                                 placeholder="Prerequisites 2"
+                                value="{{ $prerequisites[1] }}"
                         >
                     </div>
                 </div>
@@ -205,6 +207,7 @@
                                 name="prerequisites[]"
                                 id="prerequisites_3"
                                 placeholder="Prerequisites 3"
+                                value="{{ $prerequisites[2] }}"
                         >
                     </div>
                 </div>
@@ -220,6 +223,7 @@
                                 name="prerequisites[]"
                                 id="prerequisites_4"
                                 placeholder="Prerequisites 4"
+                                value="{{ $prerequisites[3] }}"
                         >
                     </div>
                 </div>

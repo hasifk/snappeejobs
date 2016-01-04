@@ -61,6 +61,12 @@
                   @endauth
                 @endauth
 
+                @roles(['Employer'])
+                  @permission('mail-view-private-messages')
+                    <li class="{{ Active::pattern('admin/employer/mail/dashboard') }}"><a href="{!!url('admin/employer/mail/dashboard')!!}"><span>Mail</span></a></li>
+                  @endauth
+                @endauth
+
                  <li class="{{ Active::pattern('admin/log-viewer*') }} treeview">
                   <a href="#">
                     <span>{{ trans('menus.log-viewer.main') }}</span>

@@ -4,6 +4,7 @@ namespace App\Models\Job\Traits;
 
 
 use App\Models\Job\JobPrerequisites\JobPrerequisites;
+use Carbon\Carbon;
 use DB;
 
 trait JobAttribute
@@ -53,7 +54,14 @@ trait JobAttribute
      * @param $prerequisite
      */
     public function attachPrerequisite($prerequisite){
-        $this->prerequisites()->save(new JobPrerequisites(['content' => $prerequisite]));
+        \DB::table('job_prerequisites')->insert([
+            'job_id'        => $this->id,
+            'content'       => $prerequisite,
+            'created_at'    => Carbon::now(),
+            'updated_at'    => Carbon::now(),
+        ]);
+//        $prerequisite = new JobPrerequisites(['content' => $prerequisite]);
+//        $this->prerequisites()->save($prerequisite);
     }
 
     public function detachCategory($category)

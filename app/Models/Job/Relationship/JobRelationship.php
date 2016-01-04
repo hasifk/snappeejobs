@@ -19,7 +19,7 @@ trait JobRelationship
     }
     
     public function prerequisites(){
-        return $this->hasMany(JobPrerequisites::class);
+        return $this->hasMany(JobPrerequisites::class, 'job_id');
     }
 
 }

@@ -24,11 +24,10 @@ trait JobAttribute
         }
     }
 
-    public function detachCategories($categories)
+    public function detachCategories()
     {
         \DB::table('category_preferences_jobs')
             ->where('job_id', $this->id)
-            ->whereIn('job_category_id', array_pluck($this->categories()->get()->toArray(), 'id'))
             ->delete();
     }
 
@@ -41,25 +40,27 @@ trait JobAttribute
 
     public function attachCategory($category)
     {
-        if (is_object($category))
-            $category = $category->getKey();
-
-        if (is_array($category))
-            $category = $category['id'];
-
-        $this->categories()->attach($category);
+        \DB::table('category_preferences_jobs')->insert([
+            'job_id'                => $this->id,
+            'job_category_id'       => $category
+        ]);
     }
 
     /**
      * @param $prerequisite
      */
     public function attachPrerequisite($prerequisite){
+        if ( ! $prerequisite ) {
+            return;
+        }
+
         \DB::table('job_prerequisites')->insert([
             'job_id'        => $this->id,
             'content'       => $prerequisite,
             'created_at'    => Carbon::now(),
             'updated_at'    => Carbon::now(),
         ]);
+
 //        $prerequisite = new JobPrerequisites(['content' => $prerequisite]);
 //        $this->prerequisites()->save($prerequisite);
     }
@@ -134,7 +135,7 @@ trait JobAttribute
             case 1:
                 $buttons = '';
                 $buttons .= '<a href="'.route('admin.employer.jobs.mark', [$this->id, 0]).'" class="btn btn-xs btn-warning"><i class="fa fa-pause" data-toggle="tooltip" data-placement="top" title="Deactivate Job"></i></a> ';
-                $buttons .= '<a href="'.route('admin.employer.jobs.mark', [$this->id, 2]).'" class="btn btn-xs btn-danger"><i class="fa fa-times" data-toggle="tooltip" data-placement="top" title="Ban Job"></i></a> ';
+                //$buttons .= '<a href="'.route('admin.employer.jobs.mark', [$this->id, 2]).'" class="btn btn-xs btn-danger"><i class="fa fa-times" data-toggle="tooltip" data-placement="top" title="Ban Job"></i></a> ';
                 return $buttons;
                 break;
 
@@ -160,7 +161,7 @@ trait JobAttribute
 
     public function getDeleteButtonAttribute() {
         if (access()->can('employer-jobs-delete'))
-            return '<a href="'.route('admin.employer.staffs.destroy', $this->id).'" data-method="delete" class="btn btn-xs btn-danger"><i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="' . trans('crud.delete_button') . '"></i></a>';
+            return '<a href="'.route('admin.employer.jobs.destroy', $this->id).'" data-method="delete" class="btn btn-xs btn-danger"><i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="' . trans('crud.delete_button') . '"></i></a>';
         return '';
     }
 

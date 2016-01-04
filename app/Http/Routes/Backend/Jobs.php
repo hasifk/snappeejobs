@@ -17,8 +17,8 @@ $router->group([
 
         resource('jobs', 'JobsController', ['except' => ['show']]);
 
-        get('jobs/deactivated', 'JobsController@deactivated')->name('admin.employer.jobs.deactivated');
-        get('jobs/banned', 'JobsController@banned')->name('admin.employer.jobs.banned');
+        get('jobs/disabled', 'JobsController@disabled')->name('admin.employer.jobs.disabled');
+        get('jobs/hidden', 'JobsController@hidden')->name('admin.employer.jobs.hidden');
         get('jobs/deleted', 'JobsController@deleted')->name('admin.employer.jobs.deleted');
 
         $router->group(['prefix' => 'jobs/{id}', 'where' => ['id' => '[0-9]+']], function () {

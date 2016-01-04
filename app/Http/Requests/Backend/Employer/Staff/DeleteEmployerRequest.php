@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Backend\Employer\Staff;
 
+use App\Exceptions\Backend\Access\Employer\EmployerNeedsRolesException;
 use App\Http\Requests\Request;
 
 class DeleteEmployerRequest extends Request

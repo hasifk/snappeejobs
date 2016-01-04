@@ -5,7 +5,7 @@ namespace App\Http\Requests\Backend\Employer\Job;
 use App\Exceptions\Backend\Access\Employer\EmployerNeedsRolesException;
 use App\Http\Requests\Request;
 
-class CreateJobPageViewRequest extends Request
+class DeleteJobRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +14,7 @@ class CreateJobPageViewRequest extends Request
      */
     public function authorize()
     {
-        return access()->can('employer-jobs-add');
+        return access()->can('employer-jobs-delete');
     }
 
     /**
@@ -24,6 +24,10 @@ class CreateJobPageViewRequest extends Request
      */
     public function rules()
     {
+        $companyId = \DB::table('jobs')->where('id', $this->segment(4))->value('company_id');
+        if ( auth()->user()->employerCompany->id != $companyId ) {
+            $this->throwException();
+        }
 
         return [
             //
@@ -36,4 +40,5 @@ class CreateJobPageViewRequest extends Request
 
         throw $exception;
     }
+
 }

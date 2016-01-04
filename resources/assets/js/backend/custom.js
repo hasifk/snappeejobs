@@ -14,4 +14,6 @@ $(function() {
         "showMethod": "fadeIn",
         "hideMethod": "fadeOut"
     }
+
+    $(".select2").select2();
 });

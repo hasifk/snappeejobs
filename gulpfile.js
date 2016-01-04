@@ -23,10 +23,11 @@ elixir(function(mix) {
         .sass([ // Process back-end stylesheets
             'backend/main.scss',
             'backend/skin.scss',
-            'backend/plugin/toastr/toastr.scss'
+            'backend/plugin/toastr/toastr.scss',
+            './resources/assets/js/select2/dist/css/select2.css'
         ], 'resources/assets/css/backend/main.css')
         .styles([ // Combine pre-processed CSS files
-                'backend/main.css'
+                'backend/main.css',
             ], 'public/css/backend.css')
         .copy(
             'resources/assets/sass/backend/plugin/plan/plan.css',
@@ -36,6 +37,7 @@ elixir(function(mix) {
                 'plugins.js',
                 'backend/main.js',
                 'backend/plugin/toastr/toastr.min.js',
+                'select2/dist/js/select2.js',
                 'backend/custom.js'
             ], 'public/js/backend.js')
 

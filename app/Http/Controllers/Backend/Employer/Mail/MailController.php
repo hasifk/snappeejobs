@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Employer\Mail;
 
+use App\Repositories\Backend\Mail\EloquentMailRepository;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -9,6 +10,21 @@ use App\Http\Controllers\Controller;
 
 class MailController extends Controller
 {
+    /**
+     * @var EloquentMailRepository
+     */
+    public $mail;
+
+    /**
+     * MailController constructor.
+     * @param EloquentMailRepository $mail
+     */
+    public function __construct(EloquentMailRepository $mail)
+    {
+
+        $this->mail = $mail;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -24,9 +40,16 @@ class MailController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Requests\Backend\Employer\Mail\EmployerComposeMailViewRequest $request)
     {
-        return view('backend.employer.mail.create');
+        $to_users = $this->mail->getEmployers();
+
+        dd($to_users);
+
+        $view = [
+            'to_users' => $to_users
+        ];
+        return view('backend.employer.mail.create', $view);
     }
 
     /**

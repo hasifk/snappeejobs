@@ -1,0 +1,21 @@
+{
+  "name": "snappeejobs",
+  "version": "0.0.0",
+  "homepage": "https://github.com/leejop/snappeejobs",
+  "authors": [
+    "jishcem <jishcem@gmail.com>"
+  ],
+  "description": "snappeejobs",
+  "main": "index.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "select2": "~4.0.1"
+  }
+}

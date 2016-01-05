@@ -13,6 +13,7 @@ $router->group([
 
         get('mail/dashboard', 'MailController@index')->name('admin.employer.mail.dashboard');
         get('mail/create', 'MailController@create')->name('admin.employer.mail.create');
+        post('mail/send', 'MailController@send')->name('admin.employer.mail.store');
         get('mail/inbox', 'MailController@inbox')->name('admin.employer.mail.inbox');
         get('mail/sent', 'MailController@sent')->name('admin.employer.mail.sent');
 

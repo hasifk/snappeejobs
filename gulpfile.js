@@ -24,7 +24,9 @@ elixir(function(mix) {
             'backend/main.scss',
             'backend/skin.scss',
             'backend/plugin/toastr/toastr.scss',
-            './resources/assets/js/select2/dist/css/select2.css'
+            './resources/assets/js/select2/src/scss/core.scss',
+            './resources/assets/js/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.css',
+            'backend/plugin/select2/select2.scss',
         ], 'resources/assets/css/backend/main.css')
         .styles([ // Combine pre-processed CSS files
                 'backend/main.css',
@@ -37,6 +39,7 @@ elixir(function(mix) {
                 'plugins.js',
                 'backend/main.js',
                 'backend/plugin/toastr/toastr.min.js',
+                'bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.all.js',
                 'select2/dist/js/select2.js',
                 'backend/custom.js'
             ], 'public/js/backend.js')

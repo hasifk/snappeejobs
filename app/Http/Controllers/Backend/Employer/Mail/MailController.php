@@ -44,8 +44,6 @@ class MailController extends Controller
     {
         $to_users = $this->mail->getEmployers();
 
-        dd($to_users);
-
         $view = [
             'to_users' => $to_users
         ];
@@ -58,10 +56,12 @@ class MailController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function send(Requests\Backend\Employer\Mail\EmployerMailSendNewMessage $request)
     {
-        //
+        $this->mail->sendPrivateMessage($request);
     }
+
+
 
     /**
      * Display the specified resource.

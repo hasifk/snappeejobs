@@ -31,39 +31,84 @@
                 <li class="header">{{ trans('menus.general') }}</li>
 
                 <!-- Optionally, you can add icons to the links -->
-                <li class="{{ Active::pattern('admin/dashboard') }}"><a href="{!!route('backend.dashboard')!!}"><span>{{ trans('menus.dashboard') }}</span></a></li>
+                <li class="{{ Active::pattern('admin/dashboard') }}">
+                  <a href="{!!route('backend.dashboard')!!}">
+                    <i class="fa fa-dashboard"></i>
+                    <span>{{ trans('menus.dashboard') }}</span>
+                  </a>
+                </li>
 
                 @role('Administrator')
                     @permission('view-access-management')
-                      <li class="{{ Active::pattern('admin/access/*') }}"><a href="{!!url('admin/access/users')!!}"><span>{{ trans('menus.access_management') }}</span></a></li>
+                      <li class="{{ Active::pattern('admin/access/*') }}">
+                        <a href="{!!url('admin/access/users')!!}">
+                          <i class="fa fa-users"></i>
+                          <span>
+                            {{ trans('menus.access_management') }}
+                          </span>
+                        </a>
+                      </li>
                     @endauth
                 @endauth
 
                 @role('Employer')
-                  <li class="{{ Active::pattern('admin/employer/staffs') }}"><a href="{!!url('admin/employer/staffs')!!}"><span>Staff Management</span></a></li>
+                  <li class="{{ Active::pattern('admin/employer/staffs') }}">
+                    <a href="{!!url('admin/employer/staffs')!!}">
+                      <i class="fa fa-users"></i>
+                      <span>
+                        Staff Management
+                      </span>
+                    </a>
+                  </li>
                 @endauth
 
                 @roles(['Employer', 'Employer Staff'])
                   @permission('company-profile-view')
-                    <li class="{{ Active::pattern('admin/employer/profile-view') }}"><a href="{!! route('admin.employer.company.showprofile') !!}"><span>Company Profile</span></a></li>
+                    <li class="{{ Active::pattern('admin/employer/profile-view') }}">
+                      <a href="{!! route('admin.employer.company.showprofile') !!}">
+                        <i class="fa fa-building"></i>
+                        <span>
+                          Company Profile
+                        </span>
+                      </a>
+                    </li>
                   @endauth
                 @endauth
 
                 @roles(['Employer', 'Employer Staff'])
                   @permission('employer-jobs-view')
-                    <li class="{{ Active::pattern('admin/employer/jobs/*') }}"><a href="{!!url('admin/employer/jobs')!!}"><span>Jobs</span></a></li>
+                    <li class="{{ Active::pattern('admin/employer/jobs/*') }}">
+                      <a href="{!!url('admin/employer/jobs')!!}">
+                        <i class="fa fa-suitcase"></i>
+                        <span>
+                          Jobs
+                        </span>
+                      </a>
+                    </li>
                   @endauth
                 @endauth
 
                 @roles(['Employer'])
                   @permission('employer-settings')
-                    <li class="{{ Active::pattern('admin/employer/settings/dashboard') }}"><a href="{!!url('admin/employer/settings/dashboard')!!}"><span>Settings</span></a></li>
+                    <li class="{{ Active::pattern('admin/employer/settings/dashboard') }}">
+                      <a href="{!!url('admin/employer/settings/dashboard')!!}">
+                        <i class="fa fa-cog"></i>
+                        <span>
+                          Settings
+                        </span>
+                      </a>
+                    </li>
                   @endauth
                 @endauth
 
                 @roles(['Employer'])
                   @permission('mail-view-private-messages')
-                    <li class="{{ Active::pattern('admin/employer/mail/dashboard') }}"><a href="{!!url('admin/employer/mail/dashboard')!!}"><span>Mail</span></a></li>
+                    <li class="{{ Active::pattern('admin/employer/mail/dashboard') }}">
+                      <a href="{!!url('admin/employer/mail/dashboard')!!}">
+                        <i class="fa fa-envelope"></i>
+                        <span>Mail</span>
+                      </a>
+                    </li>
                   @endauth
                 @endauth
 

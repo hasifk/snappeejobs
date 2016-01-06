@@ -99,4 +99,19 @@ class SettingsController extends Controller
 
     }
 
+    public function chooseplanupgrade(Requests\Backend\Employer\Settings\EmployerChooseUpgradePlanRequest $request, $plan)
+    {
+
+        $planDetails = config('subscription.employer_plans.' . $plan);
+
+
+
+        return view('backend.employer.settings.chooseupgrade', [ 'plan' => $planDetails ]);
+    }
+
+    public function upgradeplan()
+    {
+        dd("Upgrade Page!!");
+    }
+
 }

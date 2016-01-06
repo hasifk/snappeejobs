@@ -36,7 +36,7 @@ class PublishJobRequest extends Request
 
     private function throwException(){
         $exception = new EmployerNeedsRolesException();
-        $exception->setValidationErrors('Please fill in the company details first.');
+        $exception->setValidationErrors('You are not authorized to do that.');
 
         throw $exception;
     }

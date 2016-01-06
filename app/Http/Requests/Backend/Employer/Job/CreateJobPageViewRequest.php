@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Backend\Employer\Job;
 
+use App\Exceptions\Backend\Access\Employer\EmployerNeedsRolesException;
 use App\Http\Requests\Request;
 
 class CreateJobPageViewRequest extends Request

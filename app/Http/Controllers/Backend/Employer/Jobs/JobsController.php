@@ -161,9 +161,11 @@ class JobsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Requests\Backend\Employer\Job\DeleteJobRequest $request, $id)
     {
-        //
+        $this->jobs->destroy($id);
+
+        return redirect()->back()->withFlashSuccess('Job deleted successfully');
     }
 
     /**
@@ -190,5 +192,20 @@ class JobsController extends Controller
         $this->jobs->hide($id);
 
         return redirect(route('admin.employer.jobs.index'))->withFlashSuccess('The job was successfully updated.');
+    }
+
+    public function deleted() {
+        return view('backend.employer.jobs.deleted')
+            ->withJobs($this->jobs->getDeletedJobsPaginated(config('jobs.default_per_page'), 1));
+    }
+
+    public function disabled() {
+        return view('backend.employer.jobs.disabled')
+            ->withJobs($this->jobs->getDisabledJobsPaginated(config('jobs.default_per_page'), 1));
+    }
+
+    public function hidden() {
+        return view('backend.employer.jobs.hidden')
+            ->withJobs($this->jobs->getHiddenJobsPaginated(config('jobs.default_per_page'), 1));
     }
 }

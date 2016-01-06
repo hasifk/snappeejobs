@@ -153,7 +153,31 @@
         </div>
     </div>
 
-    <?php $prerequisites = $job->prerequisites; $old_prerequisites = old('prerequisites'); ?>
+    <div class="form-group">
+        <label class="col-lg-2 control-label">Published</label>
+        <div class="col-lg-3">
+            <div class="checkbox">
+                <input
+                        type="radio"
+                        name="published"
+                        id="published_yes"
+                        value="1" {{ old('published') == '1' ? 'checked="checked"' : $job->published == 1 ? 'checked="checked"' : '' }}
+                />
+                <label for="published_yes">Yes</label>
+            </div>
+            <div class="checkbox">
+                <input
+                        type="radio"
+                        name="published"
+                        id="published_no"
+                        value="0" {{ old('published') == '0' ? 'checked="checked"' : $job->published == 0 ? 'checked="checked"' : '' }}
+                />
+                <label for="published_no">No</label>
+            </div>
+        </div>
+    </div>
+
+    <?php $prerequisites = $job->prerequisites(); $old_prerequisites = old('prerequisites'); ?>
     <div class="form-group">
         <label class="col-lg-2 control-label">Prerequisites</label>
         <div class="col-md-10">
@@ -169,15 +193,17 @@
                                 name="prerequisites[]"
                                 id="prerequisites_1"
                                 placeholder="Prerequisites 1"
-                                value="{{ $prerequisites->count() > 0 ? $prerequisites->first()->text : '' }}"
+                                value="{{ $old_prerequisites[0]
+                                            ?
+                                        $old_prerequisites[0] : ( $job->prerequisites->count() > 0 ? $job->prerequisites->first()->content : '' ) }}"
                         >
                     </div>
                 </div>
-
                 <div class="col-md-12">
                     <label for="prerequisites_2" class="col-lg-2">
                         Prerequisite 2
                     </label>
+
                     <div class="col-md-10">
                         <input
                                 type="text"
@@ -185,6 +211,9 @@
                                 name="prerequisites[]"
                                 id="prerequisites_2"
                                 placeholder="Prerequisites 2"
+                                value="{{ $old_prerequisites[1]
+                                            ?
+                                        $old_prerequisites[1] : ( $job->prerequisites->count() > 1 ? $job->prerequisites()->skip(1)->take(1)->first()->content : '' ) }}"
                         >
                     </div>
                 </div>
@@ -200,6 +229,9 @@
                                 name="prerequisites[]"
                                 id="prerequisites_3"
                                 placeholder="Prerequisites 3"
+                                value="{{ $old_prerequisites[2]
+                                            ?
+                $old_prerequisites[2] : ( $job->prerequisites->count() > 2 ? $job->prerequisites()->skip(2)->take(1)->first()->content : '' ) }}"
                         >
                     </div>
                 </div>
@@ -215,6 +247,9 @@
                                 name="prerequisites[]"
                                 id="prerequisites_4"
                                 placeholder="Prerequisites 4"
+                                value="{{ $old_prerequisites[3]
+                                ?
+                $old_prerequisites[3] : ( $job->prerequisites->count() > 3 ? $job->prerequisites()->skip(3)->take(1)->first()->content : '' ) }}"
                         >
                     </div>
                 </div>

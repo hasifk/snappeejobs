@@ -11,6 +11,16 @@ use DB;
  */
 trait EmployerAttribute
 {
+
+    public function getEmployerIdAttribute(){
+        $employer_id = \DB::table('staff_employer')
+            ->where('user_id', $this->id)
+            ->where('is_admin', true)
+            ->orderBy('created_at')
+            ->value('employer_id');
+        return $employer_id;
+    }
+
     public function getEmployerEditButtonAttribute() {
         if (access()->can('edit-employer-staff'))
             return '<a href="'.route('admin.employer.staffs.edit', $this->id).'" class="btn btn-xs btn-primary"><i class="fa fa-pencil" data-toggle="tooltip" data-placement="top" title="Edit"></i></a> ';

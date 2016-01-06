@@ -21,13 +21,13 @@
 
             <li class="divider"></li>
             <li>
-                <a href="{{route('admin.employer.jobs.deactivated')}}">
-                    Deactivated Job
+                <a href="{{route('admin.employer.jobs.disabled')}}">
+                    Disabled Jobs
                 </a>
             </li>
             <li>
-                <a href="{{route('admin.employer.jobs.banned')}}">
-                    Banned Jobs
+                <a href="{{route('admin.employer.jobs.hidden')}}">
+                    Hidden Jobs
                 </a>
             </li>
             <li>

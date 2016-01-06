@@ -86,7 +86,7 @@ return array(
         'messages'        => false,  // Messages
         'time'            => false,  // Time Datalogger
         'memory'          => false,  // Memory usage
-        'exceptions'      => false,  // Exception displayer
+        'exceptions'      => true,  // Exception displayer
         'log'             => false,  // Logs from Monolog (merged in messages if enabled)
         'db'              => true,  // Show database (PDO) queries and bindings
         'views'           => true,  // Views with their data

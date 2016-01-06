@@ -25,6 +25,7 @@ class CreateJobsTable extends Migration
             $table->boolean('status');
             $table->boolean('published')->default(false);
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('company_id')
                 ->references('id')

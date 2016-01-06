@@ -14,4 +14,12 @@ $(function() {
         "showMethod": "fadeIn",
         "hideMethod": "fadeOut"
     }
+
+    $(".select2").select2();
+
+    $('.textarea').wysihtml5({
+        toolbar: {
+            fa: true
+        }
+    });
 });

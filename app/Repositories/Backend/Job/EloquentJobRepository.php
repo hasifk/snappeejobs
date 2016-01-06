@@ -72,8 +72,16 @@ class EloquentJobRepository {
 	 * @param $per_page
 	 * @return \Illuminate\Pagination\Paginator
 	 */
-	public function getDeletedUsersPaginated($per_page) {
-		return User::onlyTrashed()->paginate($per_page);
+	public function getDeletedJobsPaginated($per_page) {
+		return Job::where('company_id', $this->companyId)->onlyTrashed()->paginate($per_page);
+	}
+
+	public function getDisabledJobsPaginated($per_page) {
+		return Job::where('company_id', $this->companyId)->where('status', 0)->paginate($per_page);
+	}
+
+	public function getHiddenJobsPaginated($per_page) {
+		return Job::where('company_id', $this->companyId)->where('published', 0)->paginate($per_page);
 	}
 
 	/**
@@ -126,12 +134,12 @@ class EloquentJobRepository {
 		if ( $job->save() ) {
 
 			//Update new job categories
-			$job->detachCategories($input['job_category']);
+			$job->detachCategories();
 			$job->attachCategories($input['job_category']);
 
 			//Update new job prerequisites
-			$job->detachCategories();
-			$job->attachCategories($input['prerequisites']);
+			$job->detachPrerequisites();
+			$job->attachPrerequisites($input['prerequisites']);
 
 			return true;
 		}
@@ -162,11 +170,9 @@ class EloquentJobRepository {
 	 * @throws GeneralException
 	 */
 	public function destroy($id) {
-		if (auth()->id() == $id)
-			throw new GeneralException("You can not delete yourself.");
 
-		$user = $this->findOrThrowException($id);
-		if ($user->delete())
+		$job = $this->findOrThrowException($id);
+		if ($job->delete())
 			return true;
 
 		throw new GeneralException("There was a problem deleting this user. Please try again.");
@@ -178,14 +184,14 @@ class EloquentJobRepository {
 	 * @throws GeneralException
 	 */
 	public function delete($id) {
-		$user = $this->findOrThrowException($id, true);
+		$job = $this->findOrThrowException($id);
 
 		//Detach all roles & permissions
-		$user->detachRoles($user->roles);
-		$user->detachPermissions($user->permissions);
+		$job->detachCategories();
+		$job->detachPrerequisites();
 
 		try {
-			$user->forceDelete();
+			$job->forceDelete();
 		} catch (\Exception $e) {
 			throw new GeneralException($e->getMessage());
 		}

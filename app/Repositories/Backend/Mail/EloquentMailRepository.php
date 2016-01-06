@@ -88,6 +88,7 @@ class EloquentMailRepository
 
         $threadParticipantsExceptUser = array_diff($threadParticipantsExceptUser, [ auth()->user()->id ]);
 
+        $threadParticipantsExceptUser = array_values($threadParticipantsExceptUser);
 
         $this->threadParticipants = $threadParticipantsExceptUser;
     }
@@ -121,7 +122,7 @@ class EloquentMailRepository
         $thread_exists = false;
 
         if ( $this->shouldCreateNewThread($this->threadParticipants[0], auth()->user()->id) ) {
-            $thread = $this->thread = $this->createThread($request->all());
+            $thread = $this->thread = $this->createThread(['subject' => $this->thread->subject, 'message' => $request->get('message')]);
         } else {
             $thread = $this->thread;
             $thread_exists = true;
@@ -159,7 +160,7 @@ class EloquentMailRepository
     public function sent($per_page, $status = 1, $order_by = 'threads.updated_at', $sort = 'desc'){
         $inbox = \DB::table('thread_participants')
             ->join('threads','thread_participants.thread_id','=','threads.id')
-            ->join('users','thread_participants.sender_id','=','users.id')
+            ->join('users','thread_participants.user_id','=','users.id')
             ->whereNull('thread_participants.deleted_at')
             ->where('thread_participants.sender_id',auth()->user()->id)
             ->orderBy('thread_participants.updated_at')
@@ -212,7 +213,7 @@ class EloquentMailRepository
         if ( ! $count ) {
             return true;
         }
-
+        dd($dbObject->value('thread_id'));
         $this->thread = Thread::find($dbObject->value('thread_id'));
 
         return false;

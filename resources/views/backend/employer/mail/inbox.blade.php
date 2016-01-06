@@ -48,7 +48,7 @@
                             </div>
                         </td>
                         <td class="mailbox-name">
-                            <a href="{{ route('admin.employer.mail.view', $thread->id) }}">
+                            <a href="{{ route('admin.employer.mail.view', $thread->thread_id) }}">
                                 {{ $thread->name }}
                             </a>
                         </td>
@@ -57,7 +57,7 @@
                         </td>
                         <td class="mailbox-date">{{ \Carbon\Carbon::parse($thread->updated_at)->diffForHumans() }}</td>
                         <td>
-                            <a href="{{ route('admin.employer.mail.view', $thread->id) }}" class="btn btn-xs btn-info">
+                            <a href="{{ route('admin.employer.mail.view', $thread->thread_id) }}" class="btn btn-xs btn-info">
                                 <i class="fa fa-eye"></i>
                                 View
                             </a>

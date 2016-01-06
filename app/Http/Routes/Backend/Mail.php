@@ -3,7 +3,7 @@
 $router->group([
     'prefix' => 'employer',
     'namespace' => 'Employer',
-    'middleware' => ['access.routeNeedsPermission:mail-view-private-messages', 'access.routeNeedsRole:Employer']
+    'middleware' => ['access.routeNeedsPermission:mail-view-private-messages', 'access.routeNeedsEmployerAccount']
 ], function() use ($router)
 {
     /**

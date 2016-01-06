@@ -65,7 +65,9 @@ class PermissionRoleSeeder extends Seeder
         \DB::table('staff_employer')->insert([
             'employer_id'   => 2,
             'user_id'       => 2,
-            'is_admin'      => true
+            'is_admin'      => true,
+            'created_at'    => \Carbon\Carbon::now(),
+            'updated_at'    => \Carbon\Carbon::now(),
         ]);
     }
 

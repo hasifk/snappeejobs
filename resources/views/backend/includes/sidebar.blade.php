@@ -101,7 +101,7 @@
                   @endauth
                 @endauth
 
-                @roles(['Employer'])
+                @roles(['Employer', 'Employer Staff'])
                   @permission('mail-view-private-messages')
                     <li class="{{ Active::pattern('admin/employer/mail/dashboard') }} treeview">
                       <a href="#">

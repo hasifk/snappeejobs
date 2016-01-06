@@ -23,4 +23,7 @@ Todo.rtf
 /public/css/frontend.css.map
 /resources/assets/css/backend/main.css
 /resources/assets/css/frontend/main.css
+config/ide-helper.php
+resources/lang/vendor/log-viewer/zh/
+resources/views/vendor/cashier/
 snappeejobs.sublime-workspace

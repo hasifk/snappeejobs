@@ -103,11 +103,25 @@
 
                 @roles(['Employer'])
                   @permission('mail-view-private-messages')
-                    <li class="{{ Active::pattern('admin/employer/mail/dashboard') }}">
-                      <a href="{!!url('admin/employer/mail/dashboard')!!}">
+                    <li class="{{ Active::pattern('admin/employer/mail/dashboard') }} treeview">
+                      <a href="#">
                         <i class="fa fa-envelope"></i>
                         <span>Mail</span>
+                        <i class="fa fa-angle-left pull-right"></i>
                       </a>
+                      <ul
+                              class="treeview-menu {{ Active::pattern('admin/employer/mail/*', 'menu-open') }}"
+                              style="display: none; {{ Active::pattern('admin/employer/mail/*', 'display: block;') }}">
+                        <li class="{{ Active::pattern('admin/employer/mail/create') }}">
+                          <a href="{!! url('admin/employer/mail/create') !!}">{{ 'Compose' }}</a>
+                        </li>
+                        <li class="{{ Active::pattern('admin/employer/mail/inbox') }}">
+                          <a href="{!! url('admin/employer/mail/inbox') !!}">{{ 'Inbox' }}</a>
+                        </li>
+                        <li class="{{ Active::pattern('admin/employer/mail/sent') }}">
+                          <a href="{!! url('admin/employer/mail/sent') !!}">{{ 'Sent' }}</a>
+                        </li>
+                      </ul>
                     </li>
                   @endauth
                 @endauth

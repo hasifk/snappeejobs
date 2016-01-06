@@ -2,12 +2,12 @@
 
 namespace App\Models\Mail\Relationship;
 
-use App\Models\Mail\Message;
+use App\Models\Mail\Message\Message;
 
 trait MailRelationship
 {
     public function messages(){
-        return $this->hasOne(Message::class, 'id', 'thread_id');
+        return $this->hasMany(Message::class);
     }
 
 }

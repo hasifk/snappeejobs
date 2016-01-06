@@ -1,6 +1,7 @@
 <?php namespace App\Exceptions;
 
 use App\Exceptions\Backend\Access\Employer\EmployerNeedsRolesException;
+use App\Exceptions\Backend\Access\Employer\Mail\MessageDoesNotBelongToUser;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -59,6 +60,11 @@ class Handler extends ExceptionHandler {
 		if ($e instanceof EmployerNeedsRolesException)
 		{
 			return redirect()->route('admin.employer.staffs.index')->withInput()->withFlashDanger($e->validationErrors());
+		}
+
+		if ($e instanceof MessageDoesNotBelongToUser)
+		{
+			return redirect()->route('admin.employer.mail.inbox')->withInput()->withFlashDanger($e->validationErrors());
 		}
 
 		//Catch all

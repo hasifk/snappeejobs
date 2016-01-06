@@ -59,9 +59,29 @@ class MailController extends Controller
     public function send(Requests\Backend\Employer\Mail\EmployerMailSendNewMessage $request)
     {
         $this->mail->sendPrivateMessage($request);
+
+        return redirect()
+            ->route('admin.employer.mail.inbox')
+            ->withFlashSuccess('Successfully sent the message');
     }
 
+    public function inbox(Requests\Backend\Employer\Mail\EmployerMailInboxView $request){
 
+        $view = [
+            'inbox' => $this->mail->inbox(config('access.users.default_per_page'))
+        ];
+
+        return view('backend.employer.mail.inbox', $view);
+    }
+
+    public function sent(Requests\Backend\Employer\Mail\EmployerMailInboxView $request){
+
+        $view = [
+            'sent' => $this->mail->sent(config('access.users.default_per_page'))
+        ];
+
+        return view('backend.employer.mail.sent', $view);
+    }
 
     /**
      * Display the specified resource.
@@ -69,9 +89,13 @@ class MailController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Requests\Backend\Employer\Mail\EmployerMailInboxSingleView $request, $thread_id)
     {
-        //
+        $view = [
+            'thread' => $this->mail->getThread($thread_id)
+        ];
+
+        return view('backend.employer.mail.show', $view);
     }
 
     /**

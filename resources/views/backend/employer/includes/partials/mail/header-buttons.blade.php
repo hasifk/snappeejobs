@@ -5,11 +5,11 @@
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
-            <li>
-                <a href="{{route('admin.employer.mail.dashboard')}}">
-                    Mail Dashboard
-                </a>
-            </li>
+            {{--<li>--}}
+                {{--<a href="{{route('admin.employer.mail.dashboard')}}">--}}
+                    {{--Mail Dashboard--}}
+                {{--</a>--}}
+            {{--</li>--}}
             @permission('mail-send-private-message')
             <li>
                 <a href="{{route('admin.employer.mail.create')}}">

@@ -34,9 +34,12 @@
 
             </div>
 
+            @foreach($thread->messages as $message)
             <div class="mailbox-read-message">
-                {!! $thread->last_message !!}
+                {!! $message->content !!}
             </div>
+            <hr>
+            @endforeach
 
         </div>
         <!-- /.box-footer -->

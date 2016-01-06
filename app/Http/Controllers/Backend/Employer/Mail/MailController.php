@@ -98,6 +98,14 @@ class MailController extends Controller
         return view('backend.employer.mail.show', $view);
     }
 
+    public function reply(Requests\Backend\Employer\Mail\EmployerMailReplyRequest $request, $thread_id){
+        $this->mail->sendReply($request, $thread_id);
+
+        return redirect()
+            ->route('admin.employer.mail.sent')
+            ->withFlashSuccess('Successfully sent the reply');
+    }
+
     /**
      * Show the form for editing the specified resource.
      *

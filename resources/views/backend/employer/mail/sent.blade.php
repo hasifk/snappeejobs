@@ -18,34 +18,19 @@
     @include('backend.employer.includes.partials.mail.header-buttons')
     <div class="box-body no-padding">
 
-        <div class="mailbox-controls">
-            <!-- Check all button -->
-            <button type="button" class="btn btn-default btn-sm checkbox-toggle"><i class="fa fa-check-square-o"></i>
-            </button>
-            <div class="btn-group">
-                <button type="button" class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
-            </div>
-        </div>
-
         <div class="table-responsive mailbox-messages">
             <table class="table table-hover table-striped">
                 <thead>
                 <tr>
-                    <th>Action</th>
                     <th>User</th>
                     <th>Subject</th>
                     <th>Last Message</th>
-                    <th>View</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 @foreach ($sent as $thread)
                     <tr>
-                        <td>
-                            <div>
-                                <input type="checkbox">
-                            </div>
-                        </td>
                         <td class="mailbox-name">
                             <a href="{{ route('admin.employer.mail.view', $thread->id) }}">
                                 {{ $thread->name }}
@@ -59,6 +44,10 @@
                             <a href="{{ route('admin.employer.mail.view', $thread->id) }}" class="btn btn-xs btn-info">
                                 <i class="fa fa-eye"></i>
                                 View
+                            </a>
+                            <a href="{{ route('admin.employer.mail.destroy', $thread->thread_id) }}" data-method="delete" class="btn btn-xs btn-danger">
+                                <i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="Delete"></i>
+                                Delete
                             </a>
                         </td>
                     </tr>

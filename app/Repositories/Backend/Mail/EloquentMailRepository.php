@@ -119,20 +119,11 @@ class EloquentMailRepository
 
         $this->findOrThrowException($thread_id);
 
-        $thread_exists = false;
-
-        if ( $this->shouldCreateNewThread($this->threadParticipants[0], auth()->user()->id) ) {
-            $thread = $this->thread = $this->createThread(['subject' => $this->thread->subject, 'message' => $request->get('message')]);
-        } else {
-            $thread = $this->thread;
-            $thread_exists = true;
-            $this->updateThread($request->all());
-        }
+        $this->updateThread($request->all());
 
         $this->createMessage($request->all());
 
-
-        $this->connectThreadUsers($thread, ['to' => $this->threadParticipants[0]]);
+        $this->connectThreadUsers($this->thread, ['to' => $this->threadParticipants[0]]);
     }
 
     public function inbox($per_page, $status = 1, $order_by = 'threads.updated_at', $sort = 'desc'){
@@ -181,7 +172,26 @@ class EloquentMailRepository
     }
 
     public function getThread($id){
+
+        \DB::table('thread_participants')
+            ->where('thread_id', $id)
+            ->where('user_id', auth()->user()->id)
+            ->update(['read_at' => Carbon::now() ]);
+
         return Thread::findOrFail($id);
+    }
+
+    public function deleteThread($id){
+        $this->findOrThrowException($id);
+
+        \DB::table('thread_participants')
+            ->where('thread_id', $this->thread->id)
+            ->where('user_id', $this->user->user()->id)
+            ->update([
+                'deleted_at'    => Carbon::now()
+            ]);
+
+        return;
     }
 
     public function createThread($data){

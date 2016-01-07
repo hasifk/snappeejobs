@@ -21,6 +21,19 @@ trait EmployerAttribute
         return $employer_id;
     }
 
+    public function getEmployerSubscriptionPlanAttribute()
+    {
+
+        foreach (config('subscription.employer_plans') as $key=> $plans) {
+            if($plans['id'] == $this->stripe_plan){
+                $plan_id = $key;
+            }
+        }
+
+        return $plan_id;
+
+    }
+
     public function getEmployerEditButtonAttribute() {
         if (access()->can('edit-employer-staff'))
             return '<a href="'.route('admin.employer.staffs.edit', $this->id).'" class="btn btn-xs btn-primary"><i class="fa fa-pencil" data-toggle="tooltip" data-placement="top" title="Edit"></i></a> ';

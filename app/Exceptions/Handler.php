@@ -2,6 +2,7 @@
 
 use App\Exceptions\Backend\Access\Employer\EmployerNeedsRolesException;
 use App\Exceptions\Backend\Access\Employer\Mail\MessageDoesNotBelongToUser;
+use App\Exceptions\Backend\Access\Employer\Settings\SubscriptionPlanException;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -65,6 +66,11 @@ class Handler extends ExceptionHandler {
 		if ($e instanceof MessageDoesNotBelongToUser)
 		{
 			return redirect()->route('admin.employer.mail.inbox')->withInput()->withFlashDanger($e->validationErrors());
+		}
+
+		if ($e instanceof SubscriptionPlanException)
+		{
+			return redirect()->route('admin.employer.settings.chooseplanupgrade')->withInput()->withFlashDanger($e->validationErrors());
 		}
 
 		//Catch all

@@ -22,60 +22,43 @@
 @include('backend.employer.includes.partials.settings.header-buttons')
 
 <section class="section">
-    <div class="section-headlines text-center">
-        <h2>Employer Upgrade Plan</h2>
-        <p>Payment</p>
+    <div class="section-headlines">
+        <h2>Upgrade Subscription Plan</h2>
+        <!--<p>Payment</p>-->
     </div>
-
-    <div role="tabpanel" class="tab-pane active" id="profile">
-        <table class="table table-striped table-hover table-bordered dashboard-table">
-            <tr>
-                <th>Plan Name</th>
-                <td>{{ $plan['name'] }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ $plan['description'] }}</td>
-            </tr>
-            <tr>
-                <th>Price</th>
-                <td> &pound; {{ ($plan['price']/100) }}</td>
-            </tr>
-            <tr>
-                <th>Addons</th>
-                <td>
-                    <ul>
-                        @foreach($plan['addons'] as $addon)
-                        <li> <b>{{ $addon['label'] }}</b> : {{ $addon['count'] }} </li>
-                        @endforeach
-                    </ul>
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Pay with your Credit Card
-                </th>
-                <td>
-                    {!! Form::open(['route' => ['admin.employer.settings.subscribe', request()->segment(5) ], 'method' => 'POST']) !!}
-                    {!! csrf_field() !!}
-
-                    <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" data-key="{{ config('services.stripe.key') }}"
-                            data-amount="{{ $plan['price'] }}"
-                            data-email="{{ auth()->user()->email }}"
-                            data-name="SnappeeJobs"
-                            data-description="Plan Name : {{ $plan['name'] }}"
-                            data-image="/tile.png"
-                            data-label="Pay With your Credit Card"
-                            data-currency="GBP"
-                            data-locale="gb">
-                    </script>
-                    </form>
-                </td>
-            </tr>
-        </table>
-    </div><!--tab panel profile-->
-
 </section>
+
+{!! Form::open(
+['route' => 'admin.employer.settings.upgradeplan',
+'class' => 'form-horizontal',
+'role' => 'form',
+'method' => 'post'
+]) !!}
+
+    <div class="form-group">
+        <label for="office_life" class="col-lg-2 control-label">Upgrade Subscription</label>
+        <div class="col-lg-6">
+            <select name="plan_id" id="plan_id" class="form-control">
+                <option value="">Please select</option>
+                @foreach($plans as $plan_details)
+                @if($subscription_plan['id'] == $plan_details['id'])
+                <option
+                    value="{{ $plan_details['id'] }}"
+                    {{ $subscription_plan['id'] && $subscription_plan['id'] == $plan_details['id'] ? 'selected="selected"' : '' }}
+                    {{ old('plan_id') && $plan_details['id'] == old('plan_id') ? 'selected="selected"' : '' }}
+                    >
+                    {{ $plan_details['name'] }} ( &#163;{{ $plan_details['price']/100 }} )
+                </option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-lg-2">
+            <input type="submit" class="btn btn-success btn-xs" value="{{ trans('strings.save_button') }}" />
+        </div>
+    </div>
+</form>
 
 <div class="clearfix"></div>
 @stop

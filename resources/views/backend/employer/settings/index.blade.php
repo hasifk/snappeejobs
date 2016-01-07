@@ -23,7 +23,7 @@
         You are subscribed to the plan <span class="badge">{{ $plan['name'] }}</span>
         <br>
         <br>
-        Want to upgrade ? <a class="btn btn-primary btn-xs" href="{{ route('admin.employer.settings.upgrade') }}">Upgrade</a>
+        Want to upgrade ? <a class="btn btn-primary btn-xs" href="{{ route('admin.employer.settings.chooseplanupgrade') }}">Upgrade</a>
 
     @else
         You have not subscribed to any plans yet, to do so, please go to

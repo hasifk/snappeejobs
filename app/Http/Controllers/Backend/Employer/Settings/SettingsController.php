@@ -99,19 +99,29 @@ class SettingsController extends Controller
 
     }
 
-    public function chooseplanupgrade(Requests\Backend\Employer\Settings\EmployerChooseUpgradePlanRequest $request, $plan)
+    public function chooseplanupgrade(Requests\Backend\Employer\Settings\EmployerChooseUpgradePlanRequest $request)
     {
 
-        $planDetails = config('subscription.employer_plans.' . $plan);
+        $planDetails = config('subscription.employer_plans.' . auth()->user()->EmployerSubscriptionPlan);
 
+        $plans = config('subscription.employer_plans');
 
+        return view('backend.employer.settings.chooseupgrade', [
+            'subscription_plan' => $planDetails,
+            'plans'=> $plans
+        ]);
 
-        return view('backend.employer.settings.chooseupgrade', [ 'plan' => $planDetails ]);
     }
 
-    public function upgradeplan()
+    public function upgradeplan(Requests\Backend\Employer\Settings\EmployerUpgradePlanRequest $request)
     {
-        dd("Upgrade Page!!");
+
+        auth()->user()->subscription($request->get('plan_id'))->swap();
+
+        return redirect()
+            ->route('admin.employer.settings.dashboard')
+            ->withFlashSuccess('You have successfully upgraded your subscription plan. ');
+
     }
 
 }

@@ -14,14 +14,15 @@
               <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
                   <!-- Messages: style can be found in dropdown.less-->
-                  <li style="display: none;" class="dropdown messages-menu">
+                  <li class="dropdown messages-menu">
                     <!-- Menu toggle button -->
+                    @if ($unread_messages_count)
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                       <i class="fa fa-envelope-o"></i>
-                      <span class="label label-success">4</span>
+                      <span class="label label-success">{{ $unread_messages_count }}</span>
                     </a>
                     <ul class="dropdown-menu">
-                      <li class="header">{{ trans_choice('strings.you_have.messages', 4, ['number' => 4]) }}</li>
+                      <li class="header">You have {{ $unread_messages_count }} message(s)</li>
                       <li>
                         <!-- inner menu: contains the messages -->
                         <ul class="menu">
@@ -45,6 +46,7 @@
                       <li class="footer"><a href="#">{{ trans('strings.see_all.messages') }}</a></li>
                     </ul>
                   </li><!-- /.messages-menu -->
+                  @endif
 
                   <!-- Notifications Menu -->
                   <li style="display: none;" class="dropdown notifications-menu">

@@ -26,11 +26,15 @@
                 <h5>From: {{ $thread->messages()->orderBy('created_at', 'desc')->first()->sender->name }}
                     <span class="mailbox-read-time pull-right">{{ \Carbon\Carbon::parse($thread->updated_at)->diffForHumans() }}</span></h5>
             </div>
+
+
             <!-- /.mailbox-read-info -->
             <div class="mailbox-controls with-border text-center">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-container="body" title="Delete">
-                        <i class="fa fa-trash-o"></i></button>
+                    <a href="{{ route('admin.employer.mail.destroy', $thread->id) }}" data-method="delete" class="btn btn-default btn-sm">
+                        <i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="Delete"></i>
+                        Delete
+                    </a>
                 </div>
 
             </div>

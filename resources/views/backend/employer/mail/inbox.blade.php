@@ -72,6 +72,8 @@
                 </tbody>
             </table>
 
+            <br>
+
             <div class="pull-left">
                 {{ $inbox->total() }} thread(s) total
             </div>

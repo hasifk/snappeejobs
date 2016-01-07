@@ -17,6 +17,8 @@ use Illuminate\Http\Request;
 
 class EloquentMailRepository
 {
+    public $unReadMessageCount;
+    public $unReadMessages;
     /**
      * @var RoleRepositoryContract
      */
@@ -194,6 +196,38 @@ class EloquentMailRepository
         return;
     }
 
+    public function getUnReadMessages(){
+
+        $unread_count = \DB::table('thread_participants')
+            ->join('threads','thread_participants.thread_id','=','threads.id')
+            ->join('users','thread_participants.sender_id','=','users.id')
+            ->whereNull('thread_participants.deleted_at')
+            ->whereNull('thread_participants.read_at')
+            ->where('thread_participants.user_id',auth()->user()->id)
+            ->count();
+
+        $this->unReadMessageCount = $unread_count;
+
+        $unread_messages = \DB::table('thread_participants')
+            ->join('threads','thread_participants.thread_id','=','threads.id')
+            ->join('users','thread_participants.sender_id','=','users.id')
+            ->whereNull('thread_participants.read_at')
+            ->whereNull('thread_participants.deleted_at')
+            ->where('thread_participants.user_id',auth()->user()->id)
+            ->orderBy('thread_participants.updated_at')
+            ->select([
+                'users.name',
+                'threads.last_message',
+                'threads.updated_at',
+                'thread_participants.thread_id'
+            ])
+            ->orderBy('threads.updated_at', 'desc')->get();
+
+        $this->unReadMessages = $unread_messages;
+
+        return $unread_count;
+    }
+    
     public function createThread($data){
 
         $thread = Thread::create([
@@ -210,6 +244,14 @@ class EloquentMailRepository
         $this->thread->last_message = $data['message'];
         $this->thread->message_count = $this->thread->message_count + 1;
         $this->thread->save();
+
+        // Updating the thread_participants table's read_at to NULL
+        \DB::table('thread_participants')
+            ->where('thread_id', $this->thread->id)
+            ->update([
+                'read_at' => NULL,
+                'deleted_at' => NULL
+            ]);
     }
 
     public function shouldCreateNewThread($receiver_id, $sender_id){
@@ -223,7 +265,7 @@ class EloquentMailRepository
         if ( ! $count ) {
             return true;
         }
-        dd($dbObject->value('thread_id'));
+
         $this->thread = Thread::find($dbObject->value('thread_id'));
 
         return false;

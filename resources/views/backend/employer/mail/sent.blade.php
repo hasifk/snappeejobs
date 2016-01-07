@@ -55,6 +55,8 @@
                 </tbody>
             </table>
 
+            <br>
+
             <div class="pull-left">
                 {{ $sent->total() }} thread(s) total
             </div>

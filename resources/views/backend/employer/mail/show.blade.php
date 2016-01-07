@@ -22,21 +22,29 @@
         <div class="box-body no-padding">
             <div class="mailbox-read-info">
                 <h3>{{ $thread->subject }}</h3>
+                <br>
                 <h5>From: {{ $thread->messages()->orderBy('created_at', 'desc')->first()->sender->name }}
                     <span class="mailbox-read-time pull-right">{{ \Carbon\Carbon::parse($thread->updated_at)->diffForHumans() }}</span></h5>
             </div>
+
+
             <!-- /.mailbox-read-info -->
             <div class="mailbox-controls with-border text-center">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-container="body" title="Delete">
-                        <i class="fa fa-trash-o"></i></button>
+                    <a href="{{ route('admin.employer.mail.destroy', $thread->id) }}" data-method="delete" class="btn btn-default btn-sm">
+                        <i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="Delete"></i>
+                        Delete
+                    </a>
                 </div>
 
             </div>
 
+            @foreach($thread->messages as $message)
             <div class="mailbox-read-message">
-                {!! $thread->last_message !!}
+                {!! $message->content !!}
             </div>
+            <hr>
+            @endforeach
 
         </div>
         <!-- /.box-footer -->

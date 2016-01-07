@@ -15,7 +15,7 @@ trait EmployerAttribute
     public function getEmployerIdAttribute(){
         $employer_id = \DB::table('staff_employer')
             ->where('user_id', $this->id)
-            ->where('is_admin', true)
+            ->orderBy('is_admin')
             ->orderBy('created_at')
             ->value('employer_id');
         return $employer_id;

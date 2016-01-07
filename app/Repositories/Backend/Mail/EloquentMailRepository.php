@@ -17,6 +17,8 @@ use Illuminate\Http\Request;
 
 class EloquentMailRepository
 {
+    public $unReadMessageCount;
+    public $unReadMessages;
     /**
      * @var RoleRepositoryContract
      */
@@ -31,6 +33,7 @@ class EloquentMailRepository
     private $user;
     private $employerId;
     private $thread;
+    private $threadParticipants;
 
     /**
      * EloquentCompanyRepository constructor.
@@ -65,6 +68,33 @@ class EloquentMailRepository
             ->get();
     }
 
+    public function findOrThrowException($id) {
+
+        $this->thread = Thread::find($id);
+
+        if ( is_null($this->thread) ) {
+            throw new GeneralException('That thread does not exist.');
+        }
+
+        $threadParticipants = \DB::table('thread_participants')
+            ->where('thread_id', $this->thread->id)
+            ->select(['user_id', 'sender_id'])
+            ->get();
+
+        $threadParticipantsExceptUser = [];
+
+        foreach ($threadParticipants as $threadParticipant) {
+            $threadParticipantsExceptUser[] = $threadParticipant->user_id;
+            $threadParticipantsExceptUser[] = $threadParticipant->sender_id;
+        }
+
+        $threadParticipantsExceptUser = array_diff($threadParticipantsExceptUser, [ auth()->user()->id ]);
+
+        $threadParticipantsExceptUser = array_values($threadParticipantsExceptUser);
+
+        $this->threadParticipants = $threadParticipantsExceptUser;
+    }
+
     public function sendPrivateMessage(Request $request){
 
         $thread_exists = false;
@@ -85,6 +115,17 @@ class EloquentMailRepository
 
         return;
 
+    }
+
+    public function sendReply(Request $request, $thread_id){
+
+        $this->findOrThrowException($thread_id);
+
+        $this->updateThread($request->all());
+
+        $this->createMessage($request->all());
+
+        $this->connectThreadUsers($this->thread, ['to' => $this->threadParticipants[0]]);
     }
 
     public function inbox($per_page, $status = 1, $order_by = 'threads.updated_at', $sort = 'desc'){
@@ -112,7 +153,7 @@ class EloquentMailRepository
     public function sent($per_page, $status = 1, $order_by = 'threads.updated_at', $sort = 'desc'){
         $inbox = \DB::table('thread_participants')
             ->join('threads','thread_participants.thread_id','=','threads.id')
-            ->join('users','thread_participants.sender_id','=','users.id')
+            ->join('users','thread_participants.user_id','=','users.id')
             ->whereNull('thread_participants.deleted_at')
             ->where('thread_participants.sender_id',auth()->user()->id)
             ->orderBy('thread_participants.updated_at')
@@ -133,9 +174,60 @@ class EloquentMailRepository
     }
 
     public function getThread($id){
+
+        \DB::table('thread_participants')
+            ->where('thread_id', $id)
+            ->where('user_id', auth()->user()->id)
+            ->update(['read_at' => Carbon::now() ]);
+
         return Thread::findOrFail($id);
     }
 
+    public function deleteThread($id){
+        $this->findOrThrowException($id);
+
+        \DB::table('thread_participants')
+            ->where('thread_id', $this->thread->id)
+            ->where('user_id', $this->user->user()->id)
+            ->update([
+                'deleted_at'    => Carbon::now()
+            ]);
+
+        return;
+    }
+
+    public function getUnReadMessages(){
+
+        $unread_count = \DB::table('thread_participants')
+            ->join('threads','thread_participants.thread_id','=','threads.id')
+            ->join('users','thread_participants.sender_id','=','users.id')
+            ->whereNull('thread_participants.deleted_at')
+            ->whereNull('thread_participants.read_at')
+            ->where('thread_participants.user_id',auth()->user()->id)
+            ->count();
+
+        $this->unReadMessageCount = $unread_count;
+
+        $unread_messages = \DB::table('thread_participants')
+            ->join('threads','thread_participants.thread_id','=','threads.id')
+            ->join('users','thread_participants.sender_id','=','users.id')
+            ->whereNull('thread_participants.read_at')
+            ->whereNull('thread_participants.deleted_at')
+            ->where('thread_participants.user_id',auth()->user()->id)
+            ->orderBy('thread_participants.updated_at')
+            ->select([
+                'users.name',
+                'threads.last_message',
+                'threads.updated_at',
+                'thread_participants.thread_id'
+            ])
+            ->orderBy('threads.updated_at', 'desc')->get();
+
+        $this->unReadMessages = $unread_messages;
+
+        return $unread_count;
+    }
+    
     public function createThread($data){
 
         $thread = Thread::create([
@@ -152,6 +244,14 @@ class EloquentMailRepository
         $this->thread->last_message = $data['message'];
         $this->thread->message_count = $this->thread->message_count + 1;
         $this->thread->save();
+
+        // Updating the thread_participants table's read_at to NULL
+        \DB::table('thread_participants')
+            ->where('thread_id', $this->thread->id)
+            ->update([
+                'read_at' => NULL,
+                'deleted_at' => NULL
+            ]);
     }
 
     public function shouldCreateNewThread($receiver_id, $sender_id){
@@ -181,10 +281,20 @@ class EloquentMailRepository
             'created_at'    => Carbon::now(),
             'updated_at'    => Carbon::now(),
         ]);
-
     }
 
     public function connectThreadUsers(Thread $thread, $data){
+
+        $count = \DB::table('thread_participants')
+            ->where('thread_id', $thread->id)
+            ->where('user_id', $data['to'])
+            ->where('sender_id', $this->user->user()->id)
+            ->count();
+
+        if ( $count ) {
+            return;
+        }
+
         \DB::table('thread_participants')->insert([
             'thread_id'     => $thread->id,
             'user_id'       => $data['to'],

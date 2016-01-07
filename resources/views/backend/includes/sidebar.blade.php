@@ -101,7 +101,7 @@
                   @endauth
                 @endauth
 
-                @roles(['Employer'])
+                @roles(['Employer', 'Employer Staff'])
                   @permission('mail-view-private-messages')
                     <li class="{{ Active::pattern('admin/employer/mail/dashboard') }} treeview">
                       <a href="#">
@@ -116,7 +116,12 @@
                           <a href="{!! url('admin/employer/mail/create') !!}">{{ 'Compose' }}</a>
                         </li>
                         <li class="{{ Active::pattern('admin/employer/mail/inbox') }}">
-                          <a href="{!! url('admin/employer/mail/inbox') !!}">{{ 'Inbox' }}</a>
+                          <a href="{!! url('admin/employer/mail/inbox') !!}">
+                            {{ 'Inbox' }}
+                            @if ($unread_messages_count)
+                            <span class="label label-primary pull-right">{{ $unread_messages_count }}</span>
+                            @endif
+                          </a>
                         </li>
                         <li class="{{ Active::pattern('admin/employer/mail/sent') }}">
                           <a href="{!! url('admin/employer/mail/sent') !!}">{{ 'Sent' }}</a>

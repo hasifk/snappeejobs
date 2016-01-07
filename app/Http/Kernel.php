@@ -40,6 +40,7 @@ class Kernel extends HttpKernel {
 		 * Access Middleware
 		 */
 		'access.routeNeedsRole' => \App\Http\Middleware\RouteNeedsRole::class,
+		'access.routeNeedsEmployerAccount' => \App\Http\Middleware\RouteNeedsEmployerAccount::class,
 		'access.routeNeedsPermission' => \App\Http\Middleware\RouteNeedsPermission::class,
 		'access.routeNeedsSubscription' => \App\Http\Middleware\RouteNeedsSubscription::class,
 		'access.routeNeedsCompany' => \App\Http\Middleware\RouteNeedsCompany::class,

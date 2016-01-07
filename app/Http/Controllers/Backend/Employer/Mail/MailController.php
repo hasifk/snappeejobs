@@ -91,11 +91,20 @@ class MailController extends Controller
      */
     public function show(Requests\Backend\Employer\Mail\EmployerMailInboxSingleView $request, $thread_id)
     {
+
         $view = [
             'thread' => $this->mail->getThread($thread_id)
         ];
 
         return view('backend.employer.mail.show', $view);
+    }
+
+    public function reply(Requests\Backend\Employer\Mail\EmployerMailReplyRequest $request, $thread_id){
+        $this->mail->sendReply($request, $thread_id);
+
+        return redirect()
+            ->route('admin.employer.mail.sent')
+            ->withFlashSuccess('Successfully sent the reply');
     }
 
     /**
@@ -127,8 +136,12 @@ class MailController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Requests\Backend\Employer\Mail\EmployerMailDeleteRequest $request, $id)
     {
-        //
+        $this->mail->deleteThread($id);
+
+        return redirect()
+            ->route('admin.employer.mail.inbox')
+            ->withFlashSuccess('Successfully deleted the thread');
     }
 }

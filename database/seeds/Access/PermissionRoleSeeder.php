@@ -19,8 +19,8 @@ class PermissionRoleSeeder extends Seeder
     }
 
     public function insertEmployeeStaffRolePermission(){
-        $permissions = ['view-backend', 'view-access-management', 'employer-jobs-view',
-            'mail-send-private-message', 'mail-view-private-messages', 'mail-send-group-messages'
+        $permissions = ['view-backend', 'view-access-management', 'employer-jobs-view','mail-send-private-message',
+            'mail-view-private-messages', 'mail-delete-private-messages','mail-send-group-messages'
         ];
 
         $employer_role_id = \DB::table('roles')->where('name', 'Employer Staff')->value('id');
@@ -41,8 +41,8 @@ class PermissionRoleSeeder extends Seeder
             'view-backend', 'view-access-management', 'employer-users-view', 'company-profile-view',
             'company-profile-edit', 'employer-jobs-view', 'employer-jobs-add', 'employer-jobs-edit',
             'employer-jobs-change-status', 'employer-jobs-publish', 'employer-jobs-delete','mail-send-private-message',
-            'mail-view-private-messages', 'mail-send-group-messages','change-plan','create-employer-staff',
-            'edit-employer-staff', 'change-employer-staff-password','deactivate-employer-staff',
+            'mail-view-private-messages', 'mail-delete-private-messages', 'mail-send-group-messages','change-plan',
+            'create-employer-staff','edit-employer-staff', 'change-employer-staff-password','deactivate-employer-staff',
             'reactivate-employer-staff', 'ban-employer-staff', 'unban-employer-staff', 'delete-employer-staff',
             'employer-resend-confirmation-email', 'employer-settings'
         ];
@@ -65,7 +65,9 @@ class PermissionRoleSeeder extends Seeder
         \DB::table('staff_employer')->insert([
             'employer_id'   => 2,
             'user_id'       => 2,
-            'is_admin'      => true
+            'is_admin'      => true,
+            'created_at'    => \Carbon\Carbon::now(),
+            'updated_at'    => \Carbon\Carbon::now(),
         ]);
     }
 

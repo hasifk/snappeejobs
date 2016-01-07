@@ -182,6 +182,17 @@ class PermissionTableSeeder extends Seeder {
         $mailViewMessages->save();
 
         $permission_model = config('access.permission');
+        $mailDeleteMessage = new $permission_model;
+        $mailDeleteMessage->name = 'mail-delete-private-messages';
+        $mailDeleteMessage->display_name = 'Mail Delete Private Messages';
+        $mailDeleteMessage->system = true;
+        $mailDeleteMessage->group_id = 2;
+        $mailDeleteMessage->sort = 10;
+        $mailDeleteMessage->created_at = Carbon::now();
+        $mailDeleteMessage->updated_at = Carbon::now();
+        $mailDeleteMessage->save();
+
+        $permission_model = config('access.permission');
         $mailSendGroupMessages = new $permission_model;
         $mailSendGroupMessages->name = 'mail-send-group-messages';
         $mailSendGroupMessages->display_name = 'Mail Send Group Message';

@@ -216,6 +216,7 @@ class EloquentMailRepository
             ->where('thread_participants.user_id',auth()->user()->id)
             ->orderBy('thread_participants.updated_at')
             ->select([
+                'users.id',
                 'users.name',
                 'threads.last_message',
                 'threads.updated_at',
@@ -248,6 +249,7 @@ class EloquentMailRepository
         // Updating the thread_participants table's read_at to NULL
         \DB::table('thread_participants')
             ->where('thread_id', $this->thread->id)
+            ->where('user_id', '<>', $this->user->user()->id )
             ->update([
                 'read_at' => NULL,
                 'deleted_at' => NULL

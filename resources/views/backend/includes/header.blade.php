@@ -14,9 +14,9 @@
               <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
                   <!-- Messages: style can be found in dropdown.less-->
+                  @if ($unread_messages_count)
                   <li class="dropdown messages-menu">
                     <!-- Menu toggle button -->
-                    @if ($unread_messages_count)
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                       <i class="fa fa-envelope-o"></i>
                       <span class="label label-success">{{ $unread_messages_count }}</span>
@@ -26,24 +26,26 @@
                       <li>
                         <!-- inner menu: contains the messages -->
                         <ul class="menu">
+                          @foreach($unread_messages as $unread_message)
                           <li><!-- start message -->
-                            <a href="#">
+                            <a href="{{ route('admin.employer.mail.view', $unread_message->thread_id) }}">
                               <div class="pull-left">
                                 <!-- User Image -->
-                                <img src="{!! access()->user()->picture !!}" class="img-circle" alt="User Image"/>
+                                <img src="{!! \App\Models\Access\User\User::find($unread_message->id)->picture !!}" class="img-circle" alt="User Image"/>
                               </div>
                               <!-- Message title and timestamp -->
                               <h4>
-                                Support Team
-                                <small><i class="fa fa-clock-o"></i> 5 mins</small>
+                                {{ $unread_message->name }}
+                                <small><i class="fa fa-clock-o"></i> {{ \Carbon\Carbon::parse($unread_message->updated_at)->diffForHumans() }}</small>
                               </h4>
                               <!-- The message -->
-                              <p>Why not buy a new awesome theme?</p>
+                              <p>{{ str_limit(strip_tags($unread_message->last_message), 25) }}</p>
                             </a>
                           </li><!-- end message -->
+                          @endforeach
                         </ul><!-- /.menu -->
                       </li>
-                      <li class="footer"><a href="#">{{ trans('strings.see_all.messages') }}</a></li>
+                      <li class="footer"><a href="{{ route('admin.employer.mail.inbox') }}">{{ trans('strings.see_all.messages') }}</a></li>
                     </ul>
                   </li><!-- /.messages-menu -->
                   @endif

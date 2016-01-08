@@ -37,7 +37,9 @@
                             </a>
                         </td>
                         <td class="mailbox-subject">
+                            <a href="{{ route('admin.employer.mail.view', $thread->thread_id) }}">
                             {{ $thread->subject }}
+                            </a>
                         </td>
                         <td class="mailbox-date">{{ \Carbon\Carbon::parse($thread->updated_at)->diffForHumans() }}</td>
                         <td>

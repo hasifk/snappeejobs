@@ -8,6 +8,7 @@ elixir(function(mix) {
         .copy('vendor/fortawesome/font-awesome/fonts', 'public/build/fonts/font-awesome')
         .copy('vendor/twbs/bootstrap-sass/assets/fonts/bootstrap', 'public/build/fonts/bootstrap')
         .copy('vendor/twbs/bootstrap/dist/js/bootstrap.min.js', 'public/js/vendor')
+        .copy('./resources/assets/js/Ionicons/fonts', 'public/build/fonts')
 
         .sass([ // Process front-end stylesheets
                 'frontend/main.scss'
@@ -26,6 +27,7 @@ elixir(function(mix) {
             'backend/plugin/toastr/toastr.scss',
             './resources/assets/js/select2/src/scss/core.scss',
             './resources/assets/js/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.css',
+            './resources/assets/js/Ionicons/scss/ionicons.scss',
             'backend/plugin/select2/select2.scss',
         ], 'resources/assets/css/backend/main.css')
         .styles([ // Combine pre-processed CSS files

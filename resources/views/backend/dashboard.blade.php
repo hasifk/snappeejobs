@@ -28,7 +28,6 @@
                 <div class="icon">
                     <i class="ion-ios-people"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <!-- ./col -->
@@ -43,7 +42,6 @@
                 <div class="icon">
                     <i class="ion ion-card"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <!-- ./col -->
@@ -58,7 +56,6 @@
                 <div class="icon">
                     <i class="ion ion-ios-people-outline"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <!-- ./col -->
@@ -73,7 +70,6 @@
                 <div class="icon">
                     <i class="ion ion-briefcase"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <!-- ./col -->
@@ -92,9 +88,8 @@
                     <p>Total Jobs Posted</p>
                 </div>
                 <div class="icon">
-                    <i class="ion-ios-people"></i>
+                    <i class="ion-eye"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <!-- ./col -->
@@ -102,14 +97,13 @@
             <!-- small box -->
             <div class="small-box bg-green">
                 <div class="inner">
-                    <h3>{{ $total_job_applicattion }}</h3>
+                    <h3>{{ $total_job_application }}</h3>
 
                     <p>Job Applications Received</p>
                 </div>
                 <div class="icon">
                     <i class="ion ion-card"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <!-- ./col -->
@@ -124,7 +118,6 @@
                 <div class="icon">
                     <i class="ion ion-ios-people-outline"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <!-- ./col -->
@@ -137,9 +130,8 @@
                     <p>New Messages</p>
                 </div>
                 <div class="icon">
-                    <i class="ion ion-briefcase"></i>
+                    <i class="ion ion-email-unread"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
 

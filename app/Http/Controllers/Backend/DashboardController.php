@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Repositories\Backend\Dashboard\DashboardRepository;
 use \Illuminate\Http\Request;
 use App\Http\Requests\Backend\AdminProfileEditRequest;
 use Storage;
@@ -11,6 +12,21 @@ use DB;
  * @package App\Http\Controllers\Backend
  */
 class DashboardController extends Controller {
+    /**
+     * @var DashboardRepository
+     */
+    private $repository;
+
+
+    /**
+     * DashboardController constructor.
+     * @param DashboardRepository $repository
+     */
+    public function __construct(DashboardRepository $repository)
+    {
+
+        $this->repository = $repository;
+    }
 
 	/**
 	 * @return \Illuminate\View\View
@@ -18,16 +34,21 @@ class DashboardController extends Controller {
     public function index()
     {
 
-        $view = [
-            'employer_count'            => 2,
-            'active_subscriptions'      => 2,
-            'blocked_users'             => 2,
-            'active_job_listings'       => 2,
-            'total_jobs_posted'         => 2,
-            'total_job_applicattion'    => 2,
-            'total_staff_members'       => 2,
-            'new_messages'              => 2,
-        ];
+        $view = [];
+
+        if ( access()->hasRole('Administrator') ) {
+            $view['employer_count']  = $this->repository->getEmployerCount();
+            $view['active_subscriptions']  = $this->repository->getActiveSubscriptionCount();
+            $view['blocked_users']  = $this->repository->getBlockedUsersCount();
+            $view['active_job_listings']  = $this->repository->getActiveJobListingCount();
+        }
+
+        if ( access()->hasRole('Employer') ) {
+            $view['total_jobs_posted']  = $this->repository->getTotalJobsPostedCount();
+            $view['total_job_application']  = $this->repository->getTotalJobsApplicationsCount();
+            $view['total_staff_members']  = $this->repository->getTotalStaffMembersCount();
+            $view['new_messages']  = $this->repository->getTotalNewMessagesCount();
+        }
 
         return view('backend.dashboard', $view);
     }

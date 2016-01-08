@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Repositories\Backend\Company;
+namespace App\Repositories\Backend\Company;
 
 
 use App\Events\Backend\Company\CompanyCreated;

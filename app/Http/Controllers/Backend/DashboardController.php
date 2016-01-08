@@ -19,10 +19,14 @@ class DashboardController extends Controller {
     {
 
         $view = [
-            'employer_count'        => 2,
-            'active_subscriptions'  => 2,
-            'blocked_users'         => 2,
-            'active_job_listings'   => 2,
+            'employer_count'            => 2,
+            'active_subscriptions'      => 2,
+            'blocked_users'             => 2,
+            'active_job_listings'       => 2,
+            'total_jobs_posted'         => 2,
+            'total_job_applicattion'    => 2,
+            'total_staff_members'       => 2,
+            'new_messages'              => 2,
         ];
 
         return view('backend.dashboard', $view);

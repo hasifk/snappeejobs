@@ -14,6 +14,9 @@
 
 @section('content')
     <div class="row">
+
+        @roles(['Administrator'])
+
         <div class="col-lg-3 col-xs-6">
             <!-- small box -->
             <div class="small-box bg-aqua">
@@ -74,5 +77,73 @@
             </div>
         </div>
         <!-- ./col -->
+
+        @endauth
+
+
+        @roles(['Employer'])
+
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-aqua">
+                <div class="inner">
+                    <h3>{{ $total_jobs_posted }}</h3>
+
+                    <p>Total Jobs Posted</p>
+                </div>
+                <div class="icon">
+                    <i class="ion-ios-people"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-green">
+                <div class="inner">
+                    <h3>{{ $total_job_applicattion }}</h3>
+
+                    <p>Job Applications Received</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-card"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-yellow">
+                <div class="inner">
+                    <h3>{{ $total_staff_members }}</h3>
+
+                    <p>Staff Members</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-ios-people-outline"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-red">
+                <div class="inner">
+                    <h3>{{ $new_messages }}</h3>
+
+                    <p>New Messages</p>
+                </div>
+                <div class="icon">
+                    <i class="ion ion-briefcase"></i>
+                </div>
+                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+        </div>
+
+        @endauth
+
     </div>
 @endsection

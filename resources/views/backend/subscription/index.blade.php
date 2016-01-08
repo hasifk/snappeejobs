@@ -11,7 +11,7 @@
 
 @section ('breadcrumbs')
 <li><a href="{!!route('backend.dashboard')!!}"><i class="fa fa-dashboard"></i> {{ trans('menus.dashboard') }}</a></li>
-<li class="active">{!! link_to_route('admin.subscription', trans('menus.subscription_management')) !!}</li>
+<li class="active">{!! link_to_route('backend.subscription', trans('menus.subscription_management')) !!}</li>
 @stop
 
 @section('content')
@@ -20,56 +20,42 @@
 <table class="table table-striped table-bordered table-hover">
     <thead>
     <tr>
-        <th>{{ trans('crud.users.id') }}</th>
-        <th>{{ trans('crud.users.name') }}</th>
-        <th>{{ trans('crud.users.email') }}</th>
-        <th>{{ trans('crud.users.confirmed') }}</th>
-        <th>{{ trans('crud.users.roles') }}</th>
-        {{--            <th>{{ trans('crud.users.other_permissions') }}</th>--}}
-        <th class="visible-lg">{{ trans('crud.users.created') }}</th>
-        <th class="visible-lg">{{ trans('crud.users.last_updated') }}</th>
-        <th>{{ trans('crud.actions') }}</th>
+        <th>{{ trans('subscription.id') }}</th>
+        <th>{{ trans('subscription.subscriber_name') }}</th>
+        <th>{{ trans('subscription.subscriber_email') }}</th>
+        <th>{{ trans('subscription.subscribed_plan') }}</th>
+        <th class="visible-lg">{{ trans('subscription.subscribed_at') }}</th>
+        <th class="visible-lg">{{ trans('subscription.last_upgrade') }}</th>
+        <th>{{ trans('subscription.subscription_status') }}</th>
+        <th>{{ trans('subscription.actions') }}</th>
     </tr>
     </thead>
     <tbody>
-    @foreach ($users as $user)
+    @foreach ($subscribed_employers as $key => $employer)
     <tr>
-        <td>{!! $user->id !!}</td>
-        <td>{!! $user->name !!}</td>
-        <td>{!! link_to("mailto:".$user->email, $user->email) !!}</td>
-        <td>{!! $user->confirmed_label !!}</td>
-        <td>
-            @if ($user->roles()->count() > 0)
-            @foreach ($user->roles as $role)
-            {!! $role->name !!}<br/>
-            @endforeach
-            @else
-            None
-            @endif
-        </td>
-        {{--<td>--}}
-            {{--@if ($user->permissions()->count() > 0)--}}
-            {{--@foreach ($user->permissions as $perm)--}}
-            {{--{!! $perm->display_name !!}<br/>--}}
-            {{--@endforeach--}}
-            {{--@else--}}
-            {{--None--}}
-            {{--@endif--}}
-            {{--</td>--}}
-        <td class="visible-lg">{!! $user->created_at->diffForHumans() !!}</td>
-        <td class="visible-lg">{!! $user->updated_at->diffForHumans() !!}</td>
-        <td>{!! $user->action_buttons !!}</td>
+        <td>{!! $key+1 !!}</td>
+        <td>{!! $employer->name !!}</td>
+        <td>{!! link_to("mailto:".$employer->email, $employer->email) !!}</td>
+        <td>{{ $employer->stripe_plan }}</td>
+        <td class="visible-lg">{!! $employer->created_at !!}</td>
+        <td class="visible-lg">{!! $employer->updated_at !!}</td>
+        @if( $employer->subscription_ends_at == null)
+        <td>Active</td>
+        @else
+        <td>Expired</td>
+        @endif
+        <td><a href="/" class="btn btn-primary btn-xs">Change Plan</a></td>
     </tr>
     @endforeach
     </tbody>
 </table>
 
 <div class="pull-left">
-    {!! $users->total() !!} {{ trans('crud.users.total') }}
+    {!! count($subscribed_employers) !!} {{ trans('crud.users.total') }}
 </div>
 
 <div class="pull-right">
-    {!! $users->render() !!}
+    {!! $subscribed_employers->render() !!}
 </div>
 
 <div class="clearfix"></div>

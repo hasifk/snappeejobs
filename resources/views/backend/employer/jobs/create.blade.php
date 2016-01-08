@@ -91,13 +91,38 @@
     </div>
 
     <div class="form-group">
+        <label for="description" class="col-lg-2 control-label">Skills</label>
+        <div class="col-lg-10">
+            <select
+                    name="skills[]"
+                    id="skills"
+                    class="form-control select2 select2-hidden-accessible js-example-basic-multiple"
+                    multiple="multiple"
+                    style="width: 100%;"
+            >
+            @if (count($skills) > 0)
+                @foreach($skills as $skill)
+                        <option
+                                value="{{ $skill->id }}"
+                                {{ old('skills')
+                                && in_array($skill->id, old('skills')) ? 'selected="selected"' : '' }}
+                        >
+                            {{ $skill->name }}
+                        </option>
+                @endforeach
+            @endif
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
         <label for="description" class="col-lg-2 control-label">Description</label>
         <div class="col-lg-10">
             <textarea
                     name="description"
                     cols="30"
                     rows="10"
-                    class="form-control">{{ old('description') ? old('description') : '' }}</textarea>
+                    class="form-control textarea">{{ old('description') ? old('description') : '' }}</textarea>
         </div>
     </div>
 

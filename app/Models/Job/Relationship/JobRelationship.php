@@ -4,6 +4,7 @@ namespace App\Models\Job\Relationship;
 
 
 use App\Models\Company\Company;
+use App\Models\Skill\Skill;
 use App\Models\Job\JobPrerequisites\JobPrerequisites;
 
 trait JobRelationship
@@ -17,7 +18,13 @@ trait JobRelationship
             'App\Models\Job\Category\Category', 'category_preferences_jobs', 'job_id', 'job_category_id'
         );
     }
-    
+
+    public function skills(){
+        return $this->belongsToMany(
+            'App\Models\Job\Skill\Skill', 'job_skills', 'job_id', 'skill_id'
+        );
+    }
+
     public function prerequisites(){
         return $this->hasMany(JobPrerequisites::class, 'job_id');
     }

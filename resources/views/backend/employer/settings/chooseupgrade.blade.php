@@ -28,27 +28,31 @@
     </div>
 </section>
 
+@if($subscription_plan['id'] == "snappeejobs".count($plans))
+<h4>You are now subscribed to the higher plan.</h4>
+@else
+
 {!! Form::open(
 ['route' => 'admin.employer.settings.upgradeplan',
 'class' => 'form-horizontal',
 'role' => 'form',
 'method' => 'post'
 ]) !!}
-
     <div class="form-group">
         <label for="office_life" class="col-lg-2 control-label">Upgrade Subscription</label>
         <div class="col-lg-6">
             <select name="plan_id" id="plan_id" class="form-control">
                 <option value="">Please select</option>
                 @foreach($plans as $plan_details)
-                @if($subscription_plan['id'] == $plan_details['id'])
+                @if($subscription_plan['price'] < $plan_details['price'])
                 <option
                     value="{{ $plan_details['id'] }}"
                     {{ $subscription_plan['id'] && $subscription_plan['id'] == $plan_details['id'] ? 'selected="selected"' : '' }}
-                    {{ old('plan_id') && $plan_details['id'] == old('plan_id') ? 'selected="selected"' : '' }}
-                    >
-                    {{ $plan_details['name'] }} ( &#163;{{ $plan_details['price']/100 }} )
+                {{ old('plan_id') && $plan_details['id'] == old('plan_id') ? 'selected="selected"' : '' }}
+                >
+                {{ $plan_details['name'] }} ( &#163;{{ $plan_details['price']/100 }} )
                 </option>
+                @endif
                 @endforeach
             </select>
         </div>
@@ -59,6 +63,6 @@
         </div>
     </div>
 </form>
-
+@endif
 <div class="clearfix"></div>
 @stop

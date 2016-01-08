@@ -48,6 +48,14 @@
                           </span>
                         </a>
                       </li>
+                      <li class="{{ Active::pattern('admin/subscription/*') }}">
+                        <a href="{!!url('admin/subscription/')!!}">
+                          <i class="fa fa-users"></i>
+                              <span>
+                                {{ trans('menus.subscription_management') }}
+                              </span>
+                        </a>
+                      </li>
                     @endauth
                 @endauth
 

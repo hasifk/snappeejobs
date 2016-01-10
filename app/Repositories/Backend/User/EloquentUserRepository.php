@@ -315,6 +315,8 @@ class EloquentUserRepository implements UserContract {
 		$user->name = $input['name'];
 		$user->email = $input['email'];
 		$user->password = $input['password'];
+		$user->gender = $input['gender'];
+		$user->age = $input['age'];
 		$user->status = isset($input['status']) ? 1 : 0;
 		$user->confirmation_code = md5(uniqid(mt_rand(), true));
 		$user->confirmed = isset($input['confirmed']) ? 1 : 0;

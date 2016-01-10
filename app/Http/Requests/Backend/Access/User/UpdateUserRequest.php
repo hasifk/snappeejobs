@@ -26,8 +26,10 @@ class UpdateUserRequest extends Request {
 	public function rules()
 	{
 		return [
-			'email'	=>	'required|email',
-			'name'	=>  'required',
+			'email'					=>	'required|email',
+			'name'					=>  'required',
+			'gender'                => 'required|in:male,female',
+			'age'                   => 'required|integer',
 		];
 	}
 }

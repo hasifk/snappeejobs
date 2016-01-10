@@ -58,6 +58,13 @@ class AuthController extends Controller
         }
     }
 
+    public function validateUser(RegisterRequest $request){
+
+        $user = $this->auth->create($request->all());
+
+        return response()->json(['user' => $user]);
+    }
+
     /**
      * @return \Illuminate\View\View
      */

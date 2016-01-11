@@ -33,6 +33,12 @@ class UserCreatedHandler
         $user = $event->newUser;
         $createdUser = $event->createdUser;
 
+        if($createdUser->hasRole('Administrator')){
+            $createdUserId = $user->id;
+        }else{
+            $createdUserId = $createdUser->id;
+        }
+
         \Log::info("User created In: ".$user->name);
 
         $userIsEmployer = \DB::table('assigned_roles')
@@ -44,13 +50,13 @@ class UserCreatedHandler
             \Log::info("Employer user is created In: ".$user->name);
 
             $employer = \DB::table('staff_employer')
-                ->where('employer_id', $createdUser->id)
+                ->where('employer_id', $createdUserId)
                 ->where('user_id', $user->id)
                 ->first();
 
             if (! $employer) {
                 \DB::table('staff_employer')->insert([
-                    'employer_id'   => $createdUser->id,
+                    'employer_id'   => $createdUserId,
                     'user_id'       => $user->id,
                     'is_admin'      => true,
                     'created_at'    => \Carbon\Carbon::now(),

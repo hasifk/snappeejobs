@@ -6,5 +6,7 @@ $router->group([
     'middleware' => ['access.routeNeedsPermission:list-subscriptions', 'access.routeNeedsRole:Administrator']
 ],function() use ($router){
     get('/', 'SubscriptionController@index')->name('backend.subscription');
+    get('/upgradeplan/{userId}', 'SubscriptionController@chooseplanupgrade')->name('backend.user.subscription');
+    post('/upgradeplan/{userId}', 'SubscriptionController@upgradeplan')->name('backend.user.subscription.update');
 });
 

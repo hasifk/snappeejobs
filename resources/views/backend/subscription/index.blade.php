@@ -44,7 +44,7 @@
         @else
         <td>Expired</td>
         @endif
-        <td><a href="/" class="btn btn-primary btn-xs">Change Plan</a></td>
+        <td><a href="{!! route('backend.user.subscription',$employer->id) !!}" class="btn btn-primary btn-xs">Change Plan</a></td>
     </tr>
     @endforeach
     </tbody>

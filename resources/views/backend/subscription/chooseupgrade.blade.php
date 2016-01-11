@@ -39,7 +39,7 @@
 'method' => 'post'
 ]) !!}
     <div class="form-group">
-        <label for="office_life" class="col-lg-2 control-label">Upgrade Subscription {{ $subscription_plan['id'] }}</label>
+        <label for="office_life" class="col-lg-2 control-label">Upgrade Subscription</label>
         <div class="col-lg-6">
             <select name="plan_id" id="plan_id" class="form-control">
                 <option value="">Please select</option>

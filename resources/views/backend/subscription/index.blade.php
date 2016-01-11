@@ -15,7 +15,7 @@
 @stop
 
 @section('content')
-@include('backend.access.includes.partials.header-buttons')
+<br>
 
 <table class="table table-striped table-bordered table-hover">
     <thead>
@@ -35,7 +35,7 @@
     <tr>
         <td>{!! $key+1 !!}</td>
         <td>{!! $employer->name !!}</td>
-        <td>{!! link_to("mailto:".$employer->email, $employer->email) !!}</td>
+        <td>{!! $employer->email !!}</td>
         <td>{{ $employer->stripe_plan }}</td>
         <td class="visible-lg">{!! $employer->created_at !!}</td>
         <td class="visible-lg">{!! $employer->updated_at !!}</td>

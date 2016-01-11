@@ -17,6 +17,13 @@ trait JobAttribute
         }
     }
 
+    public function attachSkills($skills)
+    {
+        foreach ($skills as $skill) {
+            $this->attachSkill($skill);
+        }
+    }
+
     public function attachPrerequisites($prerequisites)
     {
         foreach ($prerequisites as $prerequisite) {
@@ -27,6 +34,13 @@ trait JobAttribute
     public function detachCategories()
     {
         \DB::table('category_preferences_jobs')
+            ->where('job_id', $this->id)
+            ->delete();
+    }
+
+    public function detachSkills()
+    {
+        \DB::table('job_skills')
             ->where('job_id', $this->id)
             ->delete();
     }
@@ -43,6 +57,16 @@ trait JobAttribute
         \DB::table('category_preferences_jobs')->insert([
             'job_id'                => $this->id,
             'job_category_id'       => $category
+        ]);
+    }
+
+    public function attachSkill($skill)
+    {
+        \DB::table('job_skills')->insert([
+            'job_id'                => $this->id,
+            'skill_id'              => $skill,
+            'created_at'            => Carbon::now(),
+            'updated_at'            => Carbon::now(),
         ]);
     }
 

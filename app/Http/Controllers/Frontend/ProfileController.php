@@ -64,4 +64,9 @@ class ProfileController extends Controller {
 
 		return redirect()->route('frontend.dashboard')->withFlashSuccess(trans("strings.profile_successfully_updated"));
 	}
+
+	public function resumeUpload(\Request $request){
+	    dd($request->all());
+	}
+
 }

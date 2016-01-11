@@ -25,6 +25,8 @@ $router->group(['namespace' => 'Auth'], function () use ($router)
 		get('auth/linkedin/callback', 'AuthController@linkedinHandleProviderCallback');
 		get('account/confirm/{token}', 'AuthController@confirmAccount')->name('account.confirm');
 		get('account/confirm/resend/{user_id}', 'AuthController@resendConfirmationEmail')->name('account.confirm.resend');
+		post('/auth/validate', 'AuthController@validateUser')->name('frontend.access.validate');
+
 
 		$router->controller('auth', 'AuthController');
 		$router->controller('password', 'PasswordController');

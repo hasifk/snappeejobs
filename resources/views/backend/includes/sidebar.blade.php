@@ -50,7 +50,7 @@
                       </li>
                       <li class="{{ Active::pattern('admin/subscription/*') }}">
                         <a href="{!!url('admin/subscription/')!!}">
-                          <i class="fa fa-users"></i>
+                          <i class="fa fa-credit-card"></i>
                               <span>
                                 {{ trans('menus.subscription_management') }}
                               </span>

@@ -49,6 +49,37 @@
     </div><!--form control-->
 
     <div class="form-group">
+        {!! Form::label('gender', "Gender", ['class' => 'col-lg-2 control-label']) !!}
+        <div class="col-lg-10">
+            <div class="checkbox">
+                <input
+                        type="radio"
+                        name="gender"
+                        id="gender_male"
+                        value="male" {{ old('gender') == 'male' ? 'checked="checked"' : '' }}
+                />
+                <label for="gender_male">Male</label>
+            </div>
+            <div class="checkbox">
+                <input
+                        type="radio"
+                        name="gender"
+                        id="gender_female"
+                        value="female" {{ old('gender') == 'female' ? 'checked="checked"' : '' }}
+                />
+                <label for="gender_female">Female</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        {!! Form::label('age', "Age", ['class' => 'col-lg-2 control-label']) !!}
+        <div class="col-lg-10">
+            {!! Form::text('age', null, ['class' => 'form-control', 'placeholder' => "Age"]) !!}
+        </div>
+    </div>
+
+    <div class="form-group">
         <label class="col-lg-2 control-label">{{ trans('validation.attributes.active') }}</label>
         <div class="col-lg-1">
             <input type="checkbox" value="1" name="status" checked="checked" />

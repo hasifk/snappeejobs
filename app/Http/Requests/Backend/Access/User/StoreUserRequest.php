@@ -30,6 +30,8 @@ class StoreUserRequest extends Request {
             'email'					=>	'required|email|unique:users',
             'password'				=>	'required|alpha_num|min:6|confirmed',
             'password_confirmation'	=>	'required|alpha_num|min:6',
+            'gender'                => 'required|in:male,female',
+            'age'                   => 'required|integer',
         ];
     }
 }

@@ -17,6 +17,7 @@ class AccessTableSeeder extends Seeder {
 		$this->call(PermissionTableSeeder::class);
 		$this->call(PermissionRoleSeeder::class);
 		$this->call(PermissionDependencyTableSeeder::class);
+		$this->call(EmployerSubscriptionPlanSeeder::class);
 
 		if(env('DB_DRIVER')=='mysql')
 			DB::statement('SET FOREIGN_KEY_CHECKS=1;');

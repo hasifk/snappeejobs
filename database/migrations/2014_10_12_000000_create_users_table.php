@@ -27,6 +27,8 @@ class CreateUsersTable extends Migration {
             $table->text('about_me');
             $table->integer('country_id');
             $table->integer('state_id');
+            $table->integer('age');
+            $table->enum('gender', ['male', 'female']);
 			$table->timestamps();
 			$table->softDeletes();
 		});

@@ -109,6 +109,7 @@ class EloquentJobRepository {
 
 			//Attach new job categories
 			$job->attachCategories($input['job_category']);
+			$job->attachSkills($input['skills']);
 			$job->attachPrerequisites($input['prerequisites']);
 
             Event::fire(new JobCreated($job, auth()->user() ));
@@ -136,6 +137,10 @@ class EloquentJobRepository {
 			//Update new job categories
 			$job->detachCategories();
 			$job->attachCategories($input['job_category']);
+
+			//Update new job skills
+			$job->detachSkills();
+			$job->attachSkills($input['skills']);
 
 			//Update new job prerequisites
 			$job->detachPrerequisites();

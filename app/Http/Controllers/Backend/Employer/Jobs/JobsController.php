@@ -61,6 +61,7 @@ class JobsController extends Controller
     {
         $job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
         $countries = \DB::table('countries')->select(['id', 'name'])->get();
+        $skills = \DB::table('skills')->select(['id', 'name'])->get();
 
         if ( $request->old('country_id') ) {
             $states = \DB::table('states')
@@ -77,7 +78,8 @@ class JobsController extends Controller
         $view = [
             'countries'         => $countries,
             'states'            => $states,
-            'job_categories'    => $job_categories
+            'job_categories'    => $job_categories,
+            'skills'            => $skills
         ];
 
         return view('backend.employer.jobs.create', $view);
@@ -122,6 +124,7 @@ class JobsController extends Controller
         $job = $this->jobs->findOrThrowException($id);
 
         $job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
+        $skills = \DB::table('skills')->select(['id', 'name'])->get();
         $countries = \DB::table('countries')->select(['id', 'name'])->get();
 
         if ( $request->old('country_id') || ( $job && $job->country_id ) ) {
@@ -135,7 +138,8 @@ class JobsController extends Controller
             'job'                   => $job,
             'countries'             => $countries,
             'states'                => $states,
-            'job_categories'        => $job_categories
+            'job_categories'        => $job_categories,
+            'skills'                => $skills
         ];
 
         return view('backend.employer.jobs.edit', $view);

@@ -21,6 +21,7 @@ elixir(function(mix) {
                 'plugins.js',
                 'frontend/main.js',
                 'vue/dist/vue.js',
+                './resources/assets/js/dropzone/dist/min/dropzone.min.js'
             ], 'public/js/frontend.js')
 
         .sass([ // Process back-end stylesheets

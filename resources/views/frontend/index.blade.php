@@ -168,7 +168,9 @@
                                 <label for="email">Email</label>
                                 <input v-model="email" type="email" class="form-control" id="email" name="email" placeholder="Your Email">
                             </div>
-                            <button type="submit" class="btn btn-primary">Improve Your Career</button>
+                            <button type="submit" class="btn btn-primary">
+                                Improve Your Career
+                            </button>
                         </form>
 
                     </div>
@@ -180,7 +182,7 @@
                             <div class="modal-content">
 
                                 <div class="modal-header">
-                                    <h3>Complete your registration here</h3>
+                                    <h3>@{{ modalHeading }}</h3>
                                 </div>
 
                                 <div class="modal-body">
@@ -257,24 +259,29 @@
 
                                         <div class="form-group">
                                             <div class="col-md-6 col-md-offset-4">
-                                                <input v-on:click="validateRegistration($event)" class="btn btn-primary" type="submit" value="Register">
+                                                <button
+                                                        v-on:click="validateRegistration($event)"
+                                                        class="btn btn-primary"
+                                                        type="submit"
+                                                        value="Register"
+                                                        data-loading-text='<i class="fa fa-circle-o-notch fa-spin"></i>Registering user...'
+                                                >Register</button>
                                             </div>
                                         </div>
 
                                     </div>
 
-                                    <div v-if="! registered" class="form-horizontal">
-                                        <form action="{{ route('frontend.profile.resume') }}"
-                                              class="dropzone"
-                                              id="my-awesome-dropzone"></form>
+                                    <div v-show="registered" class="form-horizontal">
+                                        <form enctype="multipart/form-data" method="post" action="{{ route('frontend.profile.resume') }}" id="upload-resume"></form>
                                     </div>
 
                                 </div>
                             </div>
                         </div>
+
+
                     </div>
                     <!-- Modal Body -->
-
 
                 </div>
 
@@ -289,28 +296,9 @@
 
 @section('after-scripts-end')
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/min/dropzone.min.js"></script>
-
 	<script>
 		//Being injected from FrontendController
 		console.log(test);
-
-        Dropzone.options.myAwesomeDropzone = {
-            paramName: "file", // The name that will be used to transfer the file
-            maxFilesize: 2, // MB
-            accept: function(file, done) {
-//                console.log([file, done]);
-            },
-            sending: function(file, xhr, data){
-//                data.append('_token', $('meta[name="_token"]').attr('content'));
-//                data.append('stored_by', 'buyer');
-            },
-            success: function(file, xhr){
-                console.log(xhr);
-//                uploadView.uploads.push(xhr);
-            }
-        };
-
 
         (function(){
 
@@ -318,6 +306,7 @@
                 el: '.registration-panel',
 
                 data: {
+                    modalHeading            : 'Complete your registration here',
                     name                    : '',
                     email                   : '',
                     password                : '',
@@ -336,14 +325,38 @@
                     },
 
                     validateRegistration: function(event){
-                        $(event.target).attr('disabled', 'disabled');
+                        $(event.target).button('loading');
                         var that = this;
                         $.post( "{{ route('frontend.access.validate') }}", this.$data, function(data){
-                            $(event.target).removeAttr('disabled');
+                            $(event.target).button('reset');
                             that.user = data.user;
                             that.registered = true;
+                            that.modalHeading = 'Please upload your resume';
 
-                            $("div#my-awesome-dropzone").dropzone({ url: "/file/post" });
+                            $("#upload-resume").addClass('dropzone').dropzone({
+                                url: "{{ route('frontend.profile.resume') }}",
+                                paramName: "file",
+                                maxFilesize: 5,
+                                accept: function (file, done) {
+                                    if (
+                                            ( file.type == 'application/msword' ) ||
+                                            ( file.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ) ||
+                                            ( file.type == 'application/pdf' )
+                                    ) {
+                                        done();
+                                    } else {
+                                        alert('Please upload doc/docx/pdf files')
+                                    }
+                                },
+                                sending: function (file, xhr, data) {
+                                    data.append('_token', $('meta[name="_token"]').attr('content'));
+                                    data.append('asdasd', 'hi there');
+                                },
+                                success: function (file, xhr) {
+                                    console.log(file, xhr);
+                                }
+                            });
+
                         }).error(function(err, data){
                             var errorArray = [];
                             for(var key in err.responseJSON) {

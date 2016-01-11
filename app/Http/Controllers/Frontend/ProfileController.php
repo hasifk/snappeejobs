@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Frontend\Access\ResumeUploadRequest;
 use App\Repositories\Frontend\User\UserContract;
 use App\Http\Requests\Frontend\User\UpdateProfileRequest;
 use DB;
@@ -65,8 +66,32 @@ class ProfileController extends Controller {
 		return redirect()->route('frontend.dashboard')->withFlashSuccess(trans("strings.profile_successfully_updated"));
 	}
 
-	public function resumeUpload(\Request $request){
-	    dd($request->all());
+	public function resumeUpload(ResumeUploadRequest $request){
+
+		$resume = $request->file('file');
+
+		if ( $resume && $resume->isValid() ) {
+
+            $filePath = "users/" . auth()->user()->id."/resume/";
+
+            Storage::deleteDirectory($filePath);
+
+			Storage::put($filePath. $resume->getClientOriginalName() , file_get_contents($resume));
+
+			$update_array = [
+                'user_id'               => auth()->user()->id,
+				'resume_filename'       => pathinfo($resume->getClientOriginalName(), PATHINFO_FILENAME),
+				'resume_extension'      => $resume->getClientOriginalExtension(),
+				'resume_path'           => $filePath
+			];
+
+            \DB::table('job_seeker_details')->where('user_id', auth()->user()->id)->delete();
+
+            \DB::table('job_seeker_details')->insert($update_array);
+
+            return response()->json(['status' => 1]);
+		}
+
 	}
 
 }

@@ -198,10 +198,6 @@
                                     </div>
 
 
-                                    @if(
-                                        !(auth()->user()->job_seeker_details &&
-                                        auth()->user()->job_seeker_details->has_resume)
-                                    )
                                     <div v-if="! registered" class="form-horizontal">
 
                                         <div class="form-group">
@@ -276,14 +272,20 @@
                                         </div>
 
                                     </div>
-                                    @endif
 
-                                    
-
+                                    @if(
+                                        !(auth()->user()->job_seeker_details &&
+                                        auth()->user()->job_seeker_details->has_resume)
+                                    )
                                     <div v-show="registered && !resumeUploaded" class="form-horizontal">
                                         <form enctype="multipart/form-data" method="post" action="{{ route('frontend.profile.resume') }}" id="upload-resume"></form>
                                     </div>
+                                    @endif
 
+                                    @if(
+                                        auth()->user()->job_seeker_details &&
+                                        auth()->user()->job_seeker_details->preferences_saved
+                                    )
                                     <div v-show="resumeUploaded && !preferencesSaved" style="min-height: 400px;" class="form-horizontal">
 
                                         <div class="form-group">
@@ -347,6 +349,7 @@
                                     <div v-show="preferencesSaved" style="min-height: 400px;" class="form-horizontal">
                                         <h3>Thank you for completing the registration.</h3>
                                     </div>
+                                    @endif
 
                                 </div>
                             </div>

@@ -52,4 +52,14 @@ class FrontendController extends Controller {
             $request->only('permission_user')
         );
 	}
+
+	public function companies()
+	{
+		dd("company listing");
+	}
+
+	public function companiesAction()
+	{
+		dd("company listing action");
+	}
 }

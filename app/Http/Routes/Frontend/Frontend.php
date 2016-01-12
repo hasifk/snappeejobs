@@ -7,6 +7,8 @@ get('/', 'FrontendController@index')->name('home');
 get('/home', 'FrontendController@index')->name('home');
 get('employers', 'FrontendController@employers');
 post('employers', 'FrontendController@employersAction');
+get('companies', 'FrontendController@companies');
+post('companies', 'FrontendController@companiesAction');
 get('get-states/{id}', function($id){
 	$states = DB::table('states')->where('country_id', $id)->select(['id', 'name'])->get();
 	return response()->json($states);

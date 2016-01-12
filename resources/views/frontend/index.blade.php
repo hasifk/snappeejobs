@@ -273,19 +273,11 @@
 
                                     </div>
 
-                                    @if(
-                                        !(auth()->user()->job_seeker_details &&
-                                        auth()->user()->job_seeker_details->has_resume)
-                                    )
                                     <div v-show="registered && !resumeUploaded" class="form-horizontal">
                                         <form enctype="multipart/form-data" method="post" action="{{ route('frontend.profile.resume') }}" id="upload-resume"></form>
                                     </div>
-                                    @endif
 
-                                    @if(
-                                        auth()->user()->job_seeker_details &&
-                                        auth()->user()->job_seeker_details->preferences_saved
-                                    )
+
                                     <div v-show="resumeUploaded && !preferencesSaved" style="min-height: 400px;" class="form-horizontal">
 
                                         <div class="form-group">
@@ -349,7 +341,6 @@
                                     <div v-show="preferencesSaved" style="min-height: 400px;" class="form-horizontal">
                                         <h3>Thank you for completing the registration.</h3>
                                     </div>
-                                    @endif
 
                                 </div>
                             </div>
@@ -435,10 +426,12 @@
                             paramName: "file",
                             maxFilesize: 5,
                             accept: function (file, done) {
+                                console.log(file);
                                 if (
                                         ( file.type == 'application/msword' ) ||
                                         ( file.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ) ||
-                                        ( file.type == 'application/pdf' )
+                                        ( file.type == 'application/pdf' ) ||
+                                        ( file.type == 'application/kswps' )
                                 ) {
                                     done();
                                 } else {

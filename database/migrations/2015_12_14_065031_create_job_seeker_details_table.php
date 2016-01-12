@@ -20,8 +20,8 @@ class CreateJobSeekerDetailsTable extends Migration
             $table->string('resume_extension');
             $table->enum('size', ['small', 'medium', 'big']);
             $table->integer('likes')->unsigned();
-            $table->boolean('has_resume')->default('false');
-            $table->boolean('preferences_saved')->default('false');
+            $table->boolean('has_resume')->default(false);
+            $table->boolean('preferences_saved')->default(false);
 
             $table->foreign('user_id')
                 ->references('id')

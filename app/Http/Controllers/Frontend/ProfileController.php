@@ -84,16 +84,17 @@ class ProfileController extends Controller {
                 'user_id'               => auth()->user()->id,
 				'resume_filename'       => pathinfo($resume->getClientOriginalName(), PATHINFO_FILENAME),
 				'resume_extension'      => $resume->getClientOriginalExtension(),
-				'resume_path'           => $filePath
+				'resume_path'           => $filePath,
+				'has_resume'			=> true
 			];
 
-            \DB::table('job_seeker_details')->where('user_id', auth()->user()->id)->delete();
+            \DB::table('job_seeker_details')->where('user_id', auth()->user()->id)->update([
+				'resume_filename'		=> '',
+				'resume_extension'		=> '',
+				'resume_path'			=> ''
+			]);
 
             \DB::table('job_seeker_details')->insert($update_array);
-
-            $user = auth()->user();
-            $user->has_resume = true;
-            $user->save();
 
             return response()->json(['status' => 1]);
 		}
@@ -124,9 +125,7 @@ class ProfileController extends Controller {
 			]);
 		}
 
-        $user = auth()->user();
-        $user->preferences_saved = true;
-        $user->save();
+		\DB::table('job_seeker_details')->where('user_id', auth()->user()->id)->update(['preferences_saved'=> true]);
 
 		return response()->json(['status' => 1]);
 	}

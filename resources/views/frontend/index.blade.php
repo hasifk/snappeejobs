@@ -264,15 +264,40 @@
                                                         class="btn btn-primary"
                                                         type="submit"
                                                         value="Register"
-                                                        data-loading-text='<i class="fa fa-circle-o-notch fa-spin"></i>Registering user...'
+                                                        data-loading-text='<i class="fa fa-circle-o-notch fa-spin"></i> Register'
                                                 >Register</button>
                                             </div>
                                         </div>
 
                                     </div>
 
-                                    <div v-show="registered" class="form-horizontal">
+                                    <div v-show="registered && !resumeUploaded" class="form-horizontal">
                                         <form enctype="multipart/form-data" method="post" action="{{ route('frontend.profile.resume') }}" id="upload-resume"></form>
+                                    </div>
+
+                                    <div v-show="resumeUploaded" class="form-horizontal">
+
+                                        <div class="form-group">
+                                            <label for="description" class="col-lg-2 control-label">Skills</label>
+                                            <div class="col-lg-10">
+                                                <select
+                                                        name="skills[]"
+                                                        id="skills"
+                                                        class="form-control select2 select2-hidden-accessible js-example-basic-multiple"
+                                                        multiple="multiple"
+                                                        style="width: 100%;"
+                                                >
+                                                    @if (count($skills) > 0)
+                                                        @foreach($skills as $skill)
+                                                            <option value="{{ $skill->id }}">
+                                                                {{ $skill->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </div>
+
                                     </div>
 
                                 </div>
@@ -315,7 +340,8 @@
                     age                     : '',
                     errors                  : [],
                     user                    : {},
-                    registered              : {{ auth()->guest() ? "false" : "true" }}
+                    registered              : {{ auth()->guest() ? "false" : "true" }},
+                    resumeUploaded          : false
                 },
 
                 methods: {
@@ -331,6 +357,7 @@
                             $(event.target).button('reset');
                             that.user = data.user;
                             that.registered = true;
+                            that.errors = [];
                             that.modalHeading = 'Please upload your resume';
 
                             $("#upload-resume").addClass('dropzone').dropzone({
@@ -350,10 +377,11 @@
                                 },
                                 sending: function (file, xhr, data) {
                                     data.append('_token', $('meta[name="_token"]').attr('content'));
-                                    data.append('asdasd', 'hi there');
                                 },
                                 success: function (file, xhr) {
                                     console.log(file, xhr);
+                                    that.modalHeading = 'One more step, fill in your skills and job categories';
+                                    that.resumeUploaded = true;
                                 }
                             });
 
@@ -366,7 +394,7 @@
                                 });
                             }
                             that.errors = errorArray;
-                            $(event.target).removeAttr('disabled');
+                            $(event.target).button('reset');
                         });
 
                     }

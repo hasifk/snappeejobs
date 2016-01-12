@@ -15,12 +15,14 @@ elixir(function(mix) {
             ], 'resources/assets/css/frontend/main.css')
         .styles([  // Combine pre-processed CSS files
                 'frontend/main.css',
-                './resources/assets/js/dropzone/dist/min/dropzone.min.css'
+                './resources/assets/js/dropzone/dist/min/dropzone.min.css',
+                './resources/assets/js/select2/src/scss/core.scss',
             ], 'public/css/frontend.css')
         .scripts([ // Combine front-end scripts
                 'plugins.js',
                 'frontend/main.js',
                 'vue/dist/vue.js',
+                'select2/dist/js/select2.js',
                 './resources/assets/js/dropzone/dist/min/dropzone.min.js'
             ], 'public/js/frontend.js')
 

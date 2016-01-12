@@ -144,11 +144,11 @@
             </div><!-- col-md-10 -->
         @endif
 
-        @if (! access()->user() )
-
             <div class="col-md-10 col-md-offset-1">
 
-                <div class="registration-panel panel panel-default">
+                <div class="homepage-modal panel panel-default">
+
+                    @if( auth()->guest() )
                     <div class="panel-heading">
                         <h1>DO YOU LOVE YOUR CAREER?</h1>
                     </div>
@@ -175,6 +175,8 @@
 
                     </div>
 
+                    @endif
+
                     <!-- Modal Body -->
                     <div class="modal" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel">
                         <div class="modal-dialog" role="document">
@@ -195,6 +197,11 @@
                                         </ul>
                                     </div>
 
+
+                                    @if(
+                                        !(auth()->user()->job_seeker_details &&
+                                        auth()->user()->job_seeker_details->has_resume)
+                                    )
                                     <div v-if="! registered" class="form-horizontal">
 
                                         <div class="form-group">
@@ -269,6 +276,7 @@
                                         </div>
 
                                     </div>
+                                    @endif
 
                                     <div v-show="registered && !resumeUploaded" class="form-horizontal">
                                         <form enctype="multipart/form-data" method="post" action="{{ route('frontend.profile.resume') }}" id="upload-resume"></form>
@@ -350,8 +358,6 @@
 
             </div>
 
-        @endif
-
 	</div>
 
 
@@ -360,13 +366,11 @@
 @section('after-scripts-end')
 
 	<script>
-		//Being injected from FrontendController
-		console.log(test);
 
-        (function(){
+
 
             var homeRegisterApp = new Vue({
-                el: '.registration-panel',
+                el: '.homepage-modal',
 
                 data: {
                     modalHeading            : 'Complete your registration here',
@@ -395,36 +399,13 @@
                         $(event.target).button('loading');
                         var that = this;
                         $.post( "{{ route('frontend.access.validate') }}", this.$data, function(data){
+
                             $(event.target).button('reset');
                             that.user = data.user;
                             that.registered = true;
                             that.errors = [];
                             that.modalHeading = 'Please upload your resume';
-
-                            $("#upload-resume").addClass('dropzone').dropzone({
-                                url: "{{ route('frontend.profile.resume') }}",
-                                paramName: "file",
-                                maxFilesize: 5,
-                                accept: function (file, done) {
-                                    if (
-                                            ( file.type == 'application/msword' ) ||
-                                            ( file.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ) ||
-                                            ( file.type == 'application/pdf' )
-                                    ) {
-                                        done();
-                                    } else {
-                                        alert('Please upload doc/docx/pdf files')
-                                    }
-                                },
-                                sending: function (file, xhr, data) {
-                                    data.append('_token', $('meta[name="_token"]').attr('content'));
-                                },
-                                success: function (file, xhr) {
-                                    console.log(file, xhr);
-                                    that.modalHeading = 'One more step, fill in your skills and job categories';
-                                    that.resumeUploaded = true;
-                                }
-                            });
+                            that.enableDropZone();
 
                         }).error(function(err, data){
                             var errorArray = [];
@@ -438,6 +419,35 @@
                             $(event.target).button('reset');
                         });
 
+                    },
+
+                    enableDropZone: function(){
+
+                        var that = this;
+
+                        $("#upload-resume").addClass('dropzone').dropzone({
+                            url: "{{ route('frontend.profile.resume') }}",
+                            paramName: "file",
+                            maxFilesize: 5,
+                            accept: function (file, done) {
+                                if (
+                                        ( file.type == 'application/msword' ) ||
+                                        ( file.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ) ||
+                                        ( file.type == 'application/pdf' )
+                                ) {
+                                    done();
+                                } else {
+                                    alert('Please upload doc/docx/pdf files')
+                                }
+                            },
+                            sending: function (file, xhr, data) {
+                                data.append('_token', $('meta[name="_token"]').attr('content'));
+                            },
+                            success: function (file, xhr) {
+                                that.modalHeading = 'One more step, fill in your skills and job categories';
+                                that.resumeUploaded = true;
+                            }
+                        });
                     },
 
                     submitPreferences: function(event){
@@ -472,7 +482,32 @@
                 }
             });
 
-        })();
+            @if( auth()->user() && access()->hasRole('User') )
+                @if(
+                    auth()->user()->job_seeker_details &&
+                    auth()->user()->job_seeker_details->has_resume
+                    )
+                    homeRegisterApp.resumeUploaded = true;
+
+                    @if(
+                        auth()->user()->job_seeker_details &&
+                        auth()->user()->job_seeker_details->preferences_saved
+                        )
+                        homeRegisterApp.preferencesSaved = true;
+                    @else
+                        homeRegisterApp.modalHeading = "Please save your preferences";
+                        $("#registrationModal").modal();
+                    @endif
+
+                @else
+                    homeRegisterApp.modalHeading = "Please upload your resume";
+                    homeRegisterApp.registered = true;
+                    homeRegisterApp.enableDropZone();
+                    $("#registrationModal").modal();
+                @endif
+            @endif
+
+
 
 	</script>
 @stop

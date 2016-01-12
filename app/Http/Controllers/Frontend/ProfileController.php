@@ -5,6 +5,7 @@ use App\Http\Requests\Frontend\Access\PreferencesSaveRequest;
 use App\Http\Requests\Frontend\Access\ResumeUploadRequest;
 use App\Repositories\Frontend\User\UserContract;
 use App\Http\Requests\Frontend\User\UpdateProfileRequest;
+use Carbon\Carbon;
 use DB;
 use Storage;
 
@@ -90,13 +91,44 @@ class ProfileController extends Controller {
 
             \DB::table('job_seeker_details')->insert($update_array);
 
+            $user = auth()->user();
+            $user->has_resume = true;
+            $user->save();
+
             return response()->json(['status' => 1]);
 		}
 
 	}
 
 	public function savePreferences(PreferencesSaveRequest $request){
-		dd($request->all());
+
+		$job_categories = $request->get('job_categories');
+
+		foreach ($job_categories as $job_category) {
+			\DB::table('category_preferences_job_seeker')->insert([
+				'user_id'				=> auth()->user()->id,
+				'job_category_id'		=> $job_category,
+				'created_at'			=> Carbon::now(),
+				'updated_at'			=> Carbon::now(),
+			]);
+		}
+
+		$skills = $request->get('skills');
+
+		foreach ($skills as $skill) {
+			\DB::table('skills_job_seeker')->insert([
+				'user_id'		=> auth()->user()->id,
+				'skill_id'		=> $skill,
+                'created_at'			=> Carbon::now(),
+                'updated_at'			=> Carbon::now(),
+			]);
+		}
+
+        $user = auth()->user();
+        $user->preferences_saved = true;
+        $user->save();
+
+		return response()->json(['status' => 1]);
 	}
 
 }

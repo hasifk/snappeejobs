@@ -148,4 +148,29 @@ trait UserAttribute {
     public function getStateNameAttribute() {
         return DB::table('states')->where('id', $this->state_id)->value('name');
     }
+
+    public function getJobSeekerDetailsAttribute(){
+
+        if (! access()->hasRole('User') ) {
+            return;
+        }
+
+        return DB::table('job_seeker_details')->where('user_id', $this->id)->first();
+    }
+
+    public function getJobSeekerSkillsAttribute(){
+        if (! access()->hasRole('User') ) {
+            return;
+        }
+
+        return DB::table('skills_job_seeker')->where('user_id', $this->id)->get();
+    }
+
+    public function getJobSeekerCategoryPreferencesAttribute(){
+        if (! access()->hasRole('User') ) {
+            return;
+        }
+
+        return DB::table('category_preferences_job_seeker')->where('user_id', $this->id)->get();
+    }
 }

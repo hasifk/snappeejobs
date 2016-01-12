@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Frontend\Access\PreferencesSaveRequest;
 use App\Http\Requests\Frontend\Access\ResumeUploadRequest;
 use App\Repositories\Frontend\User\UserContract;
 use App\Http\Requests\Frontend\User\UpdateProfileRequest;
@@ -92,6 +93,10 @@ class ProfileController extends Controller {
             return response()->json(['status' => 1]);
 		}
 
+	}
+
+	public function savePreferences(PreferencesSaveRequest $request){
+		dd($request->all());
 	}
 
 }

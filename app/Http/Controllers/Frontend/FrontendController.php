@@ -20,9 +20,11 @@ class FrontendController extends Controller {
 		]);
 
 		$skills = \DB::table('skills')->select(['id', 'name'])->get();
+		$job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
 
 		$view = [
-			'skills' => $skills
+			'skills' 			=> $skills,
+			'job_categories' 	=> $job_categories
 		];
 
 		return view('frontend.index', $view);

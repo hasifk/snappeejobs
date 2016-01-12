@@ -175,7 +175,6 @@
 
                     </div>
 
-
                     <!-- Modal Body -->
                     <div class="modal" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel">
                         <div class="modal-dialog" role="document">
@@ -275,12 +274,13 @@
                                         <form enctype="multipart/form-data" method="post" action="{{ route('frontend.profile.resume') }}" id="upload-resume"></form>
                                     </div>
 
-                                    <div v-show="resumeUploaded" class="form-horizontal">
+                                    <div v-show="resumeUploaded && !preferencesSaved" style="min-height: 400px;" class="form-horizontal">
 
                                         <div class="form-group">
-                                            <label for="description" class="col-lg-2 control-label">Skills</label>
-                                            <div class="col-lg-10">
+                                            <label for="description" class="col-lg-4 control-label">Skills</label>
+                                            <div class="col-lg-6">
                                                 <select
+                                                        v-model="skills"
                                                         name="skills[]"
                                                         id="skills"
                                                         class="form-control select2 select2-hidden-accessible js-example-basic-multiple"
@@ -298,6 +298,44 @@
                                             </div>
                                         </div>
 
+                                        <div class="form-group">
+                                            <label for="description" class="col-lg-4 control-label">Preffered Job Categories</label>
+                                            <div class="col-lg-6">
+                                                <select
+                                                        v-model="job_categories"
+                                                        name="job_categories[]"
+                                                        id="job_categories"
+                                                        class="form-control select2 select2-hidden-accessible js-example-basic-multiple"
+                                                        multiple="multiple"
+                                                        style="width: 100%;"
+                                                >
+                                                    @if (count($job_categories) > 0)
+                                                        @foreach($job_categories as $job_category)
+                                                            <option value="{{ $job_category->id }}">
+                                                                {{ $job_category->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-md-6 col-md-offset-4">
+                                                <button
+                                                        v-on:click="submitPreferences($event)"
+                                                        class="btn btn-primary"
+                                                        type="button"
+                                                        value="Save"
+                                                        data-loading-text='<i class="fa fa-circle-o-notch fa-spin"></i> Saving...'
+                                                >Save</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div v-show="preferencesSaved" style="min-height: 400px;" class="form-horizontal">
+                                        <h3>Thank you for completing the registration.</h3>
                                     </div>
 
                                 </div>
@@ -341,7 +379,10 @@
                     errors                  : [],
                     user                    : {},
                     registered              : {{ auth()->guest() ? "false" : "true" }},
-                    resumeUploaded          : false
+                    resumeUploaded          : false,
+                    skills                  : [],
+                    job_categories          : [],
+                    preferencesSaved        : false
                 },
 
                 methods: {
@@ -397,6 +438,36 @@
                             $(event.target).button('reset');
                         });
 
+                    },
+
+                    submitPreferences: function(event){
+                        $(event.target).button('loading');
+                        var that = this;
+                        $.post( "{{ route('frontend.profile.preferences') }}",
+                                {
+                                    skills          : $('select#skills').select2().val(),
+                                    job_categories  : $('select#job_categories').select2().val(),
+                                },
+                        function(data){
+                            $(event.target).button('reset');
+                            that.preferencesSaved = true;
+                            that.errors = [];
+                            that.modalHeading = '';
+                            setTimeout(function () {
+                                $("#registrationModal").modal('toggle');
+                                location.reload();
+                            }, 3000);
+                        }).error(function(err, data){
+                            var errorArray = [];
+                            for(var key in err.responseJSON) {
+                                var error = err.responseJSON[key];
+                                error.forEach(function(element, index){
+                                    errorArray.push(error[index]);
+                                });
+                            }
+                            that.errors = errorArray;
+                            $(event.target).button('reset');
+                        });
                     }
                 }
             });

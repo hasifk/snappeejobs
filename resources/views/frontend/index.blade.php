@@ -144,11 +144,11 @@
             </div><!-- col-md-10 -->
         @endif
 
-        @if (! access()->user() )
-
             <div class="col-md-10 col-md-offset-1">
 
-                <div class="registration-panel panel panel-default">
+                <div class="homepage-modal panel panel-default">
+
+                    @if( auth()->guest() )
                     <div class="panel-heading">
                         <h1>DO YOU LOVE YOUR CAREER?</h1>
                     </div>
@@ -168,11 +168,14 @@
                                 <label for="email">Email</label>
                                 <input v-model="email" type="email" class="form-control" id="email" name="email" placeholder="Your Email">
                             </div>
-                            <button type="submit" class="btn btn-primary">Improve Your Career</button>
+                            <button type="submit" class="btn btn-primary">
+                                Improve Your Career
+                            </button>
                         </form>
 
                     </div>
 
+                    @endif
 
                     <!-- Modal Body -->
                     <div class="modal" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel">
@@ -180,7 +183,7 @@
                             <div class="modal-content">
 
                                 <div class="modal-header">
-                                    <h3>Complete your registration here</h3>
+                                    <h3>@{{ modalHeading }}</h3>
                                 </div>
 
                                 <div class="modal-body">
@@ -193,6 +196,7 @@
                                             </li>
                                         </ul>
                                     </div>
+
 
                                     <div v-if="! registered" class="form-horizontal">
 
@@ -257,30 +261,107 @@
 
                                         <div class="form-group">
                                             <div class="col-md-6 col-md-offset-4">
-                                                <input v-on:click="validateRegistration($event)" class="btn btn-primary" type="submit" value="Register">
+                                                <button
+                                                        v-on:click="validateRegistration($event)"
+                                                        class="btn btn-primary"
+                                                        type="submit"
+                                                        value="Register"
+                                                        data-loading-text='<i class="fa fa-circle-o-notch fa-spin"></i> Register'
+                                                >Register</button>
                                             </div>
                                         </div>
 
                                     </div>
 
-                                    <div v-if="! registered" class="form-horizontal">
-                                        <form action="{{ route('frontend.profile.resume') }}"
-                                              class="dropzone"
-                                              id="my-awesome-dropzone"></form>
+                                    @if(
+                                        !(auth()->user()->job_seeker_details &&
+                                        auth()->user()->job_seeker_details->has_resume)
+                                    )
+                                    <div v-show="registered && !resumeUploaded" class="form-horizontal">
+                                        <form enctype="multipart/form-data" method="post" action="{{ route('frontend.profile.resume') }}" id="upload-resume"></form>
                                     </div>
+                                    @endif
+
+                                    @if(
+                                        auth()->user()->job_seeker_details &&
+                                        auth()->user()->job_seeker_details->preferences_saved
+                                    )
+                                    <div v-show="resumeUploaded && !preferencesSaved" style="min-height: 400px;" class="form-horizontal">
+
+                                        <div class="form-group">
+                                            <label for="description" class="col-lg-4 control-label">Skills</label>
+                                            <div class="col-lg-6">
+                                                <select
+                                                        v-model="skills"
+                                                        name="skills[]"
+                                                        id="skills"
+                                                        class="form-control select2 select2-hidden-accessible js-example-basic-multiple"
+                                                        multiple="multiple"
+                                                        style="width: 100%;"
+                                                >
+                                                    @if (count($skills) > 0)
+                                                        @foreach($skills as $skill)
+                                                            <option value="{{ $skill->id }}">
+                                                                {{ $skill->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="description" class="col-lg-4 control-label">Preffered Job Categories</label>
+                                            <div class="col-lg-6">
+                                                <select
+                                                        v-model="job_categories"
+                                                        name="job_categories[]"
+                                                        id="job_categories"
+                                                        class="form-control select2 select2-hidden-accessible js-example-basic-multiple"
+                                                        multiple="multiple"
+                                                        style="width: 100%;"
+                                                >
+                                                    @if (count($job_categories) > 0)
+                                                        @foreach($job_categories as $job_category)
+                                                            <option value="{{ $job_category->id }}">
+                                                                {{ $job_category->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-md-6 col-md-offset-4">
+                                                <button
+                                                        v-on:click="submitPreferences($event)"
+                                                        class="btn btn-primary"
+                                                        type="button"
+                                                        value="Save"
+                                                        data-loading-text='<i class="fa fa-circle-o-notch fa-spin"></i> Saving...'
+                                                >Save</button>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div v-show="preferencesSaved" style="min-height: 400px;" class="form-horizontal">
+                                        <h3>Thank you for completing the registration.</h3>
+                                    </div>
+                                    @endif
 
                                 </div>
                             </div>
                         </div>
+
+
                     </div>
                     <!-- Modal Body -->
-
 
                 </div>
 
             </div>
-
-        @endif
 
 	</div>
 
@@ -289,35 +370,15 @@
 
 @section('after-scripts-end')
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.0.1/min/dropzone.min.js"></script>
-
 	<script>
-		//Being injected from FrontendController
-		console.log(test);
-
-        Dropzone.options.myAwesomeDropzone = {
-            paramName: "file", // The name that will be used to transfer the file
-            maxFilesize: 2, // MB
-            accept: function(file, done) {
-//                console.log([file, done]);
-            },
-            sending: function(file, xhr, data){
-//                data.append('_token', $('meta[name="_token"]').attr('content'));
-//                data.append('stored_by', 'buyer');
-            },
-            success: function(file, xhr){
-                console.log(xhr);
-//                uploadView.uploads.push(xhr);
-            }
-        };
 
 
-        (function(){
 
             var homeRegisterApp = new Vue({
-                el: '.registration-panel',
+                el: '.homepage-modal',
 
                 data: {
+                    modalHeading            : 'Complete your registration here',
                     name                    : '',
                     email                   : '',
                     password                : '',
@@ -326,7 +387,11 @@
                     age                     : '',
                     errors                  : [],
                     user                    : {},
-                    registered              : {{ auth()->guest() ? "false" : "true" }}
+                    registered              : {{ auth()->guest() ? "false" : "true" }},
+                    resumeUploaded          : false,
+                    skills                  : [],
+                    job_categories          : [],
+                    preferencesSaved        : false
                 },
 
                 methods: {
@@ -336,14 +401,17 @@
                     },
 
                     validateRegistration: function(event){
-                        $(event.target).attr('disabled', 'disabled');
+                        $(event.target).button('loading');
                         var that = this;
                         $.post( "{{ route('frontend.access.validate') }}", this.$data, function(data){
-                            $(event.target).removeAttr('disabled');
+
+                            $(event.target).button('reset');
                             that.user = data.user;
                             that.registered = true;
+                            that.errors = [];
+                            that.modalHeading = 'Please upload your resume';
+                            that.enableDropZone();
 
-                            $("div#my-awesome-dropzone").dropzone({ url: "/file/post" });
                         }).error(function(err, data){
                             var errorArray = [];
                             for(var key in err.responseJSON) {
@@ -353,14 +421,98 @@
                                 });
                             }
                             that.errors = errorArray;
-                            $(event.target).removeAttr('disabled');
+                            $(event.target).button('reset');
                         });
 
+                    },
+
+                    enableDropZone: function(){
+
+                        var that = this;
+
+                        $("#upload-resume").addClass('dropzone').dropzone({
+                            url: "{{ route('frontend.profile.resume') }}",
+                            paramName: "file",
+                            maxFilesize: 5,
+                            accept: function (file, done) {
+                                if (
+                                        ( file.type == 'application/msword' ) ||
+                                        ( file.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ) ||
+                                        ( file.type == 'application/pdf' )
+                                ) {
+                                    done();
+                                } else {
+                                    alert('Please upload doc/docx/pdf files')
+                                }
+                            },
+                            sending: function (file, xhr, data) {
+                                data.append('_token', $('meta[name="_token"]').attr('content'));
+                            },
+                            success: function (file, xhr) {
+                                that.modalHeading = 'One more step, fill in your skills and job categories';
+                                that.resumeUploaded = true;
+                            }
+                        });
+                    },
+
+                    submitPreferences: function(event){
+                        $(event.target).button('loading');
+                        var that = this;
+                        $.post( "{{ route('frontend.profile.preferences') }}",
+                                {
+                                    skills          : $('select#skills').select2().val(),
+                                    job_categories  : $('select#job_categories').select2().val(),
+                                },
+                        function(data){
+                            $(event.target).button('reset');
+                            that.preferencesSaved = true;
+                            that.errors = [];
+                            that.modalHeading = '';
+                            setTimeout(function () {
+                                $("#registrationModal").modal('toggle');
+                                location.reload();
+                            }, 3000);
+                        }).error(function(err, data){
+                            var errorArray = [];
+                            for(var key in err.responseJSON) {
+                                var error = err.responseJSON[key];
+                                error.forEach(function(element, index){
+                                    errorArray.push(error[index]);
+                                });
+                            }
+                            that.errors = errorArray;
+                            $(event.target).button('reset');
+                        });
                     }
                 }
             });
 
-        })();
+            @if( auth()->user() && access()->hasRole('User') )
+                @if(
+                    auth()->user()->job_seeker_details &&
+                    auth()->user()->job_seeker_details->has_resume
+                    )
+                    homeRegisterApp.resumeUploaded = true;
+
+                    @if(
+                        auth()->user()->job_seeker_details &&
+                        auth()->user()->job_seeker_details->preferences_saved
+                        )
+                        homeRegisterApp.preferencesSaved = true;
+                    @else
+                        homeRegisterApp.modalHeading = "Please save your preferences";
+                        $("#registrationModal").modal();
+                    @endif
+
+                @else
+                    homeRegisterApp.modalHeading = "Please upload your resume";
+                    homeRegisterApp.registered = true;
+                    homeRegisterApp.enableDropZone();
+                    $("#registrationModal").modal();
+                @endif
+            @endif
+
+
 
 	</script>
 @stop

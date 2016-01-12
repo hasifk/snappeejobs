@@ -13,12 +13,15 @@ class CreateJobSeekerDetailsTable extends Migration
     public function up()
     {
         Schema::create('job_seeker_details', function (Blueprint $table) {
+            $table->increments('id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->string('resume_path');
             $table->string('resume_filename');
             $table->string('resume_extension');
             $table->enum('size', ['small', 'medium', 'big']);
             $table->integer('likes')->unsigned();
+            $table->boolean('has_resume')->default('false');
+            $table->boolean('preferences_saved')->default('false');
 
             $table->foreign('user_id')
                 ->references('id')

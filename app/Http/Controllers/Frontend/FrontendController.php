@@ -19,7 +19,15 @@ class FrontendController extends Controller {
 			'test' => 'it works!'
 		]);
 
-		return view('frontend.index');
+		$skills = \DB::table('skills')->select(['id', 'name'])->get();
+		$job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
+
+		$view = [
+			'skills' 			=> $skills,
+			'job_categories' 	=> $job_categories
+		];
+
+		return view('frontend.index', $view);
 	}
 
 	/**

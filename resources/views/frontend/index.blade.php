@@ -278,6 +278,8 @@
                                     </div>
                                     @endif
 
+                                    
+
                                     <div v-show="registered && !resumeUploaded" class="form-horizontal">
                                         <form enctype="multipart/form-data" method="post" action="{{ route('frontend.profile.resume') }}" id="upload-resume"></form>
                                     </div>

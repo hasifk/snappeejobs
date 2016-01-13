@@ -20,6 +20,7 @@ return [
     'profile' => 'Profile',
     'home' => 'Home',
     'employers' => 'For Employers',
+    'companies' => 'Companies',
     'login' => 'Login',
     'logout' => 'Logout',
     'macros' => 'Macros',

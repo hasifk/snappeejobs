@@ -29,6 +29,8 @@ return [
     'cancel_button' => 'Cancel',
     'click_here_to_confirm_account' => 'Click here to confirm your account:',
     'click_here_to_reset' => 'Click here to reset your password:',
+    'companies_title' => 'Explore Companies',
+    'companies_subtitle' => 'Browse offices before you apply',
     'edit' => 'Edit',
     'full_name' => 'Full Name',
     'if_confirmed_is_off' => '(If confirmed is off)',

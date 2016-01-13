@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder {
 		$this->call(IndustriesTableSeeder::class);
 		$this->call(JobCategoriesTableSeeder::class);
 		$this->call(SkillsTableSeeder::class);
+		$this->call(CompanyTableSeeder::class);
 
 		if(env('DB_DRIVER')=='mysql')
 			DB::statement('SET FOREIGN_KEY_CHECKS=1;');

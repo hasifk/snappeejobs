@@ -6,3 +6,6 @@
 @import '../../../../vendor/fortawesome/font-awesome/scss/font-awesome';
 
 // Front-end SCSS goes here.
+[v-cloak]{
+  display: none;
+}

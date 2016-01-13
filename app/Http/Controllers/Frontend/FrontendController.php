@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\EmployerSignupRequest;
+use App\Models\Company\Company;
 use DB;
 
 /**
@@ -83,20 +84,30 @@ class FrontendController extends Controller {
 	public function company($slug)
 	{
 
-		$company  = DB::table('companies')
-			->join('countries','companies.country_id','=','countries.id')
+		$company  = Company::
+			join('countries','companies.country_id','=','countries.id')
 			->join('states','companies.state_id','=','states.id')
-			->join('photo_company','companies.id','=','photo_company.company_id')
 			->where('companies.url_slug',$slug)
-			->select(
+			/*->select(
 				'companies.*',
 				'countries.name As country',
 				'states.name As state',
-				'photo_company.*'
-			)
+				'photo_company.*',
+				'people_company.*'
+			)*/
 			->first();
 
-		return view('frontend.companies.company',['company'=>$company]);
+		$photos = $company->photos()->get();
+
+		$peoples = $company->people()->get();
+
+		dd($company->people());
+
+		return view('frontend.companies.company',[
+			'company'	=>	$company,
+			'peoples'	=>	$peoples,
+			'photos'	=>	$photos
+		]);
 
 	}
 

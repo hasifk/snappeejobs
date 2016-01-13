@@ -8,6 +8,8 @@ class CompanyTableSeeder extends Seeder
     public function run()
     {
 
+        $faker = Faker\Factory::create();
+
         $companies = [
             [
                 'employer_id'       => 2,
@@ -67,6 +69,90 @@ class CompanyTableSeeder extends Seeder
         ];
 
         DB::table('photo_company')->insert($photos);
-        
+
+        $people = [
+            [
+                'id'                => 1,
+                'company_id'        => 1,
+                'name'              => $faker->name,
+                'designation'       => $faker->name,
+                'about_me'          => $faker->text(50),
+                'path'              => 'http://dummyimage.com/320x480/000/',
+                'filename'          => 'f23',
+                'extension'         => '.jpg',
+                'testimonial'       => $faker->text(30),
+                'created_at'        => \Carbon\Carbon::now(),
+                'updated_at'        => \Carbon\Carbon::now()
+            ],
+            [
+                'id'                => 2,
+                'company_id'        => 1,
+                'name'              => $faker->name,
+                'designation'       => $faker->name,
+                'about_me'          => $faker->text(50),
+                'path'              => 'http://dummyimage.com/320x480/000/',
+                'filename'          => 'f23',
+                'extension'         => '.jpg',
+                'testimonial'       => $faker->text(30),
+                'created_at'        => \Carbon\Carbon::now(),
+                'updated_at'        => \Carbon\Carbon::now()
+            ],
+            [
+                'id'                => 3,
+                'company_id'        => 1,
+                'name'              => $faker->name,
+                'designation'       => $faker->name,
+                'about_me'          => $faker->text(50),
+                'path'              => 'http://dummyimage.com/320x480/000/',
+                'filename'          => 'f23',
+                'extension'         => '.jpg',
+                'testimonial'       => $faker->text(30),
+                'created_at'        => \Carbon\Carbon::now(),
+                'updated_at'        => \Carbon\Carbon::now()
+            ],
+            [
+                'id'                => 5,
+                'company_id'        => 2,
+                'name'              => $faker->name,
+                'designation'       => $faker->name,
+                'about_me'          => $faker->text(50),
+                'path'              => 'http://dummyimage.com/320x480/000/',
+                'filename'          => 'f23',
+                'extension'         => '.jpg',
+                'testimonial'       => $faker->text(30),
+                'created_at'        => \Carbon\Carbon::now(),
+                'updated_at'        => \Carbon\Carbon::now()
+            ],
+            [
+                'id'                => 6,
+                'company_id'        => 2,
+                'name'              => $faker->name,
+                'designation'       => $faker->name,
+                'about_me'          => $faker->text(50),
+                'path'              => 'http://dummyimage.com/320x480/000/',
+                'filename'          => 'f23',
+                'extension'         => '.jpg',
+                'testimonial'       => $faker->text(30),
+                'created_at'        => \Carbon\Carbon::now(),
+                'updated_at'        => \Carbon\Carbon::now()
+            ],
+            [
+                'id'                => 7,
+                'company_id'        => 2,
+                'name'              => $faker->name,
+                'designation'       => $faker->name,
+                'about_me'          => $faker->text(50),
+                'path'              => 'http://dummyimage.com/320x480/000/',
+                'filename'          => 'f23',
+                'extension'         => '.jpg',
+                'testimonial'       => $faker->text(30),
+                'created_at'        => \Carbon\Carbon::now(),
+                'updated_at'        => \Carbon\Carbon::now()
+            ]
+        ];
+
+        DB::table('people_company')->insert($people);
+
+
     }
 }

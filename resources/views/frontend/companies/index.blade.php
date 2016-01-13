@@ -4,12 +4,15 @@
 
     <div class="col-md-10 col-md-offset-1">
         <div class="panel panel-default">
-            <div class="panel-heading"><i class="fa fa-home"></i> {{ trans('strings.companies_title') }}</div>
+            <div class="panel-heading">
+                <h3>{{ trans('strings.companies_title') }}</h3>
+            </div>
 
             <div class="panel-body">
 
-                {{ trans('strings.companies_subtitle') }}
-                <br>
+                <div class="col-md-9">
+                    <h4>{{ trans('strings.companies_subtitle') }}</h4>
+                </div>
                 @foreach($companies as $company)
                 <a href="/companies/{{$company->url_slug}}">
                     <div class="col-md-5">

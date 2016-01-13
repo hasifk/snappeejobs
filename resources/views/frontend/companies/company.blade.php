@@ -31,6 +31,12 @@
                     <img src="{{ $company->logo }}" alt="company photo">
                 </div>
 
+                @foreach($peoples as $people)
+                <div class="col-md-3">
+                    {{ $people }}
+                </div>
+                @endforeach
+
             </div>
         </div><!-- panel -->
     </div>

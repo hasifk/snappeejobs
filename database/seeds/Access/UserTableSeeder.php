@@ -55,6 +55,14 @@ class UserTableSeeder extends Seeder {
 				'confirmed' => true,
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
+			],[
+				'name' => 'Mark',
+				'email' => 'mark@facebook.com',
+				'password' => bcrypt('asdasd'),
+				'confirmation_code' => md5(uniqid(mt_rand(), true)),
+				'confirmed' => true,
+				'created_at' => Carbon::now(),
+				'updated_at' => Carbon::now()
 			],
 		];
 

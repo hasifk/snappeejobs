@@ -146,9 +146,10 @@
 
             <div class="col-md-10 col-md-offset-1">
 
-                <div class="homepage-modal panel panel-default">
+                <div v-cloak v-show="!registered || !resumeUploaded || !preferencesSaved" class="homepage-modal panel panel-default">
 
                     @if( auth()->guest() )
+
                     <div class="panel-heading">
                         <h1>DO YOU LOVE YOUR CAREER?</h1>
                     </div>
@@ -174,8 +175,6 @@
                         </form>
 
                     </div>
-
-                    @endif
 
                     <!-- Modal Body -->
                     <div class="modal" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel">
@@ -350,6 +349,8 @@
                     </div>
                     <!-- Modal Body -->
 
+                    @endif
+
                 </div>
 
             </div>
@@ -363,8 +364,7 @@
 
 	<script>
 
-
-
+        (function(){
             var homeRegisterApp = new Vue({
                 el: '.homepage-modal',
 
@@ -379,10 +379,10 @@
                     errors                  : [],
                     user                    : {},
                     registered              : {{ auth()->guest() ? "false" : "true" }},
-                    resumeUploaded          : false,
+                    resumeUploaded          : {{ auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->has_resume ? "true" : "false" }},
                     skills                  : [],
                     job_categories          : [],
-                    preferencesSaved        : false
+                    preferencesSaved        : {{ auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->preferences_saved ? "true" : "false" }},
                 },
 
                 methods: {
@@ -456,16 +456,16 @@
                                     skills          : $('select#skills').select2().val(),
                                     job_categories  : $('select#job_categories').select2().val(),
                                 },
-                        function(data){
-                            $(event.target).button('reset');
-                            that.preferencesSaved = true;
-                            that.errors = [];
-                            that.modalHeading = '';
-                            setTimeout(function () {
-                                $("#registrationModal").modal('toggle');
-                                location.reload();
-                            }, 3000);
-                        }).error(function(err, data){
+                                function(data){
+                                    $(event.target).button('reset');
+                                    that.preferencesSaved = true;
+                                    that.errors = [];
+                                    that.modalHeading = '';
+                                    setTimeout(function () {
+                                        $("#registrationModal").modal('toggle');
+                                        location.reload();
+                                    }, 3000);
+                                }).error(function(err, data){
                             var errorArray = [];
                             for(var key in err.responseJSON) {
                                 var error = err.responseJSON[key];
@@ -481,31 +481,30 @@
             });
 
             @if( auth()->user() && access()->hasRole('User') )
-                @if(
-                    auth()->user()->job_seeker_details &&
-                    auth()->user()->job_seeker_details->has_resume
-                    )
-                    homeRegisterApp.resumeUploaded = true;
-
                     @if(
                         auth()->user()->job_seeker_details &&
-                        auth()->user()->job_seeker_details->preferences_saved
+                        auth()->user()->job_seeker_details->has_resume
                         )
-                        homeRegisterApp.preferencesSaved = true;
-                    @else
-                        homeRegisterApp.modalHeading = "Please save your preferences";
-                        $("#registrationModal").modal();
-                    @endif
+                        homeRegisterApp.resumeUploaded = true;
 
-                @else
-                    homeRegisterApp.modalHeading = "Please upload your resume";
-                    homeRegisterApp.registered = true;
-                    homeRegisterApp.enableDropZone();
-                    $("#registrationModal").modal();
-                @endif
+                        @if(
+                            auth()->user()->job_seeker_details &&
+                            auth()->user()->job_seeker_details->preferences_saved
+                            )
+                            homeRegisterApp.preferencesSaved = true;
+                        @else
+                            homeRegisterApp.modalHeading = "Please save your preferences";
+                            $("#registrationModal").modal();
+                        @endif
+
+                        @else
+                            homeRegisterApp.modalHeading = "Please upload your resume";
+                            homeRegisterApp.registered = true;
+                            homeRegisterApp.enableDropZone();
+                            $("#registrationModal").modal();
+                        @endif
             @endif
-
-
+        })();
 
 	</script>
 @stop

@@ -146,7 +146,12 @@
 
             <div class="col-md-10 col-md-offset-1">
 
-                <div v-cloak v-show="!registered || !resumeUploaded || !preferencesSaved" class="homepage-modal panel panel-default">
+                <div
+                        v-cloak
+                        v-show="!registered || !resumeUploaded || !preferencesSaved"
+                        v-bind:class="{ 'panel-default' : !registered, 'panel' : !registered }"
+                        class="homepage-modal panel panel-default"
+                >
 
                     @if( auth()->guest() )
 
@@ -175,6 +180,8 @@
                         </form>
 
                     </div>
+
+                    @endif
 
                     <!-- Modal Body -->
                     <div class="modal" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel">
@@ -349,8 +356,6 @@
                     </div>
                     <!-- Modal Body -->
 
-                    @endif
-
                 </div>
 
             </div>
@@ -365,6 +370,9 @@
 	<script>
 
         (function(){
+
+            Dropzone.autoDiscover = false
+
             var homeRegisterApp = new Vue({
                 el: '.homepage-modal',
 
@@ -379,10 +387,10 @@
                     errors                  : [],
                     user                    : {},
                     registered              : {{ auth()->guest() ? "false" : "true" }},
-                    resumeUploaded          : {{ auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->has_resume ? "true" : "false" }},
+                    resumeUploaded          : {{ auth()->user() && auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->has_resume ? "true" : "false" }},
                     skills                  : [],
                     job_categories          : [],
-                    preferencesSaved        : {{ auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->preferences_saved ? "true" : "false" }},
+                    preferencesSaved        : {{ auth()->user() && auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->preferences_saved ? "true" : "false" }},
                 },
 
                 methods: {
@@ -497,12 +505,12 @@
                             $("#registrationModal").modal();
                         @endif
 
-                        @else
-                            homeRegisterApp.modalHeading = "Please upload your resume";
-                            homeRegisterApp.registered = true;
-                            homeRegisterApp.enableDropZone();
-                            $("#registrationModal").modal();
-                        @endif
+                    @else
+                        homeRegisterApp.modalHeading = "Please upload your resume";
+                        homeRegisterApp.registered = true;
+                        homeRegisterApp.enableDropZone();
+                        $("#registrationModal").modal();
+                    @endif
             @endif
         })();
 

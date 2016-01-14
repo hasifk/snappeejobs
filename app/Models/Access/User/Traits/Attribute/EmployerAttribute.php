@@ -20,6 +20,13 @@ trait EmployerAttribute
             ->value('employer_id');
         return $employer_id;
     }
+    
+    public function getCompanyIdAttribute(){
+        if ( is_null($this->employerId) ) {
+            return null;
+        }
+        return \DB::table('companies')->where('employer_id', $this->employerId)->value('id');
+    }
 
     public function getEmployerSubscriptionPlanAttribute()
     {

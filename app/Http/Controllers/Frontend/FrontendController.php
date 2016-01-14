@@ -3,6 +3,7 @@
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\EmployerSignupRequest;
 use App\Models\Company\Company;
+use App\Models\Company\People\People;
 use DB;
 
 /**
@@ -103,9 +104,19 @@ class FrontendController extends Controller {
 
 	}
 
-	public function people($id)
+	public function people($slug,$id)
 	{
-		dd("People!!".$id);
+
+		$people = People::find($id);
+
+		$company = Company::where('url_slug',$slug)
+			->first();
+
+		return view('frontend.companies.people',[
+			'people' 	=> $people,
+			'company' 	=> $company,
+		]);
+
 	}
 
 	public function companiesAction()

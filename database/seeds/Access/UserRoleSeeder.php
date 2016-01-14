@@ -37,6 +37,11 @@ class UserRoleSeeder extends Seeder {
 		$user_model = new $user_model;
 		$user_model::find(4)->attachRole(4);
 
+		//Attach employer role to silverbloom technologies
+		$user_model = config('auth.model');
+		$user_model = new $user_model;
+		$user_model::find(5)->attachRole(2);
+
 		if(env('DB_DRIVER') == 'mysql')
 			DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 	}

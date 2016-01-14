@@ -33,7 +33,7 @@
 
                 @foreach($company->people as $people)
                 <div class="col-md-4">
-                    <a href="/companies/people/{{ $people->id }}">
+                    <a href="/companies/{{ $company->url_slug }}/people/{{ $people->id }}">
                         <img src="{{ $people->path . $people->filename . $people->extension }}" alt="people company" >
                         <h3>
                             {{ $people->name }}
@@ -46,7 +46,7 @@
                         {{ $people->about_me }}
                     </p>
                     <blockquote>
-                        {{ $people->testimonial }}
+                        "{{ $people->testimonial }}"
                     </blockquote>
                 </div>
                 @endforeach

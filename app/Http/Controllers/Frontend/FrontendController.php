@@ -3,6 +3,7 @@
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\EmployerSignupRequest;
 use App\Models\Company\Company;
+use App\Models\Company\People\People;
 use DB;
 
 /**
@@ -87,26 +88,33 @@ class FrontendController extends Controller {
 		$company  = Company::
 			join('countries','companies.country_id','=','countries.id')
 			->join('states','companies.state_id','=','states.id')
+			->join('photo_company','companies.id','=','photo_company.company_id')
 			->where('companies.url_slug',$slug)
-			/*->select(
+			->select(
 				'companies.*',
 				'countries.name As country',
 				'states.name As state',
-				'photo_company.*',
-				'people_company.*'
-			)*/
+				'photo_company.*'
+			)
 			->first();
 
-		$photos = $company->photos()->get();
-
-		$peoples = $company->people()->get();
-
-		dd($company->people());
-
 		return view('frontend.companies.company',[
-			'company'	=>	$company,
-			'peoples'	=>	$peoples,
-			'photos'	=>	$photos
+			'company'	=>	$company
+		]);
+
+	}
+
+	public function people($slug,$id)
+	{
+
+		$people = People::find($id);
+
+		$company = Company::where('url_slug',$slug)
+			->first();
+
+		return view('frontend.companies.people',[
+			'people' 	=> $people,
+			'company' 	=> $company,
 		]);
 
 	}

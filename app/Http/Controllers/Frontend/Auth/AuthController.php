@@ -97,7 +97,14 @@ class AuthController extends Controller
             if ($throttles)
                 $this->clearLoginAttempts($request);
 
-            return redirect()->intended('/dashboard');
+            // Chekcing if the logged in user is a Normal User
+            // and if the user has uploaded resume and saved the job preferences.
+            if ( access()->hasRole('User') ) {
+                return redirect()->intended('/');
+            } else {
+                return redirect()->intended('/dashboard');
+            }
+
         } catch (GeneralException $e) {
             // If the login attempt was unsuccessful we will increment the number of attempts
             // to login and redirect the user back to the login form. Of course, when this

@@ -9,7 +9,7 @@
             <div class="panel-body">
 
                 <div class="col-md-6">
-                    <img src="{{$company->path . $company->filename . $company->extension}}" alt="company photo" width="400">
+                    <img src="{{$company->path . $company->filename . $company->extension}}" alt="company photo" >
                 </div>
 
                 <div class="col-md-6">
@@ -51,6 +51,22 @@
                 </div>
                 @endforeach
 
+                <div class="col-md-4">
+                    <a href="/companies/{{ $company->url_slug }}/jobs">
+                        <img src="http://dummyimage.com/320x235/888/000/f23.jpg?text=We+are+Hiring" alt="">
+                    </a>
+                </div>
+                @foreach($company->socialmedia as $socialMedia)
+                <div class="col-md-4">
+                    <a href="{{  $socialMedia->url }}">
+                        @if(str_contains($socialMedia->url,'twitter.'))
+                        <img src="http://dummyimage.com/320x235/888/000/f23.jpg?text={{ str_slug($company->title,'+') }}+on+Twitter" alt="">
+                        @else
+                        <img src="http://dummyimage.com/320x235/888/000/f23.jpg?text={{ str_slug($company->title,'+') }}+on+Facebook" alt="">
+                        @endif
+                    </a>
+                </div>
+                @endforeach
             </div>
         </div><!-- panel -->
     </div>

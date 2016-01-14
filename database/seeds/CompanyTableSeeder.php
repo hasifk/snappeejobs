@@ -51,8 +51,8 @@ class CompanyTableSeeder extends Seeder
             [
                 'id'                => 1,
                 'company_id'        => 1,
-                'path'              => 'http://officesnapshots.com/wp-content/uploads/2012/09/',
-                'filename'          => 's7',
+                'path'              => 'http://dummyimage.com/480x260/888/000/',
+                'filename'          => 'f23',
                 'extension'         => '.jpg',
                 'created_at'        => \Carbon\Carbon::now(),
                 'updated_at'        => \Carbon\Carbon::now()
@@ -60,8 +60,8 @@ class CompanyTableSeeder extends Seeder
             [
                 'id'                => 2,
                 'company_id'        => 2,
-                'path'              => 'https://vegivo.files.wordpress.com/2011/04/',
-                'filename'          => 'drvsf_photo_005_reflectionsstudio',
+                'path'              => 'http://dummyimage.com/480x260/888/000/',
+                'filename'          => 'f23',
                 'extension'         => '.jpg',
                 'created_at'        => \Carbon\Carbon::now(),
                 'updated_at'        => \Carbon\Carbon::now()
@@ -152,6 +152,40 @@ class CompanyTableSeeder extends Seeder
         ];
 
         DB::table('people_company')->insert($people);
+
+        $socialMedia = [
+            [
+                'id'                => 1,
+                'company_id'        => 1,
+                'url'               => 'https://twitter.com/silverbloomtech',
+                'created_at'        => \Carbon\Carbon::now(),
+                'updated_at'        => \Carbon\Carbon::now()
+            ],
+            [
+                'id'                => 2,
+                'company_id'        => 1,
+                'url'               => 'https://www.facebook.com/silverbloomtech',
+                'created_at'        => \Carbon\Carbon::now(),
+                'updated_at'        => \Carbon\Carbon::now()
+            ],
+            [
+                'id'                => 3,
+                'company_id'        => 2,
+                'url'               => 'https://twitter.com/silverbloomtech',
+                'created_at'        => \Carbon\Carbon::now(),
+                'updated_at'        => \Carbon\Carbon::now()
+            ],
+            [
+                'id'                => 4,
+                'company_id'        => 2,
+                'url'               => 'https://www.facebook.com/silverbloomtech',
+                'created_at'        => \Carbon\Carbon::now(),
+                'updated_at'        => \Carbon\Carbon::now()
+            ]
+        ];
+
+        DB::table('socialmediainfo_company')->insert($socialMedia);
+
 
 
     }

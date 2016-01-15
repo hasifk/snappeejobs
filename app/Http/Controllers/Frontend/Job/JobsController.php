@@ -29,6 +29,8 @@ class JobsController extends Controller
 
         $jobs = $this->jobRepository->getJobsPaginated(config('jobs.default_per_page'));
 
+
+
         
 
         $view = ['jobs' => $jobs];

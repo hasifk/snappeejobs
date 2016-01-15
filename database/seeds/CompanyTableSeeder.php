@@ -70,6 +70,8 @@ class CompanyTableSeeder extends Seeder
 
         DB::table('photo_company')->insert($photos);
 
+        /*Tst comment*/
+
         $people = [
             [
                 'id'                => 1,

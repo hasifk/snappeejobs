@@ -30,7 +30,10 @@ class DashboardRepository
     }
 
     public function getTotalJobsPostedCount(){
-        return \DB::table('jobs')->count();
+        if ( is_null(auth()->user()->companyId) ) {
+            return 0;
+        }
+        return \DB::table('jobs')->where('company_id', auth()->user()->companyId )->count();
     }
 
     public function getTotalJobsApplicationsCount(){

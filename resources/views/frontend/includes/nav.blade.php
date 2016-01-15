@@ -13,8 +13,9 @@
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
 					<li>{!! link_to('/', trans('navs.home')) !!}</li>
-					<li>{!! link_to('/employers', trans('navs.employers')) !!}</li>
-					<li>{!! link_to('/companies', trans('navs.companies')) !!}</li>
+					<li>{!! link_to('/employers', 'Employers') !!}</li>
+					<li>{!! link_to('/companies', 'Companies') !!}</li>
+					<li>{!! link_to('/jobs', 'Jobs' ) !!}</li>
 				</ul>
 
 				<ul class="nav navbar-nav navbar-right">

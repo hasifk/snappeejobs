@@ -5,7 +5,44 @@
 //or @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 @import '../../../../vendor/fortawesome/font-awesome/scss/font-awesome';
 
+@import "admin-lte";
+
 // Front-end SCSS goes here.
 [v-cloak]{
   display: none;
 }
+
+.job-card {
+  margin: 10px;
+  padding:10px;
+  border: 1px solid #CCCCCC;
+
+  .heading {
+    font-size:16px;
+    font-weight:bold;
+  }
+
+  .badge {
+    font-size: 10px;
+  }
+  
+  .label-danger {
+    margin: 2px;
+    a {
+      color: #fff;
+    }
+  }
+  .label-info {
+    margin: 2px;
+    a {
+      color: #fff;
+    }
+  }
+  .label-success {
+    margin: 2px;
+    a {
+      color: #fff;
+    }
+  }
+}
+

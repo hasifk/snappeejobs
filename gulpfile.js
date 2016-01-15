@@ -2,13 +2,13 @@ var elixir = require('laravel-elixir');
 
 elixir(function(mix) {
     mix
-        .phpUnit()
-
-        // Copy webfont files from /vendor directories to /public directory.
-        .copy('vendor/fortawesome/font-awesome/fonts', 'public/build/fonts/font-awesome')
-        .copy('vendor/twbs/bootstrap-sass/assets/fonts/bootstrap', 'public/build/fonts/bootstrap')
-        .copy('vendor/twbs/bootstrap/dist/js/bootstrap.min.js', 'public/js/vendor')
-        .copy('./resources/assets/js/Ionicons/fonts', 'public/build/fonts')
+        //.phpUnit()
+        //
+        //// Copy webfont files from /vendor directories to /public directory.
+        //.copy('vendor/fortawesome/font-awesome/fonts', 'public/build/fonts/font-awesome')
+        //.copy('vendor/twbs/bootstrap-sass/assets/fonts/bootstrap', 'public/build/fonts/bootstrap')
+        //.copy('vendor/twbs/bootstrap/dist/js/bootstrap.min.js', 'public/js/vendor')
+        //.copy('./resources/assets/js/Ionicons/fonts', 'public/build/fonts')
 
         .sass([ // Process front-end stylesheets
                 'frontend/main.scss'
@@ -24,6 +24,7 @@ elixir(function(mix) {
                 'select2/dist/js/select2.js',
                 './resources/assets/js/dropzone/dist/min/dropzone.min.js',
                 'frontend/main.js',
+                'backend/main.js',
             ], 'public/js/frontend.js')
 
         .sass([ // Process back-end stylesheets

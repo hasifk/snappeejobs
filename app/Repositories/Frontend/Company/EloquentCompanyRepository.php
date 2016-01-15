@@ -1,6 +1,7 @@
 <?php namespace App\Repositories\Frontend\Company;
 
 use App\Models\Company\Company;
+use Illuminate\Support\Facades\Request;
 
 /**
  * Class EloquentUserRepository
@@ -8,7 +9,17 @@ use App\Models\Company\Company;
  */
 class EloquentCompanyRepository {
 
-    public function getCompaniesPaginated($per_page, $order_by = 'companies.id', $sort = 'asc') {
+    public function getCompaniesPaginated(Request $request, $per_page, $order_by = 'companies.id', $sort = 'asc') {
+
+        $searchObj = new Company();
+
+        // First the joins
+        /*if ( $request->get('locations') ) {
+            $searchObj = $searchObj->join('states', 'states.id', '=', 'jobs.id');
+        }
+        if ( $request->get('skills') ) {
+            $searchObj = $searchObj->join('job_skills', 'job_skills.job_id', '=', 'jobs.id');
+        }*/
 
         return Company::with('people','photos','videos','socialmedia','industries')
             ->orderBy($order_by, $sort)

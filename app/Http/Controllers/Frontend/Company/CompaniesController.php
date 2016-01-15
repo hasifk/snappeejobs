@@ -39,7 +39,7 @@ class CompaniesController extends Controller
                 'countries.iso_code_2 As country_code'
             ])->get();
 
-        $companies = $this->companyRepository->getCompaniesPaginated(config('companies.default_per_page'));
+        $companies = $this->companyRepository->getCompaniesPaginated($request, config('companies.default_per_page'));
 
         return view('frontend.companies.index',[
             'industries' =>  $industries,

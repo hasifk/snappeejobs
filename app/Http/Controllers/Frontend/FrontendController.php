@@ -63,62 +63,6 @@ class FrontendController extends Controller {
         );
 	}
 
-	public function companies()
-	{
-
-		$companies  = DB::table('companies')
-			->join('countries','companies.country_id','=','countries.id')
-			->join('states','companies.state_id','=','states.id')
-			->join('photo_company','companies.id','=','photo_company.company_id')
-			->select(
-				'companies.*',
-				'countries.name As country',
-				'states.name As state',
-				'photo_company.*'
-			)
-			->get();
-
-		return view('frontend.companies.index',['companies'=>$companies]);
-
-	}
-
-	public function company($slug)
-	{
-
-		$company  = Company::
-			join('countries','companies.country_id','=','countries.id')
-			->join('states','companies.state_id','=','states.id')
-			->join('photo_company','companies.id','=','photo_company.company_id')
-			->where('companies.url_slug',$slug)
-			->select(
-				'companies.*',
-				'countries.name As country',
-				'states.name As state',
-				'photo_company.*'
-			)
-			->first();
-
-		return view('frontend.companies.company',[
-			'company'	=>	$company
-		]);
-
-	}
-
-	public function people($slug,$id)
-	{
-
-		$people = People::find($id);
-
-		$company = Company::where('url_slug',$slug)
-			->first();
-
-		return view('frontend.companies.people',[
-			'people' 	=> $people,
-			'company' 	=> $company,
-		]);
-
-	}
-
 	public function companiesAction()
 	{
 		dd("company listing action");

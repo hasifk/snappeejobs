@@ -2,15 +2,12 @@
 
 namespace App\Models\Job\Relationship;
 
-
-use App\Models\Company\Company;
-use App\Models\Skill\Skill;
 use App\Models\Job\JobPrerequisites\JobPrerequisites;
 
 trait JobRelationship
 {
     public function company(){
-        return $this->hasOne(Company::class, 'id', 'company_id');
+        return $this->hasOne('App\Models\Company\Company', 'id', 'company_id');
     }
 
     public function categories(){

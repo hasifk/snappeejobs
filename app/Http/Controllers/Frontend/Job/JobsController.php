@@ -25,15 +25,37 @@ class JobsController extends Controller
         $this->jobRepository = $jobRepository;
     }
 
-    public function index(){
+    public function index(Request $request){
 
-        $jobs = $this->jobRepository->getJobsPaginated(config('jobs.default_per_page'));
+        $job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
+        $countries = \DB::table('countries')->select(['id', 'name'])->get();
+        $skills = \DB::table('skills')->select(['id', 'name'])->get();
 
+        if ( request('country_id') ) {
+            $states = \DB::table('states')
+                ->where('country_id', request('country_id'))
+                ->select(['id', 'name'])
+                ->get();
+        } else {
+            $states = \DB::table('states')
+                ->where('country_id', 222)
+                ->select(['id', 'name'])
+                ->get();
+        }
 
+        $jobsResult = $this->jobRepository->getJobsPaginated( $request, config('jobs.default_per_page'));
 
-        
+        $paginator = $jobsResult['paginator'];
+        $jobs = $jobsResult['jobs'];
 
-        $view = ['jobs' => $jobs];
+        $view = [
+            'countries'         => $countries,
+            'states'            => $states,
+            'categories'        => $job_categories,
+            'skills'            => $skills,
+            'jobs'              => $jobs,
+            'paginator'         => $paginator
+        ];
 
         return view('frontend.jobs.index', $view);
     }

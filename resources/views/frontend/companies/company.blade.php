@@ -9,7 +9,7 @@
             <div class="panel-body">
 
                 <div class="col-md-6">
-                    <img src="{{$company->path . $company->filename . $company->extension}}" alt="company photo" >
+                    <img src="{{$company->photos->first()->path . $company->photos->first()->filename . $company->photos->first()->extension}}" alt="company photo" >
                 </div>
 
                 <div class="col-md-6">

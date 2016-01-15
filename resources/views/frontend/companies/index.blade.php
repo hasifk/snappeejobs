@@ -16,9 +16,9 @@
                 @foreach($companies as $company)
                 <a href="/companies/{{$company->url_slug}}">
                     <div class="col-md-5">
-                        <img src="{{$company->path . $company->filename . $company->extension}}" alt="company photo" width="400">
+                        <img src="{{$company->photos->first()->path . $company->photos->first()->filename . $company->photos->first()->extension}}" alt="company photo" width="400">
                         <h2>{{$company->title}}</h2>
-                        <h4>{{$company->size}} | {{$company->country}} | {{$company->state}}</h4>
+                        <h4>{{$company->size}} | {{$company->countryName}} | {{$company->stateName}}</h4>
                     </div>
                 </a>
                 @endforeach

@@ -60,4 +60,20 @@ class JobsController extends Controller
         return view('frontend.jobs.index', $view);
     }
 
+    public function show(Requests\Frontend\Job\JobViewRequest $request, $company, $slug){
+
+        $job = Job::with(['company' => function($query) use ($company) {
+            $query->where('companies.url_slug', $company);
+        }])
+            ->where('title_url_slug', $slug)
+            ->first();
+
+        $view = [
+            'job' => $job
+        ];
+
+        return view('frontend.jobs.show', $view);
+
+    }
+
 }

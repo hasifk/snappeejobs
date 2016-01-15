@@ -3,6 +3,7 @@
 use App\Exceptions\Backend\Access\Employer\EmployerNeedsRolesException;
 use App\Exceptions\Backend\Access\Employer\Mail\MessageDoesNotBelongToUser;
 use App\Exceptions\Backend\Access\Employer\Settings\SubscriptionPlanException;
+use App\Exceptions\Frontend\Job\JobDoesNotExist;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -71,6 +72,11 @@ class Handler extends ExceptionHandler {
 		if ($e instanceof SubscriptionPlanException)
 		{
 			return redirect()->route('admin.employer.settings.chooseplanupgrade')->withInput()->withFlashDanger($e->validationErrors());
+		}
+
+		if ($e instanceof JobDoesNotExist)
+		{
+			return redirect()->route('jobs.search')->withInput()->withFlashDanger($e->validationErrors());
 		}
 
 		//Catch all

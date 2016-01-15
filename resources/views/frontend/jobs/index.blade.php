@@ -168,7 +168,7 @@
                 <div class="job-card">
                     <div class="row">
                         <div class="col-md-12 heading">
-                            <a href="{{ route('jobs.view', $job->company->url_slug.'/'.$job->title_url_slug) }}">{{ $job->title }}</a>
+                            <a href="{{ route('jobs.view' , [ $job->company->url_slug , $job->title_url_slug ] ) }}">{{ $job->title }}</a>
                         </div>
                         <div class="col-md-12">
                                 <span class="label label-danger">

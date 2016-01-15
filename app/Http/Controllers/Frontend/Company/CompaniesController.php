@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend\Company;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\Company\People\People;
 use App\Repositories\Frontend\Company\EloquentCompanyRepository;
 use DB;
@@ -25,12 +26,26 @@ class CompaniesController extends Controller
         $this->companyRepository = $companyRepository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
+
+        $industries = \DB::table('industries')->select(['id', 'name'])->get();
+
+        $locations = \DB::table('states')
+            ->join('countries','states.country_id','=','countries.id')
+            ->select([
+                'states.id',
+                'states.name As state',
+                'countries.iso_code_2 As country_code'
+            ])->get();
 
         $companies = $this->companyRepository->getCompaniesPaginated(config('companies.default_per_page'));
 
-        return view('frontend.companies.index',['companies'=>$companies]);
+        return view('frontend.companies.index',[
+            'industries' =>  $industries,
+            'locations'  =>  $locations,
+            'companies'  =>  $companies
+        ]);
 
     }
 

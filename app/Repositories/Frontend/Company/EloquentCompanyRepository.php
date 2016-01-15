@@ -12,6 +12,7 @@ class EloquentCompanyRepository {
 
         return Company::with('people','photos','videos','socialmedia','industries')
             ->orderBy($order_by, $sort)
+            ->groupBy()
             ->paginate($per_page);
 
     }

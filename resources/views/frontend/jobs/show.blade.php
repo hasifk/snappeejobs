@@ -12,11 +12,15 @@
             <div class="panel-body">
 
                 <ol class="breadcrumb">
-                    <li><a href="#">{{ $job->company->title }}</a></li>
-                    <li class="active"><a href="#">{{ $job->title }}</a></li>
+                    <li><a href="{{ route('companies.view', $job->company->url_slug) }}">{{ $job->company->title }}</a></li>
+                    <li class="active"><a href="">{{ $job->title }}</a></li>
                 </ol>
 
                 <table class="table">
+                    <tr>
+                        <td>Company</td>
+                        <td>{{ $job->company->title }}</td>
+                    </tr>
                     <tr>
                         <td>Job Title</td>
                         <td>{{ $job->title }}</td>

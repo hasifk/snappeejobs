@@ -152,7 +152,9 @@
                 @foreach($companies as $company)
                 <a href="/companies/{{$company->url_slug}}">
                     <div class="col-md-5">
+                        @if ($company->photos->count())
                         <img src="{{$company->photos->first()->path . $company->photos->first()->filename . $company->photos->first()->extension}}" alt="company photo" width="400">
+                        @endif
                         <h2>{{$company->title}}</h2>
                         <h4> @foreach($company->industries as $industry){{ $industry->name }} | @endforeach  {{$company->size}} | {{$company->stateName}}</h4>
                     </div>

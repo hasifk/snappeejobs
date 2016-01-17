@@ -2,7 +2,9 @@
 
 namespace App\Models\Job\Relationship;
 
+use App\Models\Country\Country;
 use App\Models\Job\JobPrerequisites\JobPrerequisites;
+use App\Models\State\State;
 
 trait JobRelationship
 {
@@ -24,6 +26,14 @@ trait JobRelationship
 
     public function prerequisites(){
         return $this->hasMany(JobPrerequisites::class, 'job_id');
+    }
+
+    public function country(){
+        return $this->belongsTo(Country::class);
+    }
+
+    public function state(){
+        return $this->belongsTo(State::class);
     }
 
 }

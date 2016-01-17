@@ -60,6 +60,32 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="categories">Companies</label>
+                                    <select
+                                            name="companies[]"
+                                            id="companies"
+                                            class="form-control select2 select2-hidden-accessible js-example-basic-multiple"
+                                            multiple="multiple"
+                                            style="width: 100%;"
+                                    >
+                                        @if (count($companies) > 0)
+                                            @foreach($companies as $company)
+                                                <option
+                                                        value="{{ $company->id }}"
+                                                        {{ request('companies')
+                                                        && in_array($company->id, request('companies')) ? 'selected="selected"' : '' }}
+                                                >
+                                                    {{ $company->title }}
+                                                </option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
+
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="categories">Categories</label>
@@ -159,9 +185,41 @@
             </div>
         </div>
 
-        <div class="col-md-12">
+        <div class="col-md-6">
             <h4>Jobs</h4>
         </div>
+        <div class="col-md-6">
+            <div class="dropdown pull-right">
+                Sorted by
+                <button class="btn btn-default dropdown-toggle" type="button" id="sortingMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    @if ( is_null(request()->get('sort')) )
+                        Newest
+                    @else
+                        {{ (request()->get('sort') == 'created_at') ? 'Newest' : 'Popular' }}
+                    @endif
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="sortingMenu">
+                    <li><a href="
+                    @if ( request()->get('sort') == 'likes' )
+                    {{ route('jobs.search', array_merge(request()->except('sort'), ['sort' => 'created_at'])) }}
+                    @elseif ( request()->get('sort') == 'created_at' )
+                    {{ route('jobs.search', array_merge(request()->except('sort'), ['sort' => 'likes'])) }}
+                    @else
+                        {{ route('jobs.search', array_merge(request()->except('sort'), ['sort' => 'likes'])) }}
+                    @endif
+                                ">
+                            @if ( is_null(request()->get('sort')) )
+                                Popular
+                            @else
+                                {{ (request()->get('sort') == 'created_at') ? 'Popular' : 'Newest' }}
+                            @endif
+                        </a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
 
         @foreach($jobs as $job)
             <div class="col-md-4">
@@ -171,11 +229,18 @@
                             <a href="{{ route('jobs.view' , [ $job->company->url_slug , $job->title_url_slug ] ) }}">{{ $job->title }}</a>
                         </div>
                         <div class="col-md-12">
-                                <span class="label label-danger">
-                                    <a href="{{ route('jobs.search', ['level' => $job->level]) }}">
-                                        {{ str_studly($job->level) }}
-                                    </a>
-                                </span>
+
+                        </div>
+                        <div class="col-md-12 sub-heading">
+                            <a href="{{ route('companies.view', ['slug' => $job->company->url_slug]) }}">
+                                {{ str_studly($job->company->title) }}
+                            </a>
+                            <br>
+                            <span class="label label-danger">
+                                <a href="{{ route('jobs.search', ['level' => $job->level]) }}">
+                                    {{ str_studly($job->level) }}
+                                </a>
+                            </span>
                         </div>
                         <hr>
                         <div class="col-md-12">
@@ -200,14 +265,14 @@
                         <div class="col-md-12">
                             <div for="" class="label label-info">
                                 <a href="{{ route('jobs.search', ['country' => $job->country_id]) }}">
-                                    {{ $job->countryname }}
+                                    {{ $job->country->name }}
                                 </a>
                             </div>
                         </div>
                         <div class="col-md-12">
                             <div for="" class="label label-info">
                                 <a href="{{ route('jobs.search', ['state' => $job->state_id]) }}">
-                                    {{ $job->statename }}
+                                    {{ $job->state->name }}
                                 </a>
                             </div>
                         </div>

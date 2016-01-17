@@ -8,9 +8,11 @@
 
             <div class="panel-body">
 
+                @if ( $company->photos->count() )
                 <div class="col-md-6">
                     <img src="{{$company->photos->first()->path . $company->photos->first()->filename . $company->photos->first()->extension}}" alt="company photo" >
                 </div>
+                @endif
 
                 <div class="col-md-6">
                     <h2>About {{ $company->title }} </h2>

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Frontend\Company;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Company\People\People;
 use App\Repositories\Frontend\Company\EloquentCompanyRepository;
 use DB;
+use Request;
 
 class CompaniesController extends Controller
 {

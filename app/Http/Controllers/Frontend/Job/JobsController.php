@@ -27,6 +27,7 @@ class JobsController extends Controller
 
     public function index(Request $request){
 
+        $companies = \DB::table('companies')->select(['id', 'title'])->get();
         $job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
         $countries = \DB::table('countries')->select(['id', 'name'])->get();
         $skills = \DB::table('skills')->select(['id', 'name'])->get();
@@ -51,6 +52,7 @@ class JobsController extends Controller
         $view = [
             'countries'         => $countries,
             'states'            => $states,
+            'companies'        => $companies,
             'categories'        => $job_categories,
             'skills'            => $skills,
             'jobs'              => $jobs,
@@ -64,7 +66,7 @@ class JobsController extends Controller
 
         $job = Job::with(['company' => function($query) use ($company) {
             $query->where('companies.url_slug', $company);
-        }])
+        }, 'categories', 'skills', 'country', 'state'])
             ->where('title_url_slug', $slug)
             ->first();
 

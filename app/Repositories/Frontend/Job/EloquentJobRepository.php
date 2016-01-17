@@ -16,6 +16,9 @@ class EloquentJobRepository {
         $searchObj = new Job();
 
         // First the joins
+        if ( $request->get('companies') ) {
+            $searchObj = $searchObj->join('companies', 'companies.id', '=', 'jobs.company_id');
+        }
         if ( $request->get('categories') ) {
             $searchObj = $searchObj->join('category_preferences_jobs', 'category_preferences_jobs.job_id', '=', 'jobs.id');
         }
@@ -26,6 +29,9 @@ class EloquentJobRepository {
         // then the where conditions
         if ( $request->get('level') ) {
             $searchObj = $searchObj->where('jobs.level', $request->get('level'));
+        }
+        if ( $request->get('companies') ) {
+            $searchObj = $searchObj->whereIn('jobs.company_id', $request->get('companies'));
         }
         if ( $request->get('categories') ) {
             $searchObj = $searchObj->whereIn('category_preferences_jobs.job_category_id', $request->get('categories'));
@@ -45,8 +51,10 @@ class EloquentJobRepository {
             ->where('jobs.published', true)
             ->groupBy('jobs.id');
 
+        ( ($request->get('sort')) && ($request->get('sort') == 'likes') ) ? $order_by = $request->get('sort') : '';
+
         $jobs = $searchObj
-            ->with('categories', 'skills', 'company')
+            ->with('categories', 'skills', 'company', 'country', 'state')
             ->orderBy($order_by, $sort)
             ->skip((Paginator::resolveCurrentPage()-1)*($per_page))
             ->take($per_page)

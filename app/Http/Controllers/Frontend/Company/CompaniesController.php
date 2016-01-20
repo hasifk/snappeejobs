@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Company\People\People;
 use App\Repositories\Frontend\Company\EloquentCompanyRepository;
 use DB;
-use Request;
+use Illuminate\Http\Request;
 
 class CompaniesController extends Controller
 {
@@ -39,12 +39,12 @@ class CompaniesController extends Controller
                 'countries.iso_code_2 As country_code'
             ])->get();
 
-        $companies = $this->companyRepository->getCompaniesPaginated($request, config('companies.default_per_page'));
+        $companies_data = $this->companyRepository->getCompaniesPaginated($request, config('companies.default_per_page'));
 
         return view('frontend.companies.index',[
             'industries' =>  $industries,
             'locations'  =>  $locations,
-            'companies'  =>  $companies
+            'companies_data'  =>  $companies_data
         ]);
 
     }

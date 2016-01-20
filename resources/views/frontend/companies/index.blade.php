@@ -54,8 +54,8 @@
                                         multiple="multiple"
                                         style="width: 100%;"
                                         >
-                                        @if (count($companies) > 0)
-                                        @foreach($companies as $company)
+                                        @if (count($companies_data['companies']) > 0)
+                                        @foreach($companies_data['companies'] as $company)
                                         <option
                                             value="{{ $company->id }}"
                                             {{ request('companies')
@@ -81,7 +81,7 @@
                                         @if (count($industries) > 0)
                                         @foreach($industries as $industry)
                                         <option
-                                            value="{{ $company->id }}"
+                                            value="{{ $industry->id }}"
                                             {{ request('industries')
                                         && in_array($industry->id, request('industries')) ? 'selected="selected"' : '' }}
                                         >
@@ -100,7 +100,7 @@
                                             type="radio"
                                             name="size"
                                             id="small"
-                                            value="internship" {{ request('size') == 'small' ? 'checked="checked"' : '' }}
+                                            value="small" {{ request('size') == 'small' ? 'checked="checked"' : '' }}
                                         />
                                         <label for="level_internship">Small</label>
                                         &nbsp;
@@ -108,7 +108,7 @@
                                             type="radio"
                                             name="size"
                                             id="medium"
-                                            value="entry" {{ request('size') == 'medium' ? 'checked="checked"' : '' }}
+                                            value="medium" {{ request('size') == 'medium' ? 'checked="checked"' : '' }}
                                         />
                                         <label for="level_entry">Medium</label>
                                         &nbsp;
@@ -116,7 +116,7 @@
                                             type="radio"
                                             name="size"
                                             id="large"
-                                            value="mid" {{ request('size') == 'large' ? 'checked="checked"' : '' }}
+                                            value="big" {{ request('size') == 'large' ? 'checked="checked"' : '' }}
                                         />
                                         <label for="level_mid">Large</label>
                                     </div>
@@ -147,20 +147,25 @@
             <div class="panel-body">
 
                 <div class="col-md-9">
-                    <h4>{{ trans('strings.companies_subtitle') }}</h4>
+                    @if(count($companies_data['companies'])>0)
+                        <h4>{{ trans('strings.companies_subtitle') }}</h4>
+                    @else
+                        <h4>No results found.</h4>
+                    @endif
                 </div>
-                @foreach($companies as $company)
-                <a href="/companies/{{$company->url_slug}}">
-                    <div class="col-md-5">
-                        @if ($company->photos->count())
-                        <img src="{{$company->photos->first()->path . $company->photos->first()->filename . $company->photos->first()->extension}}" alt="company photo" width="400">
-                        @endif
-                        <h2>{{$company->title}}</h2>
-                        <h4> @foreach($company->industries as $industry){{ $industry->name }} | @endforeach  {{$company->size}} | {{$company->stateName}}</h4>
-                    </div>
-                </a>
-                @endforeach
-
+                @if(count($companies_data['companies'])>0)
+                    @foreach($companies_data['companies'] as $company)
+                    <a href="/companies/{{$company->url_slug}}">
+                        <div class="col-md-5">
+                            @if ($company->photos->count())
+                            <img src="{{$company->photos->first()->path . $company->photos->first()->filename . $company->photos->first()->extension}}" alt="company photo" width="400">
+                            @endif
+                            <h2>{{$company->title}}</h2>
+                            <h4> @foreach($company->industries as $industry){{ $industry->name }} | @endforeach  {{$company->size}} | {{$company->stateName}}</h4>
+                        </div>
+                    </a>
+                    @endforeach
+                @endif
             </div>
         </div><!-- panel -->
     </div>

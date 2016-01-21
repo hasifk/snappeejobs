@@ -34,6 +34,7 @@ class JobViewRequest extends Request
             ->where('companies.url_slug', $this->segment(2))
             ->count();
 
+
         if ( ! $jobExists ) {
 
             $exception = new JobDoesNotExist();

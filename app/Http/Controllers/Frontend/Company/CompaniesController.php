@@ -58,6 +58,23 @@ class CompaniesController extends Controller
 
     }
 
+    public function likeCompany(Request $request)
+    {
+
+        $companyId = $request->get('companyId');
+
+        $likes = DB::table('companies')
+            ->where('id',$companyId)
+            ->value('likes');
+
+        $res = DB::table('companies')
+            ->where('id',$companyId)
+            ->increment('likes');
+
+        return json_encode(['status'=>$res,'likes'=>$likes]);
+
+    }
+
     public function people($slug,$id)
     {
 

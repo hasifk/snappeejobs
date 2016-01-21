@@ -64,15 +64,19 @@ class JobsController extends Controller
         $skills = \DB::table('skills')->select(['id', 'name'])->get();
 
         if ( $request->old('country_id') ) {
+
             $states = \DB::table('states')
                 ->where('country_id', $request->old('country_id'))
                 ->select(['id', 'name'])
                 ->get();
+
         } else {
+
             $states = \DB::table('states')
                 ->where('country_id', 222)
                 ->select(['id', 'name'])
                 ->get();
+
         }
 
         $view = [
@@ -83,6 +87,7 @@ class JobsController extends Controller
         ];
 
         return view('backend.employer.jobs.create', $view);
+
     }
 
     /**

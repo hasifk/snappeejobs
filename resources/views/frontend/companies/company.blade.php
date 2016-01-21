@@ -7,6 +7,31 @@
             <div class="panel-heading"> {{ $company->title }}</div>
 
             <div class="panel-body">
+                <div class="col-md-6"></div>
+                <div class="col-md-6">
+                    <div class="col-md-3 company-container">
+                        <button class="btn btn-default btn-block" v-on:click="likeCompany">
+                            <span class="glyphicon glyphicon-thumbs-up"></span>
+                            Like ({{ $company->likes }})
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-default btn-block">
+                            Facebook
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-default btn-block">
+                            Twitter
+                        </button>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-default btn-block">
+                            Google+
+                        </button>
+                    </div>
+                </div>
+
 
                 @if ( $company->photos->count() )
                 <div class="col-md-6">
@@ -73,4 +98,41 @@
         </div><!-- panel -->
     </div>
 
+@endsection
+
+@section('after-scripts-end')
+<script>
+    var vm = new Vue({
+        el: '.company-container',
+        data: {
+            companyId:{{ $company->id }}
+        },
+        methods: {
+
+            likeCompany: function(event){
+
+                event.preventDefault();
+
+                $.ajax({
+                    url : '/companies/company/like',
+                    method  : 'post',
+                    data : {
+                        companyId:this.companyId,
+                        '_token' : $('meta[name=_token]').attr("content")
+                    },
+                    success:function(data){
+
+                        obj = $.parseJSON(data);
+
+                        console.log(obj.likes);
+
+                        //Like ({{ $company->likes }})
+
+                    }
+                });
+
+            }
+        }
+    });
+</script>
 @endsection

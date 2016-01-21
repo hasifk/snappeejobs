@@ -138,6 +138,41 @@
             </div>
         </div>
     </div>
+
+    <div class="col-md-10 col-md-offset-1" style="margin-bottom: 20px;">
+        <div class="col-md-6">Companies</div>
+        <div class="col-md-6">
+            <div class="dropdown pull-right">
+                Sorted by
+                <button class="btn btn-default dropdown-toggle" type="button" id="sortingMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    @if ( is_null(request()->get('sort')) )
+                    Newest
+                    @else
+                    {{ (request()->get('sort') == 'created_at') ? 'Newest' : 'Popular' }}
+                    @endif
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="sortingMenu">
+                    <li><a href="
+                        @if ( request()->get('sort') == 'likes' )
+                        {{ route('companies.search', array_merge(request()->except('sort'), ['sort' => 'created_at'])) }}
+                        @elseif ( request()->get('sort') == 'created_at' )
+                        {{ route('companies.search', array_merge(request()->except('sort'), ['sort' => 'likes'])) }}
+                        @else
+                            {{ route('companies.search', array_merge(request()->except('sort'), ['sort' => 'likes'])) }}
+                        @endif
+                                    ">
+                            @if ( is_null(request()->get('sort')) )
+                            Popular
+                            @else
+                            {{ (request()->get('sort') == 'created_at') ? 'Popular' : 'Newest' }}
+                            @endif
+                        </a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <div class="col-md-10 col-md-offset-1">
         <div class="panel panel-default">
             <div class="panel-heading">

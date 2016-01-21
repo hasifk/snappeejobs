@@ -12,7 +12,7 @@ use Illuminate\Pagination\Paginator;
  */
 class EloquentCompanyRepository {
 
-    public function getCompaniesPaginated(Request $request, $per_page, $order_by = 'companies.created_at', $sort = 'asc') {
+    public function getCompaniesPaginated(Request $request, $per_page, $order_by = 'companies.created_at', $sort = 'desc') {
 
         $searchObj = new Company();
 
@@ -41,6 +41,8 @@ class EloquentCompanyRepository {
         if ( $request->get('size') ) {
             $searchObj = $searchObj->where('companies.size', $request->get('size'));
         }
+
+        ( ($request->get('sort')) && ($request->get('sort') == 'likes') ) ? $order_by = $request->get('sort') : '';
 
         $companies =  $searchObj->with('people','photos','videos','socialmedia','industries')
             ->orderBy($order_by, $sort)

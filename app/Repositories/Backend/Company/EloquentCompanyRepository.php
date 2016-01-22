@@ -132,6 +132,7 @@ class EloquentCompanyRepository
                     $request->file('photo_4')
                 ], $request->get('photos_delete'));
 
+
                 $company->attachLogo($request->file('logo'));
 
                 Event::fire(new CompanyCreated($company, $this->employerId ));

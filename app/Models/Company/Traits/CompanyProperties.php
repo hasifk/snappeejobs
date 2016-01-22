@@ -137,6 +137,10 @@ trait CompanyProperties
 
     public function attachLogo($logoFile){
 
+        if (is_null($logoFile)) {
+            return; 
+        }
+
         $this->logo = pathinfo($logoFile->getClientOriginalName(), PATHINFO_FILENAME)
             .'.'.
             $logoFile->getClientOriginalExtension();

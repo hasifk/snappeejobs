@@ -9,33 +9,36 @@
             <div class="panel-body">
                 <div class="col-md-6"></div>
                 <div class="col-md-6">
-                    <div class="col-md-3 company-container">
+                    @foreach($company->socialmedia as $socialMedia)
+                    <div class="col-md-3 pull-right">
+                        <a class="btn btn-default btn-block" href="{{  $socialMedia->url }}">
+                            @if(str_contains($socialMedia->url,'twitter.'))
+                            Twitter
+                            @elseif(str_contains($socialMedia->url,'facebook.'))
+                            Facebook
+                            @else
+                            Google+
+                            @endif
+                        </a>
+                    </div>
+                    @endforeach
+                    <div class="col-md-3 pull-right company-container">
                         <button class="btn btn-default btn-block" v-on:click="likeCompany">
                             <span class="glyphicon glyphicon-thumbs-up"></span>
-                            Like ({{ $company->likes }})
+                            Like (@{{ companyLikes }})
                         </button>
                     </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-default btn-block">
-                            Facebook
-                        </button>
-                    </div>
-                    <div class="col-md-3">
-                        <button class="btn btn-default btn-block">
-                            Twitter
-                        </button>
-                    </div>
-                    <div class="col-md-3">
+                    <!--<div class="col-md-3">
                         <button class="btn btn-default btn-block">
                             Google+
                         </button>
-                    </div>
+                    </div>-->
                 </div>
 
 
                 @if ( $company->photos->count() )
                 <div class="col-md-6">
-                    <img src="{{$company->photos->first()->path . $company->photos->first()->filename . $company->photos->first()->extension}}" alt="company photo" >
+                    <img src="{{$company->photos->first()->path . $company->photos->first()->filename . $company->photos->first()->extension}}" alt="company photo"  width="100%">
                 </div>
                 @endif
 
@@ -61,7 +64,7 @@
                 @foreach($company->people as $people)
                 <div class="col-md-4">
                     <a href="/companies/{{ $company->url_slug }}/people/{{ $people->id }}">
-                        <img src="{{ $people->path . $people->filename . $people->extension }}" alt="people company" >
+                        <img src="{{ $people->path . $people->filename . $people->extension }}" alt="people company" width="100%">
                         <h3>
                             {{ $people->name }}
                         </h3>
@@ -80,20 +83,20 @@
 
                 <div class="col-md-4">
                     <a href="/companies/{{ $company->url_slug }}/jobs">
-                        <img src="http://dummyimage.com/320x235/888/000/f23.jpg?text=We+are+Hiring" alt="">
+                        <img src="http://dummyimage.com/320x235/888/000/f23.jpg?text=We+are+Hiring" alt="" width="100%">
                     </a>
                 </div>
-                @foreach($company->socialmedia as $socialMedia)
+                <!--@foreach($company->socialmedia as $socialMedia)
                 <div class="col-md-4">
                     <a href="{{  $socialMedia->url }}">
                         @if(str_contains($socialMedia->url,'twitter.'))
-                        <img src="http://dummyimage.com/320x235/888/000/f23.jpg?text={{ str_slug($company->title,'+') }}+on+Twitter" alt="">
+                        <img src="http://dummyimage.com/320x235/888/000/f23.jpg?text={{ str_slug($company->title,'+') }}+on+Twitter" alt="" width="100%">
                         @else
-                        <img src="http://dummyimage.com/320x235/888/000/f23.jpg?text={{ str_slug($company->title,'+') }}+on+Facebook" alt="">
+                        <img src="http://dummyimage.com/320x235/888/000/f23.jpg?text={{ str_slug($company->title,'+') }}+on+Facebook" alt="" width="100%">
                         @endif
                     </a>
                 </div>
-                @endforeach
+                @endforeach-->
             </div>
         </div><!-- panel -->
     </div>
@@ -105,12 +108,13 @@
     var vm = new Vue({
         el: '.company-container',
         data: {
-            companyId:{{ $company->id }}
+            companyId:{{ $company->id }},
+            companyLikes: {{ $company->likes }}
         },
         methods: {
 
             likeCompany: function(event){
-
+                var that = this;
                 event.preventDefault();
 
                 $.ajax({
@@ -124,7 +128,9 @@
 
                         obj = $.parseJSON(data);
 
-                        console.log(obj.likes);
+                        console.log(this);
+
+                        that.companyLikes = obj.likes+1;
 
                         //Like ({{ $company->likes }})
 

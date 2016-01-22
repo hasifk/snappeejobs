@@ -5,10 +5,10 @@ elixir(function(mix) {
         //.phpUnit()
         //
         //// Copy webfont files from /vendor directories to /public directory.
-        //.copy('vendor/fortawesome/font-awesome/fonts', 'public/build/fonts/font-awesome')
-        //.copy('vendor/twbs/bootstrap-sass/assets/fonts/bootstrap', 'public/build/fonts/bootstrap')
-        //.copy('vendor/twbs/bootstrap/dist/js/bootstrap.min.js', 'public/js/vendor')
-        //.copy('./resources/assets/js/Ionicons/fonts', 'public/build/fonts')
+        .copy('vendor/fortawesome/font-awesome/fonts', 'public/build/fonts/font-awesome')
+        .copy('vendor/twbs/bootstrap-sass/assets/fonts/bootstrap', 'public/build/fonts/bootstrap')
+        .copy('vendor/twbs/bootstrap/dist/js/bootstrap.min.js', 'public/js/vendor')
+        .copy('./resources/assets/js/Ionicons/fonts', 'public/build/fonts')
 
         .sass([ // Process front-end stylesheets
                 'frontend/main.scss'

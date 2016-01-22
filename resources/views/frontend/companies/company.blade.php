@@ -23,7 +23,7 @@
                     </div>
                     @endforeach
                     <div class="col-md-3 pull-right company-container">
-                        <button class="btn btn-default btn-block" v-on:click="likeCompany">
+                        <button class="btn btn-default btn-block" v-on:click="likeCompany" v-show={{ count(auth()->user()) }}>
                             <span class="glyphicon glyphicon-thumbs-up"></span>
                             Like (@{{ companyLikes }})
                         </button>

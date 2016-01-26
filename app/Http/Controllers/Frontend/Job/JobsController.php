@@ -6,6 +6,7 @@ use App\Models\Job\Job;
 use App\Repositories\Frontend\Job\EloquentJobRepository;
 use Illuminate\Http\Request;
 
+use DB;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
@@ -75,6 +76,23 @@ class JobsController extends Controller
         ];
 
         return view('frontend.jobs.show', $view);
+
+    }
+
+    public function likeJob(Request $request)
+    {
+
+        $companyId = $request->get('jobId');
+
+        $likes = DB::table('jobs')
+            ->where('id',$companyId)
+            ->value('likes');
+
+        $res = DB::table('jobs')
+            ->where('id',$companyId)
+            ->increment('likes');
+
+        return json_encode(['status'=>$res,'likes'=>$likes]);
 
     }
 

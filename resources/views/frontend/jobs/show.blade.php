@@ -85,6 +85,15 @@
                             <button class="btn btn-primary">Apply</button>
                         </td>
                     </tr>
+                    <tr>
+                        <td>Like this Job? </td>
+                        <td>
+                            <button class="btn btn-default" v-on:click="likeJob" v-show={{ count(auth()->user()) }}>
+                                <span class="glyphicon glyphicon-thumbs-up"></span>
+                                Like (@{{ jobLikes }})
+                            </button>
+                        </td>
+                    </tr>
                 </table>
 
             </div>
@@ -103,7 +112,34 @@
                 el: '.job-view',
 
                 data: {
-                    job: {!! $job->toJSON() !!}
+                    job: {!! $job->toJSON() !!},
+                    jobId:{{ $job->id }},
+                    jobLikes: {{ $job->likes }}
+                },
+                methods:{
+                    likeJob:function(event){
+                        var that = this;
+                        event.preventDefault();
+
+                        $.ajax({
+                            url : '/jobs/job/like',
+                            method  : 'post',
+                            data : {
+                                jobId:this.jobId,
+                                '_token' : $('meta[name=_token]').attr("content")
+                            },
+                            success:function(data){
+
+                                obj = $.parseJSON(data);
+
+                                console.log(this);
+
+                                that.jobLikes = obj.likes+1;
+
+                            }
+                        });
+
+                    }
                 }
             });
 

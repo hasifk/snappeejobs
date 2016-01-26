@@ -9,6 +9,7 @@ $router->group(['namespace' => 'Job'], function () use ($router)
 
     get('jobs', 'JobsController@index')->name('jobs.search');
     get('job/{company}/{slug}', 'JobsController@show')->name('jobs.view');
+    post('jobs/job/like', 'JobsController@likeJob')->name('job.like');
 
     $router->group(['middleware' => 'auth'], function () use ($router)
     {

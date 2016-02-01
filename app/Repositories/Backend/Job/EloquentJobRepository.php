@@ -344,9 +344,12 @@ class EloquentJobRepository {
 	private function createJobStub($input)
 	{
 		$job = new Job;
+
+		$url_slug = str_slug($input['title'], '-') ? str_slug($input['title'], '-') : $this->slugify($input['title']);
+
 		$job->company_id           = $this->companyId;
 		$job->title                = $input['title'];
-		$job->title_url_slug       = str_slug($input['title']);
+		$job->title_url_slug       = $url_slug;
 		$job->level                = $input['level'];
 		$job->country_id           = $input['country_id'];
 		$job->state_id             = $input['state_id'];
@@ -359,14 +362,35 @@ class EloquentJobRepository {
 
 	private function updateJobStub($job, $input)
 	{
+		$url_slug = str_slug($input['title'], '-') ? str_slug($input['title'], '-') : $this->slugify($input['title']);
+
 		$job->company_id           = $this->companyId;
 		$job->title                = $input['title'];
-		$job->title_url_slug       = str_slug($input['title']);
+		$job->title_url_slug       = $url_slug;
 		$job->level                = $input['level'];
 		$job->country_id           = $input['country_id'];
 		$job->state_id             = $input['state_id'];
 		$job->description          = $input['description'];
         $job->published            = $input['published'] ? true : false;
 		return $job;
+	}
+
+	public function slugify($text)
+	{
+		$text = preg_replace('~[^\\pL\d]+~u', '-', $text);
+		// trim
+		$text = trim($text, '-');
+		// transliterate
+		$text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+		// lowercase
+		$text = strtolower($text);
+		// remove unwanted characters
+		$text = preg_replace('~[^-\w]+~', '', $text);
+		if (empty($text))
+		{
+			return 'n-a';
+		}
+
+		return $text;
 	}
 }

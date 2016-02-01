@@ -170,6 +170,7 @@ class EloquentCompanyRepository
         $company = new Company();
         $company->employer_id      = $this->employerId;
         $company->title            = $input['title'];
+        $company->url_slug         = str_slug($input['title'], '-');
         $company->size             = $input['size'];
         $company->description      = $input['description'];
         $company->what_it_does     = $input['what_it_does'];
@@ -182,6 +183,7 @@ class EloquentCompanyRepository
     public function updateCompanyStub($input, $company){
         $company->employer_id      = $this->employerId;
         $company->title            = $input['title'];
+        $company->url_slug         = str_slug($input['title'], '-');
         $company->size             = $input['size'];
         $company->description      = $input['description'];
         $company->what_it_does     = $input['what_it_does'];

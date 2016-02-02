@@ -94,7 +94,11 @@ class ProfileController extends Controller {
 				'resume_path'			=> ''
 			]);
 
-            \DB::table('job_seeker_details')->insert($update_array);
+			if ( \DB::table('job_seeker_details')->where('user_id', auth()->user()->id)->count() ) {
+				\DB::table('job_seeker_details')->where('user_id', auth()->user()->id)->update($update_array);
+			} else {
+				\DB::table('job_seeker_details')->insert($update_array);
+			}
 
             return response()->json(['status' => 1]);
 		}

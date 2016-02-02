@@ -67,6 +67,7 @@
                         <td>Description</td>
                         <td>{!! $job->description !!}</td>
                     </tr>
+                    @if($job->prerequisites->count())
                     <tr>
                         <td>Prerequisites</td>
                         <td>
@@ -79,26 +80,91 @@
                             </ul>
                         </td>
                     </tr>
+                    @endif
+                    @if(auth()->user())
                     <tr>
                         <td>Apply</td>
                         <td>
-                            <button class="btn btn-primary">Apply</button>
+                            <div v-cloak v-show="!jobApplied" class="apply-button">
+                                <button v-on:click="applyJob" class="btn btn-primary">Apply</button>
+                            </div>
+                            <div v-cloak v-show="jobApplied" class="job-applied alert alert-info" transition="expand">
+                                <span>@{{ notificationText }}</span>
+                            </div>
                         </td>
                     </tr>
                     <tr>
                         <td>Like this Job? </td>
                         <td>
-                            <button class="btn btn-default" v-on:click="likeJob" v-show={{ count(auth()->user()) }}>
+                            <button class="btn btn-default" v-on:click="likeJob">
                                 <span class="glyphicon glyphicon-thumbs-up"></span>
                                 Like (@{{ jobLikes }})
                             </button>
                         </td>
                     </tr>
+                    @endif
                 </table>
 
             </div>
 
+
+
+            <!-- Modal Body -->
+            <div class="modal" id="jobApplicationModal" tabindex="-1" role="dialog" aria-labelledby="jobApplicationModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+
+                        <div class="modal-header">
+                            <h3 v-show="!resumeUploaded">Please upload your resume to process this job application</h3>
+                            <h3 v-show="resumeUploaded && shouldShowPrerequisites">Please confirm the Prerequisites</h3>
+                        </div>
+
+                        <div class="modal-body">
+
+                            <div v-show="resumeUploaded && shouldShowPrerequisites" class="form-horizontal">
+                                @if($job->prerequisites->count())
+                                    <ul class="list-group">
+                                        @foreach($job->prerequisites as $prerequisite)
+                                            <li class="list-group-item">
+                                                {{ $prerequisite->content }}
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                    <hr>
+                                    <p>You might want to make sure you satisfy the above mentioned prerequisite</p>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" class="checkbox" v-model="prerequisiteConfirmed">
+                                            Yes, I agree that I qualify these prerequisite(s)
+                                        </label>
+                                    </div>
+                                    <br>
+                                    <button
+                                            class="btn btn-default"
+                                            v-bind:class="{ 'disabled': !prerequisiteConfirmed }"
+                                            v-on:click="sendJobApplication"
+                                    >
+                                        Send Job Application
+                                    </button>
+                                @endif
+                            </div>
+
+                            <div v-show="!resumeUploaded" class="form-horizontal">
+                                <form enctype="multipart/form-data" method="post" action="{{ route('frontend.profile.resume') }}" id="upload-resume"></form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <!-- Modal Body -->
+
+
         </div>
+
+    </div>
 
     </div>
 
@@ -107,6 +173,7 @@
 @section('after-scripts-end')
     <script>
 
+            Dropzone.autoDiscover = false
 
             var JobView = new Vue({
                 el: '.job-view',
@@ -114,12 +181,28 @@
                 data: {
                     job: {!! $job->toJSON() !!},
                     jobId:{{ $job->id }},
-                    jobLikes: {{ $job->likes }}
+                    companyId:{{ $job->company->id }},
+                    jobLikes: {{ $job->likes }},
+                    shownPrerequisites: false,
+                    jobApplied: {{ $job->job_applied ? 'true' : 'false' }},
+                    clickEvent: false,
+                    prerequisiteConfirmed: false,
+                    notificationText: 'You already have applied for this job.',
+                    registered              : {{ auth()->guest() ? "false" : "true" }},
+                    resumeUploaded          : {{ auth()->user() && auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->has_resume ? "true" : "false" }}
                 },
+
+                computed: {
+                    shouldShowPrerequisites: function(){
+                        return this.job.prerequisites.length ? true : false
+                    }
+                },
+
                 methods:{
                     likeJob:function(event){
                         var that = this;
                         event.preventDefault();
+                        $(event.target).button('loading');
 
                         $.ajax({
                             url : '/jobs/job/like',
@@ -129,16 +212,85 @@
                                 '_token' : $('meta[name=_token]').attr("content")
                             },
                             success:function(data){
-
-                                obj = $.parseJSON(data);
-
-                                console.log(this);
-
-                                that.jobLikes = obj.likes+1;
-
+                                data = $.parseJSON(data);
+                                console.log(that);
+                                that.jobLikes = data.likes;
+                                $(event.target).button('reset');
                             }
                         });
 
+                    },
+
+                    applyJob: function(event){
+                        event.preventDefault();
+                        $(event.target).button('loading');
+                        if ( this.shouldShowPrerequisites ) {
+                            if ( this.resumeUploaded ) {
+                                $("#jobApplicationModal").modal();
+                            } else {
+                                this.enableDropZone();
+                                this.clickEvent = event;
+                                alert('going to show the modal')
+                                $("#jobApplicationModal").modal();
+                            }
+                        } else {
+                            if ( this.resumeUploaded ) {
+                                this.sendJobApplication(event);
+                            } else {
+                                this.enableDropZone();
+                                this.clickEvent = event;
+                                $("#jobApplicationModal").modal();
+                            }
+                        }
+                    },
+
+                    sendJobApplication: function(event) {
+                        var that = this;
+                        $.post( "{{ route('job.apply') }}",
+                                { jobId: this.jobId, companyId: this.companyId },
+                                function(data){
+                                    $(event.target).button('reset');
+                                    var modalOpen = ($("#jobApplicationModal").data('bs.modal') || {}).isShown;
+                                    if ( modalOpen )  $("#jobApplicationModal").modal('toggle');
+                                    that.notificationText = "Thanks for applying this job";
+                                    that.jobApplied = true;
+                                }).error(function(err, data){
+                                    $(event.target).button('reset');
+                                });
+                    },
+
+                    enableDropZone: function(){
+
+                        var that = this;
+
+                        $("#upload-resume").addClass('dropzone').dropzone({
+                            url: "{{ route('frontend.profile.resume') }}",
+                            paramName: "file",
+                            maxFilesize: 5,
+                            accept: function (file, done) {
+                                console.log(file);
+                                if (
+                                        ( file.type == 'application/msword' ) ||
+                                        ( file.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ) ||
+                                        ( file.type == 'application/pdf' ) ||
+                                        ( file.type == 'application/kswps' )
+                                ) {
+                                    done();
+                                } else {
+                                    alert('Please upload doc/docx/pdf files')
+                                }
+                            },
+                            sending: function (file, xhr, data) {
+                                data.append('_token', $('meta[name="_token"]').attr('content'));
+                            },
+                            success: function (file, xhr) {
+                                that.resumeUploaded = true;
+                                if (! that.shouldShowPrerequisites ) {
+                                    $("#jobApplicationModal").modal('toggle');
+                                    that.sendJobApplication(that.clickEvent);
+                                }
+                            }
+                        });
                     }
                 }
             });

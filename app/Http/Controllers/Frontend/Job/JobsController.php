@@ -82,18 +82,30 @@ class JobsController extends Controller
     public function likeJob(Request $request)
     {
 
-        $companyId = $request->get('jobId');
+        $jobId = $request->get('jobId');
 
-        $likes = DB::table('jobs')
-            ->where('id',$companyId)
+        if (! \DB::table('like_jobs')->where('job_id', $jobId)->where('user_id', auth()->user()->id)->count() ) {
+            \DB::table('like_jobs')->insert([
+                'job_id'    => $jobId,
+                'user_id'   => auth()->user()->id
+            ]);
+            \DB::table('jobs')
+                ->where('id',$jobId)
+                ->increment('likes');
+        }
+
+        $likes = \DB::table('jobs')
+            ->where('id',$jobId)
             ->value('likes');
 
-        $res = DB::table('jobs')
-            ->where('id',$companyId)
-            ->increment('likes');
+        return json_encode(['status'=>1,'likes'=>$likes]);
 
-        return json_encode(['status'=>$res,'likes'=>$likes]);
+    }
 
+    public function applyJob(Requests\Frontend\Job\ApplyJob $request){
+        $status = $this->jobRepository->applyJob(auth()->user(), Job::findOrFail($request->get('jobId')));
+
+        return json_encode( [ 'status' => $status ] );
     }
 
 }

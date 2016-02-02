@@ -1,5 +1,6 @@
 <?php namespace App\Repositories\Frontend\Job;
 
+use App\Models\Access\User\User;
 use App\Models\Job\Job;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -132,6 +133,22 @@ class EloquentJobRepository {
         $paginator->appends($request->except(['page']));
 
         return $paginator;
+    }
+
+    public function applyJob(User $user, Job $job){
+        $jobApplied = \DB::table('job_applications')
+            ->where('job_id', $job->id)
+            ->where('user_id', $user->id)
+            ->count();
+
+        if ( $jobApplied ) return false;
+
+        \DB::table('job_applications')->insert([
+            'job_id'        => $job->id,
+            'user_id'       => $user->id
+        ]);
+
+        return true;
     }
 
 }

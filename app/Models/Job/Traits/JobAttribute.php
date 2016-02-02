@@ -196,4 +196,15 @@ trait JobAttribute
         $this->getDeleteButtonAttribute();
     }
 
+    public function getJobAppliedAttribute(){
+        if (auth()->guest()) return false;
+
+        return \DB::table('job_applications')
+            ->where('job_id', $this->id)
+            ->where('user_id', auth()->user()->id)
+            ->count()
+                ?
+            true : false;
+    }
+
 }

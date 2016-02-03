@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\JobSeekers;
 
+use App\Repositories\Frontend\JobSeeker\EloquentJobSeekerRepository;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -10,17 +11,52 @@ use App\Http\Controllers\Controller;
 class JobSeekerController extends Controller
 {
     /**
+     * @var EloquentJobSeekerRepository
+     */
+    private $repository;
+
+    /**
+     * JobSeekerController constructor.
+     * @param EloquentJobSeekerRepository $repository
+     */
+    public function __construct(EloquentJobSeekerRepository $repository)
+    {
+
+        $this->repository = $repository;
+    }
+
+    /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+
+        $countries = \DB::table('countries')->select(['id', 'name'])->get();
+        $skills = \DB::table('skills')->select(['id', 'name'])->get();
+
+        if ( request('country_id') ) {
+            $states = \DB::table('states')
+                ->where('country_id', request('country_id'))
+                ->select(['id', 'name'])
+                ->get();
+        } else {
+            $states = \DB::table('states')
+                ->where('country_id', 222)
+                ->select(['id', 'name'])
+                ->get();
+        }
+
         $view = [
-            'job_seekers' => $job_seekers
+            'countries'         => $countries,
+            'states'            => $states,
+            'skills'            => $skills,
+            'job_seekers' => $this->repository->getJobsSeekersPaginated($request, config('jobs.default_per_page'))
         ];
 
-        return view('frontend.jobs.index', $view);
+        return view('frontend.jobseekers.index', $view);
     }
 
     /**

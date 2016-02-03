@@ -15,11 +15,13 @@ class CreateJobSeekerDetailsTable extends Migration
         Schema::create('job_seeker_details', function (Blueprint $table) {
             $table->increments('id')->unsigned();
             $table->integer('user_id')->unsigned();
-            $table->string('resume_path');
-            $table->string('resume_filename');
-            $table->string('resume_extension');
-            $table->enum('size', ['small', 'medium', 'big']);
-            $table->integer('likes')->unsigned();
+            $table->integer('country_id')->nullable();
+            $table->integer('state_id')->nullable();
+            $table->string('resume_path')->nullable();
+            $table->string('resume_filename')->nullable();
+            $table->string('resume_extension')->nullable();
+            $table->enum('size', ['small', 'medium', 'big'])->default('medium')->nullable();
+            $table->integer('likes')->unsigned()->nullable();
             $table->boolean('has_resume')->default(false);
             $table->boolean('preferences_saved')->default(false);
 

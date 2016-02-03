@@ -16,6 +16,7 @@
 					<li>{!! link_to('/employers', 'Employers') !!}</li>
 					<li>{!! link_to('/companies', 'Companies') !!}</li>
 					<li>{!! link_to('/jobs', 'Jobs' ) !!}</li>
+					<li>{!! link_to('/jobseekers', 'JobSeekers' ) !!}</li>
 				</ul>
 
 				<ul class="nav navbar-nav navbar-right">

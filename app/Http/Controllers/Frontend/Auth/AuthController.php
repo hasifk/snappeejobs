@@ -49,12 +49,15 @@ class AuthController extends Controller
     public function postRegister(RegisterRequest $request)
     {
         if (config('access.users.confirm_email')) {
-            $this->auth->create($request->all());
+            $user = $this->auth->create($request->all());
+            $this->auth->createJobSeeker($user);
             return redirect()->route('home')->withFlashSuccess("Your account was successfully created. We have sent you an e-mail to confirm your account.");
         } else {
             //Use native auth login because do not need to check status when registering
-            auth()->login($this->auth->create($request->all()));
-            return redirect()->route('frontend.dashboard');
+            $user = $this->auth->create($request->all());
+            $this->auth->createJobSeeker($user);
+            auth()->login($user);
+            return redirect()->route('home');
         }
     }
 

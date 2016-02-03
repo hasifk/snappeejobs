@@ -49,6 +49,11 @@ class EloquentAuthenticationRepository implements AuthenticationContract {
 		return $this->users->create($data);
 	}
 
+	public function createJobSeeker($user){
+		$data = [ 'user_id' => $user->id ];
+		\DB::table('job_seeker_details')->insert($data);
+	}
+
 	/**
 	 * @param $request
 	 * @return \Illuminate\Http\RedirectResponse

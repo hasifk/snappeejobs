@@ -158,6 +158,7 @@ return [
 		'App\Providers\RouteServiceProvider',
 		'App\Providers\MacroServiceProvider',
 		'App\Providers\ComposerServiceProvider',
+		'App\Providers\ModelUpdateServiceProvider',
 
 		/*
 		 * Third party service providers

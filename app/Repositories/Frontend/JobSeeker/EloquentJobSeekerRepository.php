@@ -16,34 +16,28 @@ class EloquentJobSeekerRepository {
         $searchObj = $searchObj->join('users', 'users.id', '=', 'job_seeker_details.user_id');
 
         // First the joins
-        if ( $request->get('companies') ) {
-            $searchObj = $searchObj->join('companies', 'companies.id', '=', 'jobs.company_id');
-        }
         if ( $request->get('categories') ) {
-            $searchObj = $searchObj->join('category_preferences_jobs', 'category_preferences_jobs.job_id', '=', 'jobs.id');
+            $searchObj = $searchObj->join('category_preferences_job_seeker', 'category_preferences_job_seeker.user_id', '=', 'job_seeker_details.user_id');
         }
         if ( $request->get('skills') ) {
-            $searchObj = $searchObj->join('job_skills', 'job_skills.job_id', '=', 'jobs.id');
+            $searchObj = $searchObj->join('skills_job_seeker', 'skills_job_seeker.user_id', '=', 'job_seeker_details.user_id');
         }
 
         // then the where conditions
-        if ( $request->get('level') ) {
-            $searchObj = $searchObj->where('jobs.level', $request->get('level'));
-        }
-        if ( $request->get('companies') ) {
-            $searchObj = $searchObj->whereIn('jobs.company_id', $request->get('companies'));
+        if ( $request->get('size') ) {
+            $searchObj = $searchObj->where('job_seeker_details.size', $request->get('size'));
         }
         if ( $request->get('categories') ) {
-            $searchObj = $searchObj->whereIn('category_preferences_jobs.job_category_id', $request->get('categories'));
+            $searchObj = $searchObj->whereIn('category_preferences_job_seeker.job_category_id', $request->get('categories'));
         }
         if ( $request->get('skills') ) {
-            $searchObj = $searchObj->whereIn('job_skills.skill_id', $request->get('skills'));
+            $searchObj = $searchObj->whereIn('skills_job_seeker.skill_id', $request->get('skills'));
         }
         if ( $request->get('country_id') ) {
-            $searchObj = $searchObj->where('jobs.country_id', $request->get('country_id'));
+            $searchObj = $searchObj->where('job_seeker_details.country_id', $request->get('country_id'));
         }
         if ( $request->get('state_id') ) {
-            $searchObj = $searchObj->where('jobs.state_id', $request->get('state_id'));
+            $searchObj = $searchObj->where('job_seeker_details.state_id', $request->get('state_id'));
         }
 
         $searchObj = $searchObj
@@ -54,7 +48,19 @@ class EloquentJobSeekerRepository {
 
         ( ($request->get('sort')) && ($request->get('sort') == 'likes') ) ? $order_by = $request->get('sort') : '';
 
-        return $searchObj->paginate();
+        $jobSeekerObject = $searchObj
+            ->with('user', 'country', 'state', 'skills')
+            ->orderBy($order_by, $sort)
+            ->select([
+                'job_seeker_details.id',
+                'job_seeker_details.user_id',
+                'job_seeker_details.country_id',
+                'job_seeker_details.state_id',
+                'job_seeker_details.size',
+                'job_seeker_details.likes'
+            ]);
+
+        return $jobSeekerObject->paginate();
 
     }
 

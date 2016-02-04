@@ -17,14 +17,14 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body" style="display: {{ request('search') ? 'block' : 'none' }};">
-                    <form role="form" action="{{ route('jobs.search') }}">
+                    <form role="form" action="{{ route('jobseeker.search') }}">
 
                         <input type="hidden" name="search" value="1">
 
                         <div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="size_small">Working on</label>
+                                    <label for="">Working on company which is</label>
                                     <div class="checkbox">
                                         <input
                                                 type="radio"
@@ -32,7 +32,7 @@
                                                 id="size_small"
                                                 value="small" {{ request('size') == 'small' ? 'checked="checked"' : '' }}
                                         />
-                                        <label for="size_medium">Small</label>
+                                        <label for="size_small">Small</label>
                                         &nbsp;
                                         <input
                                                 type="radio"
@@ -40,7 +40,7 @@
                                                 id="size_medium"
                                                 value="medium" {{ request('size') == 'medium' ? 'checked="checked"' : '' }}
                                         />
-                                        <label for="size_big">Medium</label>
+                                        <label for="size_medium">Medium</label>
                                         &nbsp;
                                         <input
                                                 type="radio"
@@ -48,7 +48,7 @@
                                                 id="size_big"
                                                 value="big" {{ request('size') == 'big' ? 'checked="checked"' : '' }}
                                         />
-                                        <label for="level_mid">Big</label>
+                                        <label for="size_big">Big</label>
                                     </div>
                                 </div>
                             </div>
@@ -177,15 +177,16 @@
                                 <a href="{{ route('jobseeker.search', ['size' => $job_seeker->size]) }}">
                                     {{ str_studly($job_seeker->size) }}
                                 </a>
+                            sized company
                             <br>
-                            <a href="{{ route('jobseeker.search', ['country' => $job_seeker->user->country_id]) }}">
+                            <a href="{{ route('jobseeker.search', ['country' => $job_seeker->country->id]) }}">
                                 <i class="fa fa-flag">
-                                    {{ str_studly($job_seeker->user->country_name) }}
+                                    {{ str_studly($job_seeker->country->name) }}
                                 </i>
                             </a>
                             <br>
-                            <a href="{{ route('jobseeker.search', ['state' => $job_seeker->user->state_id]) }}">
-                                {{ str_studly($job_seeker->user->state_name) }}
+                            <a href="{{ route('jobseeker.search', ['state' => $job_seeker->state->id]) }}">
+                                {{ str_studly($job_seeker->state->name) }}
                             </a>
                             <br>
                             @if( $job_seeker->skills->count() )

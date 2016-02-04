@@ -50,7 +50,11 @@ class EloquentAuthenticationRepository implements AuthenticationContract {
 	}
 
 	public function createJobSeeker($user){
-		$data = [ 'user_id' => $user->id ];
+		$data = [
+			'user_id' => $user->id,
+			'country_id' => $user->country_id,
+			'state_id' => $user->state_id
+		];
 		\DB::table('job_seeker_details')->insert($data);
 	}
 

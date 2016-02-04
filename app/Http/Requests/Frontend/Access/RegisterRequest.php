@@ -31,6 +31,15 @@ class RegisterRequest extends Request {
 			'password'  => 'required|confirmed|min:6',
 			'gender'	=> 'required|in:male,female',
 			'age'		=> 'required|integer',
+			'country_id'=> 'required',
+			'state_id'  => 'required',
+		];
+	}
+
+	public function messages(){
+		return [
+			'country_id.required'           => 'Country is required',
+			'state_id.required'             => 'State is required'
 		];
 	}
 }

@@ -331,6 +331,41 @@
                                         </div>
 
                                         <div class="form-group">
+                                            <label for="description" class="col-lg-4 control-label">I prefer working in a company which is</label>
+                                            <div class="col-lg-6">
+                                                <div class="checkbox">
+                                                    <input
+                                                            type="radio"
+                                                            name="size"
+                                                            id="size_small"
+                                                            v-model="size"
+                                                            value="small" {{ request('size') == 'small' ? 'checked="checked"' : '' }}
+                                                    />
+                                                    <label for="size_small">Small</label>
+                                                    &nbsp;
+                                                    <input
+                                                            type="radio"
+                                                            name="size"
+                                                            id="size_medium"
+                                                            v-model="size"
+                                                            value="medium" {{ request('size') == 'medium' ? 'checked="checked"' : '' }}
+                                                    />
+                                                    <label for="size_medium">Medium</label>
+                                                    &nbsp;
+                                                    <input
+                                                            type="radio"
+                                                            name="size"
+                                                            id="size_big"
+                                                            v-model="size"
+                                                            value="big" {{ request('size') == 'big' ? 'checked="checked"' : '' }}
+                                                    />
+                                                    <label for="size_big">Big</label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group">
                                             <div class="col-md-6 col-md-offset-4">
                                                 <button
                                                         v-on:click="submitPreferences($event)"
@@ -390,6 +425,7 @@
                     resumeUploaded          : {{ auth()->user() && auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->has_resume ? "true" : "false" }},
                     skills                  : [],
                     job_categories          : [],
+                    size                    : '',
                     preferencesSaved        : {{ auth()->user() && auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->preferences_saved ? "true" : "false" }},
                 },
 
@@ -463,6 +499,7 @@
                                 {
                                     skills          : $('select#skills').select2().val(),
                                     job_categories  : $('select#job_categories').select2().val(),
+                                    size            : $('input[type=radio][name=size]:checked').val()
                                 },
                                 function(data){
                                     $(event.target).button('reset');
@@ -472,7 +509,7 @@
                                     setTimeout(function () {
                                         $("#registrationModal").modal('toggle');
                                         location.reload();
-                                    }, 3000);
+                                    }, 1);
                                 }).error(function(err, data){
                             var errorArray = [];
                             for(var key in err.responseJSON) {

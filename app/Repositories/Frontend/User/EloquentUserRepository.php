@@ -3,6 +3,7 @@
 use App\Models\Access\User\User;
 use App\Models\Access\User\UserProvider;
 use App\Exceptions\GeneralException;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use App\Repositories\Backend\Role\RoleRepositoryContract;
@@ -42,7 +43,8 @@ class EloquentUserRepository implements UserContract {
 	 * @return static
 	 */
 	public function create($data, $provider = false) {
-		$user = User::create([
+
+		$insert_data = [
 			'name' => $data['name'],
 			'email' => $data['email'],
 			'password' => $provider ? null : $data['password'],
@@ -50,7 +52,16 @@ class EloquentUserRepository implements UserContract {
 			'age' => $data['age'],
 			'confirmation_code' => md5(uniqid(mt_rand(), true)),
 			'confirmed' => config('access.users.confirm_email') ? 0 : 1,
-		]);
+		];
+
+		if ( $data['country_id'] ) {
+			$insert_data['country_id'] = $data['country_id'];
+		}
+		if ( $data['state_id'] ) {
+			$insert_data['state_id'] = $data['state_id'];
+		}
+
+		$user = User::create($insert_data);
 		$user->attachRole($this->role->getDefaultUserRole());
 
 		if (config('access.users.confirm_email') and $provider === false)

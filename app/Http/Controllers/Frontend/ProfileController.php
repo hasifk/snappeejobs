@@ -129,7 +129,10 @@ class ProfileController extends Controller {
 			]);
 		}
 
-		\DB::table('job_seeker_details')->where('user_id', auth()->user()->id)->update(['preferences_saved'=> true]);
+		\DB::table('job_seeker_details')->where('user_id', auth()->user()->id)->update([
+			'preferences_saved'=> true,
+			'size'=> $request->get('size')
+		]);
 
 		return response()->json(['status' => 1]);
 	}

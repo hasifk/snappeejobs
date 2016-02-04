@@ -35,11 +35,36 @@ class AuthController extends Controller
     }
 
     /**
+     * @param Request $request
      * @return \Illuminate\View\View
      */
-    public function getRegister()
+    public function getRegister(Request $request)
     {
-        return view('frontend.auth.register');
+        $countries = \DB::table('countries')->select(['id', 'name'])->get();
+        $skills = \DB::table('skills')->select(['id', 'name'])->get();
+
+        if ( $request->old('country_id') ) {
+
+            $states = \DB::table('states')
+                ->where('country_id', $request->old('country_id'))
+                ->select(['id', 'name'])
+                ->get();
+
+        } else {
+
+            $states = \DB::table('states')
+                ->where('country_id', 222)
+                ->select(['id', 'name'])
+                ->get();
+
+        }
+
+        $view = [
+            'countries' => $countries,
+            'states'    => $states
+        ];
+
+        return view('frontend.auth.register', $view);
     }
 
     /**

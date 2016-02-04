@@ -87,11 +87,45 @@
 						</div>
 					</div>
 
-						<div class="form-group">
-							<div class="col-md-6 col-md-offset-4">
-								{!! Form::submit(trans('labels.register_button'), ['class' => 'btn btn-primary']) !!}
-							</div>
+					<div class="form-group">
+						<label for="office_life" class="col-lg-4 control-label">Country</label>
+						<div class="col-lg-6">
+							<select name="country_id" id="country_id" class="form-control">
+								<option value="">Please select</option>
+								@foreach($countries as $country)
+									<option
+											value="{{ $country->id }}"
+											{{ old('country_id') && $country->id == old('country_id') ? 'selected="selected"' : '' }}
+									>
+										{{ $country->name }}
+									</option>
+								@endforeach
+							</select>
 						</div>
+					</div>
+
+					<div class="form-group">
+						<label for="office_life" class="col-lg-4 control-label">State</label>
+						<div class="col-lg-6">
+							<select name="state_id" id="state_id" class="form-control">
+								<option value="">Please select</option>
+								@foreach($states as $state)
+									<option
+											value="{{ $state->id }}"
+											{{ old('state_id') && $state->id == old('state_id') ? 'selected="selected"' : '' }}
+									>
+										{{ $state->name }}
+									</option>
+								@endforeach
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-md-6 col-md-offset-4">
+							{!! Form::submit(trans('labels.register_button'), ['class' => 'btn btn-primary']) !!}
+						</div>
+					</div>
 
 					{!! Form::close() !!}
 
@@ -102,4 +136,22 @@
         </div><!-- col-md-8 -->
 
     </div><!-- row -->
+@endsection
+
+
+@section('after-scripts-end')
+	<script>
+		$(document).ready(function(){
+			$('#country_id').on('change', function(){
+				$.getJSON('/get-states/'+$(this).val(), function(json){
+					var listitems = '<option value="">Please select</option>';
+					$.each(json,function(key, value)
+					{
+						listitems += '<option value=' + value.id + '>' + value.name + '</option>';
+					});
+					$('#state_id').html(listitems);
+				});
+			});
+		});
+	</script>
 @endsection

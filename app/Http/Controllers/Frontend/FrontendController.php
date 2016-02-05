@@ -5,6 +5,7 @@ use App\Http\Requests\Frontend\EmployerSignupRequest;
 use App\Models\Company\Company;
 use App\Models\Company\People\People;
 use DB;
+use Illuminate\Http\Request;
 
 /**
  * Class FrontendController
@@ -13,9 +14,11 @@ use DB;
 class FrontendController extends Controller {
 
 	/**
+	 * @param \Request $request
 	 * @return \Illuminate\View\View
+	 * @throws \Exception
 	 */
-	public function index()
+	public function index(Request $request)
 	{
 		javascript()->put([
 			'test' => 'it works!'
@@ -23,10 +26,28 @@ class FrontendController extends Controller {
 
 		$skills = \DB::table('skills')->select(['id', 'name'])->get();
 		$job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
+		$countries = \DB::table('countries')->select(['id', 'name'])->get();
+		if ( $request->old('country_id') ) {
+
+			$states = \DB::table('states')
+				->where('country_id', $request->old('country_id'))
+				->select(['id', 'name'])
+				->get();
+
+		} else {
+
+			$states = \DB::table('states')
+				->where('country_id', 222)
+				->select(['id', 'name'])
+				->get();
+
+		}
 
 		$view = [
 			'skills' 			=> $skills,
-			'job_categories' 	=> $job_categories
+			'job_categories' 	=> $job_categories,
+			'countries' 		=> $countries,
+			'states'    		=> $states
 		];
 
 		return view('frontend.index', $view);

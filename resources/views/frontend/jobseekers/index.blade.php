@@ -22,7 +22,7 @@
                         <input type="hidden" name="search" value="1">
 
                         <div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group">
                                     <label for="">Working on company which is</label>
                                     <div class="checkbox">
@@ -53,6 +53,30 @@
                                 </div>
                             </div>
 
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="categories">Categories</label>
+                                    <select
+                                            name="categories[]"
+                                            id="categories"
+                                            class="form-control select2 select2-hidden-accessible js-example-basic-multiple"
+                                            multiple="multiple"
+                                            style="width: 100%;"
+                                    >
+                                        @if (count($categories) > 0)
+                                            @foreach($categories as $category)
+                                                <option
+                                                        value="{{ $category->id }}"
+                                                        {{ request('categories')
+                                                        && in_array($category->id, request('categories')) ? 'selected="selected"' : '' }}
+                                                >
+                                                    {{ $category->name }}
+                                                </option>
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                </div>
+                            </div>
 
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -145,11 +169,11 @@
                 <ul class="dropdown-menu" aria-labelledby="sortingMenu">
                     <li><a href="
                     @if ( request()->get('sort') == 'likes' )
-                        {{ route('jobs.search', array_merge(request()->except('sort'), ['sort' => 'created_at'])) }}
+                        {{ route('jobseeker.search', array_merge(request()->except('sort'), ['sort' => 'created_at'])) }}
                         @elseif ( request()->get('sort') == 'created_at' )
-                        {{ route('jobs.search', array_merge(request()->except('sort'), ['sort' => 'likes'])) }}
+                        {{ route('jobseeker.search', array_merge(request()->except('sort'), ['sort' => 'likes'])) }}
                         @else
-                        {{ route('jobs.search', array_merge(request()->except('sort'), ['sort' => 'likes'])) }}
+                        {{ route('jobseeker.search', array_merge(request()->except('sort'), ['sort' => 'likes'])) }}
                         @endif
                                 ">
                             @if ( is_null(request()->get('sort')) )
@@ -199,8 +223,18 @@
                                 @endforeach
                             @endif
                             <br>
+                            @if( $job_seeker->categories->count() )
+                                @foreach($job_seeker->categories as $category)
+                                    <div class="label label-success">
+                                        <a href="{{ route('jobseeker.search', ['category' => $category->id]) }}">
+                                            {{ $category->name }}
+                                        </a>
+                                    </div>
+                                @endforeach
+                            @endif
+                            <br>
                             <i class="fa fa-heart">
-                                {{ $job_seeker->likes }}
+                                {{ $job_seeker->likes ? $job_seeker->likes : '0' }}
                             </i>
                         </div>
                         <hr>
@@ -210,7 +244,7 @@
         @endforeach
 
         <div class="col-md-12 center-block">
-            {!! $job_seekers->render() !!}
+            {!! $paginator->render() !!}
         </div>
 
     </div>

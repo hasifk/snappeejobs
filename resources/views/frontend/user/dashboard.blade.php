@@ -59,6 +59,8 @@
                                     <td>
                                         <a href="{!!route('frontend.profile.edit')!!}" class="btn btn-primary btn-xs">{{ trans('labels.edit_information') }}</a>
                                         <a href="{!!url('auth/password/change')!!}" class="btn btn-warning btn-xs">{{ trans('navs.change_password') }}</a>
+                                        <a href="{!!route('frontend.resume.edit')!!}" class="btn btn-info btn-xs">Update Resume</a>
+                                        <a href="{!!route('frontend.preferences.edit')!!}" class="btn btn-info btn-xs">Change Preferences</a>
                                     </td>
                                 </tr>
                             </table>

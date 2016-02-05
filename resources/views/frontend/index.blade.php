@@ -266,6 +266,40 @@
                                         </div>
 
                                         <div class="form-group">
+                                            <label for="office_life" class="col-lg-4 control-label">Country</label>
+                                            <div class="col-lg-6">
+                                                <select v-model="country_id" name="country_id" id="country_id" class="form-control">
+                                                    <option value="">Please select</option>
+                                                    @foreach($countries as $country)
+                                                        <option
+                                                                value="{{ $country->id }}"
+                                                                {{ old('country_id') && $country->id == old('country_id') ? 'selected="selected"' : '' }}
+                                                        >
+                                                            {{ $country->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="office_life" class="col-lg-4 control-label">State</label>
+                                            <div class="col-lg-6">
+                                                <select v-model="state_id" name="state_id" id="state_id" class="form-control">
+                                                    <option value="">Please select</option>
+                                                    @foreach($states as $state)
+                                                        <option
+                                                                value="{{ $state->id }}"
+                                                                {{ old('state_id') && $state->id == old('state_id') ? 'selected="selected"' : '' }}
+                                                        >
+                                                            {{ $state->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
                                             <div class="col-md-6 col-md-offset-4">
                                                 <button
                                                         v-on:click="validateRegistration($event)"
@@ -419,6 +453,8 @@
                     password_confirmation   : '',
                     gender                  : '',
                     age                     : '',
+                    country_id              : '',
+                    state_id                : '',
                     errors                  : [],
                     user                    : {},
                     registered              : {{ auth()->guest() ? "false" : "true" }},
@@ -549,6 +585,18 @@
                         $("#registrationModal").modal();
                     @endif
             @endif
+
+            $('#country_id').on('change', function(){
+                $.getJSON('/get-states/'+$(this).val(), function(json){
+                    var listitems = '<option value="">Please select</option>';
+                    $.each(json,function(key, value)
+                    {
+                        listitems += '<option value=' + value.id + '>' + value.name + '</option>';
+                    });
+                    $('#state_id').html(listitems);
+                });
+            });
+
         })();
 
 	</script>

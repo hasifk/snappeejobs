@@ -3,6 +3,7 @@
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\Access\PreferencesSaveRequest;
 use App\Http\Requests\Frontend\Access\ResumeUploadRequest;
+use App\Models\JobSeeker\JobSeeker;
 use App\Repositories\Frontend\User\UserContract;
 use App\Http\Requests\Frontend\User\UpdateProfileRequest;
 use Carbon\Carbon;
@@ -34,6 +35,61 @@ class ProfileController extends Controller {
 		];
 
 		return view('frontend.user.profile.edit', $data);
+	}
+
+	public function editResume(){
+
+		$job_seeker_details = auth()->user()->jobseeker_details;
+
+		$resume_link = '';
+
+		if ( is_null($job_seeker_details) ) {
+			$job_seeker = false;
+		} else {
+			$job_seeker = $job_seeker_details;
+			if ( $job_seeker_details->has_resume ) {
+				$resume_link = $this->getFileUrl($job_seeker_details->resume_path.$job_seeker_details->resume_filename.'.'.$job_seeker_details->resume_extension);
+			}
+		}
+
+		return view('frontend.user.resume.edit', [
+			'job_seeker' 	=> $job_seeker,
+			'resume_link'	=> $resume_link
+		]);
+	}
+
+	public function editPreferences(){
+
+		$job_seeker_details = JobSeeker::findOrFail(auth()->user()->jobseeker_details->id);
+
+		$job_seeker = false;
+		if ( !is_null($job_seeker_details) ) {
+			$job_seeker = $job_seeker_details;
+		}
+
+		$skills = \DB::table('skills')->select(['id', 'name'])->get();
+		$job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
+
+		return view('frontend.user.preferences.edit', [
+			'skills' 			=> $skills,
+			'job_categories'	=> $job_categories,
+			'job_seeker'		=> $job_seeker
+		]);
+	}
+
+	private function getFileUrl($key) {
+		$s3 = \Storage::disk('s3');
+		$client = $s3->getDriver()->getAdapter()->getClient();
+		$bucket = config('filesystems.disks.s3.bucket');
+
+		$command = $client->getCommand('GetObject', [
+			'Bucket' => $bucket,
+			'Key' => $key
+		]);
+
+		$request = $client->createPresignedRequest($command, '+1 minutes');
+
+		return (string) $request->getUri();
 	}
 
 	/**
@@ -111,7 +167,7 @@ class ProfileController extends Controller {
 
 		foreach ($job_categories as $job_category) {
 			\DB::table('category_preferences_job_seeker')->insert([
-				'user_id'				=> auth()->user()->id,
+				'user_id'				=> auth()->user()->jobseeker_details->id,
 				'job_category_id'		=> $job_category,
 				'created_at'			=> Carbon::now(),
 				'updated_at'			=> Carbon::now(),
@@ -122,8 +178,8 @@ class ProfileController extends Controller {
 
 		foreach ($skills as $skill) {
 			\DB::table('skills_job_seeker')->insert([
-				'user_id'		=> auth()->user()->id,
-				'skill_id'		=> $skill,
+				'user_id'				=> auth()->user()->jobseeker_details->id,
+				'skill_id'				=> $skill,
                 'created_at'			=> Carbon::now(),
                 'updated_at'			=> Carbon::now(),
 			]);

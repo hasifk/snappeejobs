@@ -41,7 +41,6 @@ class AuthController extends Controller
     public function getRegister(Request $request)
     {
         $countries = \DB::table('countries')->select(['id', 'name'])->get();
-        $skills = \DB::table('skills')->select(['id', 'name'])->get();
 
         if ( $request->old('country_id') ) {
 
@@ -89,7 +88,7 @@ class AuthController extends Controller
     public function validateUser(RegisterRequest $request){
 
         $user = $this->auth->create($request->all());
-
+        $this->auth->createJobSeeker($user);
         \Auth::login($user);
 
         return response()->json(['user' => $user]);

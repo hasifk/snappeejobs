@@ -28,4 +28,10 @@ class JobSeeker extends Model
         );
     }
 
+    public function categories(){
+        return $this->belongsToMany(
+            'App\Models\Job\Category\Category', 'category_preferences_job_seeker', 'user_id', 'job_category_id'
+        );
+    }
+
 }

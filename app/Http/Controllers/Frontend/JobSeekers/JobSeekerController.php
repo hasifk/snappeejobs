@@ -36,6 +36,7 @@ class JobSeekerController extends Controller
 
         $countries = \DB::table('countries')->select(['id', 'name'])->get();
         $skills = \DB::table('skills')->select(['id', 'name'])->get();
+        $job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
 
         if ( request('country_id') ) {
             $states = \DB::table('states')
@@ -49,11 +50,18 @@ class JobSeekerController extends Controller
                 ->get();
         }
 
+        $jobSeekerResult = $this->repository->getJobsSeekersPaginated($request, config('jobs.default_per_page'));
+
+        $jobSeekers = $jobSeekerResult['jobseekers'];
+        $paginator = $jobSeekerResult['paginator'];
+
         $view = [
             'countries'         => $countries,
             'states'            => $states,
             'skills'            => $skills,
-            'job_seekers' => $this->repository->getJobsSeekersPaginated($request, config('jobs.default_per_page'))
+            'categories'        => $job_categories,
+            'job_seekers'       => $jobSeekers,
+            'paginator'         => $paginator
         ];
 
         return view('frontend.jobseekers.index', $view);

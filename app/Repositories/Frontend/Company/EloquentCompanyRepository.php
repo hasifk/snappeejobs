@@ -18,7 +18,7 @@ class EloquentCompanyRepository {
 
         // First the joins
         if ( $request->get('locations') ) {
-            $searchObj = $searchObj->join('states', 'states.id', '=', 'companies.id');
+            $searchObj = $searchObj->join('states', 'states.id', '=', 'companies.state_id');
         }
 
         if ( $request->get('industries') ) {

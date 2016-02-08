@@ -82,7 +82,7 @@
                 @endforeach
 
                 <div class="col-md-4">
-                    <a href="/jobs?companies%5B%5D={{ $company->id }}">
+                    <a href="/jobs?search=1&companies[]={{ $company->id }}&country_id=&state_id=">
                         <img src="http://dummyimage.com/320x235/888/000/f23.jpg?text=We+are+Hiring" alt="" width="100%">
                     </a>
                 </div>

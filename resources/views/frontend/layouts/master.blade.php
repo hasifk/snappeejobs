@@ -30,6 +30,8 @@
 
         @include('frontend.includes.nav')
 
+        @include('frontend.includes.alerts')
+
         <div class="container-fluid">
             @include('includes.partials.messages')
             @yield('content')

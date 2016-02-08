@@ -189,6 +189,11 @@
                             <div class="modal-content">
 
                                 <div class="modal-header">
+
+                                    <div v-if="registered && !confirmed" class="alert alert-info">
+                                        Please confirm your account by following the email sent to your account.
+                                    </div>
+
                                     <h3>@{{ modalHeading }}</h3>
                                 </div>
 
@@ -447,8 +452,6 @@
 
 	<script>
 
-
-
             Dropzone.autoDiscover = false
 
             var homeRegisterApp = new Vue({
@@ -467,6 +470,7 @@
                     errors                  : [],
                     user                    : {},
                     registered              : {{ auth()->guest() ? "false" : "true" }},
+                    confirmed               : {{ auth()->user() && auth()->user()->confirmed ? "true" : "false" }},
                     avatarUploaded          : {{ auth()->user() && auth()->user()->avatar_filename ? "true" : "false" }},
                     resumeUploaded          : {{ auth()->user() && auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->has_resume ? "true" : "false" }},
                     skills                  : [],
@@ -587,7 +591,7 @@
                                     that.modalHeading = '';
                                     setTimeout(function () {
                                         $("#registrationModal").modal('toggle');
-                                        location.reload();
+                                        location.href = '{{ route('frontend.dashboard') }}'+"?confirmed=false";
                                     }, 1);
                                 }).error(function(err, data){
                             var errorArray = [];

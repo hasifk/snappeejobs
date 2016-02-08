@@ -220,4 +220,8 @@ class ProfileController extends Controller {
 		return response()->json(['status' => 1]);
 	}
 
+	public function resendConfirmation(Request $request){
+
+	}
+
 }

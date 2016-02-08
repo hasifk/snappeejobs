@@ -20,6 +20,7 @@
     "Ionicons": "ionicons#~2.0.1",
     "select2": "~4.0.1",
     "vue": "~1.0.13",
+    "bootstrap-datepicker": "*",
     "dropzone": "~4.2.0"
   }
 }

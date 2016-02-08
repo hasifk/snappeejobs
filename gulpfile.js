@@ -17,12 +17,14 @@ elixir(function(mix) {
                 'frontend/main.css',
                 './resources/assets/js/dropzone/dist/min/dropzone.min.css',
                 './resources/assets/js/select2/dist/css/select2.min.css',
+                './resources/assets/js/bootstrap-datepicker/dist/css/bootstrap-datepicker.css',
             ], 'public/css/frontend.css')
         .scripts([ // Combine front-end scripts
                 'plugins.js',
                 'vue/dist/vue.js',
                 'select2/dist/js/select2.js',
                 './resources/assets/js/dropzone/dist/min/dropzone.min.js',
+                './resources/assets/js/bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
                 'frontend/main.js',
                 'backend/main.js',
             ], 'public/js/frontend.js')

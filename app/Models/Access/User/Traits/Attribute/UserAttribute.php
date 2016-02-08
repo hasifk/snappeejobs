@@ -36,8 +36,8 @@ trait UserAttribute {
      */
     public function getAvatarImage($size) {
         if ( $this->avatar_filename ) {
-            return 'https://s3-'. env('AWS_S3_REGION') .'.amazonaws.com/'.
-            env('AWS_S3_BUCKET').'/'.
+            return 'https://s3-'. env('AWS_S3_REGION', 'eu-west-1') .'.amazonaws.com/'.
+            env('AWS_S3_BUCKET', 'snappeejobs').'/'.
             $this->avatar_path.
             $this->avatar_filename.'.'.
             $this->avatar_extension;

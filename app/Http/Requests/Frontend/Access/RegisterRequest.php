@@ -30,7 +30,7 @@ class RegisterRequest extends Request {
 			'email' 	=> 'required|email|max:255|unique:users',
 			'password'  => 'required|confirmed|min:6',
 			'gender'	=> 'required|in:male,female',
-			'age'		=> 'required|integer',
+			'dob'		=> 'required|date',
 			'country_id'=> 'required',
 			'state_id'  => 'required',
 		];

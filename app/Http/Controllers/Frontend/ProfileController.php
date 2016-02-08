@@ -8,6 +8,7 @@ use App\Repositories\Frontend\User\UserContract;
 use App\Http\Requests\Frontend\User\UpdateProfileRequest;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Http\Request;
 use Storage;
 
 /**
@@ -122,6 +123,32 @@ class ProfileController extends Controller {
         }
 
 		return redirect()->route('frontend.dashboard')->withFlashSuccess(trans("strings.profile_successfully_updated"));
+	}
+
+	public function updateProfileImage(Request $request) {
+
+		$avatar = $request->file('file');
+
+		if ( $avatar && $avatar->isValid() ) {
+
+			$filePath = "users/" . auth()->user()->id."/avatar/";
+			Storage::put($filePath. $avatar->getClientOriginalName() , file_get_contents($avatar));
+			Storage::setVisibility($filePath. $avatar->getClientOriginalName(), 'public');
+
+			if ( auth()->user()->avatar_filename ) {
+				Storage::delete(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension);
+			}
+
+			$update_array = [
+				'avatar_filename' => pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME),
+				'avatar_extension' => $avatar->getClientOriginalExtension(),
+				'avatar_path' => $filePath
+			];
+
+			auth()->user()->update($update_array);
+		}
+
+		return response()->json(['status' => 1]);
 	}
 
 	public function resumeUpload(ResumeUploadRequest $request){

@@ -259,9 +259,9 @@
                                         </div>
 
                                         <div class="form-group">
-                                            {!! Form::label('age', "Age", ['class' => 'col-lg-4 control-label']) !!}
+                                            {!! Form::label('dob', "Date of Birth", ['class' => 'col-lg-4 control-label']) !!}
                                             <div class="col-lg-6">
-                                                <input v-model="age" class="form-control" placeholder="Age" name="age" type="text" id="age">
+                                                <input v-model="dob" class="form-control bootstrap-datepicker" placeholder="Date of Birth" name="dob" type="text" id="dob">
                                             </div>
                                         </div>
 
@@ -313,10 +313,19 @@
 
                                     </div>
 
-                                    <div v-show="registered && !resumeUploaded" class="form-horizontal">
-                                        <form enctype="multipart/form-data" method="post" action="{{ route('frontend.profile.resume') }}" id="upload-resume"></form>
+                                    <div v-show="registered && !avatarUploaded" class="form-horizontal">
+                                        <form
+                                                enctype="multipart/form-data"
+                                                method="post"
+                                                action="{{ route('frontend.profile.resume') }}"
+                                                id="upload-profile-image"
+                                        >
+                                        </form>
                                     </div>
 
+                                    <div v-show="registered && avatarUploaded && !resumeUploaded" class="form-horizontal">
+                                        <form enctype="multipart/form-data" method="post" action="{{ route('frontend.profile.resume') }}" id="upload-resume"></form>
+                                    </div>
 
                                     <div v-show="resumeUploaded && !preferencesSaved" style="min-height: 400px;" class="form-horizontal">
 
@@ -438,7 +447,7 @@
 
 	<script>
 
-        (function(){
+
 
             Dropzone.autoDiscover = false
 
@@ -452,12 +461,13 @@
                     password                : '',
                     password_confirmation   : '',
                     gender                  : '',
-                    age                     : '',
+                    dob                     : '',
                     country_id              : '',
                     state_id                : '',
                     errors                  : [],
                     user                    : {},
                     registered              : {{ auth()->guest() ? "false" : "true" }},
+                    avatarUploaded          : {{ auth()->user() && auth()->user()->avatar_filename ? "true" : "false" }},
                     resumeUploaded          : {{ auth()->user() && auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->has_resume ? "true" : "false" }},
                     skills                  : [],
                     job_categories          : [],
@@ -474,14 +484,15 @@
                     validateRegistration: function(event){
                         $(event.target).button('loading');
                         var that = this;
+
                         $.post( "{{ route('frontend.access.validate') }}", this.$data, function(data){
 
                             $(event.target).button('reset');
                             that.user = data.user;
                             that.registered = true;
                             that.errors = [];
-                            that.modalHeading = 'Please upload your resume';
-                            that.enableDropZone();
+                            that.modalHeading = 'Please upload your profile image';
+                            that.enableProfileImageUploadDropZone();
 
                         }).error(function(err, data){
                             var errorArray = [];
@@ -497,16 +508,48 @@
 
                     },
 
-                    enableDropZone: function(){
+                    enableProfileImageUploadDropZone: function(){
+
+                        var that = this;
+
+                        $("#upload-profile-image").addClass('dropzone').dropzone({
+                            url: "{{ route('frontend.profileimage.update') }}",
+                            dictDefaultMessage: 'Drag your profile image here or Click to upload.',
+                            paramName: "file",
+                            maxFilesize: 5,
+                            accept: function (file, done) {
+                                if (
+                                        ( file.type == 'image/png' ) ||
+                                        ( file.type == 'image/jpg' ) ||
+                                        ( file.type == 'image/jpeg' ) ||
+                                        ( file.type == 'image/bmp' )
+                                ) {
+                                    done();
+                                } else {
+                                    alert('Please upload doc/docx/pdf files')
+                                }
+                            },
+                            sending: function (file, xhr, data) {
+                                data.append('_token', $('meta[name="_token"]').attr('content'));
+                            },
+                            success: function (file, xhr) {
+                                that.modalHeading = 'Please upload your resume now';
+                                that.avatarUploaded = true;
+                                that.enableResumeUploadDropZone();
+                            }
+                        });
+                    },
+
+                    enableResumeUploadDropZone: function(){
 
                         var that = this;
 
                         $("#upload-resume").addClass('dropzone').dropzone({
                             url: "{{ route('frontend.profile.resume') }}",
+                            dictDefaultMessage: 'Drag your resume file here or Click to upload.',
                             paramName: "file",
                             maxFilesize: 5,
                             accept: function (file, done) {
-                                console.log(file);
                                 if (
                                         ( file.type == 'application/msword' ) ||
                                         ( file.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ) ||
@@ -562,27 +605,39 @@
             });
 
             @if( auth()->user() && access()->hasRole('User') )
-                    @if(
-                        auth()->user()->job_seeker_details &&
-                        auth()->user()->job_seeker_details->has_resume
-                        )
-                        homeRegisterApp.resumeUploaded = true;
+
+                    @if( auth()->user()->avatar_filename )
 
                         @if(
                             auth()->user()->job_seeker_details &&
-                            auth()->user()->job_seeker_details->preferences_saved
+                            auth()->user()->job_seeker_details->has_resume
                             )
-                            homeRegisterApp.preferencesSaved = true;
+                            homeRegisterApp.resumeUploaded = true;
+    
+                            @if(
+                                auth()->user()->job_seeker_details &&
+                                auth()->user()->job_seeker_details->preferences_saved
+                                )
+                                homeRegisterApp.preferencesSaved = true;
+                            @else
+                                homeRegisterApp.modalHeading = "Please save your preferences";
+                                $("#registrationModal").modal();
+                            @endif
+    
                         @else
-                            homeRegisterApp.modalHeading = "Please save your preferences";
+                            homeRegisterApp.modalHeading = "Please upload your resume";
+                            homeRegisterApp.registered = true;
+                            homeRegisterApp.enableResumeUploadDropZone();
                             $("#registrationModal").modal();
                         @endif
-
+                        
                     @else
-                        homeRegisterApp.modalHeading = "Please upload your resume";
+
+                        homeRegisterApp.modalHeading = "Please upload your profile image";
                         homeRegisterApp.registered = true;
-                        homeRegisterApp.enableDropZone();
+                        homeRegisterApp.enableProfileImageUploadDropZone();
                         $("#registrationModal").modal();
+                        
                     @endif
             @endif
 
@@ -597,7 +652,7 @@
                 });
             });
 
-        })();
+
 
 	</script>
 @stop

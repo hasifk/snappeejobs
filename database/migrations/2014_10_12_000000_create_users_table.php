@@ -28,7 +28,8 @@ class CreateUsersTable extends Migration {
             $table->integer('country_id');
             $table->integer('state_id');
 			$table->date('dob')->nullable();
-            $table->enum('gender', ['male', 'female']);
+            $table->enum('gender', ['male', 'female'])->nullable();
+			$table->boolean('no_password')->default(false);
 			$table->timestamps();
 			$table->softDeletes();
 		});

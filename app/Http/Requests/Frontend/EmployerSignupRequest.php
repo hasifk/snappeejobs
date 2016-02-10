@@ -25,7 +25,7 @@ class EmployerSignupRequest extends Request
     {
         return [
             'name'	        => 'required',
-            'email'	        => 'required|email',
+            'email'	        => 'required|email|max:255|unique:users',
             'company'	    => 'required',
             'country_id'	=> 'required',
             'state_id'	    => 'required',

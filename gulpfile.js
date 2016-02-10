@@ -18,6 +18,7 @@ elixir(function(mix) {
                 './resources/assets/js/dropzone/dist/min/dropzone.min.css',
                 './resources/assets/js/select2/dist/css/select2.min.css',
                 './resources/assets/js/bootstrap-datepicker/dist/css/bootstrap-datepicker.css',
+                './resources/assets/js/sweetalert/dist/sweetalert.css'
             ], 'public/css/frontend.css')
         .scripts([ // Combine front-end scripts
                 'plugins.js',
@@ -25,6 +26,7 @@ elixir(function(mix) {
                 'select2/dist/js/select2.js',
                 './resources/assets/js/dropzone/dist/min/dropzone.min.js',
                 './resources/assets/js/bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
+                './resources/assets/js/sweetalert/dist/sweetalert.min.js',
                 'frontend/main.js',
                 'backend/main.js',
             ], 'public/js/frontend.js')

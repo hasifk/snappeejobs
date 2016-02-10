@@ -46,5 +46,6 @@
         @yield('after-scripts-end')
 
         {{--@include('includes.partials.ga')--}}
+        @include('sweet::alert')
     </body>
 </html>

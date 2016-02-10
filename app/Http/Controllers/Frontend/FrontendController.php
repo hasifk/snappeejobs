@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\EmployerSignupRequest;
-use App\Models\Company\Company;
-use App\Models\Company\People\People;
+use App\Models\Access\User\User;
+use App\Repositories\Frontend\User\EloquentUserRepository;
 use DB;
 use Illuminate\Http\Request;
 
@@ -12,6 +12,20 @@ use Illuminate\Http\Request;
  * @package App\Http\Controllers
  */
 class FrontendController extends Controller {
+	/**
+	 * @var EloquentUserRepository
+	 */
+	private $users;
+
+	/**
+	 * FrontendController constructor.
+	 * @param EloquentUserRepository $users
+     */
+	public function __construct(EloquentUserRepository $users)
+	{
+
+		$this->users = $users;
+	}
 
 	/**
 	 * @param \Request $request
@@ -73,15 +87,11 @@ class FrontendController extends Controller {
 
 	public function employersAction(EmployerSignupRequest $request)
 	{
-        $this->users->create(
-            $request->except('assignees_roles', 'permission_user'),
-            [
-                'assignees_roles' => [
+		$this->users->createEmployerUser($request->all());
 
-                ]
-            ],
-            $request->only('permission_user')
-        );
+		alert()->message('Please confirm you account.', 'Thank you!');
+
+		return redirect(route('employers'));
 	}
 
 	public function companiesAction()

@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Frontend\Auth;
 
 use App\Events\Frontend\Auth\UserLoggedIn;
+use App\Models\Access\User\User;
 use App\Repositories\Frontend\User\UserContract;
 use Illuminate\Http\Request;
 use App\Exceptions\GeneralException;
@@ -172,7 +173,29 @@ class AuthController extends Controller
         //Don't know why the exception handler is not catching this
         try {
             $this->auth->confirmAccount($token);
-            return redirect()->route('frontend.dashboard')->withFlashSuccess("Your account has been successfully confirmed!");
+
+            /**
+             * Check if the user does not have password and does not have the Social logins.
+             * If true, then we should show them that we have sent a password reset request.
+             * If not, simply show account confirmed message.
+             */
+
+            $user = User::where('confirmation_code', $token)->first();
+
+            if ( $user->no_password && ( ! $user->providers->count() ) ) {
+
+                $this->auth->sendPasswordResetMailForEmployer($user);
+
+                alert()
+                    ->message('Your account has been confirmed. An email has been sent to reset your password.', 'Account confirmed')
+                    ->autoclose(3500);
+            } else {
+                alert()
+                    ->message('Your account has been successfully confirmed!. Now, please login', 'Account confirmed')
+                    ->autoclose(3500);
+            }
+            return redirect()->route('home');
+
         } catch (GeneralException $e) {
             return redirect()->back()->withInput()->withFlashDanger($e->getMessage());
         }

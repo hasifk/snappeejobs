@@ -173,6 +173,7 @@ return [
 		Barryvdh\Debugbar\ServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 		Intervention\Image\ImageServiceProvider::class,
+		UxWeb\SweetAlert\SweetAlertServiceProvider::class,
     ],
 
 	/*
@@ -229,5 +230,6 @@ return [
 		'Socialize' => 'Laravel\Socialite\Facades\Socialite',
 		'Socialite' => Laravel\Socialite\Facades\Socialite::class,
 		'Image' => 'Intervention\Image\Facades\Image',
+		'Alert' => UxWeb\SweetAlert\SweetAlert::class,
 	],
 ];

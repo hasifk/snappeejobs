@@ -30,7 +30,7 @@ class UserRoleSeeder extends Seeder {
 		//Attach employer role to emplyer staff - HR @ silverbloom
 		$user_model = config('auth.model');
 		$user_model = new $user_model;
-		$user_model::find(3)->attachRole(3);
+		$user_model::find(3)->attachRole(2);
 
 		//Attach normal user role to user
 		$user_model = config('auth.model');

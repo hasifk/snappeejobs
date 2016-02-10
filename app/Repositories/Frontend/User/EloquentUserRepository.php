@@ -1,12 +1,16 @@
 <?php namespace App\Repositories\Frontend\User;
 
+use App\Events\Backend\Account\UserCreated;
 use App\Models\Access\User\User;
 use App\Models\Access\User\UserProvider;
 use App\Exceptions\GeneralException;
 use Carbon\Carbon;
+use Event;
+use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use App\Repositories\Backend\Role\RoleRepositoryContract;
+use Illuminate\Support\Facades\Password;
 
 /**
  * Class EloquentUserRepository
@@ -48,8 +52,8 @@ class EloquentUserRepository implements UserContract {
 			'name' => $data['name'],
 			'email' => $data['email'],
 			'password' => $provider ? null : $data['password'],
-			'gender' => $data['gender'],
-			'dob' => new Carbon($data['dob']),
+			'gender' => (!empty($data['gender'])) ? $data['gender'] : '',
+			'dob' => (!empty($data['dob'])) ? new Carbon($data['dob']) : '',
 			'confirmation_code' => md5(uniqid(mt_rand(), true)),
 			'confirmed' => 0,
 		];
@@ -229,4 +233,50 @@ class EloquentUserRepository implements UserContract {
 			$message->to($user->email, $user->name)->subject(app_name().': Confirm your account!');
 		});
 	}
+
+	public function createEmployerUser($data) {
+
+		$insert_data = [
+			'name' => $data['name'],
+			'email' => $data['email'],
+			'password' => null,
+			'no_password' => true,
+			'gender' => (!empty($data['gender'])) ? $data['gender'] : '',
+			'dob' => (!empty($data['dob'])) ? new Carbon($data['dob']) : '',
+			'confirmation_code' => md5(uniqid(mt_rand(), true)),
+			'confirmed' => 0,
+		];
+
+		if ( $data['country_id'] ) {
+			$insert_data['country_id'] = $data['country_id'];
+		}
+		if ( $data['state_id'] ) {
+			$insert_data['state_id'] = $data['state_id'];
+		}
+
+		$user = User::create($insert_data);
+		$user->attachRoles([2, 3]);
+
+		$superAdmin = User::with(['roles' => function ($query) {
+			$query->where('role_id', 1);
+
+		}])->first();
+
+		Event::fire(new UserCreated($user, $superAdmin ));
+
+		$this->sendConfirmationEmail($user);
+
+		return $user;
+	}
+
+	public function sendPasswordResetMailForEmployer($user){
+		//$user can be user instance or id
+		if (! $user instanceof User)
+			$user = User::findOrFail($user);
+
+		$response = Password::sendResetLink(['email' => $user->email], function (Message $message) {
+			$message->subject('Your Password Reset Link');
+		});
+	}
+
 }

@@ -161,4 +161,8 @@ class EloquentAuthenticationRepository implements AuthenticationContract {
 	public function resendConfirmationEmail($user_id) {
 		return $this->users->sendConfirmationEmail($user_id);
 	}
+
+	public function sendPasswordResetMailForEmployer($user_id) {
+		return $this->users->sendPasswordResetMailForEmployer($user_id);
+	}
 }

@@ -70,10 +70,12 @@ class ProfileController extends Controller {
 
 		$skills = \DB::table('skills')->select(['id', 'name'])->get();
 		$job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
+		$industries = \DB::table('industries')->select(['id', 'name'])->get();
 
 		return view('frontend.user.preferences.edit', [
 			'skills' 			=> $skills,
 			'job_categories'	=> $job_categories,
+			'industries'		=> $industries,
 			'job_seeker'		=> $job_seeker
 		]);
 	}
@@ -190,6 +192,17 @@ class ProfileController extends Controller {
 
 	public function savePreferences(PreferencesSaveRequest $request){
 
+		$industries = $request->get('industries');
+
+		foreach ($industries as $industry) {
+			\DB::table('job_seeker_industry_preferences')->insert([
+				'user_id'				=> auth()->user()->jobseeker_details->id,
+				'industry_id'			=> $industry,
+				'created_at'			=> Carbon::now(),
+				'updated_at'			=> Carbon::now(),
+			]);
+		}
+
 		$job_categories = $request->get('job_categories');
 
 		foreach ($job_categories as $job_category) {
@@ -218,6 +231,57 @@ class ProfileController extends Controller {
 		]);
 
 		return response()->json(['status' => 1]);
+	}
+
+	public function saveEmployerPreferences(PreferencesSaveRequest $request){
+
+		$industries = $request->get('industries');
+
+		\DB::table('job_seeker_industry_preferences')->where('user_id', auth()->user()->jobseeker_details->id)->delete();
+
+		foreach ($industries as $industry) {
+			\DB::table('job_seeker_industry_preferences')->insert([
+				'user_id'				=> auth()->user()->jobseeker_details->id,
+				'industry_id'			=> $industry,
+				'created_at'			=> Carbon::now(),
+				'updated_at'			=> Carbon::now(),
+			]);
+		}
+
+		$job_categories = $request->get('job_categories');
+
+		\DB::table('category_preferences_job_seeker')->where('user_id', auth()->user()->jobseeker_details->id)->delete();
+
+		foreach ($job_categories as $job_category) {
+			\DB::table('category_preferences_job_seeker')->insert([
+				'user_id'				=> auth()->user()->jobseeker_details->id,
+				'job_category_id'		=> $job_category,
+				'created_at'			=> Carbon::now(),
+				'updated_at'			=> Carbon::now(),
+			]);
+		}
+
+		$skills = $request->get('skills');
+
+		\DB::table('skills_job_seeker')->where('user_id', auth()->user()->jobseeker_details->id)->delete();
+
+		foreach ($skills as $skill) {
+			\DB::table('skills_job_seeker')->insert([
+				'user_id'				=> auth()->user()->jobseeker_details->id,
+				'skill_id'				=> $skill,
+				'created_at'			=> Carbon::now(),
+				'updated_at'			=> Carbon::now(),
+			]);
+		}
+
+		\DB::table('job_seeker_details')->where('user_id', auth()->user()->id)->update([
+			'preferences_saved'=> true,
+			'size'=> $request->get('size')
+		]);
+
+		alert()->success('Your preferences are saved.')->autoclose(3000);
+
+		return redirect(route('frontend.preferences.edit'));
 	}
 
 	public function resendConfirmation(Request $request){

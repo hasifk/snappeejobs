@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSkillsJobSeekerTable extends Migration
+class CreateJobSeekerIndustryPreferencesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,10 +12,10 @@ class CreateSkillsJobSeekerTable extends Migration
      */
     public function up()
     {
-        Schema::create('skills_job_seeker', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
+        Schema::create('job_seeker_industry_preferences', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('user_id')->unsigned();
-            $table->integer('skill_id')->unsigned();
+            $table->integer('industry_id')->unsigned();
             $table->timestamps();
 
             $table->foreign('user_id')
@@ -23,9 +23,9 @@ class CreateSkillsJobSeekerTable extends Migration
                 ->on('job_seeker_details')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->foreign('skill_id')
+            $table->foreign('industry_id')
                 ->references('id')
-                ->on('skills')
+                ->on('industries')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });
@@ -38,11 +38,6 @@ class CreateSkillsJobSeekerTable extends Migration
      */
     public function down()
     {
-        Schema::table('skills_job_seeker', function (Blueprint $table) {
-            $table->dropForeign('skills_job_seeker_user_id_foreign');
-            $table->dropForeign('skills_job_seeker_skill_id_foreign');
-        });
-
-        Schema::drop('skills_job_seeker');
+        Schema::drop('job_seeker_industry_preferences');
     }
 }

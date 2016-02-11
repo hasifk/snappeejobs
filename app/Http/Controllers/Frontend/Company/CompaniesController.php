@@ -29,22 +29,29 @@ class CompaniesController extends Controller
     public function index(Request $request)
     {
 
+        $companies = \DB::table('companies')->select(['id', 'title'])->get();
         $industries = \DB::table('industries')->select(['id', 'name'])->get();
-
-        $locations = \DB::table('states')
-            ->join('countries','states.country_id','=','countries.id')
-            ->select([
-                'states.id',
-                'states.name As state',
-                'countries.iso_code_2 As country_code'
-            ])->get();
+        $countries = \DB::table('countries')->select(['id', 'name'])->get();
+        if ( request('country_id') ) {
+            $states = \DB::table('states')
+                ->where('country_id', request('country_id'))
+                ->select(['id', 'name'])
+                ->get();
+        } else {
+            $states = \DB::table('states')
+                ->where('country_id', 222)
+                ->select(['id', 'name'])
+                ->get();
+        }
 
         $companies_data = $this->companyRepository->getCompaniesPaginated($request, config('companies.default_per_page'));
 
         return view('frontend.companies.index',[
-            'industries' =>  $industries,
-            'locations'  =>  $locations,
-            'companies_data'  =>  $companies_data
+            'countries'         => $countries,
+            'states'            => $states,
+            'industries'        =>  $industries,
+            'companies'         =>  $companies,
+            'companies_data'    =>  $companies_data
         ]);
 
     }

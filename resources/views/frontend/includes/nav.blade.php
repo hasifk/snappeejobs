@@ -13,7 +13,7 @@
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
 					<li>{!! link_to('/', trans('navs.home')) !!}</li>
-					@if ( ! access()->hasRoles(['Administrator', 'Employer', 'Employer Staff']))
+					@if ( !access()->hasRole('User'))
 					<li>{!! link_to('/employers', 'Employers') !!}</li>
 					@endif
 					<li>{!! link_to('/companies', 'Companies') !!}</li>

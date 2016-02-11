@@ -34,4 +34,10 @@ class JobSeeker extends Model
         );
     }
 
+    public function industries(){
+        return $this->belongsToMany(
+            'App\Models\Company\Industry\Industry', 'job_seeker_industry_preferences', 'user_id', 'industry_id'
+        );
+    }
+
 }

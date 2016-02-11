@@ -8,6 +8,56 @@ class CompanyTableSeeder extends Seeder
     public function run()
     {
 
+        \DB::statement(
+           "
+            INSERT INTO `companies` (`id`, `employer_id`, `title`, `url_slug`, `size`, `description`, `what_it_does`, `office_life`, `country_id`, `state_id`, `default_photo_id`, `logo`, `likes`, `created_at`, `updated_at`) VALUES
+            (1, 2, 'Silverbloom Technologies', 'silverbloom-technologies', 'big', 'asd\r\nasd\r\nsa\r\ndsa\r\ndsd', 'asd\r\nasd\r\nsa\r\n\r\nsad\r\nsd\r\ndad\r\n', 'asd\r\nas\r\nd\r\nasd\r\nsad\r\nasd', 222, 3428, 0, '', 0, '2016-02-11 00:17:47', '2016-02-11 00:17:47');
+            "
+        );
+
+        \DB::statement(
+           "
+            INSERT INTO `industry_company` (`id`, `company_id`, `industry_id`, `created_at`, `updated_at`) VALUES
+            (1, 1, 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+            (2, 1, 2, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+            (3, 1, 3, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+            "
+        );
+
+        \DB::statement(
+           "
+            INSERT INTO `jobs` (`id`, `company_id`, `title`, `title_url_slug`, `level`, `country_id`, `state_id`, `likes`, `description`, `status`, `published`, `created_at`, `updated_at`, `deleted_at`) VALUES
+            (1, 1, 'Salesforce Developer', 'salesforce-developer', 'mid', 222, 3428, 0, 'asda<br>sdsa<br>dasd', 1, 1, '2016-02-11 00:18:27', '2016-02-11 00:18:30', NULL);
+            "
+        );
+
+        \DB::statement(
+           "
+            INSERT INTO `job_prerequisites` (`id`, `job_id`, `content`, `created_at`, `updated_at`) VALUES
+            (1, 1, 'azazaz', '2016-02-11 00:18:27', '2016-02-11 00:18:27'),
+            (2, 1, 'aaaaaaaaa', '2016-02-11 00:18:27', '2016-02-11 00:18:27'),
+            (3, 1, 'qqqq', '2016-02-11 00:18:27', '2016-02-11 00:18:27');
+            "
+        );
+
+        \DB::statement(
+           "
+            INSERT INTO `job_skills` (`id`, `job_id`, `skill_id`, `created_at`, `updated_at`) VALUES
+            (1, 1, 222, '2016-02-11 00:18:27', '2016-02-11 00:18:27');
+            "
+        );
+
+        \DB::statement(
+           "
+            INSERT INTO `category_preferences_jobs` (`id`, `job_id`, `job_category_id`, `created_at`, `updated_at`) VALUES
+            (1, 1, 1, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+            (2, 1, 2, '0000-00-00 00:00:00', '0000-00-00 00:00:00'),
+            (3, 1, 3, '0000-00-00 00:00:00', '0000-00-00 00:00:00');
+            "
+        );
+
+        return;
+
         $faker = Faker\Factory::create();
 
         $companies = [

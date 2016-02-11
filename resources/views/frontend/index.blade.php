@@ -335,6 +335,28 @@
                                     <div v-show="resumeUploaded && !preferencesSaved" style="min-height: 400px;" class="form-horizontal">
 
                                         <div class="form-group">
+                                            <label for="description" class="col-lg-4 control-label">Industry</label>
+                                            <div class="col-lg-6">
+                                                <select
+                                                        v-model="industries"
+                                                        name="industries[]"
+                                                        id="industries"
+                                                        class="form-control select2 select2-hidden-accessible js-example-basic-multiple"
+                                                        multiple="multiple"
+                                                        style="width: 100%;"
+                                                >
+                                                    @if (count($industries) > 0)
+                                                        @foreach($industries as $industry)
+                                                            <option value="{{ $industry->id }}">
+                                                                {{ $industry->name }}
+                                                            </option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
                                             <label for="description" class="col-lg-4 control-label">Skills</label>
                                             <div class="col-lg-6">
                                                 <select
@@ -473,6 +495,7 @@
                     confirmed               : {{ auth()->user() && auth()->user()->confirmed ? "true" : "false" }},
                     avatarUploaded          : {{ auth()->user() && auth()->user()->avatar_filename ? "true" : "false" }},
                     resumeUploaded          : {{ auth()->user() && auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->has_resume ? "true" : "false" }},
+                    industries              : [],
                     skills                  : [],
                     job_categories          : [],
                     size                    : '',
@@ -580,6 +603,7 @@
                         var that = this;
                         $.post( "{{ route('frontend.profile.preferences') }}",
                                 {
+                                    industries      : $('select#industries').select2().val(),
                                     skills          : $('select#skills').select2().val(),
                                     job_categories  : $('select#job_categories').select2().val(),
                                     size            : $('input[type=radio][name=size]:checked').val()

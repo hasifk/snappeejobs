@@ -20,7 +20,7 @@ class CreateCategoryPreferencesJobSeekerTable extends Migration
 
             $table->foreign('user_id')
                 ->references('id')
-                ->on('users')
+                ->on('job_seeker_details')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->foreign('job_category_id')

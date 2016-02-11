@@ -14,6 +14,8 @@
 
                     <form method="post" action="" class="form-horizontal">
 
+                        {{ csrf_field() }}
+
                         <div class="form-group">
                             <label for="description" class="col-lg-4 control-label">Skills</label>
                             <div class="col-lg-6">
@@ -55,8 +57,42 @@
                                 >
                                     @if (count($job_categories) > 0)
                                         @foreach($job_categories as $job_category)
-                                            <option value="{{ $job_category->id }}">
+                                            <option
+                                                    value="{{ $job_category->id }}"
+                                                    {{ old('job_categories')
+                                                    && in_array($job_category->id, old('job_categories')) ? 'checked="checked"' : '' }}
+                                                    {{ !old('job_categories') && ( $job_seeker && $job_seeker->categories)
+                                                        && in_array($job_category->id, array_pluck($job_seeker->categories->toArray(), 'id')) ? 'selected="selected"' : '' }}
+                                            >
                                                 {{ $job_category->name }}
+                                            </option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description" class="col-lg-4 control-label">Preffered Industries</label>
+                            <div class="col-lg-6">
+                                <select
+                                        v-model="industries"
+                                        name="industries[]"
+                                        id="industry_preferences"
+                                        class="form-control select2 select2-hidden-accessible js-example-basic-multiple"
+                                        multiple="multiple"
+                                        style="width: 100%;"
+                                >
+                                    @if (count($industries) > 0)
+                                        @foreach($industries as $industry)
+                                            <option
+                                                    value="{{ $industry->id }}"
+                                                    {{ old('industries')
+                                                    && in_array($industry->id, old('industries')) ? 'checked="checked"' : '' }}
+                                                    {{ !old('industries') && ( $job_seeker && $job_seeker->industries)
+                                                        && in_array($industry->id, array_pluck($job_seeker->industries->toArray(), 'id')) ? 'selected="selected"' : '' }}
+                                            >
+                                                {{ $industry->name }}
                                             </option>
                                         @endforeach
                                     @endif
@@ -73,7 +109,11 @@
                                             name="size"
                                             id="size_small"
                                             v-model="size"
-                                            value="small" {{ request('size') == 'small' ? 'checked="checked"' : '' }}
+                                            value="small"
+                                            {{
+                                                old('size') ? old('size') == 'small' ? 'checked="checked"' : '' :
+                                                $job_seeker && $job_seeker->size == 'small' ? 'checked="checked"' : ''
+                                            }}
                                     />
                                     <label for="size_small">Small</label>
                                     &nbsp;
@@ -82,7 +122,11 @@
                                             name="size"
                                             id="size_medium"
                                             v-model="size"
-                                            value="medium" {{ request('size') == 'medium' ? 'checked="checked"' : '' }}
+                                            value="medium"
+                                            {{
+                                                old('size') ? old('size') == 'medium' ? 'checked="checked"' : '' :
+                                                $job_seeker && $job_seeker->size == 'medium' ? 'checked="checked"' : ''
+                                            }}
                                     />
                                     <label for="size_medium">Medium</label>
                                     &nbsp;
@@ -91,7 +135,11 @@
                                             name="size"
                                             id="size_big"
                                             v-model="size"
-                                            value="big" {{ request('size') == 'big' ? 'checked="checked"' : '' }}
+                                            value="big"
+                                            {{
+                                                old('size') ? old('size') == 'big' ? 'checked="checked"' : '' :
+                                                $job_seeker && $job_seeker->size == 'big' ? 'checked="checked"' : ''
+                                            }}
                                     />
                                     <label for="size_big">Big</label>
                                 </div>

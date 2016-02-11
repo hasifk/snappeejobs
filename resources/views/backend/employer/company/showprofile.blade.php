@@ -141,6 +141,7 @@
                         @endif
                     </td>
                 </tr>
+                @if($company->logo)
                 <tr>
                     <th>Logo</th>
                     <td>
@@ -152,6 +153,7 @@
                         >
                     </td>
                 </tr>
+                @endif
                 <tr>
                     <th>Likes</th>
                     <td>{{ $company->likes }}</td>

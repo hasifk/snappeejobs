@@ -1,5 +1,6 @@
 <?php namespace App\Repositories\Frontend\Company;
 
+use App\Models\JobSeeker\JobSeeker;
 use Illuminate\Http\Request;
 use App\Models\Company\Company;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -16,30 +17,45 @@ class EloquentCompanyRepository {
 
         $searchObj = new Company();
 
-        // First the joins
-        if ( $request->get('locations') ) {
-            $searchObj = $searchObj->join('states', 'states.id', '=', 'companies.state_id');
+        $jobseeker_industry_preferences = [];
+        $jobseeker_size_preferences = '';
+        // Get the job seeker's preferences
+        if (  auth()->user() && (!empty(auth()->user()->job_seeker_details)) ) {
+            $jobseeker = JobSeeker::find(auth()->user()->job_seeker_details->id);
+            $jobseeker_industry_preferences = $jobseeker->industries->lists('id')->toArray();
+            $jobseeker_size_preferences = $jobseeker->size;
         }
 
-        if ( $request->get('industries') ) {
+        // First the joins
+        if ( $request->get('country_id') ) {
+            $searchObj = $searchObj->where('companies.country_id', $request->get('country_id'));
+        }
+        if ( $request->get('state_id') ) {
+            $searchObj = $searchObj->where('companies.state_id', $request->get('state_id'));
+        }
+
+        if ( $request->get('industries') || $jobseeker_industry_preferences ) {
             $searchObj = $searchObj->join('industry_company', 'industry_company.company_id', '=', 'companies.id');
         }
 
-        // then the where conditions
-        if ( $request->get('locations') ) {
-            $searchObj = $searchObj->whereIn('states.id', $request->get('locations'));
-        }
-
-        if ( $request->get('industries') ) {
-            $searchObj = $searchObj->whereIn('industry_company.industry_id', $request->get('industries'));
+        if ( $request->get('industries') || $jobseeker_industry_preferences ) {
+            if ( $request->get('industries') ) {
+                $searchObj = $searchObj->whereIn('industry_company.industry_id', $request->get('industries'));
+            } else if ( $jobseeker_industry_preferences ) {
+                $searchObj = $searchObj->whereIn('industry_company.industry_id', $jobseeker_industry_preferences);
+            }
         }
 
         if ( $request->get('companies') ) {
             $searchObj = $searchObj->whereIn('companies.id', $request->get('companies'));
         }
 
-        if ( $request->get('size') ) {
-            $searchObj = $searchObj->where('companies.size', $request->get('size'));
+        if ( $request->get('size') || $jobseeker_size_preferences ) {
+            if ( $request->get('size') ) {
+                $searchObj = $searchObj->where('companies.size', $request->get('size'));
+            } else {
+                $searchObj = $searchObj->where('companies.size', $jobseeker_size_preferences);
+            }
         }
 
         ( ($request->get('sort')) && ($request->get('sort') == 'likes') ) ? $order_by = $request->get('sort') : '';
@@ -66,12 +82,45 @@ class EloquentCompanyRepository {
 
         $searchObj = new Company();
 
-        // First the joins
-        if ( $request->get('locations') ) {
-            $searchObj = $searchObj->join('states', 'states.id', '=', 'companies.id');
+        $jobseeker_industry_preferences = [];
+        $jobseeker_size_preferences = '';
+        // Get the job seeker's preferences
+        if (  auth()->user() && (!empty(auth()->user()->job_seeker_details)) ) {
+            $jobseeker = JobSeeker::find(auth()->user()->job_seeker_details->id);
+            $jobseeker_industry_preferences = $jobseeker->industries->lists('id')->toArray();
+            $jobseeker_size_preferences = $jobseeker->size;
         }
-        if ( $request->get('industries') ) {
+
+        // First the joins
+        if ( $request->get('country_id') ) {
+            $searchObj = $searchObj->where('companies.country_id', $request->get('country_id'));
+        }
+        if ( $request->get('state_id') ) {
+            $searchObj = $searchObj->where('companies.state_id', $request->get('state_id'));
+        }
+
+        if ( $request->get('industries') || $jobseeker_industry_preferences ) {
             $searchObj = $searchObj->join('industry_company', 'industry_company.company_id', '=', 'companies.id');
+        }
+
+        if ( $request->get('industries') || $jobseeker_industry_preferences ) {
+            if ( $request->get('industries') ) {
+                $searchObj = $searchObj->whereIn('industry_company.industry_id', $request->get('industries'));
+            } else {
+                $searchObj = $searchObj->whereIn('industry_company.industry_id', $jobseeker_industry_preferences);
+            }
+        }
+
+        if ( $request->get('companies') ) {
+            $searchObj = $searchObj->whereIn('companies.id', $request->get('companies'));
+        }
+
+        if ( $request->get('size') || $jobseeker_size_preferences ) {
+            if ( $request->get('size') ) {
+                $searchObj = $searchObj->where('companies.size', $request->get('size'));
+            } else {
+                $searchObj = $searchObj->where('companies.size', $jobseeker_size_preferences);
+            }
         }
 
         $companies =  $searchObj->with('people','photos','videos','socialmedia','industries')

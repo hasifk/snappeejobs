@@ -20,30 +20,43 @@
                         <input type="hidden" name="search" value="1">
 
                         <div>
+
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="locations">Location</label>
-                                    <select
-                                        name="locations[]"
-                                        id="locations"
-                                        class="form-control select2 select2-hidden-accessible js-example-basic-multiple"
-                                        multiple="multiple"
-                                        style="width: 100%;"
-                                        >
-                                        @if (count($locations) > 0)
-                                        @foreach($locations as $location)
-                                        <option
-                                            value="{{ $location->id }}"
-                                            {{ request('locations')
-                                        && in_array($location->id, request('locations')) ? 'selected="selected"' : '' }}
-                                        >
-                                        {{ $location->state }}, {{ $location->country_code }}
-                                        </option>
+                                    <label for="country_id">Country</label>
+                                    <select name="country_id" id="country_id" class="form-control">
+                                        <option value="">Please select</option>
+                                        @foreach($countries as $country)
+                                            <option
+                                                    value="{{ $country->id }}"
+                                                    {{ request('country_id') && $country->id == request('country_id') ? 'selected="selected"' : '' }}
+                                            >
+                                                {{ $country->name }}
+                                            </option>
                                         @endforeach
-                                        @endif
                                     </select>
                                 </div>
                             </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="state_id">State</label>
+                                    <select name="state_id" id="state_id" class="form-control">
+                                        <option value="">Please select</option>
+                                        @foreach($states as $state)
+                                            <option
+                                                    value="{{ $state->id }}"
+                                                    {{ request('state_id') && $state->id == request('state_id') ? 'selected="selected"' : '' }}
+                                            >
+                                                {{ $state->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="clearfix"></div>
+
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="companies">Company</label>
@@ -54,8 +67,8 @@
                                         multiple="multiple"
                                         style="width: 100%;"
                                         >
-                                        @if (count($companies_data['companies']) > 0)
-                                        @foreach($companies_data['companies'] as $company)
+                                        @if (count($companies) > 0)
+                                        @foreach($companies as $company)
                                         <option
                                             value="{{ $company->id }}"
                                             {{ request('companies')
@@ -99,26 +112,26 @@
                                         <input
                                             type="radio"
                                             name="size"
-                                            id="small"
+                                            id="size_small"
                                             value="small" {{ request('size') == 'small' ? 'checked="checked"' : '' }}
                                         />
-                                        <label for="level_internship">Small</label>
+                                        <label for="size_small">Small</label>
                                         &nbsp;
                                         <input
                                             type="radio"
                                             name="size"
-                                            id="medium"
+                                            id="size_medium"
                                             value="medium" {{ request('size') == 'medium' ? 'checked="checked"' : '' }}
                                         />
-                                        <label for="level_entry">Medium</label>
+                                        <label for="size_medium">Medium</label>
                                         &nbsp;
                                         <input
                                             type="radio"
                                             name="size"
-                                            id="large"
-                                            value="big" {{ request('size') == 'large' ? 'checked="checked"' : '' }}
+                                            id="size_large"
+                                            value="big" {{ request('size') == 'big' ? 'checked="checked"' : '' }}
                                         />
-                                        <label for="level_mid">Large</label>
+                                        <label for="size_large">Big</label>
                                     </div>
                                 </div>
                             </div>

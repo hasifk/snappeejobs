@@ -21,6 +21,7 @@ $router->group(['middleware' => 'auth'], function ()
 	get('profile/edit', 'ProfileController@edit')->name('frontend.profile.edit');
 	get('resume/edit', 'ProfileController@editResume')->name('frontend.resume.edit');
 	get('preferences/edit', 'ProfileController@editPreferences')->name('frontend.preferences.edit');
+	post('preferences/edit', 'ProfileController@saveEmployerPreferences')->name('frontend.preferences.save');
 	post('profile/update', 'ProfileController@update')->name('frontend.profile.update');
 	post('profile/updateProfileImage', 'ProfileController@updateProfileImage')->name('frontend.profileimage.update');
 	post('profile/resume', 'ProfileController@resumeUpload')->name('frontend.profile.resume');

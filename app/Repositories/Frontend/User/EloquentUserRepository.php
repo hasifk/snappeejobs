@@ -58,10 +58,10 @@ class EloquentUserRepository implements UserContract {
 			'confirmed' => 0,
 		];
 
-		if ( $data['country_id'] ) {
+		if ( ! empty($data['country_id']) ) {
 			$insert_data['country_id'] = $data['country_id'];
 		}
-		if ( $data['state_id'] ) {
+		if ( ! empty($data['state_id']) ) {
 			$insert_data['state_id'] = $data['state_id'];
 		}
 

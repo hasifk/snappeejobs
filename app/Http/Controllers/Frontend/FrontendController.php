@@ -38,6 +38,7 @@ class FrontendController extends Controller {
 			'test' => 'it works!'
 		]);
 
+		$industries = \DB::table('industries')->select(['id', 'name'])->get();
 		$skills = \DB::table('skills')->select(['id', 'name'])->get();
 		$job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
 		$countries = \DB::table('countries')->select(['id', 'name'])->get();
@@ -58,6 +59,7 @@ class FrontendController extends Controller {
 		}
 
 		$view = [
+			'industries' 		=> $industries,
 			'skills' 			=> $skills,
 			'job_categories' 	=> $job_categories,
 			'countries' 		=> $countries,

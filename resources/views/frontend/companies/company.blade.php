@@ -23,7 +23,7 @@
                     </div>
                     @endforeach
                     <div class="col-md-3 pull-right company-container">
-                        <button class="btn btn-default btn-block" v-on:click="likeCompany" v-show={{ count(auth()->user()) }}>
+                        <button v-cloak class="btn btn-default btn-block" v-on:click="likeCompany" v-show={{ count(auth()->user()) }}>
                             <span class="glyphicon glyphicon-thumbs-up"></span>
                             Like (@{{ companyLikes }})
                         </button>
@@ -86,6 +86,9 @@
                         <img src="http://dummyimage.com/320x235/888/000/f23.jpg?text=We+are+Hiring" alt="" width="100%">
                     </a>
                 </div>
+                <div class="col-md-4">
+                    <a href="{{ route('companies.next', $company->id) }}" class="btn btn-primary">Next Company</a>
+                </div>
                 <!--@foreach($company->socialmedia as $socialMedia)
                 <div class="col-md-4">
                     <a href="{{  $socialMedia->url }}">
@@ -130,7 +133,7 @@
 
                         console.log(this);
 
-                        that.companyLikes = obj.likes+1;
+                        that.companyLikes = obj.likes;
 
                         //Like ({{ $company->likes }})
 

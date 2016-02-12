@@ -20,7 +20,7 @@ class EloquentCompanyRepository {
         $jobseeker_industry_preferences = [];
         $jobseeker_size_preferences = '';
         // Get the job seeker's preferences
-        if (  auth()->user() && (!empty(auth()->user()->job_seeker_details)) ) {
+        if (  auth()->user() && (!empty(auth()->user()->job_seeker_details)) && auth()->user()->job_seeker_details->preferences_saved ) {
             $jobseeker = JobSeeker::find(auth()->user()->job_seeker_details->id);
             $jobseeker_industry_preferences = $jobseeker->industries->lists('id')->toArray();
             $jobseeker_size_preferences = $jobseeker->size;

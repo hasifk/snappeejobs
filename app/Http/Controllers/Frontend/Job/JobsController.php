@@ -79,6 +79,15 @@ class JobsController extends Controller
 
     }
 
+    public function next($jobId){
+        $slugs = \DB::table('jobs')
+            ->join('companies', 'companies.id', '=', 'jobs.company_id')
+            ->where('jobs.id', '<>', $jobId)
+            ->orderByRaw('RAND()')
+            ->first(['jobs.title_url_slug', 'companies.url_slug']);
+        return redirect(route('jobs.view', [$slugs->url_slug, $slugs->title_url_slug]));
+    }
+
     public function likeJob(Request $request)
     {
 
@@ -87,7 +96,9 @@ class JobsController extends Controller
         if (! \DB::table('like_jobs')->where('job_id', $jobId)->where('user_id', auth()->user()->id)->count() ) {
             \DB::table('like_jobs')->insert([
                 'job_id'    => $jobId,
-                'user_id'   => auth()->user()->id
+                'user_id'   => auth()->user()->id,
+                'created_at'    => Carbon::now(),
+                'updated_at'    => Carbon::now()
             ]);
             \DB::table('jobs')
                 ->where('id',$jobId)

@@ -288,4 +288,34 @@ class ProfileController extends Controller {
 
 	}
 
+	public function favourites(){
+
+		$jobs = \DB::table('like_jobs')
+			->join('jobs', 'jobs.id', '=', 'like_jobs.job_id')
+			->join('companies', 'companies.id', '=', 'jobs.company_id')
+			->where('like_jobs.user_id', auth()->user()->id)
+			->select([
+				\DB::raw('companies.title AS company_title'),
+				'companies.url_slug',
+				\DB::raw('jobs.title AS job_title'),
+				'jobs.title_url_slug'
+			])
+			->get();
+
+		$companies = \DB::table('like_companies')
+			->join('companies', 'companies.id', '=', 'like_companies.company_id')
+			->where('like_companies.user_id', auth()->user()->id)
+			->select([
+				'companies.url_slug',
+				'companies.title'
+			])
+			->get();
+
+		return view('frontend.user.profile.favourites', [
+			'companies' => $companies,
+			'jobs' 		=> $jobs
+		]);
+
+	}
+
 }

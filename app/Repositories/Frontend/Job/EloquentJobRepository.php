@@ -108,7 +108,7 @@ class EloquentJobRepository {
         $jobseeker_category_preferences = [];
         $jobseeker_skill_preferences = '';
         // Get the job seeker's preferences
-        if (  auth()->user() && (!empty(auth()->user()->job_seeker_details)) ) {
+        if (  auth()->user() && (!empty(auth()->user()->job_seeker_details)) && auth()->user()->job_seeker_details->preferences_saved ) {
             $jobseeker = JobSeeker::find(auth()->user()->job_seeker_details->id);
             $jobseeker_category_preferences = $jobseeker->categories->lists('id')->toArray();
             $jobseeker_skill_preferences = $jobseeker->skills->lists('id')->toArray();

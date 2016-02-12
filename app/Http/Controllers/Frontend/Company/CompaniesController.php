@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend\Company;
 use App\Http\Controllers\Controller;
 use App\Models\Company\People\People;
 use App\Repositories\Frontend\Company\EloquentCompanyRepository;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 
@@ -65,20 +66,33 @@ class CompaniesController extends Controller
 
     }
 
+    public function next($companyId){
+        $nextCompanyUrlSlug = \DB::table('companies')->where('id', '<>', $companyId)->orderByRaw('RAND()')->value('url_slug');
+        return redirect(route('companies.view', $nextCompanyUrlSlug));
+    }
+
     public function likeCompany(Request $request)
     {
 
         $companyId = $request->get('companyId');
 
-        $likes = DB::table('companies')
+        if (! \DB::table('like_companies')->where('company_id', $companyId)->where('user_id', auth()->user()->id)->count() ) {
+            \DB::table('like_companies')->insert([
+                'company_id'    => $companyId,
+                'user_id'       => auth()->user()->id,
+                'created_at'    => Carbon::now(),
+                'updated_at'    => Carbon::now()
+            ]);
+            \DB::table('companies')
+                ->where('id',$companyId)
+                ->increment('likes');
+        }
+
+        $likes = \DB::table('companies')
             ->where('id',$companyId)
             ->value('likes');
 
-        $res = DB::table('companies')
-            ->where('id',$companyId)
-            ->increment('likes');
-
-        return json_encode(['status'=>$res,'likes'=>$likes]);
+        return json_encode(['status'=>1,'likes'=>$likes]);
 
     }
 

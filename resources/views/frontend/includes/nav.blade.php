@@ -35,7 +35,7 @@
 							</a>
 							<ul class="dropdown-menu" role="menu">
 							    <li>{!! link_to('dashboard', trans('navs.profile')) !!}</li>
-
+							    <li>{!! link_to(route('frontend.profile.favourites'), 'Favourites') !!}</li>
 							    @permission('view-backend')
 							        <li>{!! link_to_route('backend.dashboard', trans('navs.administration')) !!}</li>
 							    @endauth

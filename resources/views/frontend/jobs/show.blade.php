@@ -105,8 +105,11 @@
                     @endif
                 </table>
 
-            </div>
+                <div class="col-md-12">
+                    <a href="{{ route('jobs.next', $job->id) }}" class="btn btn-primary">Next Job</a>
+                </div>
 
+            </div>
 
 
             <!-- Modal Body -->
@@ -201,9 +204,6 @@
                 methods:{
                     likeJob:function(event){
                         var that = this;
-                        event.preventDefault();
-                        $(event.target).button('loading');
-
                         $.ajax({
                             url : '/jobs/job/like',
                             method  : 'post',
@@ -213,9 +213,7 @@
                             },
                             success:function(data){
                                 data = $.parseJSON(data);
-                                console.log(that);
-                                that.jobLikes = data.likes;
-                                $(event.target).button('reset');
+                                JobView.jobLikes = Number(data.likes);
                             }
                         });
 

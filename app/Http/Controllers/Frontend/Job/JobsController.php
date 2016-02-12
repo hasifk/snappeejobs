@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\Job;
 
 use App\Models\Job\Job;
 use App\Repositories\Frontend\Job\EloquentJobRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 use DB;

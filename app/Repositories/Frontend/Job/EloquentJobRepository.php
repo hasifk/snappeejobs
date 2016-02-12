@@ -2,6 +2,7 @@
 
 use App\Models\Access\User\User;
 use App\Models\Job\Job;
+use App\Models\JobSeeker\JobSeeker;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -16,14 +17,23 @@ class EloquentJobRepository {
 
         $searchObj = new Job();
 
+        $jobseeker_category_preferences = [];
+        $jobseeker_skill_preferences = '';
+        // Get the job seeker's preferences
+        if (  auth()->user() && (!empty(auth()->user()->job_seeker_details)) ) {
+            $jobseeker = JobSeeker::find(auth()->user()->job_seeker_details->id);
+            $jobseeker_category_preferences = $jobseeker->categories->lists('id')->toArray();
+            $jobseeker_skill_preferences = $jobseeker->skills->lists('id')->toArray();
+        }
+
         // First the joins
         if ( $request->get('companies') ) {
             $searchObj = $searchObj->join('companies', 'companies.id', '=', 'jobs.company_id');
         }
-        if ( $request->get('categories') ) {
+        if ( $request->get('categories') || $jobseeker_category_preferences ) {
             $searchObj = $searchObj->join('category_preferences_jobs', 'category_preferences_jobs.job_id', '=', 'jobs.id');
         }
-        if ( $request->get('skills') ) {
+        if ( $request->get('skills') || $jobseeker_skill_preferences ) {
             $searchObj = $searchObj->join('job_skills', 'job_skills.job_id', '=', 'jobs.id');
         }
 
@@ -34,11 +44,19 @@ class EloquentJobRepository {
         if ( $request->get('companies') ) {
             $searchObj = $searchObj->whereIn('jobs.company_id', $request->get('companies'));
         }
-        if ( $request->get('categories') ) {
-            $searchObj = $searchObj->whereIn('category_preferences_jobs.job_category_id', $request->get('categories'));
+        if ( $request->get('categories') || $jobseeker_category_preferences ) {
+            if ( $request->get('categories') ) {
+                $searchObj = $searchObj->whereIn('category_preferences_jobs.job_category_id', $request->get('categories'));
+            } else {
+                $searchObj = $searchObj->whereIn('category_preferences_jobs.job_category_id', $jobseeker_category_preferences);
+            }
         }
-        if ( $request->get('skills') ) {
-            $searchObj = $searchObj->whereIn('job_skills.skill_id', $request->get('skills'));
+        if ( $request->get('skills') || $jobseeker_skill_preferences ) {
+            if ($request->get('skills')) {
+                $searchObj = $searchObj->whereIn('job_skills.skill_id', $request->get('skills'));
+            } else {
+                $searchObj = $searchObj->whereIn('job_skills.skill_id', $jobseeker_skill_preferences);
+            }
         }
         if ( $request->get('country_id') ) {
             $searchObj = $searchObj->where('jobs.country_id', $request->get('country_id'));
@@ -87,11 +105,20 @@ class EloquentJobRepository {
 
         $searchObj = new Job();
 
+        $jobseeker_category_preferences = [];
+        $jobseeker_skill_preferences = '';
+        // Get the job seeker's preferences
+        if (  auth()->user() && (!empty(auth()->user()->job_seeker_details)) ) {
+            $jobseeker = JobSeeker::find(auth()->user()->job_seeker_details->id);
+            $jobseeker_category_preferences = $jobseeker->categories->lists('id')->toArray();
+            $jobseeker_skill_preferences = $jobseeker->skills->lists('id')->toArray();
+        }
+
         // First the joins
-        if ( $request->get('categories') ) {
+        if ( $request->get('categories') || $jobseeker_category_preferences ) {
             $searchObj = $searchObj->join('category_preferences_jobs', 'category_preferences_jobs.job_id', '=', 'jobs.id');
         }
-        if ( $request->get('skills') ) {
+        if ( $request->get('skills') || $jobseeker_skill_preferences ) {
             $searchObj = $searchObj->join('job_skills', 'job_skills.job_id', '=', 'jobs.id');
         }
 
@@ -99,11 +126,19 @@ class EloquentJobRepository {
         if ( $request->get('level') ) {
             $searchObj = $searchObj->where('jobs.level', $request->get('level'));
         }
-        if ( $request->get('categories') ) {
-            $searchObj = $searchObj->whereIn('category_preferences_jobs.job_category_id', $request->get('categories'));
+        if ( $request->get('categories') || $jobseeker_category_preferences ) {
+            if ( $request->get('categories') ) {
+                $searchObj = $searchObj->whereIn('category_preferences_jobs.job_category_id', $request->get('categories'));
+            } else {
+                $searchObj = $searchObj->whereIn('category_preferences_jobs.job_category_id', $jobseeker_category_preferences);
+            }
         }
-        if ( $request->get('skills') ) {
-            $searchObj = $searchObj->whereIn('job_skills.skill_id', $request->get('skills'));
+        if ( $request->get('skills') || $jobseeker_skill_preferences ) {
+            if ($request->get('skills')) {
+                $searchObj = $searchObj->whereIn('job_skills.skill_id', $request->get('skills'));
+            } else {
+                $searchObj = $searchObj->whereIn('job_skills.skill_id', $jobseeker_skill_preferences);
+            }
         }
         if ( $request->get('country_id') ) {
             $searchObj = $searchObj->where('jobs.country_id', $request->get('country_id'));

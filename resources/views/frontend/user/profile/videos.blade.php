@@ -11,7 +11,7 @@
                 <div class="panel-heading">Upload your video</div>
                 <div class="panel-body">
 
-                    @if($video->video)
+                    @if( $video && $video->video)
                         <video
                                 id="jobseeker_video"
                                 class="video-js vjs-default-skin"

@@ -59,8 +59,13 @@
                                     <td>
                                         <a href="{!!route('frontend.profile.edit')!!}" class="btn btn-primary btn-xs">{{ trans('labels.edit_information') }}</a>
                                         <a href="{!!url('auth/password/change')!!}" class="btn btn-warning btn-xs">{{ trans('navs.change_password') }}</a>
-                                        <a href="{!!route('frontend.resume.edit')!!}" class="btn btn-info btn-xs">Update Resume</a>
-                                        <a href="{!!route('frontend.preferences.edit')!!}" class="btn btn-info btn-xs">Change Preferences</a>
+                                        @if ( access()->hasRole('User'))
+                                            <a href="{!!route('frontend.resume.edit')!!}" class="btn btn-info btn-xs">Update Resume</a>
+                                            <a href="{!!route('frontend.preferences.edit')!!}" class="btn btn-info btn-xs">Change Preferences</a>
+                                            <a href="{!!route('frontend.profile.videos')!!}" class="btn btn-info btn-xs">Upload Videos</a>
+                                            <a href="{!!route('frontend.profile.images')!!}" class="btn btn-info btn-xs">Upload Images</a>
+                                            <a href="{!!route('frontend.profile.socialmedia')!!}" class="btn btn-info btn-xs">Connect Social Media</a>
+                                        @endif
                                     </td>
                                 </tr>
                             </table>

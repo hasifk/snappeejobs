@@ -54,9 +54,14 @@ class EloquentUserRepository implements UserContract {
 			'password' => $provider ? null : $data['password'],
 			'gender' => (!empty($data['gender'])) ? $data['gender'] : '',
 			'dob' => (!empty($data['dob'])) ? new Carbon($data['dob']) : '',
-			'confirmation_code' => md5(uniqid(mt_rand(), true)),
-			'confirmed' => 0,
+			'confirmation_code' => md5(uniqid(mt_rand(), true))
 		];
+
+		if ( $provider ) {
+			$insert_data['confirmed'] = true;
+		} else {
+			$insert_data['confirmed'] = false;
+		}
 
 		if ( ! empty($data['country_id']) ) {
 			$insert_data['country_id'] = $data['country_id'];
@@ -68,7 +73,9 @@ class EloquentUserRepository implements UserContract {
 		$user = User::create($insert_data);
 		$user->attachRole($this->role->getDefaultUserRole());
 
-		$this->sendConfirmationEmail($user);
+		if ( ! $provider ) {
+			$this->sendConfirmationEmail($user);
+		}
 
 		return $user;
 	}

@@ -40,4 +40,12 @@ class JobSeeker extends Model
         );
     }
 
+    public function videos(){
+        return $this->hasMany('App\Models\JobSeeker\JobSeekerVideo', 'user_id');
+    }
+
+    public function images(){
+        return $this->hasMany('App\Models\JobSeeker\JobSeekerImage', 'user_id');
+    }
+
 }

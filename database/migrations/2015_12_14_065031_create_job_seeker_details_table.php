@@ -24,6 +24,7 @@ class CreateJobSeekerDetailsTable extends Migration
             $table->integer('likes')->unsigned()->nullable();
             $table->boolean('has_resume')->default(false);
             $table->boolean('preferences_saved')->default(false);
+            $table->integer('profile_completeness')->default(0);
 
             $table->foreign('user_id')
                 ->references('id')

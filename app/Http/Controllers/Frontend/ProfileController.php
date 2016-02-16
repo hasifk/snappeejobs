@@ -18,6 +18,21 @@ use Storage;
  * @package App\Http\Controllers\Frontend
  */
 class ProfileController extends Controller {
+	/**
+	 * @var UserContract
+	 */
+	private $users;
+
+
+	/**
+	 * ProfileController constructor.
+	 * @param UserContract $users
+     */
+	public function __construct(UserContract $users)
+	{
+
+		$this->users = $users;
+	}
 
 	/**
 	 * @return mixed
@@ -124,6 +139,8 @@ class ProfileController extends Controller {
             ];
 
             auth()->user()->update($update_array);
+
+			$this->users->updateProfileCompleteness(auth()->user());
         }
 
 		return redirect()->route('frontend.dashboard')->withFlashSuccess(trans("strings.profile_successfully_updated"));
@@ -150,6 +167,7 @@ class ProfileController extends Controller {
 			];
 
 			auth()->user()->update($update_array);
+			$this->users->updateProfileCompleteness(auth()->user());
 		}
 
 		return response()->json(['status' => 1]);
@@ -186,6 +204,8 @@ class ProfileController extends Controller {
 			} else {
 				\DB::table('job_seeker_details')->insert($update_array);
 			}
+
+			$this->users->updateProfileCompleteness(auth()->user());
 
             return response()->json(['status' => 1]);
 		}
@@ -231,6 +251,8 @@ class ProfileController extends Controller {
 			'preferences_saved'=> true,
 			'size'=> $request->get('size')
 		]);
+
+		$this->users->updateProfileCompleteness(auth()->user());
 
 		return response()->json(['status' => 1]);
 	}
@@ -280,6 +302,8 @@ class ProfileController extends Controller {
 			'preferences_saved'=> true,
 			'size'=> $request->get('size')
 		]);
+
+		$this->users->updateProfileCompleteness(auth()->user());
 
 		alert()->success('Your preferences are saved.')->autoclose(3000);
 
@@ -360,6 +384,8 @@ class ProfileController extends Controller {
 			$jobSeekerObj->videos()->create($update_array);
 		}
 
+		$this->users->updateProfileCompleteness(auth()->user());
+
 		return response()->json(['status' => 1]);
 	}
 
@@ -409,6 +435,8 @@ class ProfileController extends Controller {
 
 			$result = $jobSeekerObj->images()->create($insert_array);
 
+			$this->users->updateProfileCompleteness(auth()->user());
+
 			return response()->json(['status' => 1]);
 		}
 
@@ -436,6 +464,9 @@ class ProfileController extends Controller {
 				$request->get('extension')
 			);
 			$imageObject->delete();
+
+			$this->users->updateProfileCompleteness(auth()->user());
+
 			return response()->json(['status' => 1]);
 		} else {
 			return response()->json(['status' => 0]);

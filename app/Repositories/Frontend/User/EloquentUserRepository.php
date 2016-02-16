@@ -4,6 +4,7 @@ use App\Events\Backend\Account\UserCreated;
 use App\Models\Access\User\User;
 use App\Models\Access\User\UserProvider;
 use App\Exceptions\GeneralException;
+use App\Models\JobSeeker\JobSeeker;
 use Carbon\Carbon;
 use Event;
 use Illuminate\Mail\Message;
@@ -284,6 +285,35 @@ class EloquentUserRepository implements UserContract {
 		$response = Password::sendResetLink(['email' => $user->email], function (Message $message) {
 			$message->subject('Your Password Reset Link');
 		});
+	}
+	
+	public function updateProfileCompleteness($user){
+
+		$points = 0;
+
+		$user->avatar_filename ? $points++ : '';
+		$user->about_me ? $points++ : '';
+		$user->country_id ? $points++ : '';
+		$user->state_id ? $points++ : '';
+		$user->state_id ? $points++ : '';
+		$user->providers()->count() ? $points++ : '';
+
+		$job_seeker = '';
+
+		if ( $user->jobseeker_details ) {
+			$job_seeker = JobSeeker::find($user->jobseeker_details->id);
+		}
+
+		$user->jobseeker_details && $user->jobseeker_details->has_resume ? $points++ : '';
+		$user->jobseeker_details && $user->jobseeker_details->preferences_saved ? $points++ : '';
+
+		$job_seeker && $job_seeker->videos->count() ? $points++ : '';
+		$job_seeker && $job_seeker->images->count() ? $points++ : '';
+
+		\DB::table('job_seeker_details')->where('user_id', $user->id)->update(['profile_completeness' => $points]);
+
+		return $points;
+
 	}
 
 }

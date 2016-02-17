@@ -1,7 +1,5 @@
 @extends('frontend.layouts.master')
 
-@section('after-styles-end')
-
 @section('content')
     <div class="row">
 

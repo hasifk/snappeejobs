@@ -263,7 +263,7 @@ class EloquentUserRepository implements UserContract {
 		}
 
 		$user = User::create($insert_data);
-		$user->attachRoles([2, 3]);
+		$user->attachRoles([2]);
 
 		$superAdmin = User::with(['roles' => function ($query) {
 			$query->where('role_id', 1);
@@ -291,12 +291,11 @@ class EloquentUserRepository implements UserContract {
 
 		$points = 0;
 
-		$user->avatar_filename ? $points++ : '';
-		$user->about_me ? $points++ : '';
-		$user->country_id ? $points++ : '';
-		$user->state_id ? $points++ : '';
-		$user->state_id ? $points++ : '';
-		$user->providers()->count() ? $points++ : '';
+		$user->avatar_filename ? ++$points : '';
+		$user->about_me ? ++$points : '';
+		$user->country_id ? ++$points : '';
+		$user->state_id ? ++$points : '';
+		$user->providers()->count() ? ++$points : '';
 
 		$job_seeker = '';
 
@@ -304,11 +303,11 @@ class EloquentUserRepository implements UserContract {
 			$job_seeker = JobSeeker::find($user->jobseeker_details->id);
 		}
 
-		$user->jobseeker_details && $user->jobseeker_details->has_resume ? $points++ : '';
-		$user->jobseeker_details && $user->jobseeker_details->preferences_saved ? $points++ : '';
+		$user->jobseeker_details && $user->jobseeker_details->has_resume ? ++$points : '';
+		$user->jobseeker_details && $user->jobseeker_details->preferences_saved ? ++$points : '';
 
-		$job_seeker && $job_seeker->videos->count() ? $points++ : '';
-		$job_seeker && $job_seeker->images->count() ? $points++ : '';
+		$job_seeker && $job_seeker->videos->count() ? ++$points : '';
+		$job_seeker && $job_seeker->images->count() ? ++$points : '';
 
 		\DB::table('job_seeker_details')->where('user_id', $user->id)->update(['profile_completeness' => $points]);
 

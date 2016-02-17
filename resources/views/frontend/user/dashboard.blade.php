@@ -69,7 +69,7 @@
                                     <td>
                                         <a href="{!!route('frontend.profile.edit')!!}" class="btn btn-primary btn-xs">
                                             {{ trans('labels.edit_information') }}
-                                            @if( (!auth()->user()->avatar_filename) || (!auth()->user()->about_me) || (!auth()->user()->country_id) || (!auth()->user()->state_id) )
+                                            @if( $user->jobseeker_details && ( (!auth()->user()->avatar_filename) || (!auth()->user()->about_me) || (!auth()->user()->country_id) || (!auth()->user()->state_id) ) )
                                             <span style="margin: 0; padding: 0;" class="alert alert-danger badge">!</span>
                                             @endif
                                         </a>
@@ -131,13 +131,13 @@
 
         var doughnutData = [
             {
-                value: {{ $user->jobseeker_details->profile_completeness }},
+                value: {{ $user->jobseeker_details && $user->jobseeker_details->profile_completeness }},
                 color: "#3cb371",
                 highlight: "#3cb371",
                 label: 'Complete'
             },
             {
-                value: {{ 9 - $user->jobseeker_details->profile_completeness }},
+                value: {{ 9 - ( $user->jobseeker_details ? $user->jobseeker_details->profile_completeness : 0 ) }},
                 color:"#CD5C5C",
                 highlight: "#CD5C5C",
                 label: 'Not Complete'

@@ -1,5 +1,6 @@
 <?php namespace App\Models\Access\User\Traits\Attribute;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use DB;
 
@@ -172,5 +173,9 @@ trait UserAttribute {
         }
 
         return DB::table('category_preferences_job_seeker')->where('user_id', $this->id)->get();
+    }
+
+    public function getAgeAttribute(){
+        return Carbon::parse($this->dob)->diffInYears();
     }
 }

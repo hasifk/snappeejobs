@@ -55,7 +55,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 *
 	 * @var array
 	 */
-	protected $dates = ['deleted_at', 'trial_ends_at', 'subscription_ends_at'];
+	protected $dates = ['dob', 'deleted_at', 'trial_ends_at', 'subscription_ends_at'];
 
 	/**
 	 * @return mixed

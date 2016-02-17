@@ -40,6 +40,7 @@ class ProfileController extends Controller {
 	public function edit() {
 
 		$user = auth()->user();
+
 		$countries = DB::table('countries')->select(['id', 'name'])->get();
 		if ( auth()->user()->country_id ) {
 			$states = DB::table('states')->where('country_id', auth()->user()->country_id)->select(['id', 'name'])->get();

@@ -17,5 +17,5 @@ $router->group(['namespace' => 'JobSeekers'], function () use ($router)
      * These reoutes require the user NOT be logged in
      */
     get('jobseekers', 'JobSeekerController@index')->name('jobseeker.search');
-    get('jobseeker/{id}', 'JobSeekerController@index')->name('jobseeker.show');
+    get('jobseeker/{id}', 'JobSeekerController@show')->name('jobseeker.show');
 });

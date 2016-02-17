@@ -203,13 +203,13 @@
                                 </a>
                             sized company
                             <br>
-                            <a href="{{ route('jobseeker.search', ['country' => $job_seeker->country->id]) }}">
+                            <a href="{{ route('jobseeker.search', ['country_id' => $job_seeker->country->id]) }}">
                                 <i class="fa fa-flag">
                                     {{ str_studly($job_seeker->country->name) }}
                                 </i>
                             </a>
                             <br>
-                            <a href="{{ route('jobseeker.search', ['state' => $job_seeker->state->id]) }}">
+                            <a href="{{ route('jobseeker.search', ['state_id' => $job_seeker->state->id]) }}">
                                 {{ str_studly($job_seeker->state->name) }}
                             </a>
                             <br>

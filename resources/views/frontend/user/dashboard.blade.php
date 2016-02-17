@@ -131,7 +131,7 @@
 
         var doughnutData = [
             {
-                value: {{ $user->jobseeker_details && $user->jobseeker_details->profile_completeness }},
+                value: {{ $user->jobseeker_details && $user->jobseeker_details->profile_completeness ? $user->jobseeker_details->profile_completeness : '' }},
                 color: "#3cb371",
                 highlight: "#3cb371",
                 label: 'Complete'

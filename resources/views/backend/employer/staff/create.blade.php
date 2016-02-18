@@ -73,9 +73,9 @@
     </div>
 
     <div class="form-group">
-        {!! Form::label('age', "Age", ['class' => 'col-lg-2 control-label']) !!}
+        {!! Form::label('dob', "Date of Birth", ['class' => 'col-lg-2 control-label']) !!}
         <div class="col-lg-10">
-            {!! Form::text('age', null, ['class' => 'form-control', 'placeholder' => "Age"]) !!}
+            {!! Form::text('dob', null, ['class' => 'form-control', 'placeholder' => "Date of Birth"]) !!}
         </div>
     </div>
 

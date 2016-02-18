@@ -304,8 +304,9 @@ class AuthController extends Controller
 
         if ( ! $user->jobseeker_details ) {
             $this->auth->createJobSeeker($user);
-            $this->users->updateProfileCompleteness($user);
         }
+
+        $this->users->updateProfileCompleteness($user);
 
         Auth::login($user, true);
 
@@ -323,7 +324,9 @@ class AuthController extends Controller
 
         $user = Socialite::driver('linkedin')->user();
 
-        $this->users->findByUserNameOrCreate($user, 'linkedin');
+        $user = $this->users->findByUserNameOrCreate($user, 'linkedin');
+
+        $this->users->updateProfileCompleteness($user);
 
         return redirect()->intended(route('frontend.profile.socialmedia'));
 
@@ -337,7 +340,9 @@ class AuthController extends Controller
 
         $user = Socialite::driver('facebook')->user();
 
-        $this->users->findByUserNameOrCreate($user, 'facebook');
+        $user = $this->users->findByUserNameOrCreate($user, 'facebook');
+
+        $this->users->updateProfileCompleteness($user);
 
         return redirect()->intended(route('frontend.profile.socialmedia'));
 
@@ -364,7 +369,9 @@ class AuthController extends Controller
 
         $user = Socialite::driver('google')->user();
 
-        $this->users->findByUserNameOrCreate($user, 'google');
+        $user = $this->users->findByUserNameOrCreate($user, 'google');
+
+        $this->users->updateProfileCompleteness($user);
 
         return redirect()->intended(route('frontend.profile.socialmedia'));
     }

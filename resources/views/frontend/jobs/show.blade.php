@@ -121,9 +121,14 @@
                             <h3 v-show="resumeUploaded">Are you sure you want to apply for this job?</h3>
                             <h3 v-show="!resumeUploaded">Please upload your resume to process this job application</h3>
                             <h3 v-show="resumeUploaded && shouldShowPrerequisites">Please confirm the Prerequisites</h3>
+                            <h3 v-show="jobApplied && matchedJobs.length">Here are some matching jobs</h3>
                         </div>
 
                         <div class="modal-body">
+
+                            <div id="matchedJobs" v-show="jobApplied && matchedJobs.length">
+
+                            </div>
 
                             <div v-show="resumeUploaded && shouldShowPrerequisites" class="form-horizontal">
                                 @if($job->prerequisites->count())
@@ -205,6 +210,7 @@
                     prerequisiteConfirmed: false,
                     notificationText: 'You already have applied for this job.',
                     registered              : {{ auth()->guest() ? "false" : "true" }},
+                    matchedJobs: [],
                     resumeUploaded          : {{ auth()->user() && auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->has_resume ? "true" : "false" }}
                 },
 
@@ -265,8 +271,22 @@
                                     if ( modalOpen )  $("#jobApplicationModal").modal('toggle');
                                     that.notificationText = "Thanks for applying this job";
                                     that.jobApplied = true;
+                                    that.showMatchedJobs();
                                 }).error(function(err, data){
                                     $(event.target).button('reset');
+                                });
+                    },
+
+                    showMatchedJobs: function(){
+                        var that = this;
+                        $.post( "{{ route('job.matchedjobs') }}",
+                                { jobId: this.jobId, companyId: this.companyId },
+                                function(data){
+                                    data = JSON.parse(data);
+                                    that.matchedJobs = data.jobs;
+                                    $("#matchedJobs").html(data.view);
+                                }).error(function(err, data){
+
                                 });
                     },
 

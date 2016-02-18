@@ -27,8 +27,8 @@ class CreateEmployerRequest extends Request
             'name' 		        => 'required|max:255',
             'email' 	        => 'required|email|max:255|unique:users',
             'password'          => 'required|confirmed|min:6',
-            'gender'                => 'required|in:male,female',
-            'age'                   => 'required|integer',
+            'gender'            => 'required|in:male,female',
+            'dob'               => 'required|date',
         ];
 
         if ( $this->request->get('assignees_roles') ) {

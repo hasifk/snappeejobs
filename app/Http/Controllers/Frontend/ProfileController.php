@@ -125,13 +125,13 @@ class ProfileController extends Controller {
 
         if ( $avatar && $avatar->isValid() ) {
 
+			if ( auth()->user()->avatar_filename && Storage::has(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension) ) {
+				Storage::delete(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension);
+			}
+
             $filePath = "users/" . auth()->user()->id."/avatar/";
             Storage::put($filePath. $avatar->getClientOriginalName() , file_get_contents($avatar));
             Storage::setVisibility($filePath. $avatar->getClientOriginalName(), 'public');
-
-            if ( auth()->user()->avatar_filename ) {
-                Storage::delete(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension);
-            }
 
             $update_array = [
                 'avatar_filename' => pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME),

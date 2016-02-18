@@ -12,6 +12,7 @@ $router->group(['namespace' => 'Job'], function () use ($router)
     get('job/{company}/{slug}', 'JobsController@show')->name('jobs.view');
     post('jobs/job/like', 'JobsController@likeJob')->name('job.like');
     post('jobs/job/apply', 'JobsController@applyJob')->name('job.apply');
+    post('jobs/matchedJobs', 'JobsController@matchedJobs')->name('job.matchedjobs');
 
     $router->group(['middleware' => 'auth'], function () use ($router)
     {

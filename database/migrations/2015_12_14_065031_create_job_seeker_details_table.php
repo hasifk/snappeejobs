@@ -21,7 +21,7 @@ class CreateJobSeekerDetailsTable extends Migration
             $table->string('resume_filename')->nullable();
             $table->string('resume_extension')->nullable();
             $table->enum('size', ['small', 'medium', 'big'])->default('medium')->nullable();
-            $table->integer('likes')->unsigned()->nullable();
+            $table->integer('likes')->unsigned()->default(0);
             $table->boolean('has_resume')->default(false);
             $table->boolean('preferences_saved')->default(false);
             $table->integer('profile_completeness')->default(0);

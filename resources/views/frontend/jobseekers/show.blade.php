@@ -149,6 +149,17 @@
                         </td>
                     </tr>
                     @endif
+                    @if(auth()->user())
+                    <tr>
+                        <td>Like this Jobseeker? </td>
+                        <td>
+                            <button class="btn btn-default likejobseeker">
+                                <span class="glyphicon glyphicon-thumbs-up"></span>
+                                Like (<span class="like">{{ $jobseeker->likes ? $jobseeker->likes : 0 }}</span>)
+                            </button>
+                        </td>
+                    </tr>
+                    @endif
                 </table>
 
             </div>
@@ -159,3 +170,31 @@
 
 @endsection
 
+@section('after-scripts-end')
+
+    <script>
+
+        $(document).ready(function(){
+
+            $('.likejobseeker').on('click', function () {
+
+                $.ajax({
+                    url : '{{ route('jobseeker.like') }}',
+                    method  : 'post',
+                    data : {
+                        jobSeekerId: {{ $jobseeker->id }},
+                        '_token' : $('meta[name=_token]').attr("content")
+                    },
+                    success:function(data){
+                        data = $.parseJSON(data);
+                        $('.likejobseeker .like').html(data.likes);
+                    }
+                });
+
+            });
+
+        });
+
+    </script>
+
+@endsection

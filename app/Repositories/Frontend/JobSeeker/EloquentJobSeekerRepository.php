@@ -44,7 +44,6 @@ class EloquentJobSeekerRepository {
 
         $searchObj = $searchObj
             ->where('job_seeker_details.has_resume', true)
-            ->where('job_seeker_details.preferences_saved', true)
             ->where('users.status', true)
             ->where('users.confirmed', true)
             ->groupBy('job_seeker_details.id');

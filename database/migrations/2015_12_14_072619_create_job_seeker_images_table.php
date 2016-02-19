@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateJobSeekerVideoProfilesTable extends Migration
+class CreateJobSeekerImagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +12,8 @@ class CreateJobSeekerVideoProfilesTable extends Migration
      */
     public function up()
     {
-        Schema::create('job_seeker_video_profiles', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
+        Schema::create('job_seeker_images', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->string('filename');
             $table->string('path');
@@ -35,10 +35,10 @@ class CreateJobSeekerVideoProfilesTable extends Migration
      */
     public function down()
     {
-        Schema::table('job_seeker_video_profiles', function (Blueprint $table) {
-            $table->dropForeign('job_seeker_video_profiles_user_id_foreign');
+        Schema::table('job_seeker_images', function (Blueprint $table) {
+            $table->dropForeign('job_seeker_images_user_id_foreign');
         });
 
-        Schema::drop('job_seeker_video_profiles');
+        Schema::drop('job_seeker_images');
     }
 }

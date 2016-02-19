@@ -3,6 +3,7 @@
 use App\Models\Access\User\User;
 use App\Models\Job\Job;
 use App\Models\JobSeeker\JobSeeker;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -180,7 +181,9 @@ class EloquentJobRepository {
 
         \DB::table('job_applications')->insert([
             'job_id'        => $job->id,
-            'user_id'       => $user->id
+            'user_id'       => $user->id,
+            'created_at'    => Carbon::now(),
+            'updated_at'    => Carbon::now()
         ]);
 
         return true;

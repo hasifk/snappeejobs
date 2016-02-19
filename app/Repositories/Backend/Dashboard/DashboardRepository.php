@@ -37,7 +37,10 @@ class DashboardRepository
     }
 
     public function getTotalJobsApplicationsCount(){
-        return \DB::table('job_applications')->count();;
+        return \DB::table('job_applications')
+            ->join('jobs', 'jobs.id', '=', 'job_applications.job_id')
+            ->where('jobs.company_id', auth()->user()->companyId )
+            ->count();
     }
 
     public function getTotalStaffMembersCount(){

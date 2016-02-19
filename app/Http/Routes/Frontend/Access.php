@@ -13,6 +13,12 @@ $router->group(['namespace' => 'Auth'], function () use ($router)
 		get('auth/logout', 'AuthController@getLogout');
 		get('auth/password/change', 'PasswordController@getChangePassword');
 		post('auth/password/change', 'PasswordController@postChangePassword')->name('password.change');
+		get('auth/connect/facebook', 'AuthController@facebookRedirectToProvider')->name('auth.facebook');
+		get('auth/connect/facebook/callback', 'AuthController@facebookHandleProviderCallback');
+		get('auth/connect/twitter', 'AuthController@twitterRedirectToProvider')->name('auth.twitter');
+		get('auth/connect/twitter/callback', 'AuthController@twitterHandleProviderCallback');
+		get('auth/connect/google', 'AuthController@googleRedirectToProvider')->name('auth.google');
+		get('auth/connect/google/callback', 'AuthController@googleHandleProviderCallback');
 	});
 
 	/**

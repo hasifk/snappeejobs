@@ -86,7 +86,7 @@
                         <td>Apply</td>
                         <td>
                             <div v-cloak v-show="!jobApplied" class="apply-button">
-                                <button v-on:click="applyJob" class="btn btn-primary">Apply</button>
+                                <button v-on:click="applyJob" class="btn btn-primary applyjob">Apply</button>
                             </div>
                             <div v-cloak v-show="jobApplied" class="job-applied alert alert-info" transition="expand">
                                 <span>@{{ notificationText }}</span>
@@ -118,11 +118,17 @@
                     <div class="modal-content">
 
                         <div class="modal-header">
+                            <h3 v-show="resumeUploaded">Are you sure you want to apply for this job?</h3>
                             <h3 v-show="!resumeUploaded">Please upload your resume to process this job application</h3>
                             <h3 v-show="resumeUploaded && shouldShowPrerequisites">Please confirm the Prerequisites</h3>
+                            <h3 v-show="jobApplied && matchedJobs.length">Here are some matching jobs</h3>
                         </div>
 
                         <div class="modal-body">
+
+                            <div id="matchedJobs" v-show="jobApplied && matchedJobs.length">
+
+                            </div>
 
                             <div v-show="resumeUploaded && shouldShowPrerequisites" class="form-horizontal">
                                 @if($job->prerequisites->count())
@@ -141,15 +147,27 @@
                                             Yes, I agree that I qualify these prerequisite(s)
                                         </label>
                                     </div>
-                                    <br>
-                                    <button
-                                            class="btn btn-default"
-                                            v-bind:class="{ 'disabled': !prerequisiteConfirmed }"
-                                            v-on:click="sendJobApplication"
-                                    >
-                                        Send Job Application
-                                    </button>
                                 @endif
+                            </div>
+
+                            <div v-show="resumeUploaded">
+                                <button
+                                        class="btn btn-default"
+                                        v-bind:class="{ 'disabled': !prerequisiteConfirmed }"
+                                        v-on:click="sendJobApplication"
+                                >
+                                    Yes, Apply for this job.
+                                </button>
+
+                                &nbsp;
+                                &nbsp;
+
+                                <button
+                                        class="btn btn-default"
+                                        v-on:click="cancelJobApplication"
+                                >
+                                    No, I dont want to apply for this job.
+                                </button>
                             </div>
 
                             <div v-show="!resumeUploaded" class="form-horizontal">
@@ -192,6 +210,7 @@
                     prerequisiteConfirmed: false,
                     notificationText: 'You already have applied for this job.',
                     registered              : {{ auth()->guest() ? "false" : "true" }},
+                    matchedJobs: [],
                     resumeUploaded          : {{ auth()->user() && auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->has_resume ? "true" : "false" }}
                 },
 
@@ -228,12 +247,12 @@
                             } else {
                                 this.enableDropZone();
                                 this.clickEvent = event;
-                                alert('going to show the modal')
                                 $("#jobApplicationModal").modal();
                             }
                         } else {
+                            this.prerequisiteConfirmed = true;
                             if ( this.resumeUploaded ) {
-                                this.sendJobApplication(event);
+                                $("#jobApplicationModal").modal();
                             } else {
                                 this.enableDropZone();
                                 this.clickEvent = event;
@@ -252,9 +271,28 @@
                                     if ( modalOpen )  $("#jobApplicationModal").modal('toggle');
                                     that.notificationText = "Thanks for applying this job";
                                     that.jobApplied = true;
+                                    that.showMatchedJobs();
                                 }).error(function(err, data){
                                     $(event.target).button('reset');
                                 });
+                    },
+
+                    showMatchedJobs: function(){
+                        var that = this;
+                        $.post( "{{ route('job.matchedjobs') }}",
+                                { jobId: this.jobId, companyId: this.companyId },
+                                function(data){
+                                    data = JSON.parse(data);
+                                    that.matchedJobs = data.jobs;
+                                    $("#matchedJobs").html(data.view);
+                                }).error(function(err, data){
+
+                                });
+                    },
+
+                    cancelJobApplication: function(event){
+                        $("#jobApplicationModal").modal('toggle');
+                        $('.applyjob').button('reset');
                     },
 
                     enableDropZone: function(){
@@ -283,10 +321,6 @@
                             },
                             success: function (file, xhr) {
                                 that.resumeUploaded = true;
-                                if (! that.shouldShowPrerequisites ) {
-                                    $("#jobApplicationModal").modal('toggle');
-                                    that.sendJobApplication(that.clickEvent);
-                                }
                             }
                         });
                     }

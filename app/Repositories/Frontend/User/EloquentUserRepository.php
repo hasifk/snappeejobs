@@ -4,6 +4,7 @@ use App\Events\Backend\Account\UserCreated;
 use App\Models\Access\User\User;
 use App\Models\Access\User\UserProvider;
 use App\Exceptions\GeneralException;
+use App\Models\JobSeeker\JobSeeker;
 use Carbon\Carbon;
 use Event;
 use Illuminate\Mail\Message;
@@ -54,9 +55,14 @@ class EloquentUserRepository implements UserContract {
 			'password' => $provider ? null : $data['password'],
 			'gender' => (!empty($data['gender'])) ? $data['gender'] : '',
 			'dob' => (!empty($data['dob'])) ? new Carbon($data['dob']) : '',
-			'confirmation_code' => md5(uniqid(mt_rand(), true)),
-			'confirmed' => 0,
+			'confirmation_code' => md5(uniqid(mt_rand(), true))
 		];
+
+		if ( $provider ) {
+			$insert_data['confirmed'] = true;
+		} else {
+			$insert_data['confirmed'] = false;
+		}
 
 		if ( ! empty($data['country_id']) ) {
 			$insert_data['country_id'] = $data['country_id'];
@@ -68,7 +74,9 @@ class EloquentUserRepository implements UserContract {
 		$user = User::create($insert_data);
 		$user->attachRole($this->role->getDefaultUserRole());
 
-		$this->sendConfirmationEmail($user);
+		if ( ! $provider ) {
+			$this->sendConfirmationEmail($user);
+		}
 
 		return $user;
 	}
@@ -255,7 +263,7 @@ class EloquentUserRepository implements UserContract {
 		}
 
 		$user = User::create($insert_data);
-		$user->attachRoles([2, 3]);
+		$user->attachRoles([2]);
 
 		$superAdmin = User::with(['roles' => function ($query) {
 			$query->where('role_id', 1);
@@ -277,6 +285,34 @@ class EloquentUserRepository implements UserContract {
 		$response = Password::sendResetLink(['email' => $user->email], function (Message $message) {
 			$message->subject('Your Password Reset Link');
 		});
+	}
+	
+	public function updateProfileCompleteness($user){
+
+		$points = 0;
+
+		$user->avatar_filename ? ++$points : '';
+		$user->about_me ? ++$points : '';
+		$user->country_id ? ++$points : '';
+		$user->state_id ? ++$points : '';
+		$user->providers()->count() ? ++$points : '';
+
+		$job_seeker = '';
+
+		if ( $user->jobseeker_details ) {
+			$job_seeker = JobSeeker::find($user->jobseeker_details->id);
+		}
+
+		$user->jobseeker_details && $user->jobseeker_details->has_resume ? ++$points : '';
+		$user->jobseeker_details && $user->jobseeker_details->preferences_saved ? ++$points : '';
+
+		$job_seeker && $job_seeker->videos->count() ? ++$points : '';
+		$job_seeker && $job_seeker->images->count() ? ++$points : '';
+
+		\DB::table('job_seeker_details')->where('user_id', $user->id)->update(['profile_completeness' => $points]);
+
+		return $points;
+
 	}
 
 }

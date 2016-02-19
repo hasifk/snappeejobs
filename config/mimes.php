@@ -79,6 +79,8 @@ return array(
     'rtf'   => 'text/rtf',
     'xml'   => 'text/xml',
     'xsl'   => 'text/xml',
+    'flv'   => 'video/x-flv',
+    'mp4'   => 'video/mp4',
     'mpeg'  => 'video/mpeg',
     'mpg'   => 'video/mpeg',
     'mpe'   => 'video/mpeg',

@@ -32,8 +32,11 @@
 
                             <div class="form-group">
                                 <label class="col-md-4 control-label" for="">Avatar</label>
-                                <div class="col-md-6">
+                                <div style="display: inline-flex" class="col-md-6">
                                     <input type="file" class="form-control" name="avatar" placeholder="Avatar">
+                                    @if(access()->user()->getAvatarImage(25))
+                                    <img style="height: 25px; width: 25px;" src="{!! access()->user()->getAvatarImage(25) !!}" class="user-image" alt="User Image"/>
+                                    @endif
                                 </div>
                             </div>
 

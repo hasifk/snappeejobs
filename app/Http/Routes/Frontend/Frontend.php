@@ -23,6 +23,12 @@ $router->group(['middleware' => 'auth'], function ()
 	get('resume/edit', 'ProfileController@editResume')->name('frontend.resume.edit');
 	get('preferences/edit', 'ProfileController@editPreferences')->name('frontend.preferences.edit');
 	post('preferences/edit', 'ProfileController@saveEmployerPreferences')->name('frontend.preferences.save');
+	get('profile/videos', 'ProfileController@videos')->name('frontend.profile.videos');
+	post('profile/videos', 'ProfileController@uploadVideos')->name('frontend.profile.upload_videos');
+	get('profile/images', 'ProfileController@images')->name('frontend.profile.images');
+	post('profile/images', 'ProfileController@uploadImages')->name('frontend.profile.upload_images');
+	post('profile/delete_images', 'ProfileController@deleteImage')->name('frontend.profile.delete_images');
+	get('profile/socialmedia', 'ProfileController@socialmedia')->name('frontend.profile.socialmedia');
 	post('profile/update', 'ProfileController@update')->name('frontend.profile.update');
 	post('profile/updateProfileImage', 'ProfileController@updateProfileImage')->name('frontend.profileimage.update');
 	post('profile/resume', 'ProfileController@resumeUpload')->name('frontend.profile.resume');

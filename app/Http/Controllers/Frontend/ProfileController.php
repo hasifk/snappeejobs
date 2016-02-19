@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\Access\PreferencesSaveRequest;
+use App\Http\Requests\Frontend\Access\ProfileImagesUploadRequest;
+use App\Http\Requests\Frontend\Access\ProfileVideoUploadRequest;
 use App\Http\Requests\Frontend\Access\ResumeUploadRequest;
 use App\Models\JobSeeker\JobSeeker;
 use App\Repositories\Frontend\User\UserContract;
@@ -16,6 +18,21 @@ use Storage;
  * @package App\Http\Controllers\Frontend
  */
 class ProfileController extends Controller {
+	/**
+	 * @var UserContract
+	 */
+	private $users;
+
+
+	/**
+	 * ProfileController constructor.
+	 * @param UserContract $users
+     */
+	public function __construct(UserContract $users)
+	{
+
+		$this->users = $users;
+	}
 
 	/**
 	 * @return mixed
@@ -23,6 +40,7 @@ class ProfileController extends Controller {
 	public function edit() {
 
 		$user = auth()->user();
+
 		$countries = DB::table('countries')->select(['id', 'name'])->get();
 		if ( auth()->user()->country_id ) {
 			$states = DB::table('states')->where('country_id', auth()->user()->country_id)->select(['id', 'name'])->get();
@@ -107,13 +125,13 @@ class ProfileController extends Controller {
 
         if ( $avatar && $avatar->isValid() ) {
 
+			if ( auth()->user()->avatar_filename && Storage::has(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension) ) {
+				Storage::delete(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension);
+			}
+
             $filePath = "users/" . auth()->user()->id."/avatar/";
             Storage::put($filePath. $avatar->getClientOriginalName() , file_get_contents($avatar));
             Storage::setVisibility($filePath. $avatar->getClientOriginalName(), 'public');
-
-            if ( auth()->user()->avatar_filename ) {
-                Storage::delete(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension);
-            }
 
             $update_array = [
                 'avatar_filename' => pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME),
@@ -122,6 +140,8 @@ class ProfileController extends Controller {
             ];
 
             auth()->user()->update($update_array);
+
+			$this->users->updateProfileCompleteness(auth()->user());
         }
 
 		return redirect()->route('frontend.dashboard')->withFlashSuccess(trans("strings.profile_successfully_updated"));
@@ -148,6 +168,7 @@ class ProfileController extends Controller {
 			];
 
 			auth()->user()->update($update_array);
+			$this->users->updateProfileCompleteness(auth()->user());
 		}
 
 		return response()->json(['status' => 1]);
@@ -184,6 +205,8 @@ class ProfileController extends Controller {
 			} else {
 				\DB::table('job_seeker_details')->insert($update_array);
 			}
+
+			$this->users->updateProfileCompleteness(auth()->user());
 
             return response()->json(['status' => 1]);
 		}
@@ -229,6 +252,8 @@ class ProfileController extends Controller {
 			'preferences_saved'=> true,
 			'size'=> $request->get('size')
 		]);
+
+		$this->users->updateProfileCompleteness(auth()->user());
 
 		return response()->json(['status' => 1]);
 	}
@@ -279,6 +304,8 @@ class ProfileController extends Controller {
 			'size'=> $request->get('size')
 		]);
 
+		$this->users->updateProfileCompleteness(auth()->user());
+
 		alert()->success('Your preferences are saved.')->autoclose(3000);
 
 		return redirect(route('frontend.preferences.edit'));
@@ -316,6 +343,139 @@ class ProfileController extends Controller {
 			'jobs' 		=> $jobs
 		]);
 
+	}
+
+	public function videos(){
+		$jobSeeker = auth()->user()->jobseeker_details;
+		$jobSeekerObj = JobSeeker::findOrNew($jobSeeker->id);
+		$jobSeekerVideo = $jobSeekerObj->videos()->first();
+		return view('frontend.user.profile.videos', [ 'video' => $jobSeekerVideo ]);
+	}
+
+	public function uploadVideos(ProfileVideoUploadRequest $request){
+		$video = $request->file('file');
+
+		if ( $video && $video->isValid() ) {
+
+			$filePath = "users/" . auth()->user()->id."/videos/";
+			Storage::put($filePath. $video->getClientOriginalName() , file_get_contents($video));
+			Storage::setVisibility($filePath. $video->getClientOriginalName(), 'public');
+
+			$jobSeeker = auth()->user()->jobseeker_details;
+
+			$jobSeekerObj = JobSeeker::findOrNew($jobSeeker->id);
+
+			if ( $jobSeekerObj->videos->count() ) {
+				Storage::delete(
+					$jobSeekerObj->videos()->first()->path.
+					$jobSeekerObj->videos->first()->filename.
+					'.'.
+					$jobSeekerObj->videos->first()->extension
+				);
+				$jobSeekerObj->videos()->delete();
+			}
+
+			$update_array = [
+				'user_id' => $jobSeekerObj->id,
+				'filename' => pathinfo($video->getClientOriginalName(), PATHINFO_FILENAME),
+				'extension' => $video->getClientOriginalExtension(),
+				'path' => $filePath
+			];
+
+			$jobSeekerObj->videos()->create($update_array);
+		}
+
+		$this->users->updateProfileCompleteness(auth()->user());
+
+		return response()->json(['status' => 1]);
+	}
+
+	public function images(){
+
+		$jobSeeker = auth()->user()->jobseeker_details;
+
+		$jobSeekerObj = JobSeeker::find($jobSeeker->id);
+
+		$images = [];
+
+		foreach ($jobSeekerObj->images as $image) {
+			$images[] = [
+				'filename' 	=> $image->filename,
+				'path' 		=> $image->path,
+				'extension' => $image->extension,
+				'image'		=> $image->image,
+				'size' 		=> Storage::size($image->path.$image->filename.'.'.$image->extension)
+			];
+		}
+
+		javascript()->put(['profile_images' => $images]);
+
+		return view('frontend.user.profile.images');
+	}
+
+	public function uploadImages(ProfileImagesUploadRequest $request){
+
+		$avatar = $request->file('file');
+
+		if ( $avatar && $avatar->isValid() ) {
+
+			$jobSeeker = auth()->user()->jobseeker_details;
+
+			$jobSeekerObj = JobSeeker::find($jobSeeker->id);
+
+			$filePath = "users/" . auth()->user()->id."/avatar/";
+			Storage::put($filePath. $avatar->getClientOriginalName() , file_get_contents($avatar));
+			Storage::setVisibility($filePath. $avatar->getClientOriginalName(), 'public');
+
+			$insert_array= [
+				'user_id' => $jobSeekerObj->id,
+				'filename' => pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME),
+				'extension' => $avatar->getClientOriginalExtension(),
+				'path' => $filePath
+			];
+
+			$result = $jobSeekerObj->images()->create($insert_array);
+
+			$this->users->updateProfileCompleteness(auth()->user());
+
+			return response()->json(['status' => 1]);
+		}
+
+		return response()->json(['status' => 0]);
+
+	}
+
+	public function deleteImage(Request $request){
+
+		$jobSeeker = auth()->user()->jobseeker_details;
+
+		$jobSeekerObj = JobSeeker::find($jobSeeker->id);
+
+		$imageObject = $jobSeekerObj
+			->images()
+			->where('filename', $request->get('filename'))
+			->where('path', $request->get('path'))
+			->where('extension', $request->get('extension'));
+
+		if ( $imageObject->count() ) {
+			Storage::delete(
+				$request->get('path').
+				$request->get('filename').
+				'.'.
+				$request->get('extension')
+			);
+			$imageObject->delete();
+
+			$this->users->updateProfileCompleteness(auth()->user());
+
+			return response()->json(['status' => 1]);
+		} else {
+			return response()->json(['status' => 0]);
+		}
+	}
+
+	public function socialmedia(){
+		return view('frontend.user.profile.socialmedia');
 	}
 
 }

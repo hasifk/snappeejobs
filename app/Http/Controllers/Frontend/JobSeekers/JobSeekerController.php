@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Frontend\JobSeekers;
 
+use App\Models\Access\User\User;
+use App\Models\JobSeeker\JobSeeker;
 use App\Repositories\Frontend\JobSeeker\EloquentJobSeekerRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -68,27 +71,6 @@ class JobSeekerController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -96,40 +78,33 @@ class JobSeekerController extends Controller
      */
     public function show($id)
     {
-        //
+        $jobSeeker = JobSeeker::findOrFail($id);
+        $jobSeekerUser = User::find($jobSeeker->user_id);
+
+        return view('frontend.jobseekers.show', [ 'jobseeker' => $jobSeeker, 'jobseeker_user' => $jobSeekerUser ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+    public function likeJob(Request $request){
+
+        $id = $request->get('jobSeekerId');
+
+        if (! \DB::table('like_jobseekers')->where('jobseeker_id', $id)->where('user_id', auth()->user()->id)->count() ) {
+            \DB::table('like_jobseekers')->insert([
+                'jobseeker_id'      => $id,
+                'user_id'           => auth()->user()->id,
+                'created_at'        => Carbon::now(),
+                'updated_at'        => Carbon::now()
+            ]);
+            \DB::table('job_seeker_details')
+                ->where('id',$id)
+                ->increment('likes');
+        }
+
+        $likes = \DB::table('job_seeker_details')
+            ->where('id',$id)
+            ->value('likes');
+
+        return json_encode(['status'=>1,'likes'=>$likes]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

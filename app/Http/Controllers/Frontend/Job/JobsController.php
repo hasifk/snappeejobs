@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Frontend\Job;
 
 use App\Models\Job\Job;
+use App\Models\JobSeeker\JobSeeker;
 use App\Repositories\Frontend\Job\EloquentJobRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -118,6 +119,37 @@ class JobsController extends Controller
         $status = $this->jobRepository->applyJob(auth()->user(), Job::findOrFail($request->get('jobId')));
 
         return json_encode( [ 'status' => $status ] );
+    }
+
+    public function matchedJobs(Requests\Frontend\Job\ShowMatchedJobsRequest $request){
+
+        $jobseeker_category_preferences = [];
+        $jobseeker_skill_preferences = '';
+        // Get the job seeker's preferences
+        if (  auth()->user() && (!empty(auth()->user()->job_seeker_details)) ) {
+            $jobseeker = JobSeeker::find(auth()->user()->job_seeker_details->id);
+            $jobseeker_category_preferences = $jobseeker->categories->lists('id')->toArray();
+            $jobseeker_skill_preferences = $jobseeker->skills->lists('id')->toArray();
+        }
+
+        if ( $jobseeker_category_preferences ) {
+            $request->merge([ 'categories' => $jobseeker_category_preferences ]);
+        }
+
+        if ( $jobseeker_skill_preferences ) {
+            $request->merge([ 'skills' => $jobseeker_skill_preferences]);
+        }
+
+        $jobsResult = $this->jobRepository->getJobsPaginated($request, config('jobs.default_per_page'));
+
+        $jobs = $jobsResult['jobs'];
+
+        $view = view('frontend.jobs.matchedjobs', ['jobs' => $jobs]);
+
+        $jobs_count = count($jobs);
+
+        return response()->json(['view' => $view, 'jobs' => $jobs, 'jobs_count' => $jobs_count]);
+
     }
 
 }

@@ -76,11 +76,13 @@ class AuthController extends Controller
         if (config('access.users.confirm_email')) {
             $user = $this->auth->create($request->all());
             $this->auth->createJobSeeker($user);
+            $this->users->updateProfileCompleteness($user);
             return redirect()->route('home')->withFlashSuccess("Your account was successfully created. We have sent you an e-mail to confirm your account.");
         } else {
             //Use native auth login because do not need to check status when registering
             $user = $this->auth->create($request->all());
             $this->auth->createJobSeeker($user);
+            $this->users->updateProfileCompleteness($user);
             auth()->login($user);
             return redirect()->route('home');
         }
@@ -90,6 +92,7 @@ class AuthController extends Controller
 
         $user = $this->auth->create($request->all());
         $this->auth->createJobSeeker($user);
+        $this->users->updateProfileCompleteness($user);
         \Auth::login($user);
 
         return response()->json(['user' => $user]);
@@ -299,12 +302,78 @@ class AuthController extends Controller
 
         $user = $this->users->findByUserNameOrCreate($user, 'linkedin');
 
+        if ( ! $user->jobseeker_details ) {
+            $this->auth->createJobSeeker($user);
+        }
+
+        $this->users->updateProfileCompleteness($user);
+
         Auth::login($user, true);
 
         event(new UserLoggedIn($user));
 
         return redirect()->intended($this->redirectPath());
 
+    }
+
+    public function linkedinConnectRedirectToProvider(){
+        return Socialite::driver('linkedin')->scopes(['email'])->redirect();
+    }
+
+    public function linkedinConnectHandleProviderCallback() {
+
+        $user = Socialite::driver('linkedin')->user();
+
+        $user = $this->users->findByUserNameOrCreate($user, 'linkedin');
+
+        $this->users->updateProfileCompleteness($user);
+
+        return redirect()->intended(route('frontend.profile.socialmedia'));
+
+    }
+
+    public function facebookRedirectToProvider(){
+        return Socialite::driver('facebook')->scopes(['email'])->redirect();
+    }
+
+    public function facebookHandleProviderCallback() {
+
+        $user = Socialite::driver('facebook')->user();
+
+        $user = $this->users->findByUserNameOrCreate($user, 'facebook');
+
+        $this->users->updateProfileCompleteness($user);
+
+        return redirect()->intended(route('frontend.profile.socialmedia'));
+
+    }
+
+    public function twitterRedirectToProvider(){
+        return Socialite::driver('twitter')->scopes(['email'])->redirect();
+    }
+
+    public function twitterHandleProviderCallback(){
+
+        $user = Socialite::driver('twitter')->user();
+
+        $this->users->findByUserNameOrCreate($user, 'twitter');
+
+        return redirect()->intended(route('frontend.profile.socialmedia'));
+    }
+    
+    public function googleRedirectToProvider(){
+        return Socialite::driver('google')->scopes(['email'])->redirect();
+    }
+
+    public function googleHandleProviderCallback(){
+
+        $user = Socialite::driver('google')->user();
+
+        $user = $this->users->findByUserNameOrCreate($user, 'google');
+
+        $this->users->updateProfileCompleteness($user);
+
+        return redirect()->intended(route('frontend.profile.socialmedia'));
     }
 
 }

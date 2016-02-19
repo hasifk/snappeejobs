@@ -50,6 +50,43 @@
                   </li><!-- /.messages-menu -->
                   @endif
 
+                  @if ($unread_job_applications_count)
+                    <li class="dropdown messages-menu">
+                      <!-- Menu toggle button -->
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-suitcase"></i>
+                        <span class="label label-success">{{ $unread_job_applications_count }}</span>
+                      </a>
+                      <ul class="dropdown-menu">
+                        <li class="header">You have {{ $unread_job_applications_count }} job application(s)</li>
+                        <li>
+                          <!-- inner menu: contains the messages -->
+                          <ul class="menu">
+                            @foreach($job_applications as $job_application)
+                              <li><!-- start message -->
+                                <a href="{{ route('admin.employer.jobs.application', $job_application->id) }}">
+                                  <div class="pull-left">
+                                    <!-- User Image -->
+                                    <img src="{!! \App\Models\Access\User\User::find($job_application->user_id)->picture !!}" class="img-circle" alt="User Image"/>
+                                  </div>
+                                  <!-- Message title and timestamp -->
+                                  <p>
+                                    {{ $job_application->name }} applied for
+                                    <br>
+                                    <strong>{{ $job_application->title }}</strong>
+                                    <br>
+                                    <small><i class="fa fa-clock-o"></i> {{ \Carbon\Carbon::parse($job_application->created_at)->diffForHumans() }}</small>
+                                  </p>
+                                </a>
+                              </li><!-- end message -->
+                            @endforeach
+                          </ul><!-- /.menu -->
+                        </li>
+                        <li class="footer"><a href="{{ route('admin.employer.jobs.applications') }}">View all job applications</a></li>
+                      </ul>
+                    </li><!-- /.messages-menu -->
+                    @endif
+
                   <!-- Notifications Menu -->
                   <li style="display: none;" class="dropdown notifications-menu">
                     <!-- Menu toggle button -->

@@ -160,6 +160,17 @@ class PermissionTableSeeder extends Seeder {
         $jobsChangeStatus->save();
 
         $permission_model = config('access.permission');
+        $jobsChangeStatus = new $permission_model;
+        $jobsChangeStatus->name = 'employer-jobs-view-jobapplications';
+        $jobsChangeStatus->display_name = 'Jobs view applications';
+        $jobsChangeStatus->system = true;
+        $jobsChangeStatus->group_id = 2;
+        $jobsChangeStatus->sort = 8;
+        $jobsChangeStatus->created_at = Carbon::now();
+        $jobsChangeStatus->updated_at = Carbon::now();
+        $jobsChangeStatus->save();
+
+        $permission_model = config('access.permission');
         $mailSendMessage = new $permission_model;
         $mailSendMessage->name = 'mail-send-private-message';
         $mailSendMessage->display_name = 'Mail Send Private Message';

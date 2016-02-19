@@ -21,6 +21,11 @@ $router->group([
         get('jobs/hidden', 'JobsController@hidden')->name('admin.employer.jobs.hidden');
         get('jobs/deleted', 'JobsController@deleted')->name('admin.employer.jobs.deleted');
 
+        get('jobs/applications', 'JobsController@applications')->name('admin.employer.jobs.applications');
+        get('jobs/application/{id}', 'JobsController@application')->name('admin.employer.jobs.application');
+        get('jobs/application/accept/{id}', 'JobsController@acceptJobApplication')->name('admin.employer.jobs.application.accept');
+        get('jobs/application/decline/{id}', 'JobsController@declineJobApplication')->name('admin.employer.jobs.application.decline');
+
         $router->group(['prefix' => 'jobs/{id}', 'where' => ['id' => '[0-9]+']], function () {
             get('delete', 'JobsController@delete')->name('admin.employer.jobs.delete-permanently');
             get('restore', 'JobsController@restore')->name('admin.employer.jobs.restore');

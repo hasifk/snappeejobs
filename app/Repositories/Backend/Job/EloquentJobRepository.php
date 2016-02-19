@@ -4,6 +4,7 @@ use App\Events\Backend\Job\JobCreated;
 use App\Models\Access\User\User;
 use App\Exceptions\GeneralException;
 use App\Models\Job\Job;
+use App\Models\Job\JobApplication\JobApplication;
 use App\Repositories\Backend\Role\RoleRepositoryContract;
 use App\Repositories\Frontend\Auth\AuthenticationContract;
 use App\Exceptions\Backend\Access\User\UserNeedsRolesException;
@@ -82,6 +83,18 @@ class EloquentJobRepository {
 
 	public function getHiddenJobsPaginated($per_page) {
 		return Job::where('company_id', $this->companyId)->where('published', 0)->paginate($per_page);
+	}
+
+	public function getJobApplications($per_page){
+		return JobApplication
+			::join('jobs', 'jobs.id', '=', 'job_applications.job_id')
+			->where('company_id', $this->companyId)
+			->where(function($query){
+				$query->whereNull('job_applications.accepted_at' )
+					  ->orWhereNull('job_applications.declined_at');
+			})
+			->with(['job', 'jobseeker'])
+			->paginate($per_page);
 	}
 
 	/**
@@ -260,6 +273,25 @@ class EloquentJobRepository {
 			return true;
 
 		throw new GeneralException("There was a problem updating this job. Please try again.");
+	}
+
+	public function getApplicationsCount(User $user){
+		return \DB::table('job_applications')
+			->join('jobs', 'jobs.id', '=', 'job_applications.job_id')
+			->where('jobs.company_id', $user->companyId )
+			->count();
+	}
+
+	public function getApplications(User $user){
+		return \DB::table('job_applications')
+			->join('jobs', 'jobs.id', '=', 'job_applications.job_id')
+			->where('jobs.company_id', $user->companyId )
+			->select([
+				'jobs.title',
+				'users.name',
+				'job_applications.created_at'
+			])
+			->get();
 	}
 
 	/**

@@ -217,4 +217,22 @@ class JobsController extends Controller
         return view('backend.employer.jobs.hidden')
             ->withJobs($this->jobs->getHiddenJobsPaginated(config('jobs.default_per_page'), 1));
     }
+
+    public function applications(Requests\Backend\Employer\Job\ViewJobApplicationsViewRequest $request){
+        return view('backend.employer.jobs.applications')->with(['jobapplications' => $this->jobs->getJobApplications(config('jobs.default_per_page'), 1)]);
+    }
+
+    public function application(Requests\Backend\Employer\Job\ViewJobApplicationsViewRequest $request, $id){
+        return view('backend.employer.jobs.application')
+            ->withJobs($this->jobs->getJobApplications($id));
+    }
+
+    public function acceptJobApplication(Request $request){
+        dd($request->all());
+    }
+
+    public function declineJobApplication(Request $request){
+        dd($request->all());
+    }
+
 }

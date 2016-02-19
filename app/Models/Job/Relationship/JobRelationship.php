@@ -3,6 +3,7 @@
 namespace App\Models\Job\Relationship;
 
 use App\Models\Country\Country;
+use App\Models\Job\JobApplication\JobApplication;
 use App\Models\Job\JobPrerequisites\JobPrerequisites;
 use App\Models\State\State;
 
@@ -26,6 +27,10 @@ trait JobRelationship
 
     public function prerequisites(){
         return $this->hasMany(JobPrerequisites::class, 'job_id');
+    }
+
+    public function applications(){
+        return $this->hasMany(JobApplication::class, 'job_id');
     }
 
     public function country(){

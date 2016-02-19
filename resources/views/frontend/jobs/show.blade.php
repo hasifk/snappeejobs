@@ -118,19 +118,21 @@
                     <div class="modal-content">
 
                         <div class="modal-header">
-                            <h3 v-show="resumeUploaded">Are you sure you want to apply for this job?</h3>
+                            <h3 v-show="resumeUploaded && !jobApplied">Are you sure you want to apply for this job?</h3>
                             <h3 v-show="!resumeUploaded">Please upload your resume to process this job application</h3>
-                            <h3 v-show="resumeUploaded && shouldShowPrerequisites">Please confirm the Prerequisites</h3>
-                            <h3 v-show="jobApplied && matchedJobs.length">Here are some matching jobs</h3>
+                            <h3 v-show="resumeUploaded && shouldShowPrerequisites && !jobApplied">Please confirm the Prerequisites</h3>
+                            <h3 v-show="jobApplied && matchedJobs.length">
+                                Thank you for applying this job
+                                <br>
+                                Here are some matching jobs
+                            </h3>
                         </div>
 
                         <div class="modal-body">
 
-                            <div id="matchedJobs" v-show="jobApplied && matchedJobs.length">
+                            <div class="row" id="matchedJobs" v-show="jobApplied && matchedJobs.length"></div>
 
-                            </div>
-
-                            <div v-show="resumeUploaded && shouldShowPrerequisites" class="form-horizontal">
+                            <div v-show="resumeUploaded && shouldShowPrerequisites && !jobApplied" class="form-horizontal">
                                 @if($job->prerequisites->count())
                                     <ul class="list-group">
                                         @foreach($job->prerequisites as $prerequisite)
@@ -150,7 +152,7 @@
                                 @endif
                             </div>
 
-                            <div v-show="resumeUploaded">
+                            <div v-show="resumeUploaded && !jobApplied">
                                 <button
                                         class="btn btn-default"
                                         v-bind:class="{ 'disabled': !prerequisiteConfirmed }"
@@ -267,8 +269,6 @@
                                 { jobId: this.jobId, companyId: this.companyId },
                                 function(data){
                                     $(event.target).button('reset');
-                                    var modalOpen = ($("#jobApplicationModal").data('bs.modal') || {}).isShown;
-                                    if ( modalOpen )  $("#jobApplicationModal").modal('toggle');
                                     that.notificationText = "Thanks for applying this job";
                                     that.jobApplied = true;
                                     that.showMatchedJobs();
@@ -282,9 +282,13 @@
                         $.post( "{{ route('job.matchedjobs') }}",
                                 { jobId: this.jobId, companyId: this.companyId },
                                 function(data){
-                                    data = JSON.parse(data);
-                                    that.matchedJobs = data.jobs;
-                                    $("#matchedJobs").html(data.view);
+                                    if ( ! data.jobs.length ) {
+                                        var modalOpen = ($("#jobApplicationModal").data('bs.modal') || {}).isShown;
+                                        if ( modalOpen )  $("#jobApplicationModal").modal('toggle');
+                                    } else {
+                                        that.matchedJobs = data.jobs;
+                                        $("#matchedJobs").html(data.view);
+                                    }
                                 }).error(function(err, data){
 
                                 });

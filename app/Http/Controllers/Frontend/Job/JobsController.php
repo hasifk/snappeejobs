@@ -144,7 +144,11 @@ class JobsController extends Controller
 
         $jobs = $jobsResult['jobs'];
 
-        $view = view('frontend.jobs.matchedjobs', ['jobs' => $jobs]);
+        $jobs = $jobs->filter(function($job) use ( $request ) {
+            return $job->id != $request->get('jobId');
+        });
+
+        $view = view('frontend.jobs.matchedjobs', ['jobs' => $jobs])->render();
 
         $jobs_count = count($jobs);
 

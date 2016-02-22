@@ -56,6 +56,14 @@
                               </span>
                         </a>
                       </li>
+                      <li class="{{ Active::pattern('admin/jobseekers/*') }}">
+                        <a href="{!!url(route('backend.jobseekers'))!!}">
+                          <i class="fa fa-suitcase"></i>
+                              <span>
+                                {{ 'Jobseekers' }}
+                              </span>
+                        </a>
+                      </li>
                     @endauth
                 @endauth
 

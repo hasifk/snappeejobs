@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Employer\Company;
 
+use App\Exceptions\Backend\Company\CompanyNeedDataFilledException;
 use App\Models\Company\Company;
 use App\Repositories\Backend\Company\EloquentCompanyRepository;
 use Illuminate\Http\Request;
@@ -26,7 +27,14 @@ class CompanyController extends Controller
     }
 
     public function showProfile(){
+
         $company = $this->company->findOrThrowException();
+
+        if ( is_null($company) ) {
+            $exception = new CompanyNeedDataFilledException();
+            $exception->setValidationErrors('Your company information has not been set. Please contact the administrator');
+            throw $exception;
+        }
 
         $view = [ 'company' => $company ];
         return view('backend.employer.company.showprofile', $view);

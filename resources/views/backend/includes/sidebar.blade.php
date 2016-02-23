@@ -56,6 +56,14 @@
                               </span>
                         </a>
                       </li>
+                      <li class="{{ Active::pattern('admin/companies/*') }}">
+                        <a href="{!!url('admin/companies/')!!}">
+                          <i class="fa fa-building"></i>
+                              <span>
+                                Company Management
+                              </span>
+                        </a>
+                      </li>
                       <li class="{{ Active::pattern('admin/jobseekers/*') }}">
                         <a href="{!!url(route('backend.jobseekers'))!!}">
                           <i class="fa fa-suitcase"></i>

@@ -5,7 +5,7 @@
  */
 $router->group(['namespace' => 'Language'], function () use ($router)
 {
-	require(__DIR__ . "/Routes/Language/Lang.php");
+//	require(__DIR__ . "/Routes/Language/Lang.php");
 });
 
 /**
@@ -39,6 +39,7 @@ $router->group(['namespace' => 'Backend'], function () use ($router)
 			require(__DIR__ . "/Routes/Backend/Dashboard.php");
 			require(__DIR__ . "/Routes/Backend/Access.php");
 			require(__DIR__ . "/Routes/Backend/Employer.php");
+			require(__DIR__ . "/Routes/Backend/AdminCompany.php");
 			require(__DIR__ . "/Routes/Backend/Company.php");
 			require(__DIR__ . "/Routes/Backend/Jobs.php");
 			require(__DIR__ . "/Routes/Backend/Mail.php");

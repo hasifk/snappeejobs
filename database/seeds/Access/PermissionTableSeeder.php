@@ -53,6 +53,17 @@ class PermissionTableSeeder extends Seeder {
 		$viewAccessManagement->updated_at = Carbon::now();
 		$viewAccessManagement->save();
 
+		$permission_model = config('access.permission');
+		$viewAccessManagement = new $permission_model;
+		$viewAccessManagement->name = 'company-management';
+		$viewAccessManagement->display_name = 'Company Management';
+		$viewAccessManagement->system = true;
+		$viewAccessManagement->group_id = 1;
+		$viewAccessManagement->sort = 2;
+		$viewAccessManagement->created_at = Carbon::now();
+		$viewAccessManagement->updated_at = Carbon::now();
+		$viewAccessManagement->save();
+
 		/**
 		 * Access Permissions
 		 */

@@ -26,6 +26,7 @@ class CreateCompaniesTable extends Migration
             $table->integer('default_photo_id')->unsigned();
             $table->string('logo');
             $table->integer('likes')->unsigned();
+            $table->boolean('new')->default(true);
             $table->timestamps();
 
             $table->foreign('employer_id')

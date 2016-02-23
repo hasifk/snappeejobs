@@ -38,7 +38,7 @@
 
                 @if ( $company->photos->count() )
                 <div class="col-md-6">
-                    <img src="{{$company->photos->first()->path . $company->photos->first()->filename . $company->photos->first()->extension}}" alt="company photo"  width="100%">
+                    <img src="{{$company->photos->first()->image }}" alt="company photo"  width="100%">
                 </div>
                 @endif
 
@@ -58,13 +58,13 @@
                 </div>
 
                 <!--<div class="col-md-5">
-                    <img src="{{ $company->logo }}" alt="company photo">
+                    <img src="{{ $company->logo_image }}" alt="company photo">
                 </div>-->
 
                 @foreach($company->people as $people)
                 <div class="col-md-4">
                     <a href="/companies/{{ $company->url_slug }}/people/{{ $people->id }}">
-                        <img src="{{ $people->path . $people->filename . $people->extension }}" alt="people company" width="100%">
+                        <img src="{{ $people->image }}" alt="people company" width="100%">
                         <h3>
                             {{ $people->name }}
                         </h3>

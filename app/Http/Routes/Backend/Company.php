@@ -14,7 +14,7 @@ $router->group([
      */
     $router->group(['namespace' => 'Company'], function() use ($router) {
         get('show-profile', 'CompanyController@showProfile')->name('admin.employer.company.showprofile');
-        get('edit-profile', 'CompanyController@editProfile')->name('admin.employer.company.editprofile');
-        post('update-profile', 'CompanyController@updateProfile')->name('admin.employer.company.updateprofile');
+//        get('edit-profile', 'CompanyController@editProfile')->name('admin.employer.company.editprofile');
+//        post('update-profile', 'CompanyController@updateProfile')->name('admin.employer.company.updateprofile');
     });
 });

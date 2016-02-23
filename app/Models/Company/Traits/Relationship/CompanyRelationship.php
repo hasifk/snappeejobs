@@ -3,6 +3,9 @@
 namespace App\Models\Company\Traits\Relationship;
 
 
+use App\Models\Country\Country;
+use App\Models\State\State;
+
 trait CompanyRelationship
 {
     public function industries(){
@@ -29,5 +32,13 @@ trait CompanyRelationship
 
     public function jobs(){
         return $this->hasMany('App\Models\Job\Job', 'company_id');
+    }
+
+    public function country(){
+        return $this->belongsTo(Country::class);
+    }
+
+    public function state(){
+        return $this->belongsTo(State::class);
     }
 }

@@ -23,4 +23,20 @@ trait CompanyAttribute
         $this->logo;
     }
 
+    public function getShowButtonAttribute(){
+        if (access()->can('company-management'))
+            return '<a href="'.route('admin.company.show', $this->id).'" class="btn btn-xs btn-primary"><i class="fa fa-eye" data-toggle="tooltip" data-placement="top" title="View"></i></a> ';
+        return '';
+    }
+
+    public function getEditButtonAttribute(){
+        if (access()->can('company-management'))
+            return '<a href="'.route('admin.company.edit', $this->id).'" class="btn btn-xs btn-primary"><i class="fa fa-pencil" data-toggle="tooltip" data-placement="top" title="Edit"></i></a> ';
+        return '';
+    }
+
+    public function getActionButtonsAttribute() {
+        return $this->getShowButtonAttribute(). " " . $this->getEditButtonAttribute();
+    }
+
 }

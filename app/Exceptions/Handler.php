@@ -3,6 +3,7 @@
 use App\Exceptions\Backend\Access\Employer\EmployerNeedsRolesException;
 use App\Exceptions\Backend\Access\Employer\Mail\MessageDoesNotBelongToUser;
 use App\Exceptions\Backend\Access\Employer\Settings\SubscriptionPlanException;
+use App\Exceptions\Backend\Company\CompanyNeedDataFilledException;
 use App\Exceptions\Frontend\Job\JobDoesNotExist;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -77,6 +78,10 @@ class Handler extends ExceptionHandler {
 		if ($e instanceof JobDoesNotExist)
 		{
 			return redirect()->route('jobs.search')->withInput()->withFlashDanger($e->validationErrors());
+		}
+		if ($e instanceof CompanyNeedDataFilledException)
+		{
+			return redirect()->route('backend.dashboard')->withInput()->withFlashDanger($e->validationErrors());
 		}
 
 		//Catch all

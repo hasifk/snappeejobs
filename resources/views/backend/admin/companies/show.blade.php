@@ -1,22 +1,16 @@
 @extends ('backend.layouts.master')
 
-@section ('title', 'Admin Company Profile')
+@section ('title', "Company Management")
 
 @section('page-header')
     <h1>
-        Employer Company Profile
-        <small>View Company Profile</small>
+        Company Details {{ $company->title }}
     </h1>
 @endsection
 
-@section ('breadcrumbs')
-    <li><a href="{!!route('backend.dashboard')!!}"><i class="fa fa-dashboard"></i> {{ trans('menus.dashboard') }}</a></li>
-    <li class="active">{!! link_to_route('admin.employer.company.showprofile', 'Company Profile' ) !!}</li>
-@stop
-
 @section('content')
 
-    @include('backend.employer.includes.partials.company.header-buttons')
+    @include('backend.admin.includes.partials.company.header-buttons')
 
     <h3>Company Profile</h3>
 
@@ -37,9 +31,9 @@
                     <td>
                         <table>
                             @foreach($company->industries as $industry)
-                            <tr>
-                                <td>{{ $industry->name }}</td>
-                            </tr>
+                                <tr>
+                                    <td>{{ $industry->name }}</td>
+                                </tr>
                             @endforeach
                         </table>
                     </td>
@@ -49,9 +43,9 @@
                     <td>
                         <table>
                             @foreach($company->socialmedia as $social)
-                            <tr>
-                                <td><a target="_blank" href="{{ $social->url }}">{{ $social->url }}</a></td>
-                            </tr>
+                                <tr>
+                                    <td><a target="_blank" href="{{ $social->url }}">{{ $social->url }}</a></td>
+                                </tr>
                             @endforeach
                         </table>
                     </td>
@@ -61,9 +55,9 @@
                     <td>
                         <table>
                             @foreach($company->videos as $video)
-                            <tr>
-                                <td><a target="_blank" href="{{ $video->url }}">{{ $video->url }}</a></td>
-                            </tr>
+                                <tr>
+                                    <td><a target="_blank" href="{{ $video->url }}">{{ $video->url }}</a></td>
+                                </tr>
                             @endforeach
                         </table>
                     </td>
@@ -71,29 +65,29 @@
             </table>
             <?php $poeple_count = $company->people->count(); ?>
             @if ($poeple_count)
-            <div class="row">
-                <div class="col-md-2">People</div>
-                <div class="col-md-10">
-                    @foreach($company->people as $people)
-                        <div class="col-md-{{ 12/$poeple_count }}">
-                            <table class="table table-striped table-hover table-bordered dashboard-table">
-                                <tr>
-                                    <th>Name</th>
-                                    <td>{{ $people->name }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Designation</th>
-                                    <td>{{ $people->designation }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Image</th>
-                                    <td><img style="width: 25px; height: 25px;" src="{{ $people->image}}" alt="{{ $people->name}}"></td>
-                                </tr>
-                            </table>
-                        </div>
-                    @endforeach
+                <div class="row">
+                    <div class="col-md-2">People</div>
+                    <div class="col-md-10">
+                        @foreach($company->people as $people)
+                            <div class="col-md-{{ 12/$poeple_count }}">
+                                <table class="table table-striped table-hover table-bordered dashboard-table">
+                                    <tr>
+                                        <th>Name</th>
+                                        <td>{{ $people->name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Designation</th>
+                                        <td>{{ $people->designation }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Image</th>
+                                        <td><img style="width: 25px; height: 25px;" src="{{ $people->image}}" alt="{{ $people->name}}"></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
-            </div>
             @endif
             <?php $photo_count = $company->photos->count(); ?>
             @if ($photo_count)
@@ -133,26 +127,26 @@
                     <th>Default Photo</th>
                     <td>
                         @if($company->photos()->count())
-                        <img
-                                style="height: 25px; width: 25px;"
-                                src="{{ $company->photos()->first()->image }}"
-                                alt="{{ $company->photos()->first()->filename }}"
-                        >
+                            <img
+                                    style="height: 25px; width: 25px;"
+                                    src="{{ $company->photos()->first()->image }}"
+                                    alt="{{ $company->photos()->first()->filename }}"
+                            >
                         @endif
                     </td>
                 </tr>
                 @if($company->logo)
-                <tr>
-                    <th>Logo</th>
-                    <td>
-                        <img
-                                style="height: 25px;
+                    <tr>
+                        <th>Logo</th>
+                        <td>
+                            <img
+                                    style="height: 25px;
                                 width: 25px;"
-                                src="{{ $company->logo_image }}"
-                                alt="{{ $company->logo_image }}"
-                        >
-                    </td>
-                </tr>
+                                    src="{{ $company->logo_image }}"
+                                    alt="{{ $company->logo_image }}"
+                            >
+                        </td>
+                    </tr>
                 @endif
                 <tr>
                     <th>Likes</th>
@@ -166,10 +160,19 @@
                     <th>{{ trans('validation.attributes.last_updated') }}</th>
                     <td>{{ $company->updated_at }} ({{ $company->updated_at->diffForHumans() }})</td>
                 </tr>
+                <tr>
+                    <th>{{ trans('validation.attributes.actions') }}</th>
+                    <td>
+                        <a
+                                href="{{  route('admin.company.edit', $company->id) }}"
+                                class="btn btn-primary btn-xs"
+                        >
+                            {{ trans('labels.edit_information') }}
+                        </a>
+                    </td>
+                </tr>
             </table>
         </div>
 
     </div>
-
-    <div class="clearfix"></div>
 @stop

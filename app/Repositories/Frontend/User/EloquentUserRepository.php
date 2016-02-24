@@ -4,6 +4,7 @@ use App\Events\Backend\Account\UserCreated;
 use App\Models\Access\User\User;
 use App\Models\Access\User\UserProvider;
 use App\Exceptions\GeneralException;
+use App\Models\Company\NewCompanyTemp\NewCompanyTemp;
 use App\Models\JobSeeker\JobSeeker;
 use Carbon\Carbon;
 use Event;
@@ -271,6 +272,10 @@ class EloquentUserRepository implements UserContract {
 		}])->first();
 
 		Event::fire(new UserCreated($user, $superAdmin ));
+
+		NewCompanyTemp::create([
+			'employer_id' => $user->id
+		]);
 
 		$this->sendConfirmationEmail($user);
 

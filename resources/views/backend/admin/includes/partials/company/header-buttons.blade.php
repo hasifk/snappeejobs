@@ -11,8 +11,8 @@
                 </a>
             </li>
             <li>
-                <a href="{{route('admin.company.index')}}">
-                    View Companies
+                <a href="{{route('admin.company.newcompanies')}}">
+                    View New Companies
                 </a>
             </li>
         </ul>

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Backend\Company;
 
+use App\Http\Requests\Backend\Admin\Company\NewCompanyCreateRequest;
+use App\Http\Requests\Backend\Admin\Company\NewCompanyValidRequest;
 use App\Models\Company\Company;
 use App\Repositories\Backend\Admin\Company\EloquentCompanyRepository;
 use Illuminate\Http\Request;
@@ -36,25 +38,51 @@ class AdminCompanyController extends Controller
             ->withCompanies($this->companyRepository->getCompaniesPaginated(config('jobs.default_per_page')));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function newcompanies(Request $request)
     {
-        //
+        return view('backend.admin.companies.newcompanies')
+            ->withNewcompanies($this->companyRepository->getNewCompaniesPaginated(config('jobs.default_per_page')));
+    }
+
+    public function create(NewCompanyValidRequest $request, $id){
+
+        $company = null;
+
+        $industries = \DB::table('industries')->select(['id', 'name'])->get();
+        $countries = \DB::table('countries')->select(['id', 'name'])->get();
+
+        if ( $request->old('country_id') || ( $company && $company->country_id ) ) {
+            $country_id = $request->old('country_id') ? $request->old('country_id') : $company->country_id;
+            $states = \DB::table('states')->where('country_id', $country_id)->select(['id', 'name'])->get();
+        } else {
+            $states = \DB::table('states')->where('country_id', 222)->select(['id', 'name'])->get();
+        }
+
+        $view = [
+            'employer_id'   => $id,
+            'company'       => $company,
+            'countries'     => $countries,
+            'states'        => $states,
+            'industries'    => $industries
+        ];
+
+        return view('backend.admin.companies.create', $view);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param NewCompanyCreateRequest $request
+     * @param $id EmployerId
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(NewCompanyCreateRequest $request, $id)
     {
-        //
+        $this->companyRepository->create($request, $id);
+
+        return redirect()
+            ->route('admin.company.index')
+            ->withFlashSuccess('Successfully updated the company profile');
     }
 
     /**

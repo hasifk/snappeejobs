@@ -40,17 +40,12 @@ trait EmployerAccess
 
     public function employerHasCompany(){
 
-        $employer_id = \DB::table('staff_employer')
-            ->where('user_id', $this->id)
-            ->orderBy('created_at')
-            ->value('employer_id');
-
-        if (! $employer_id) {
+        if (! $this->employer_id) {
             return false;
         }
 
         $employer_company_exists = \DB::table('companies')
-            ->where('employer_id', $employer_id)
+            ->where('employer_id', $this->employer_id)
             ->count();
 
         if (! $employer_company_exists ) {
@@ -58,7 +53,7 @@ trait EmployerAccess
         }
 
         $this->employerHasCompany = true;
-        $this->employerCompany = \DB::table('companies')->where('employer_id', $employer_id)->first();
+        $this->employerCompany = \DB::table('companies')->where('employer_id', $this->employer_id)->first();
         return true;
     }
 

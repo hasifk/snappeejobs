@@ -112,7 +112,7 @@ class EloquentCompanyRepository
 
             $company->attachLogo($request->file('logo'));
 
-            $newCompanyTemp = NewCompanyTemp::find($id);
+            $newCompanyTemp = NewCompanyTemp::where('employer_id', $id)->first();
 
             $newCompanyTemp->completed = true;
 

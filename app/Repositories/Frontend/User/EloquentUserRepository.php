@@ -277,6 +277,9 @@ class EloquentUserRepository implements UserContract {
 			'employer_id' => $user->id
 		]);
 
+		$user->employer_id = $user->id;
+		$user->save();
+
 		$this->sendConfirmationEmail($user);
 
 		return $user;

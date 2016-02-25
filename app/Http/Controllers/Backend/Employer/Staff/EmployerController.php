@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Employer\Staff;
 
+use App\Http\Requests\Backend\Employer\Staff\CreateEmployerPageRequest;
 use App\Http\Requests\Backend\Employer\Staff\CreateEmployerRequest;
 use App\Models\Access\User\User;
 use App\Repositories\Backend\Employer\EloquentStaffRepository;
@@ -56,9 +57,10 @@ class EmployerController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param CreateEmployerPageRequest $request
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(CreateEmployerPageRequest $request)
     {
 //        return view('backend.employer.staff.create')
 //            ->withRoles($this->roles->getEmployerRoles('sort', 'asc', true));

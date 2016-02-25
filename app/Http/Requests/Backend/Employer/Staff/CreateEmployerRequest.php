@@ -23,6 +23,7 @@ class CreateEmployerRequest extends Request
      */
     public function rules()
     {
+
         $rules = [
             'name' 		        => 'required|max:255',
             'email' 	        => 'required|email|max:255|unique:users',

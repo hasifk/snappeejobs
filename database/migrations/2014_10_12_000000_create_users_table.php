@@ -30,6 +30,7 @@ class CreateUsersTable extends Migration {
 			$table->date('dob')->nullable();
             $table->enum('gender', ['male', 'female'])->nullable();
 			$table->boolean('no_password')->default(false);
+			$table->integer('employer_id');
 			$table->timestamps();
 			$table->softDeletes();
 		});

@@ -62,6 +62,10 @@ class UserCreatedHandler
                     'created_at'    => \Carbon\Carbon::now(),
                     'updated_at'    => \Carbon\Carbon::now()
                 ]);
+
+                $user->employer_id = $createdUserId;
+                $user->save();
+
             } else if ( $employer && (!$employer->is_admin) ) {
                 \DB::table('staff_employer')
                     ->where('employer_id', $createdUser->id)
@@ -93,6 +97,9 @@ class UserCreatedHandler
                     'created_at' => \Carbon\Carbon::now(),
                     'updated_at' => \Carbon\Carbon::now()
                 ]);
+
+                $user->employer_id = $createdUser->id;
+                $user->save();
             }
         }
 

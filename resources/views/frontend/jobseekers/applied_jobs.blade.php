@@ -9,19 +9,11 @@
             @if(!empty($applied))
 
                         <ul class="list-group">
-                            @foreach($applied as $key=>$value)
-
+                            @foreach($applied as $application)
                                 <li class="list-group-item">
-                                    @if(!empty($companies))
-                                    @foreach($companies as $abc)
-                                        @if($abc->id==$value->company_id)
-                                    <h6>{{$abc->title}}</h6>
-                                        @endif
-                                        @endforeach
-                                            @endif
-
-                                    <h6>{{$value->title}}</h6>
-                                    <h6>{{$value->created_at}}</h6>
+                                    {{ $application->title }}
+                                    <small>at : {{ $application->company_title }}</small>
+                                    <small>applied at : {{ $application->created_at }}</small>
                                 </li>
                             @endforeach
                         </ul>

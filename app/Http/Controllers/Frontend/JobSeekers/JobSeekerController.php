@@ -109,8 +109,7 @@ class JobSeekerController extends Controller
 
     public function appliedJobs(){
         $applied =$this->repository->getAppliedJobs();
-        $companies=$this->repository->getAppliedCompany();
-        return view('frontend.jobseekers.applied_jobs',['applied'	=> $applied ,'çompanies' =>$companies]);
+        return view('frontend.jobseekers.applied_jobs',['applied'	=> $applied ]);
     }
 
 }

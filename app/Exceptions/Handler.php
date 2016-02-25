@@ -77,7 +77,7 @@ class Handler extends ExceptionHandler {
 
 		if ($e instanceof JobDoesNotExist)
 		{
-			return redirect()->route('jobs.search')->withInput()->withFlashDanger($e->validationErrors());
+			return redirect()->route('admin.employer.jobs.index')->withInput()->withFlashDanger($e->validationErrors());
 		}
 		if ($e instanceof CompanyNeedDataFilledException)
 		{

@@ -145,8 +145,13 @@ class EloquentJobSeekerRepository {
 
         $applied= DB::table('job_applications')
             ->join('jobs', 'job_applications.job_id','=','jobs.id')
+            ->join('companies', 'companies.id','=','jobs.company_id')
             ->where('job_applications.user_id', '=', $userid)
-            ->select('jobs.title','job_applications.created_at')
+            ->select([
+                'jobs.title',
+                'job_applications.created_at',
+                \DB::raw('companies.title AS company_title')
+            ])
             ->get();
 
         return $applied;

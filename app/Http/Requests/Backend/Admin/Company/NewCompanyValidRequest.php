@@ -26,7 +26,7 @@ class NewCompanyValidRequest extends Request
     public function rules()
     {
 
-        $newCompanyTemp = NewCompanyTemp::find($this->segment(4));
+        $newCompanyTemp = NewCompanyTemp::where('employer_id', $this->segment(4))->first();
 
         if ( ! $newCompanyTemp->employer->subscribed() ) {
             $this->throwException();

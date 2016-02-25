@@ -1,5 +1,6 @@
 <?php namespace App\Models\Access\User\Traits\Relationship;
 
+use App\Models\Access\User\EmployerPlan;
 use App\Models\Access\User\UserProvider;
 
 /**
@@ -34,5 +35,9 @@ trait UserRelationship {
      */
     public function providers() {
         return $this->hasMany(UserProvider::class);
+    }
+
+    public function employerPlan(){
+        return $this->hasOne(EmployerPlan::class, 'employer_id');
     }
 }

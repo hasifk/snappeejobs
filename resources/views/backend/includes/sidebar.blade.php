@@ -129,7 +129,7 @@
                 @roles(['Employer'])
                 @permission('employer-settings')
                 <li class="{{ Active::pattern('admin/jobseekers/*') }}">
-                  <a href="{!!url('admin/employer/jobseekers')!!}">
+                  <a href="{!!url(route('backend.employerjobseekers'))!!}">
                     <i class="fa fa-cog"></i>
                         <span>
                           Jobseekers

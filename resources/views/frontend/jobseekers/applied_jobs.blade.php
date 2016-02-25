@@ -12,13 +12,9 @@
                             @foreach($applied as $key=>$value)
 
                                 <li class="list-group-item">
-                                    @if(!empty($companies))
-                                    @foreach($companies as $abc)
-                                        @if($abc->id==$value->company_id)
-                                    <h6>{{$abc->title}}</h6>
-                                        @endif
-                                        @endforeach
-                                            @endif
+
+                                    <h6>{{$value->title}}</h6>
+
 
                                     <h6>{{$value->title}}</h6>
                                     <h6>{{$value->created_at}}</h6>

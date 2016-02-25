@@ -26,6 +26,7 @@ return [
     'macros' => 'Macros',
     'register' => 'Register',
     'button' => 'Button',
-    'profile' => 'Profile',
+    'applied_jobs' => 'Applied Jobs',
+
 
 ];

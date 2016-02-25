@@ -1,10 +1,14 @@
 <?php namespace App\Repositories\Frontend\JobSeeker;
 
+use App\Models\Company\Company;
+use App\Models\Job\Job;
+use App\Models\Job\JobApplication\JobApplication;
 use App\Models\JobSeeker\JobSeeker;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 /**
  * Class EloquentUserRepository
  * @package App\Repositories\User
@@ -129,6 +133,30 @@ class EloquentJobSeekerRepository {
         $paginator->appends($request->except(['page']));
 
         return $paginator;
+    }
+
+
+
+    /*************************Applied Jobs*/
+
+    public function getAppliedJobs()
+    {
+        $userid=auth::user()->id;
+
+        $applied= DB::table('job_applications')
+            ->join('jobs', 'job_applications.job_id','=','jobs.id')
+            ->where('job_applications.user_id', '=', $userid)
+            ->select('jobs.title','job_applications.created_at')
+            ->get();
+
+        return $applied;
+
+    }
+/**********************applied Company****************************/
+    public function getAppliedCompany()
+    {
+        $companies = Company::all();
+        return $companies;
     }
 
 }

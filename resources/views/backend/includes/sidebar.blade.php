@@ -125,6 +125,20 @@
                   @endauth
                 @endauth
 
+
+                @roles(['Employer'])
+                @permission('employer-settings')
+                <li class="{{ Active::pattern('admin/jobseekers/*') }}">
+                  <a href="{!!url('admin/employer/jobseekers')!!}">
+                    <i class="fa fa-cog"></i>
+                        <span>
+                          Jobseekers
+                        </span>
+                  </a>
+                </li>
+                @endauth
+                @endauth
+
                 @roles(['Employer', 'Employer Staff'])
                   @permission('mail-view-private-messages')
                     <li class="{{ Active::pattern('admin/employer/mail/dashboard') }} treeview">

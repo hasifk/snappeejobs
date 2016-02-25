@@ -15,7 +15,7 @@ return [
 	|
 	*/
 
-	'default' => env('FILE_SYSTEM_DRIVER', 'local'),
+   'default' => env('FILE_SYSTEM_DRIVER', 'local'),
 
 	/*
 	|--------------------------------------------------------------------------

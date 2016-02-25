@@ -34,4 +34,5 @@ $router->group(['middleware' => 'auth'], function ()
 	post('profile/resume', 'ProfileController@resumeUpload')->name('frontend.profile.resume');
 	post('profile/preferences', 'ProfileController@savePreferences')->name('frontend.profile.preferences');
 	post('profile/resendConfirmation', 'ProfileController@resendConfirmation')->name('frontend.profile.resend_confirmation');
+
 });

@@ -107,4 +107,10 @@ class JobSeekerController extends Controller
         return json_encode(['status'=>1,'likes'=>$likes]);
     }
 
+    public function appliedJobs(){
+        $applied =$this->repository->getAppliedJobs();
+        $companies=$this->repository->getAppliedCompany();
+        return view('frontend.jobseekers.applied_jobs',['applied'	=> $applied ,'çompanies' =>$companies]);
+    }
+
 }

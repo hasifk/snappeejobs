@@ -10,7 +10,7 @@ $router->group(['namespace' => 'JobSeekers'], function () use ($router)
      */
     $router->group(['middleware' => 'auth'], function ()
     {
-
+        get('jobseeker/appliedjobs', 'JobSeekerController@appliedJobs')->name('jobseeker.appliedjobs');
     });
 
     /**
@@ -19,4 +19,5 @@ $router->group(['namespace' => 'JobSeekers'], function () use ($router)
     get('jobseekers', 'JobSeekerController@index')->name('jobseeker.search');
     get('jobseeker/{id}', 'JobSeekerController@show')->name('jobseeker.show');
     post('jobseeker/like', 'JobSeekerController@likeJob')->name('jobseeker.like');
+
 });

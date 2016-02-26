@@ -228,7 +228,7 @@
                 <td>{{ $job_seeker->likes ? $job_seeker->likes : '0' }}</td>
                 <td>@if( $job_seeker->skills->count() )
                         @foreach($job_seeker->skills as $skill)
-                            <div class="label label-success">
+                            <div>
                                 <a href="{{ route('backend.jobseekers', ['skill' => $skill->id]) }}">
                                     {{ $skill->name }}
                                 </a>
@@ -238,7 +238,7 @@
                 <td>
                     @if( $job_seeker->categories->count() )
                         @foreach($job_seeker->categories as $category)
-                            <div class="label label-success">
+                            <div>
                                 <a href="{{ route('backend.jobseekers', ['category' => $category->id]) }}">
                                     {{ $category->name }}
                                 </a>

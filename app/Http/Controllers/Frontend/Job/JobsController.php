@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Job;
 
+use App\Models\Company\Company;
 use App\Models\Job\Job;
 use App\Models\JobSeeker\JobSeeker;
 use App\Repositories\Frontend\Job\EloquentJobRepository;
@@ -67,11 +68,10 @@ class JobsController extends Controller
 
     public function show(Requests\Frontend\Job\JobViewRequest $request, $company, $slug){
 
-        $job = Job::with(['company' => function($query) use ($company) {
-            $query->where('companies.url_slug', $company);
-        }, 'categories', 'skills', 'country', 'state'])
-            ->where('title_url_slug', $slug)
-            ->first();
+        $company_id = Company::where('url_slug', $company)->value('id');
+        $job_id = Job::where('title_url_slug', $slug)->where('company_id', $company_id)->value('id');
+
+        $job = Job::find($job_id)->with(['company', 'categories', 'skills', 'country', 'state'])->first();
 
         $view = [
             'job' => $job

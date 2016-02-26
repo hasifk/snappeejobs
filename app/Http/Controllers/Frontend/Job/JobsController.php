@@ -68,10 +68,13 @@ class JobsController extends Controller
 
     public function show(Requests\Frontend\Job\JobViewRequest $request, $company, $slug){
 
-        $company_id = Company::where('url_slug', $company)->value('id');
-        $job_id = Job::where('title_url_slug', $slug)->where('company_id', $company_id)->value('id');
+        $job_id = \DB::table('jobs')
+            ->join('companies', 'companies.id', '=', 'jobs.company_id')
+            ->where('jobs.title_url_slug', $slug)
+            ->where('companies.url_slug', $company)
+            ->value('jobs.id');
 
-        $job = Job::find($job_id)->with(['company', 'categories', 'skills', 'country', 'state'])->first();
+        $job = Job::find($job_id);
 
         $view = [
             'job' => $job

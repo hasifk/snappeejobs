@@ -11,7 +11,7 @@ $router->group([
 
 
 $router->group([
-    'prefix' => 'jobseekers',
+    'prefix' => 'empjobseekers',
     'namespace' => 'Jobseekers',
     'middleware' => ['access.routeNeedsPermission:employer-users-view', 'access.routeNeedsRole:Employer']
 ],function() use ($router){

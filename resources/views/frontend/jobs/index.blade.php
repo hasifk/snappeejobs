@@ -5,18 +5,14 @@
     <div class="col-md-10 col-md-offset-1">
 
         <div class="col-md-12">
-            <div class="box box-default box-solid {{ request('search') ? '' : 'collapsed-box' }}">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Search</h3>
+            <div class="box-header with-border">
+                <a href="#" id="to_job_list"><h3 class="box-title">Browse</h3></a>
+                <a href="#" id="to_job_search"><h3 class="box-title">Search</h3></a>
+            </div>
+            <div class="box box-default box-solid " style="display:none" id="job_search">
 
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-{{ request('search') ? 'minus' : 'plus' }}"></i>
-                        </button>
-                    </div>
-                    <!-- /.box-tools -->
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body" style="display: {{ request('search') ? 'block' : 'none' }};">
+
+                <div class="box-body">
                     <form role="form" action="{{ route('jobs.search') }}">
 
                         <input type="hidden" name="search" value="1">
@@ -222,7 +218,7 @@
         <div class="clearfix"></div>
 
         @foreach($jobs as $job)
-            <div class="col-md-4">
+            <div class="col-md-4" id="job_list">
                 <div class="job-card">
                     <div class="row">
                         <div class="col-md-12 heading">
@@ -301,6 +297,17 @@
                     });
                     $('#state_id').html(listitems);
                 });
+            });
+
+
+            $( "#to_job_list" ).click(function() {
+                $('#job_search').hide();
+                $('#job_list').show();
+            });
+
+            $("#to_job_search" ).click(function() {
+                $('#job_list').hide();
+                $('#job_search').show();
             });
         });
     </script>

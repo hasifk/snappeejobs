@@ -3,18 +3,20 @@
 @section('content')
     <div class="col-md-10 col-md-offset-1">
         <div class="col-md-12">
-            <div class="box box-default box-solid {{ request('search') ? '' : 'collapsed-box' }}">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Search</h3>
+            <div class="box-header with-border">
+            <a href="#" id="to_companies_list"><h3 class="box-title">Browse</h3></a>
+            <a href="#" id="to_companies_search"><h3 class="box-title">Search</h3></a>
+            </div>
+            <div class="box box-default box-solid" style="display:none" id="companies_search">
 
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-{{ request('search') ? 'minus' : 'plus' }}"></i>
-                        </button>
-                    </div>
+
+
+
+
                     <!-- /.box-tools -->
-                </div>
+
                 <!-- /.box-header -->
-                <div class="box-body" style="display: {{ request('search') ? 'block' : 'none' }};">
+                <div class="box-body">
                     <form role="form" action="{{ route('companies.search') }}">
 
                         <input type="hidden" name="search" value="1">
@@ -186,7 +188,7 @@
         </div>
     </div>
 
-    <div class="col-md-10 col-md-offset-1">
+    <div class="col-md-10 col-md-offset-1" id="companies_list">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3>{{ trans('strings.companies_title') }}</h3>
@@ -217,7 +219,21 @@
             </div>
         </div><!-- panel -->
     </div>
+@section('after-scripts-end')
+    <script>
+        $(document).ready(function(){
+            $( "#to_companies_list" ).click(function() {
+                $('#companies_search').hide();
+                $('#companies_list').show();
+            });
 
+            $("#to_companies_search" ).click(function() {
+                $('#companies_list').hide();
+                $('#companies_search').show();
+            });
+        });
+    </script>
+@endsection
 @endsection
 
 

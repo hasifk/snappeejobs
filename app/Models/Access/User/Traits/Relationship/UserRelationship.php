@@ -1,5 +1,7 @@
 <?php namespace App\Models\Access\User\Traits\Relationship;
 
+use App\EmployerAddonHistory;
+use App\EmployerAddonPackHistory;
 use App\Models\Access\User\EmployerPlan;
 use App\Models\Access\User\UserProvider;
 
@@ -39,5 +41,13 @@ trait UserRelationship {
 
     public function employerPlan(){
         return $this->hasOne(EmployerPlan::class, 'employer_id');
+    }
+
+    public function employerAddonPackHistory(){
+        return $this->hasMany(EmployerAddonPackHistory::class, 'employer_id');
+    }
+
+    public function employerAddonHistory(){
+        return $this->hasMany(EmployerAddonHistory::class, 'employer_id');
     }
 }

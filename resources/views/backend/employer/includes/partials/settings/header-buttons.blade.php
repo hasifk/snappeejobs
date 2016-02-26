@@ -17,8 +17,8 @@
                 </a>
             </li>
             <li>
-                <a href="{{route('admin.employer.settings.creditcard')}}">
-                    Credit Card
+                <a href="{{route('admin.employer.settings.usage')}}">
+                    View Usage
                 </a>
             </li>
             <li>

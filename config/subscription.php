@@ -70,6 +70,36 @@ return array(
             ]
         ],
 
+    ],
+
+    'addons_packs' => [
+        'pack1' => [
+            'label'                 => 'Pack 1',
+            'job_postings'          => 2,
+            'staff_members'         => 1,
+            'chats_accepted'        => 4,
+            'price'                 => 5
+        ],
+        'pack2' => [
+            'label'                 => 'Pack 2',
+            'job_postings'          => 4,
+            'staff_members'         => 2,
+            'chats_accepted'        => 8,
+            'price'                 => 10
+        ],
+        'pack3' => [
+            'label'                 => 'Pack 3',
+            'job_postings'          => 6,
+            'staff_members'         => 3,
+            'chats_accepted'        => 10,
+            'price'                 => 15
+        ],
+    ],
+
+    'addon_prices' => [
+        'job_postings'          => 1,
+        'staff_members'         => 2,
+        'chats_accepted'        => 1
     ]
 
 );

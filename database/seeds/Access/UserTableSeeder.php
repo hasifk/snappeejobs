@@ -23,7 +23,7 @@ class UserTableSeeder extends Seeder {
 			[
 				'name' => 'Admin Istrator',
 				'email' => 'admin@admin.com',
-				'password' => bcrypt('asdasd'),
+				'password' => bcrypt('eeppans'),
 				'confirmation_code' => md5(uniqid(mt_rand(), true)),
 				'confirmed' => true,
 				'created_at' => Carbon::now(),

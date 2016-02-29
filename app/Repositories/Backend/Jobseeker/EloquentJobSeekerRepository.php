@@ -17,6 +17,10 @@ class EloquentJobSeekerRepository {
 
         $searchObj = $searchObj->join('users', 'users.id', '=', 'job_seeker_details.user_id');
 
+        // Joining the job applications
+        $searchObj = $searchObj->join('job_applications', 'job_applications.user_id', '=', 'users.id');
+        $searchObj = $searchObj->join('jobs', 'jobs.id', '=', 'job_applications.job_id');
+
         // First the joins
         if ( $request->get('categories') ) {
             $searchObj = $searchObj->join('category_preferences_job_seeker', 'category_preferences_job_seeker.user_id', '=', 'job_seeker_details.id');
@@ -46,6 +50,7 @@ class EloquentJobSeekerRepository {
             ->where('job_seeker_details.has_resume', true)
             ->where('users.status', true)
             ->where('users.confirmed', true)
+            ->where('jobs.company_id', auth()->user()->company_id)
             ->groupBy('job_seeker_details.id');
 
         ( ($request->get('sort')) && ($request->get('sort') == 'likes') ) ? $order_by = $request->get('sort') : '';
@@ -81,6 +86,10 @@ class EloquentJobSeekerRepository {
 
         $searchObj = $searchObj->join('users', 'users.id', '=', 'job_seeker_details.user_id');
 
+        // Joining the job applications
+        $searchObj = $searchObj->join('job_applications', 'job_applications.user_id', '=', 'users.id');
+        $searchObj = $searchObj->join('jobs', 'jobs.id', '=', 'job_applications.job_id');
+
         // First the joins
         if ( $request->get('categories') ) {
             $searchObj = $searchObj->join('category_preferences_job_seeker', 'category_preferences_job_seeker.user_id', '=', 'job_seeker_details.id');
@@ -111,6 +120,7 @@ class EloquentJobSeekerRepository {
             ->where('job_seeker_details.preferences_saved', true)
             ->where('users.status', true)
             ->where('users.confirmed', true)
+            ->where('jobs.company_id', auth()->user()->company_id)
             ->groupBy('job_seeker_details.id');
 
         $jobseeker_count = $searchObj->select([

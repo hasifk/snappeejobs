@@ -553,7 +553,7 @@
                                 ) {
                                     done();
                                 } else {
-                                    alert('Please upload doc/docx/pdf files')
+                                    alert('Please upload an image file')
                                 }
                             },
                             sending: function (file, xhr, data) {

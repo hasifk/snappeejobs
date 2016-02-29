@@ -4,8 +4,8 @@
     <div class="col-md-10 col-md-offset-1">
         <div class="col-md-12">
             <div class="box-header with-border">
-            <a href="#" id="to_companies_list"><h3 class="box-title">Browse</h3></a>
-            <a href="#" id="to_companies_search"><h3 class="box-title">Search</h3></a>
+                <h3 class="box-title"> {!! link_to('/companies', 'Browse') !!}</h3>
+                <h3 class="box-title"> {!! link_to('/companies?filter=true', 'Search') !!}</h3>
             </div>
             <div class="box box-default box-solid" style="display:none" id="companies_search">
 
@@ -222,15 +222,14 @@
 @section('after-scripts-end')
     <script>
         $(document).ready(function(){
-            $( "#to_companies_list" ).click(function() {
-                $('#companies_search').hide();
-                $('#companies_list').show();
-            });
-
-            $("#to_companies_search" ).click(function() {
+            if(window.location.href.indexOf("?filter=true") > -1) {
                 $('#companies_list').hide();
                 $('#companies_search').show();
-            });
+            }
+            else
+            {
+                $('#companies_search').hide();
+                $('#companies_list').show();
         });
     </script>
 @endsection

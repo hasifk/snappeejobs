@@ -6,8 +6,9 @@
 
         <div class="col-md-12">
             <div class="box-header with-border">
-                <a href="#" id="to_job_list"><h3 class="box-title">Browse</h3></a>
-                <a href="#" id="to_job_search"><h3 class="box-title">Search</h3></a>
+               <h3 class="box-title"> {!! link_to('/jobs', 'Browse') !!}</h3>
+                <h3 class="box-title"> {!! link_to('/jobs?filter=true', 'Search') !!}</h3>
+
             </div>
             <div class="box box-default box-solid " style="display:none" id="job_search">
 
@@ -299,16 +300,16 @@
                 });
             });
 
-
-            $( "#to_job_list" ).click(function() {
-                $('#job_search').hide();
-                $('#job_list').show();
-            });
-
-            $("#to_job_search" ).click(function() {
+            if(window.location.href.indexOf("?filter=true") > -1) {
                 $('#job_list').hide();
                 $('#job_search').show();
-            });
+            }
+            else
+            {
+                $('#job_search').hide();
+                $('#job_list').show();
+            }
+
         });
     </script>
 @endsection

@@ -22,6 +22,11 @@
                 </a>
             </li>
             <li>
+                <a href="{{route('admin.employer.settings.makepaid')}}">
+                    Make Paid Company
+                </a>
+            </li>
+            <li>
                 <a href="{{route('admin.employer.settings.cancel')}}">
                     Cancel
                 </a>

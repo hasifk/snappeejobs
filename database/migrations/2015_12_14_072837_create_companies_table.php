@@ -27,6 +27,8 @@ class CreateCompaniesTable extends Migration
             $table->string('logo');
             $table->integer('likes')->unsigned();
             $table->boolean('new')->default(true);
+            $table->boolean('paid')->default(false);
+            $table->datetime('paid_expiry');
             $table->timestamps();
 
             $table->foreign('employer_id')

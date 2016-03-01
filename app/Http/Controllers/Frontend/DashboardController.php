@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use GuzzleHttp\Psr7\Request;
 
 /**
  * Class DashboardController
@@ -22,4 +23,5 @@ class DashboardController extends Controller {
 		return view('frontend.user.dashboard')
 			->withUser(auth()->user());
 	}
+
 }

@@ -1,5 +1,6 @@
 <?php namespace App\Http\Controllers\Frontend;
 
+use App\Events\Frontend\Job\JobApplied;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\EmployerSignupRequest;
 use App\Models\Access\User\User;
@@ -100,4 +101,14 @@ class FrontendController extends Controller {
 	{
 		dd("company listing action");
 	}
+
+	public function test(Request $request){
+
+		$users = User::whereIn('id', [1, 2])->get();
+
+		event(new JobApplied($users));
+
+		return view('frontend.test');
+	}
+
 }

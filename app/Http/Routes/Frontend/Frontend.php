@@ -4,6 +4,7 @@
  * Frontend Controllers
  */
 get('/', 'FrontendController@index')->name('home');
+get('/test', 'FrontendController@test')->name('test');
 get('/home', 'FrontendController@index')->name('home');
 get('employers', 'FrontendController@employers')->name('employers');
 post('employers', 'FrontendController@employersAction');

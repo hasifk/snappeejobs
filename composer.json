@@ -23,7 +23,8 @@
 		"barryvdh/laravel-ide-helper": "^2.1",
 		"laravel/cashier": "~5.0",
 		"uxweb/sweet-alert": "^1.1",
-		"aws/aws-sdk-php": "3.0"
+		"aws/aws-sdk-php": "3.0",
+		"predis/predis": "^1.0"
 	},
 	"require-dev": {
 		"fzaninotto/faker": "~1.4",

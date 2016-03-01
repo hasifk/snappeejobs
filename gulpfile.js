@@ -27,6 +27,7 @@ elixir(function(mix) {
                 './resources/assets/js/dropzone/dist/min/dropzone.min.js',
                 './resources/assets/js/bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
                 './resources/assets/js/sweetalert/dist/sweetalert.min.js',
+                './node_modules/socket.io/node_modules/socket.io-client/socket.io.js',
                 'frontend/main.js',
                 'backend/main.js',
             ], 'public/js/frontend.js')
@@ -49,11 +50,13 @@ elixir(function(mix) {
         )
         .scripts([ // Combine back-end scripts
                 'plugins.js',
+                'vue/dist/vue.js',
                 'backend/main.js',
                 'backend/plugin/toastr/toastr.min.js',
                 'bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.all.js',
                 'select2/dist/js/select2.js',
-                'backend/custom.js'
+                './node_modules/socket.io/node_modules/socket.io-client/socket.io.js',
+                'backend/custom.js',
             ], 'public/js/backend.js')
 
         // Apply version control

@@ -52,6 +52,39 @@
 
         @yield('before-scripts-end')
         {!! HTML::script(elixir('js/backend.js')) !!}
+        <script>
+
+            var socket = io('http://127.0.0.1:8000');
+
+            var SnappeeJobs = new Vue({
+                el: '.notifications-header',
+
+                data: {
+                    unread_messages: [],
+                    job_applications: [],
+                    job_applications_order: -1
+                },
+
+                ready: function(){
+
+                    var that = this;
+
+                    $.post('{{ route('backend.notification.unread_messages') }}', { _token : $('meta[name="_token"]').attr('content') }, function(data){
+                        that.unread_messages = data;
+                    });
+
+                    $.post('{{ route('backend.notification.job_applications') }}', { _token : $('meta[name="_token"]').attr('content') }, function(data){
+                        that.job_applications = data;
+                    });
+
+                    // Listening to the socket
+                    socket.on('user.{{ auth()->user()->id }}:jobapplication-received', function(data){
+                        console.log(data);
+                    });
+
+                }
+            });
+        </script>
         @yield('after-scripts-end')
     </body>
 </html>

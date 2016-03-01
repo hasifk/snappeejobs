@@ -1,7 +1,10 @@
 <?php namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Access\User\User;
 use App\Repositories\Backend\Dashboard\DashboardRepository;
+use App\Repositories\Backend\Mail\EloquentMailRepository;
+use Carbon\Carbon;
 use \Illuminate\Http\Request;
 use App\Http\Requests\Backend\AdminProfileEditRequest;
 use Storage;
@@ -108,5 +111,39 @@ class DashboardController extends Controller {
         return redirect()->route('backend.profile')->withFlashSuccess(trans("alerts.users.profile_updated"));
 
     }
+
+    public function unread_messages(EloquentMailRepository $mailRepository){
+        $unread_messages = $mailRepository->getUnReadMessages();
+        return response()->json($mailRepository->unReadMessages);
+    }
+
+    public function job_applications(Request $request){
+        $jobApplications = \DB::table('job_applications')
+            ->join('jobs', 'jobs.id', '=', 'job_applications.job_id')
+            ->join('users', 'job_applications.user_id', '=', 'users.id')
+            ->where('jobs.company_id', auth()->user()->companyId )
+            ->where(function($query){
+                $query->whereNull('job_applications.accepted_at' )
+                    ->orWhereNull('job_applications.declined_at');
+            })
+            ->select([
+                'job_applications.id',
+                'jobs.title',
+                'users.name',
+                \DB::raw('users.id AS user_id'),
+                'job_applications.created_at'
+            ])
+            ->get();
+
+        if ( $jobApplications ) {
+            foreach ($jobApplications as $key => $jobApplication) {
+                $jobApplications[$key]->{'image'} = User::find($jobApplication->user_id)->picture;
+                $jobApplications[$key]->{'was_created'} = Carbon::parse($jobApplication->created_at)->diffForHumans();
+            }
+        }
+
+        return response()->json($jobApplications);
+    }
+
 
 }

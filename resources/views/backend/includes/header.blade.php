@@ -1,5 +1,5 @@
           <!-- Main Header -->
-          <header class="main-header">
+          <header class="main-header notifications-header">
 
             <!-- Logo -->
             <a href="{!!route('home')!!}" class="logo">SnappeeJobs</a>
@@ -50,42 +50,42 @@
                   </li><!-- /.messages-menu -->
                   @endif
 
-                  @if ($unread_job_applications_count)
-                    <li class="dropdown messages-menu">
+
+                    <li v-cloak v-if="job_applications.length" class="dropdown messages-menu">
                       <!-- Menu toggle button -->
                       <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-suitcase"></i>
-                        <span class="label label-success">{{ $unread_job_applications_count }}</span>
+                        <span v-cloak class="label label-success">@{{ job_applications.length }}</span>
                       </a>
                       <ul class="dropdown-menu">
-                        <li class="header">You have {{ $unread_job_applications_count }} job application(s)</li>
+                        <li class="header">You have @{{ job_applications.length }} job application(s)</li>
                         <li>
                           <!-- inner menu: contains the messages -->
                           <ul class="menu">
-                            @foreach($job_applications as $job_application)
-                              <li><!-- start message -->
-                                <a href="{{ route('admin.employer.jobs.application', $job_application->id) }}">
+
+                              <li v-for="job_application in job_applications | orderBy 'created_at' job_applications_order"><!-- start message -->
+                                <a href="/admin/employer/jobs/application/@{{ job_application.id }}">
                                   <div class="pull-left">
                                     <!-- User Image -->
-                                    <img src="{!! \App\Models\Access\User\User::find($job_application->user_id)->picture !!}" class="img-circle" alt="User Image"/>
+                                    <img src="@{{ job_application.image }}" class="img-circle" alt="User Image"/>
                                   </div>
                                   <!-- Message title and timestamp -->
                                   <p>
-                                    {{ $job_application->name }} applied for
+                                    @{{ job_application.name }} applied for
                                     <br>
-                                    <strong>{{ $job_application->title }}</strong>
+                                    <strong>@{{ job_application.title }}</strong>
                                     <br>
-                                    <small><i class="fa fa-clock-o"></i> {{ \Carbon\Carbon::parse($job_application->created_at)->diffForHumans() }}</small>
+                                    <small><i class="fa fa-clock-o"></i> @{{ job_application.was_created }}</small>
                                   </p>
                                 </a>
                               </li><!-- end message -->
-                            @endforeach
+
                           </ul><!-- /.menu -->
                         </li>
                         <li class="footer"><a href="{{ route('admin.employer.jobs.applications') }}">View all job applications</a></li>
                       </ul>
                     </li><!-- /.messages-menu -->
-                    @endif
+
 
                   <!-- Notifications Menu -->
                   <li style="display: none;" class="dropdown notifications-menu">

@@ -55,9 +55,11 @@ return [
     'permission_management' => 'Permission Management',
     'role_management' => 'Role Management',
     'user_management' => 'User Management',
+    'make_paid' => 'Make Your Company Paid',
     'access_management' => 'Access Management',
     'subscription_management' => 'Subscription Management',
     'company_management' => 'Company Management',
+
     'language-picker' => [
         'language' => 'Language',
         'langs' => [

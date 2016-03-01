@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Backend\Employer\Settings;
 
 use App\Http\Requests\Backend\Employer\Staff\EmployerChoosePlanRequest;
 use App\Models\Access\User\User;
+use App\Models\Company\Company;
+use App\Models\Job\Job;
 use App\Repositories\Backend\Employer\EloquentStaffRepository;
 use App\Repositories\Backend\Permission\PermissionRepositoryContract;
 use App\Repositories\Backend\Role\RoleRepositoryContract;
@@ -139,6 +141,21 @@ class SettingsController extends Controller
             'addonpacks' => $addonPakcs
         ]);
     }
+    public function makepaid(){
+
+
+        $companypaidpack = config('subscription.company_makepaid');
+        $companyAdmin = auth()->user()->company_id;
+        $company_info=Company::where('id',$companyAdmin)->first();
+        $job_list=Job::where('company_id',$companyAdmin)->get();
+
+        return view('backend.employer.settings.make_paid', [
+
+            'companypaidpack' => $companypaidpack,
+            'job_list'       => $job_list,
+            'company_info'       => $company_info
+        ]);
+    }
 
     public function buyaddon(Request $request, $addon){
 
@@ -238,4 +255,54 @@ class SettingsController extends Controller
 
     }
 
+
+    public function savecmppaid(Requests\Backend\Employer\Settings\MakeCompanyPaidRequest $request){
+
+        $employerAdmin = User::find(auth()->user()->employer_id);
+        $charged = $employerAdmin->charge(config('subscription.company_makepaid.price')*100);
+        $expiry=Carbon::now()->addSeconds(config('subscription.company_makepaid.time_frame'));
+
+        if ( $charged ) {
+
+            $update_company=Company::find(auth()->user()->company_id);
+            $update_company->paid=1;
+            $update_company->paid_expiry=$expiry;
+            $update_company->save();
+
+            return redirect()
+                ->route('admin.employer.settings.makepaid')
+                ->withFlashSuccess('Your Company successfully became paid .');
+        }
+
+        return redirect()
+            ->route('admin.employer.settings.makepaid')
+            ->withErrors('We were unable to charge your credit card, please try again later');
+    }
+
+
+
+    public function savejobpaid(Requests\Backend\Employer\Settings\MakeJobPaidRequest $request){
+        $job_id=$request->input('job_id');
+        $employerAdmin = User::find(auth()->user()->employer_id);
+        $charged = $employerAdmin->charge(config('subscription.job_makepaid.price')*100);
+        $expiry=Carbon::now()->addSeconds(config('subscription.job_makepaid.time_frame'));
+
+        if ( $charged ) {
+
+            $update_job=Job::find($job_id);
+            $update_job->paid=1;
+            $update_job->paid_expiry=$expiry;
+            $update_job->save();
+
+            return redirect()
+                ->route('admin.employer.settings.makepaid')
+                ->withFlashSuccess('The Selected Job successfully became paid .');
+        }
+
+        return redirect()
+            ->route('admin.employer.settings.makepaid')
+            ->withErrors('We were unable to charge your credit card, please try again later');
+    }
+
+/**************************************************************************************************************/
 }

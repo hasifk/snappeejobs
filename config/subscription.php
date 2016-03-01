@@ -100,6 +100,15 @@ return array(
         'job_postings'          => 1,
         'staff_members'         => 2,
         'chats_accepted'        => 1
-    ]
+    ],
+      'job_makepaid' => [
+      'price'        => 2,
+     'time_frame'          =>604800
 
+],
+    'company_makepaid' => [
+        'price'        => 5,
+        'time_frame'          =>604800
+
+    ]
 );

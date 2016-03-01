@@ -22,6 +22,9 @@ $router->group([
         get('settings/creditcard', 'SettingsController@creditcard')->name('admin.employer.settings.creditcard');
         get('settings/cancel', 'SettingsController@cancel')->name('admin.employer.settings.cancel');
         get('settings/usage', 'SettingsController@usage')->name('admin.employer.settings.usage');
+        get('settings/makepaid', 'SettingsController@makepaid')->name('admin.employer.settings.makepaid');
+        post('settings/savecmppaid', 'SettingsController@savecmppaid')->name('admin.employer.settings.savecmppaid');
+        post('settings/savejobpaid', 'SettingsController@savejobpaid')->name('admin.employer.settings.savejobpaid');
         get('settings/buyaddon/{addon}', 'SettingsController@buyaddon')->name('admin.employer.settings.buyaddon');
         post('settings/buyaddon/{addon}', 'SettingsController@buyaddonAction')->name('admin.employer.settings.buyaddonaction');
         get('settings/buyaddonpack/{pack}', 'SettingsController@buyaddonpack')->name('admin.employer.settings.buyaddonpack');

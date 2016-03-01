@@ -87,7 +87,8 @@ class EloquentJobRepository {
                 'jobs.country_id',
                 'jobs.state_id',
                 'jobs.likes',
-                'jobs.created_at'
+                'jobs.created_at',
+                'jobs.paid_expiry'
             ])
             ->get();
 

@@ -79,7 +79,7 @@
 
                     // Listening to the socket
                     socket.on('user.{{ auth()->user()->id }}:jobapplication-received', function(data){
-                        console.log(data);
+                        that.job_applications.push(data.jobApplication);
                     });
 
                 }

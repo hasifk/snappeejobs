@@ -18,7 +18,7 @@
 
     <script>
 
-        var socket = io('http://127.0.0.1:8000');
+
 
         new Vue({
             el: '#chats',
@@ -31,9 +31,7 @@
 
                 var that = this;
 
-                socket.on('user.{{ auth()->user()->id }}:jobapplication-received', function(data){
-                    that.chats.push({message: data.user.email});
-                });
+
             }
         })
 

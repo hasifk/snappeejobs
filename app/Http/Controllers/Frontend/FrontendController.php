@@ -1,9 +1,7 @@
 <?php namespace App\Http\Controllers\Frontend;
 
-use App\Events\Frontend\Job\JobApplied;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\EmployerSignupRequest;
-use App\Models\Access\User\User;
 use App\Repositories\Frontend\User\EloquentUserRepository;
 use DB;
 use Illuminate\Http\Request;
@@ -103,10 +101,6 @@ class FrontendController extends Controller {
 	}
 
 	public function test(Request $request){
-
-		$users = User::whereIn('id', [1, 2])->get();
-
-		event(new JobApplied($users));
 
 		return view('frontend.test');
 	}

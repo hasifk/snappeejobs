@@ -25,8 +25,6 @@ class JobAppliedHandler implements ShouldQueue {
 	 */
 	public function handle(JobApplied $event)
 	{
-		$event->employerUsersCollection->each(function($user, $key){
-			\Log::info("User applied for job" . $user->name);
-		});
+//		\Log::info("User applied for job" . $event);
 	}
 }

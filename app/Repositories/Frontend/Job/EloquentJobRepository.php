@@ -1,5 +1,6 @@
 <?php namespace App\Repositories\Frontend\Job;
 
+use App\Events\Frontend\Job\JobApplied;
 use App\Models\Access\User\User;
 use App\Models\Job\Job;
 use App\Models\JobSeeker\JobSeeker;
@@ -179,12 +180,14 @@ class EloquentJobRepository {
 
         if ( $jobApplied ) return false;
 
-        \DB::table('job_applications')->insert([
+        $jobApplicationId = \DB::table('job_applications')->insertGetId([
             'job_id'        => $job->id,
             'user_id'       => $user->id,
             'created_at'    => Carbon::now(),
             'updated_at'    => Carbon::now()
         ]);
+
+        event(new JobApplied($jobApplicationId));
 
         return true;
     }

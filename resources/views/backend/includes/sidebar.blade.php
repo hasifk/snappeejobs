@@ -16,14 +16,17 @@
               </div>
 
               <!-- search form (Optional) -->
-              <form action="#" method="get" class="sidebar-form">
+              @role('Employer')
+              {!! Form::open(array('url' =>  route('backend.employersearch'),'class' => 'sidebar-form' ,'method' => 'get')) !!}
+              {{ csrf_field() }}
                 <div class="input-group">
-                  <input type="text" name="q" class="form-control" placeholder="{{ trans('strings.search_placeholder') }}"/>
+                  <input type="text" name="emp_search_key" class="form-control" placeholder="{{ trans('strings.search_placeholder') }}"/>
                   <span class="input-group-btn">
                     <button type='submit' name='search' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
                   </span>
                 </div>
-              </form>
+              {!! Form::close() !!}
+              @endauth
               <!-- /.search form -->
 
               <!-- Sidebar Menu -->

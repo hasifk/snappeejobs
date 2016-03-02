@@ -10,6 +10,7 @@ use App\Http\Requests\Backend\AdminProfileEditRequest;
 use Storage;
 use DB;
 
+
 /**
  * Class DashboardController
  * @package App\Http\Controllers\Backend
@@ -144,6 +145,43 @@ class DashboardController extends Controller {
 
         return response()->json($jobApplications);
     }
+/*************************************************************************************************************/
+    public function employersearch(Request $request)
+    {
+        if ( access()->hasRole('Employer') ) {
+            $query = $request->input('emp_search_key');
+            if(!empty($query)):
+            $jobtitle= DB::table('jobs')->where('title', 'LIKE', '%' . $query . '%')
+                ->where('company_id', auth()->user()->company_id)->paginate(10);
+                $staffinfo= DB::table('users')->where('name', 'LIKE', '%' . $query . '%')->paginate(10)
+                    ->where('employer_id', auth()->user()->employer_id);
+               
 
+                $job_cat_info= DB::table('jobs')
+                    ->join('category_preferences_jobs', 'category_preferences_jobs.job_id','=','jobs.id')
+
+                    ->join('job_categories', function ($join) {
+                        $join->on('job_categories.id', '=', 'category_preferences_jobs.job_category_id')
+                            ->where('name', 'LIKE', '%' . $query . '%');
+                    })
+                    ->where('jobs.company_id', '=', auth()->user()->company_id)
+                    ->select([
+                        'jobs.title',
+                        'job_categories.name'
+                    ])->get();
+                $search_results = [
+                    'jobtitle'         =>  $jobtitle,
+                    'staffinfo'            =>$staffinfo,
+                    'job_cat_info'=> $job_cat_info
+                ];
+                return view('backend.emp_search_results',$search_results);
+
+
+                else:
+                    return back();
+                    endif;
+        }
+    }
+/************************************************************************************************************/
 
 }

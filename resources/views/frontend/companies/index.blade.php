@@ -11,8 +11,38 @@
         <!-- Tab panes -->
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane @if(!request()->has('search')) active @endif" id="browse_companies">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3>{{ trans('strings.companies_title') }}</h3>
+                    </div>
 
-                Here we would show the paid companies
+                    <div class="panel-body">
+
+                        <div class="col-md-9">
+                            @if(count($companies_data['companies'])>0)
+                                <h4>{{ trans('strings.companies_subtitle') }}</h4>
+                            @else
+                                <h4>No results found.</h4>
+                            @endif
+                        </div>
+                        @if(count($companies_data['companies'])>0)
+                            @foreach($companies_data['companies'] as $company)
+                                @if($company->paid_expiry > \Carbon\Carbon::now())
+                                <a href="/companies/{{$company->url_slug}}">
+                                    <div class="col-md-5">
+                                        @if ($company->photos->count())
+                                            <img src="{{$company->photos->first()->path . $company->photos->first()->filename . $company->photos->first()->extension}}" alt="company photo" width="400">
+                                        @endif
+                                        <h2>{{$company->title}}</h2>
+                                        <h4> @foreach($company->industries as $industry){{ $industry->name }} | @endforeach  {{$company->size}} | {{$company->stateName}}</h4>
+                                    </div>
+                                </a>
+                                @endif
+                            @endforeach
+                        @endif
+                    </div>
+                </div><!-- panel -->
+
 
             </div>
             <div role="tabpanel" class="tab-pane @if(request()->has('search')) active @endif" id="search_companies">

@@ -97,6 +97,17 @@ class EloquentJobRepository {
 			->paginate($per_page);
 	}
 
+	public function getJobApplication($id){
+		return JobApplication
+			::where('id', $id)
+			->where(function($query){
+				$query->whereNull('accepted_at' )
+					  ->orWhereNull('declined_at');
+			})
+			->with(['job', 'jobseeker'])
+			->first();
+	}
+
 	/**
 	 * @param string $order_by
 	 * @param string $sort

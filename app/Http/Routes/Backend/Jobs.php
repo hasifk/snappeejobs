@@ -23,8 +23,8 @@ $router->group([
 
         get('jobs/applications', 'JobsController@applications')->name('admin.employer.jobs.applications');
         get('jobs/application/{id}', 'JobsController@application')->name('admin.employer.jobs.application');
-        get('jobs/application/accept/{id}', 'JobsController@acceptJobApplication')->name('admin.employer.jobs.application.accept');
-        get('jobs/application/decline/{id}', 'JobsController@declineJobApplication')->name('admin.employer.jobs.application.decline');
+        post('jobs/application/accept/{id}', 'JobsController@acceptJobApplication')->name('admin.employer.jobs.application.accept');
+        post('jobs/application/decline/{id}', 'JobsController@declineJobApplication')->name('admin.employer.jobs.application.decline');
 
         $router->group(['prefix' => 'jobs/{id}', 'where' => ['id' => '[0-9]+']], function () {
             get('delete', 'JobsController@delete')->name('admin.employer.jobs.delete-permanently');

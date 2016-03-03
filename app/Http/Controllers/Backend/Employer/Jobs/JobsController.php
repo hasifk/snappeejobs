@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend\Employer\Jobs;
 use App\Http\Requests\Backend\Employer\Job\HideJobRequest;
 use App\Http\Requests\Backend\Employer\Job\MarkJobRequest;
 use App\Http\Requests\Backend\Employer\Job\PublishJobRequest;
+use App\Models\JobSeeker\JobSeeker;
 use App\Repositories\Backend\Job\EloquentJobRepository;
 use App\Repositories\Backend\Permission\PermissionRepositoryContract;
 use App\Repositories\Backend\Role\RoleRepositoryContract;
@@ -223,8 +224,17 @@ class JobsController extends Controller
     }
 
     public function application(Requests\Backend\Employer\Job\ViewJobApplicationsViewRequest $request, $id){
-        return view('backend.employer.jobs.application')
-            ->withJobs($this->jobs->getJobApplications($id));
+
+        $job_application = $this->jobs->getJobApplication($id);
+
+        $job_seeker = JobSeeker::find(\DB::table('job_seeker_details')->where('user_id', $job_application->jobseeker->id)->value('id'));
+
+        $view = [
+            'job_application'   => $job_application,
+            'job_seeker'       => $job_seeker
+        ];
+
+        return view('backend.employer.jobs.application', $view);
     }
 
     public function acceptJobApplication(Request $request){

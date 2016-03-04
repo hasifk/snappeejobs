@@ -5,7 +5,9 @@ use App\Http\Requests\Frontend\Access\PreferencesSaveRequest;
 use App\Http\Requests\Frontend\Access\ProfileImagesUploadRequest;
 use App\Http\Requests\Frontend\Access\ProfileVideoUploadRequest;
 use App\Http\Requests\Frontend\Access\ResumeUploadRequest;
+use App\Models\Access\User\User;
 use App\Models\JobSeeker\JobSeeker;
+use App\Repositories\Backend\Mail\EloquentMailRepository;
 use App\Repositories\Frontend\User\UserContract;
 use App\Http\Requests\Frontend\User\UpdateProfileRequest;
 use Carbon\Carbon;
@@ -476,6 +478,49 @@ class ProfileController extends Controller {
 
 	public function socialmedia(){
 		return view('frontend.user.profile.socialmedia');
+	}
+
+	public function unreadchats(){
+		$unread_messages = \DB::table('thread_participants')
+			->join('threads', 'thread_participants.thread_id', '=', 'threads.id')
+			->join('users', 'thread_participants.sender_id', '=', 'users.id')
+			->whereNull('thread_participants.deleted_at')
+			->whereNull('thread_participants.read_at')
+			->where('thread_participants.user_id', auth()->user()->id)
+			->orderBy('thread_participants.updated_at')
+			->select([
+				'users.name',
+				'users.id',
+				'threads.subject',
+				'threads.last_message',
+				'threads.message_count',
+				'threads.created_at',
+				'threads.updated_at',
+				'thread_participants.thread_id',
+				'thread_participants.read_at',
+			])
+			->orderBy('threads.updated_at', 'desc')
+			->first();
+
+		if ( $unread_messages ) {
+			foreach ($unread_messages as $key => $unread_message) {
+				$unread_messages[$key]->{'last_message'} = str_limit($unread_message->last_message, 30);
+				$unread_messages[$key]->{'image'} = User::find($unread_message->id)->picture;
+				$unread_messages[$key]->{'was_created'} = Carbon::parse($unread_message->created_at)->diffForHumans();
+			}
+		}
+
+		return response()->json($unread_messages);
+	}
+	
+	public function messages(EloquentMailRepository $mailRepository){
+	    $messages = $mailRepository->inbox(10);
+		return view('frontend.user.mail.inbox', ['inbox' => $messages]);
+	}
+
+	public function viewThread(EloquentMailRepository $mailRepository, $id){
+	    $thread = $mailRepository->getThread($id);
+		return view('frontend.user.mail.show', [ 'thread' => $thread ]);
 	}
 
 }

@@ -54,7 +54,7 @@
         {!! HTML::script(elixir('js/backend.js')) !!}
         <script>
 
-            var socket = io('http://127.0.0.1:8000');
+            var socket = io('http://{{ env('SOCKETIO_SERVER_IP', '127.0.0.1') }}:{{ env('SOCKETIO_SERVER_PORT', 8000) }}');
 
             var SnappeeJobs = new Vue({
                 el: '.notifications-header',

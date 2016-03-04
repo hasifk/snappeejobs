@@ -44,6 +44,40 @@
 
         @yield('before-scripts-end')
         {!! HTML::script(elixir('js/frontend.js')) !!}
+        <script>
+
+            @if(auth()->user())
+
+            var socket = io('http://{{ env('SOCKETIO_SERVER_IP', '127.0.0.1') }}:{{ env('SOCKETIO_SERVER_PORT', 8000) }}');
+
+            var SnappeeJobsHeader = new Vue({
+                el: '.notifications-header',
+
+                data: {
+                    unread_messages: [],
+                    unread_messages_order: -1
+                },
+
+                ready: function(){
+
+                    var that = this;
+
+                    $.post('{{ route('frontend.notification.unreadchats') }}', { _token : $('meta[name="_token"]').attr('content') }, function(data){
+                        if ( data.length ) {
+                            that.unread_messages = data;
+                        }
+                    });
+
+                    // Listening to the socket
+                    socket.on('user.{{ auth()->user()->id }}:employerchat-received', function(data){
+                        that.unread_messages.push(data.message_details)
+                    });
+
+                }
+            });
+
+            @endif
+        </script>
         @yield('after-scripts-end')
 
         {{--@include('includes.partials.ga')--}}

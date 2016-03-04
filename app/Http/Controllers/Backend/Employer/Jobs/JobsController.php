@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\Backend\Employer\Jobs;
 
+use App\Events\Frontend\Job\JobSeekerChatReceived;
 use App\Http\Requests\Backend\Employer\Job\HideJobRequest;
 use App\Http\Requests\Backend\Employer\Job\MarkJobRequest;
 use App\Http\Requests\Backend\Employer\Job\PublishJobRequest;
+use App\Models\Job\JobApplication\JobApplication;
 use App\Models\JobSeeker\JobSeeker;
 use App\Repositories\Backend\Job\EloquentJobRepository;
+use App\Repositories\Backend\Mail\EloquentMailRepository;
 use App\Repositories\Backend\Permission\PermissionRepositoryContract;
 use App\Repositories\Backend\Role\RoleRepositoryContract;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -237,12 +241,43 @@ class JobsController extends Controller
         return view('backend.employer.jobs.application', $view);
     }
 
-    public function acceptJobApplication(Request $request){
-        dd($request->all());
+    public function acceptJobApplication(Requests\Backend\Employer\Job\AcceptJobApplicationRequest $request, EloquentMailRepository $mailRepository, $id){
+
+        $jobApplication = JobApplication::find($id);
+
+        $jobApplication->accepted_by = auth()->user()->id;
+        $jobApplication->accepted_at = Carbon::now();
+
+        $jobApplication->save();
+
+        $request->merge([
+            'to'            => $jobApplication->user_id,
+            'subject'       => 'Job Application - ' .
+                                $jobApplication->job->title . ' - ' .
+                                $jobApplication->job->company->title,
+            'message'       => 'The recruiter of the ' . $jobApplication->job->company->title .
+                                ' wants to chat with you regarding the opening for the post of ' .
+                                $jobApplication->job->title
+        ]);
+
+        $thread = $mailRepository->sendPrivateMessage($request);
+
+        $thread->application_id = $jobApplication->id;
+        $thread->employer_id = auth()->user()->id;
+
+        $thread->save();
+
+        event(new JobSeekerChatReceived($thread->id));
+
+        return redirect(route('admin.employer.mail.view', $thread->id))
+            ->withFlashSuccess('The jobseeker was notified about the job acceptance');
+
     }
 
-    public function declineJobApplication(Request $request){
+    public function declineJobApplication(Requests\Backend\Employer\Job\DeclineJobApplicationRequest $request, $id){
+
         dd($request->all());
+
     }
 
 }

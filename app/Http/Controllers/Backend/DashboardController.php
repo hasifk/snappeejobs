@@ -125,7 +125,7 @@ class DashboardController extends Controller {
             ->where('jobs.company_id', auth()->user()->companyId )
             ->where(function($query){
                 $query->whereNull('job_applications.accepted_at' )
-                    ->orWhereNull('job_applications.declined_at');
+                    ->whereNull('job_applications.declined_at');
             })
             ->select([
                 'job_applications.id',

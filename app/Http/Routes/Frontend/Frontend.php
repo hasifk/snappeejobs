@@ -35,5 +35,10 @@ $router->group(['middleware' => 'auth'], function ()
 	post('profile/resume', 'ProfileController@resumeUpload')->name('frontend.profile.resume');
 	post('profile/preferences', 'ProfileController@savePreferences')->name('frontend.profile.preferences');
 	post('profile/resendConfirmation', 'ProfileController@resendConfirmation')->name('frontend.profile.resend_confirmation');
+	post('profile/unreadchats', 'ProfileController@unreadchats')->name('frontend.notification.unreadchats');
+	get('messages', 'ProfileController@messages')->name('frontend.messages');
+	get('message/{id}', 'ProfileController@viewThread')->name('frontend.message');
+	post('message/reply/{id}', 'ProfileController@replyThread')->name('frontend.message.reply');
+	delete('message/delete/{id}', 'ProfileController@destroyThread')->name('frontend.message.destroy');
 
 });

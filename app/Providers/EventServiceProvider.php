@@ -36,6 +36,9 @@ class EventServiceProvider extends ServiceProvider {
 		'App\Events\Frontend\Job\JobApplied' => [
 			'App\Listeners\Frontend\Job\JobAppliedHandler',
 		],
+		'App\Events\Frontend\Job\JobSeekerChatReceived' => [
+			'App\Listeners\Frontend\Job\JobSeekerChatReceivedHandler',
+		],
 	];
 
 	/**

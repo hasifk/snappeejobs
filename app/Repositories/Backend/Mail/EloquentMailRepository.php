@@ -113,7 +113,7 @@ class EloquentMailRepository
             $this->connectThreadUsers($thread, $request->all());
         }
 
-        return;
+        return $thread;
 
     }
 

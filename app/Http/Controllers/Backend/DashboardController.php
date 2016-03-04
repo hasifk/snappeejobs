@@ -155,16 +155,17 @@ class DashboardController extends Controller {
                 ->where('company_id', auth()->user()->company_id)->paginate(10);
                 $staffinfo= DB::table('users')->where('name', 'LIKE', '%' . $query . '%')->paginate(10)
                     ->where('employer_id', auth()->user()->employer_id);
-               
 
-                $job_cat_info= DB::table('jobs')
-                    ->join('category_preferences_jobs', 'category_preferences_jobs.job_id','=','jobs.id')
 
-                    ->join('job_categories', function ($join) {
-                        $join->on('job_categories.id', '=', 'category_preferences_jobs.job_category_id')
-                            ->where('name', 'LIKE', '%' . $query . '%');
+
+                $company_id=auth()->user()->company_id;
+                $job_cat_info= DB::table('job_categories')
+                    ->join('category_preferences_jobs', 'category_preferences_jobs.job_category_id','=','job_categories.id')
+                    ->join('jobs', function ($join) use ($company_id) {
+                        $join->on('jobs.id', '=', 'category_preferences_jobs.job_id')
+                            ->where('jobs.company_id', '=', auth()->user()->company_id);
                     })
-                    ->where('jobs.company_id', '=', auth()->user()->company_id)
+                    ->where('job_categories.name', 'LIKE', '%' . $query . '%')
                     ->select([
                         'jobs.title',
                         'job_categories.name'

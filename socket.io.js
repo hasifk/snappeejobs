@@ -1,5 +1,5 @@
-var server = require('http').Server()
-var io = require('socket.io')(server)
+var server = require('http').Server();
+var io = require('socket.io')(server);
 
 var Redis = require('ioredis');
 var redis = new Redis();
@@ -12,4 +12,6 @@ redis.on('pmessage', function (subscribed, channel, message) {
     io.emit(channel + ':' + message.event, message.data);
 });
 
-server.listen(8000)
+server.listen(8000, function(){
+    console.log('Listening on the port 8000');
+});

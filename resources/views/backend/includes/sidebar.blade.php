@@ -115,6 +115,20 @@
                   @endauth
                 @endauth
 
+
+                @roles(['Employer', 'Employer Staff'])
+                @permission('employer-jobs-view-jobapplications')
+                <li class="{{ Active::pattern('admin/employer/jobs/*') }}">
+                  <a href="{!!route('admin.employer.jobs.applications')!!}">
+                    <i class="fa fa-suitcase"></i>
+                        <span>
+                          Job Applications
+                        </span>
+                  </a>
+                </li>
+                @endauth
+                @endauth
+
                 @roles(['Employer'])
                   @permission('employer-settings')
                     <li class="{{ Active::pattern('admin/employer/settings/dashboard') }}">

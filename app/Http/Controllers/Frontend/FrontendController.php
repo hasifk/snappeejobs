@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\EmployerSignupRequest;
+use App\Models\Job\Job;
+use App\Models\JobSeeker\JobSeeker;
+use App\Repositories\Frontend\Index\EloquentIndexRepository;
 use App\Repositories\Frontend\User\EloquentUserRepository;
 use DB;
 use Illuminate\Http\Request;
@@ -15,15 +18,17 @@ class FrontendController extends Controller {
 	 * @var EloquentUserRepository
 	 */
 	private $users;
+	private $indexRepository;
 
 	/**
 	 * FrontendController constructor.
 	 * @param EloquentUserRepository $users
      */
-	public function __construct(EloquentUserRepository $users)
+	public function __construct(EloquentUserRepository $users,EloquentIndexRepository $indexRepository)
 	{
 
 		$this->users = $users;
+		$this->indexRepository = $indexRepository;
 	}
 
 	/**
@@ -41,6 +46,13 @@ class FrontendController extends Controller {
 		$skills = \DB::table('skills')->select(['id', 'name'])->get();
 		$job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
 		$countries = \DB::table('countries')->select(['id', 'name'])->get();
+		$jobs_landing=Job::orderBy('likes','desc')->limit(3)->get();
+		$jobsResult = $this->indexRepository->getprefJobsPaginated( $request, config('jobs.default_per_page'));
+
+
+		$pref_jobs_landing = $jobsResult['jobs_pref'];
+
+
 		if ( $request->old('country_id') ) {
 
 			$states = \DB::table('states')
@@ -62,10 +74,12 @@ class FrontendController extends Controller {
 			'skills' 			=> $skills,
 			'job_categories' 	=> $job_categories,
 			'countries' 		=> $countries,
-			'states'    		=> $states
+			'states'    		=> $states,
+			'jobs_landing'    		=> $jobs_landing,
+			'pref_jobs_landing'       =>$pref_jobs_landing
 		];
 
-		return view('frontend.index', $view);
+		return view('frontend.Index', $view);
 	}
 
 	/**

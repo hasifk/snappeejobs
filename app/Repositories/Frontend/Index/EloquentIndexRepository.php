@@ -81,7 +81,7 @@ class EloquentIndexRepository {
                         'jobs.*',
 
                     ])
-                    ->get();
+                    ->limit(6)->get();
                 $searchObj = $searchObj->merge($searchObj1);
 
             }
@@ -111,7 +111,7 @@ class EloquentIndexRepository {
                 'jobs.created_at',
                 'jobs.paid_expiry'
             ])
-            ->get();
+            ->limit(6)->get();
 
        // $paginator = $this->getJobsPaginator($request, $jobs, $per_page);
 

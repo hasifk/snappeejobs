@@ -47,6 +47,15 @@ class FrontendController extends Controller {
 		$pref_jobs_landing = $jobsResult['jobs_pref'];
 
 
+		if(count($pref_jobs_landing)>0):
+			if(count($pref_jobs_landing)<4):
+				$joblimit=6-count($pref_jobs_landing);
+				$pref_jobs_landing1 = Job::orderBy('likes', 'desc')->limit($joblimit)->get();
+				$pref_jobs_landing=$pref_jobs_landing->merge($pref_jobs_landing1);
+			endif;
+		endif;
+
+
 		$companies_landing = Company::orderBy('likes', 'desc')->limit(6)->get();
 		if ( auth()->user() && (!empty(auth()->user()->job_seeker_details)) ) {
 			$companies_landing1 = Company::join('industry_company', 'industry_company.company_id', '=', 'companies.id')
@@ -60,8 +69,16 @@ class FrontendController extends Controller {
 				])
 				->get();
 		}
+		if(!empty($companies_landing1)):
 		if(count($companies_landing1)>0):
-			$companies_landing=$companies_landing1;
+			if(count($companies_landing1)<4):
+				$complimit=6-count($companies_landing1);
+				$companies_landing = Company::orderBy('likes', 'desc')->limit($complimit)->get();
+				$companies_landing=$companies_landing->merge($companies_landing1);
+				else:
+			    $companies_landing=$companies_landing1;
+			endif;
+			endif;
 			endif;
 
 		if ( $request->old('country_id') ) {

@@ -343,11 +343,11 @@
             <div class="row">
 
                 <div class="col-md-10 col-offset-1">
-
+                    <h4>{{ trans('strings.jobs_subtitle') }}</h4>
                     @if(count($pref_jobs_landing)> 0)
 
                         @foreach($pref_jobs_landing as $job)
-                            <h4>{{ trans('strings.jobs_subtitle') }}</h4>
+
                             <div class="col-md-4">
                                 <div class="job-card">
                                     <div class="row">
@@ -411,7 +411,7 @@
                     @elseif(count($jobs_landing)> 0)
                         @foreach($jobs_landing as $job)
 
-                            <h4>{{ trans('strings.jobs_subtitle') }}</h4>
+
                             <div class="col-md-4">
                                 <div class="job-card">
                                     <div class="row">
@@ -486,7 +486,7 @@
 
                 <div class="col-md-10 col-offset-1">
 
-                    
+
                     @if(count($companies_landing)>0)
 
                         <div class="col-md-4">

@@ -344,10 +344,10 @@
 
                 <div class="col-md-10 col-offset-1">
 
-                    @if(count($pref_jobs_landing))
+                    @if(count($pref_jobs_landing)> 0)
 
                         @foreach($pref_jobs_landing as $job)
-
+                            <h4>{{ trans('strings.jobs_subtitle') }}</h4>
                             <div class="col-md-4">
                                 <div class="job-card">
                                     <div class="row">
@@ -408,10 +408,10 @@
 
                         @endforeach
 
-                    @elseif(count($jobs_landing))
+                    @elseif(count($jobs_landing)> 0)
                         @foreach($jobs_landing as $job)
 
-
+                            <h4>{{ trans('strings.jobs_subtitle') }}</h4>
                             <div class="col-md-4">
                                 <div class="job-card">
                                     <div class="row">
@@ -479,7 +479,49 @@
 
         </div>
 
-    </div>
+
+        <div class="container">
+
+            <div class="row">
+
+                <div class="col-md-10 col-offset-1">
+
+                    
+                    @if(count($companies_landing)>0)
+
+                        <div class="col-md-4">
+                            @if(count($companies_landing)>0)
+                                <h4>{{ trans('strings.companies_subtitle') }}</h4>
+                            @else
+                                <h4>No results found.</h4>
+                            @endif
+                        </div>
+                        @if(count($companies_landing)>0)
+                            @foreach($companies_landing as $company)
+
+                                    <a href="/companies/{{$company->url_slug}}">
+                                        <div class="col-md-5">
+                                            @if ($company->photos->count())
+                                                <img src="{{$company->photos->first()->path . $company->photos->first()->filename . $company->photos->first()->extension}}" alt="company photo" width="400">
+                                            @endif
+                                            <h2>{{$company->title}}</h2>
+                                            <h4> @foreach($company->industries as $industry){{ $industry->name }} | @endforeach  {{$company->size}} | {{$company->stateName}}</h4>
+                                        </div>
+                                    </a>
+
+                            @endforeach
+                        @endif
+                            </div>
+                            </div>
+
+                    @endif
+
+                </div>
+
+           {{-- </div>
+
+        </div>
+    </div>--}}
 
 
 @endsection

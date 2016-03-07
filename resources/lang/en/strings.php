@@ -32,6 +32,7 @@ return [
     'click_here_to_reset' => 'Click here to reset your password:',
     'companies_title' => 'Explore Companies',
     'companies_subtitle' => 'Browse offices before you apply',
+    'jobs_subtitle' => 'Find a career you will love',
     'edit' => 'Edit',
     'full_name' => 'Full Name',
     'if_confirmed_is_off' => '(If confirmed is off)',

@@ -55,7 +55,9 @@
 
                 data: {
                     unread_messages: [],
-                    unread_messages_order: -1
+                    rejected_applications: [],
+                    unread_messages_order: -1,
+                    rejected_applications_order: -1
                 },
 
                 ready: function(){
@@ -68,11 +70,25 @@
                         }
                     });
 
+                    $.post('{{ route('frontend.notification.rejected_applications') }}', { _token : $('meta[name="_token"]').attr('content') }, function(data){
+                        if ( data.length ) {
+                            that.rejected_applications = data;
+                        }
+                    });
+
                     // Listening to the socket
                     socket.on('user.{{ auth()->user()->id }}:employerchat-received', function(data){
                         that.unread_messages.push(data.message_details)
                     });
 
+                },
+
+                methods: {
+                    mark_rejected_applications_read: function(){
+                        $.post('{{ route('frontend.notification.rejected_applications_mark_read') }}', { _token : $('meta[name="_token"]').attr('content') }, function(data){
+
+                        });
+                    }
                 }
             });
 

@@ -19,6 +19,8 @@ class CreateJobApplicationsTable extends Migration
             $table->timestamp('accepted_at')->nullable();
             $table->integer('accepted_by')->nullable();
             $table->timestamp('declined_at')->nullable();
+            $table->integer('declined_by')->nullable();
+            $table->timestamp('declined_viewed_at')->nullable();
             $table->timestamps();
 
             $table->foreign('job_id')

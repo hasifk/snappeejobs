@@ -20,7 +20,16 @@ trait JobApplicationAttribute
     }
 
     public function getActionButtonsAttribute() {
-        return $this->getViewtButtonAttribute().$this->getAcceptButtonAttribute().
-        $this->getDeclinePasswordButtonAttribute();
+        return $this->getViewtButtonAttribute();
+    }
+
+    public function getStatusAttribute(){
+        if ( is_null($this->accepted_at) && $this->declined_at ) {
+            return 'Rejected';
+        } else if ( is_null($this->declined_at) && $this->accepted_at ) {
+            return 'Accepted';
+        } else {
+            return 'Not decided';
+        }
     }
 }

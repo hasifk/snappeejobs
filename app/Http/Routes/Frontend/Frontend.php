@@ -36,6 +36,8 @@ $router->group(['middleware' => 'auth'], function ()
 	post('profile/preferences', 'ProfileController@savePreferences')->name('frontend.profile.preferences');
 	post('profile/resendConfirmation', 'ProfileController@resendConfirmation')->name('frontend.profile.resend_confirmation');
 	post('profile/unreadchats', 'ProfileController@unreadchats')->name('frontend.notification.unreadchats');
+	post('profile/rejected_applications', 'ProfileController@rejected_applications')->name('frontend.notification.rejected_applications');
+	post('profile/rejected_applications_mark_read', 'ProfileController@rejected_applications_mark_read')->name('frontend.notification.rejected_applications_mark_read');
 	get('messages', 'ProfileController@messages')->name('frontend.messages');
 	get('message/{id}', 'ProfileController@viewThread')->name('frontend.message');
 	post('message/reply/{id}', 'ProfileController@replyThread')->name('frontend.message.reply');

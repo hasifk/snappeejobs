@@ -28,6 +28,34 @@
 						<li>{!! link_to('auth/register', trans('navs.register')) !!}</li>
 					@else
 
+						<li v-cloak v-if="rejected_applications.length" class="dropdown messages-menu">
+							<a v-on:click="mark_rejected_applications_read" href="#" class="dropdown-toggle" data-toggle="dropdown">
+								<i class="fa fa-exclamation"></i>
+								<span v-cloak class="label label-success">@{{ rejected_applications.length }}</span>
+							</a>
+							<ul class="dropdown-menu">
+								<li class="header">You have @{{ rejected_applications.length }} job interests rejected</li>
+								<li>
+									<ul class="menu">
+										<li v-for="rejected_application in rejected_applications | orderBy 'created_at' rejected_applications_order">
+											<a href="#">
+												<div class="pull-left">
+													<!-- User Image -->
+													<img src="@{{ rejected_application.image }}" class="img-circle" alt="User Image"/>
+												</div>
+												<!-- Message title and timestamp -->
+												<p>
+													@{{ rejected_application.message }}
+													<br>
+													<small><i class="fa fa-clock-o"></i> @{{ rejected_application.was_created }}</small>
+												</p>
+											</a>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+
 						<li v-cloak v-if="unread_messages.length" class="dropdown messages-menu">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 								<i class="fa fa-envelope-o"></i>

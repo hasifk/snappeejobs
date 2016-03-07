@@ -4,7 +4,7 @@
 
 @section('page-header')
     <h1>
-        Add New Job
+        Job Applications
     </h1>
 @endsection
 
@@ -22,6 +22,7 @@
         <tr>
             <th>Job</th>
             <th>JobSeeker</th>
+            <th>Status</th>
             <th>{{ trans('crud.actions') }}</th>
         </tr>
         </thead>
@@ -30,6 +31,7 @@
             <tr>
                 <td>{{ $jobapplication->job->title }}</td>
                 <td>{{ $jobapplication->jobseeker->name }}</td>
+                <td>{{ $jobapplication->status }}</td>
                 <td>{!! $jobapplication->action_buttons !!}</td>
             </tr>
         @endforeach

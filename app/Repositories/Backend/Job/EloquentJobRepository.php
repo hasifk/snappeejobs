@@ -86,7 +86,7 @@ class EloquentJobRepository {
 	}
 
 	public function getJobApplications($per_page){
-		return JobApplication
+		$job_applications = JobApplication
 			::join('jobs', 'jobs.id', '=', 'job_applications.job_id')
 			->where('company_id', $this->companyId)
 			->where(function($query){
@@ -94,7 +94,16 @@ class EloquentJobRepository {
 					  ->orWhereNull('job_applications.declined_at');
 			})
 			->with(['job', 'jobseeker'])
+			->select([
+				'job_applications.id',
+				'job_applications.job_id',
+				'job_applications.user_id',
+				'job_applications.accepted_at',
+				'job_applications.declined_at'
+			])
 			->paginate($per_page);
+
+		return $job_applications;
 	}
 
 	public function getJobApplication($id){

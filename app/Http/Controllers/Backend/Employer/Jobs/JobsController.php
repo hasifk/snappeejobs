@@ -276,7 +276,15 @@ class JobsController extends Controller
 
     public function declineJobApplication(Requests\Backend\Employer\Job\DeclineJobApplicationRequest $request, $id){
 
-        dd($request->all());
+        $jobApplication = JobApplication::find($id);
+
+        $jobApplication->declined_by = auth()->user()->id;
+        $jobApplication->declined_at = Carbon::now();
+
+        $jobApplication->save();
+
+        return redirect(route('admin.employer.jobs.applications'))
+            ->withFlashSuccess('The jobseeker was notified about the job refusal');
 
     }
 

@@ -500,7 +500,7 @@ class ProfileController extends Controller {
 				'thread_participants.read_at',
 			])
 			->orderBy('threads.updated_at', 'desc')
-			->first();
+			->get();
 
 		if ( $unread_messages ) {
 			foreach ($unread_messages as $key => $unread_message) {
@@ -511,6 +511,46 @@ class ProfileController extends Controller {
 		}
 
 		return response()->json($unread_messages);
+	}
+
+	public function rejected_applications(){
+		$rejected_applications = \DB::table('job_applications')
+			->whereNull('job_applications.declined_viewed_at')
+			->whereNotNull('job_applications.declined_at')
+			->where('job_applications.user_id', auth()->user()->id)
+			->orderBy('job_applications.updated_at')
+			->select([
+				'job_applications.id',
+				'job_applications.job_id',
+				'job_applications.declined_at',
+				'job_applications.declined_by'
+			])
+			->orderBy('job_applications.updated_at', 'desc')
+			->get();
+
+		if ( $rejected_applications ) {
+			foreach ($rejected_applications as $key => $rejected_application) {
+				$company_id = \DB::table('jobs')->where('id', $rejected_application->job_id)->value('company_id');
+				$company_title = \DB::table('companies')->where('id', $company_id)->value('title');
+				$rejected_applications[$key]->{'message'} = $company_title." rejected your application";
+				$rejected_applications[$key]->{'image'} = User::find($rejected_application->declined_by)->picture;
+				$rejected_applications[$key]->{'was_created'} = Carbon::parse($rejected_application->declined_at)->diffForHumans();
+			}
+		}
+
+		return response()->json($rejected_applications);
+	}
+
+	public function rejected_applications_mark_read(){
+		\DB::table('job_applications')
+			->whereNull('job_applications.declined_viewed_at')
+			->whereNotNull('job_applications.declined_at')
+			->where('job_applications.user_id', auth()->user()->id)
+			->update([
+				'declined_viewed_at' => Carbon::now()
+			]);
+
+		return response()->json(['status' => 1]);
 	}
 	
 	public function messages(EloquentMailRepository $mailRepository){

@@ -130,24 +130,10 @@
                 @endauth
 
                 @roles(['Employer'])
-                  @permission('employer-settings')
-                    <li class="{{ Active::pattern('admin/employer/settings/dashboard') }}">
-                      <a href="{!!url('admin/employer/settings/dashboard')!!}">
-                        <i class="fa fa-cog"></i>
-                        <span>
-                          Settings
-                        </span>
-                      </a>
-                    </li>
-                  @endauth
-                @endauth
-
-
-                @roles(['Employer'])
                 @permission('employer-settings')
                 <li class="{{ Active::pattern('admin/jobseekers/*') }}">
                   <a href="{!!url(route('backend.employerjobseekers'))!!}">
-                    <i class="fa fa-cog"></i>
+                    <i class="fa fa-suitcase"></i>
                         <span>
                           Jobseekers
                         </span>
@@ -184,6 +170,19 @@
                       </ul>
                     </li>
                   @endauth
+                @endauth
+
+                @roles(['Employer'])
+                @permission('employer-settings')
+                <li class="{{ Active::pattern('admin/employer/settings/dashboard') }}">
+                  <a href="{!!url('admin/employer/settings/dashboard')!!}">
+                    <i class="fa fa-cog"></i>
+                        <span>
+                          Settings
+                        </span>
+                  </a>
+                </li>
+                @endauth
                 @endauth
 
                  <li class="{{ Active::pattern('admin/log-viewer*') }} treeview">

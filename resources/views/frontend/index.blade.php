@@ -1,225 +1,31 @@
 @extends('frontend.layouts.master')
 
 @section('content')
-	<div class="row">
+    <div class="row">
 
-		<div class="col-md-10 col-md-offset-1">
+        <div class="col-md-10 col-md-offset-1">
 
-			<div class="panel panel-default">
-				<div class="panel-heading"><i class="fa fa-home"></i> {{ trans('navs.home') }}</div>
+            <div class="panel panel-default">
+                <div class="panel-heading"><i class="fa fa-home"></i> {{ trans('navs.home') }}</div>
 
-				<div class="panel-body">
-					{{ trans('strings.welcome_to', ['place' => app_name()]) }}
-				</div>
-			</div><!-- panel -->
+                <div class="panel-body">
+                    {{ trans('strings.welcome_to', ['place' => app_name()]) }}
+                </div>
+            </div><!-- panel -->
 
-		</div><!-- col-md-10 -->
-
-        <div role="tabpanel" class="tab-pane">
-        @if (count($pref_jobs_landing) > 0)
-            @foreach($pref_jobs_landing as $job)
+        </div><!-- col-md-10 -->
 
 
+        <div class="col-md-10 col-md-offset-1">
 
-                        <div class="job-card">
-                            <div class="row">
-                                <div class="col-md-12 heading">
-                                    <a href="{{ route('jobs.view' , [ $job->company->url_slug , $job->title_url_slug ] ) }}">{{ $job->title }}</a>
-                                </div>
-                                <div class="col-md-12">
+            <div
+                    v-cloak
+                    v-show="!registered || !resumeUploaded || !preferencesSaved"
+                    v-bind:class="{ 'panel-default' : !registered, 'panel' : !registered }"
+                    class="homepage-modal panel panel-default"
+            >
 
-                                </div>
-                                <div class="col-md-12 sub-heading">
-                                    <a href="{{ route('companies.view', ['slug' => $job->company->url_slug]) }}">
-                                        {{ str_studly($job->company->title) }}
-                                    </a>
-                                    <br>
-                            <span class="label label-danger">
-                                <a href="{{ route('jobs.search', ['level' => $job->level]) }}">
-                                    {{ str_studly($job->level) }}
-                                </a>
-                            </span>
-                                </div>
-                                <hr>
-                                <div class="col-md-12">
-                                    @foreach($job->categories as $category)
-                                        <div class="label label-info">
-                                            <a href="{{ route('jobs.search', ['category' => $category->id]) }}">
-                                                {{ $category->name }}
-                                            </a>
-                                        </div>
-                                    @endforeach
-                                </div>
-                                <hr>
-                                <div class="col-md-12">
-                                    @foreach($job->skills as $skill)
-                                        <div class="label label-success">
-                                            <a href="{{ route('jobs.search', ['skill' => $skill->id]) }}">
-                                                {{ $skill->name }}
-                                            </a>
-                                        </div>
-                                    @endforeach
-                                </div>
-                                <div class="col-md-12">
-                                    <div for="" class="label label-info">
-                                        <a href="{{ route('jobs.search', ['country' => $job->country_id]) }}">
-                                            {{ $job->country->name }}
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <div for="" class="label label-info">
-                                        <a href="{{ route('jobs.search', ['state' => $job->state_id]) }}">
-                                            {{ $job->state->name }}
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-            @endforeach
-           @endif
-        </div>
-
-		@role('Administrator')
-            {{-- You can also send through the Role ID --}}
-
-		    <div class="col-md-10 col-md-offset-1">
-
-                <div class="panel panel-default">
-                    <div class="panel-heading"><i class="fa fa-home"></i> {{ trans('strings.based_on.role') . trans('strings.using_blade_extensions') }}</div>
-
-                    <div class="panel-body">
-                        {{ trans('strings.test') . ' 1: ' . trans('strings.you_can_see_because', ['role' => trans('roles.administrator')]) }}
-                    </div>
-                </div><!-- panel -->
-
-            </div><!-- col-md-10 -->
-		@endauth
-
-		@if (access()->hasRole('Administrator'))
-		    <div class="col-md-10 col-md-offset-1">
-
-                <div class="panel panel-default">
-                    <div class="panel-heading"><i class="fa fa-home"></i> {{ trans('strings.based_on.role') . trans('strings.using_access_helper.role_name') }}</div>
-
-                    <div class="panel-body">
-                        {{ trans('strings.test') . ' 2: ' . trans('strings.you_can_see_because', ['role' => trans('roles.administrator')]) }}
-                    </div>
-                </div><!-- panel -->
-
-            </div><!-- col-md-10 -->
-		@endif
-
-		@if (access()->hasRole(1))
-            <div class="col-md-10 col-md-offset-1">
-
-                <div class="panel panel-default">
-                    <div class="panel-heading"><i class="fa fa-home"></i> {{ trans('strings.based_on.role') . trans('strings.using_access_helper.role_id') }}</div>
-
-                    <div class="panel-body">
-                        {{ trans('strings.test') . ' 3: ' . trans('strings.you_can_see_because', ['role' => trans('roles.administrator')]) }}
-                    </div>
-                </div><!-- panel -->
-
-            </div><!-- col-md-10 -->
-        @endif
-
-        @if (access()->hasRoles(['Administrator', 1]))
-            <div class="col-md-10 col-md-offset-1">
-
-                <div class="panel panel-default">
-                    <div class="panel-heading"><i class="fa fa-home"></i> {{ trans('strings.based_on.role') . trans('strings.using_access_helper.array_roles_not') }}</div>
-
-                    <div class="panel-body">
-                        {{ trans('strings.test') . ' 4: ' . trans('strings.you_can_see_because', ['role' => trans('roles.administrator')]) }}
-                    </div>
-                </div><!-- panel -->
-
-            </div><!-- col-md-10 -->
-        @endif
-
-        {{-- The second parameter says the user must have all the roles specified. Administrator does not have the role with an id of 2, so this will not show. --}}
-        @if (access()->hasRoles(['Administrator', 2], true))
-            <div class="col-md-10 col-md-offset-1">
-
-                <div class="panel panel-default">
-                    <div class="panel-heading"><i class="fa fa-home"></i> {{ trans('strings.based_on.role') . trans('strings.using_access_helper.array_roles') }}</div>
-
-                    <div class="panel-body">
-                        {{ trans('strings.you_can_see_because', ['role' => trans('roles.administrator')]) }}
-                    </div>
-                </div><!-- panel -->
-
-            </div><!-- col-md-10 -->
-        @endif
-
-        @permission('view-backend')
-            <div class="col-md-10 col-md-offset-1">
-
-                <div class="panel panel-default">
-                    <div class="panel-heading"><i class="fa fa-home"></i> {{ trans('strings.based_on.permission') . trans('strings.using_access_helper.permission_name') }}</div>
-
-                    <div class="panel-body">
-                        {{ trans('strings.test') . ' 5: ' . trans('strings.you_can_see_because_permission', ['permission' => 'view-backend']) }}
-                    </div>
-                </div><!-- panel -->
-
-            </div><!-- col-md-10 -->
-        @endauth
-
-        @if (access()->hasPermission(1))
-            <div class="col-md-10 col-md-offset-1">
-
-                <div class="panel panel-default">
-                    <div class="panel-heading"><i class="fa fa-home"></i> {{ trans('strings.based_on.permission') . trans('strings.using_access_helper.permission_id') }}</div>
-
-                    <div class="panel-body">
-                        {{ trans('strings.test') . ' 6: ' . trans('strings.you_can_see_because_permission', ['permission' => 'view_backend']) }}
-                    </div>
-                </div><!-- panel -->
-
-            </div><!-- col-md-10 -->
-        @endif
-
-        @if (access()->hasPermissions(['view-backend', 1]))
-            <div class="col-md-10 col-md-offset-1">
-
-                <div class="panel panel-default">
-                    <div class="panel-heading"><i class="fa fa-home"></i> {{ trans('strings.based_on.permission') . trans('strings.using_access_helper.array_permissions_not') }}</div>
-
-                    <div class="panel-body">
-                        {{ trans('strings.test') . ' 7: ' . trans('strings.you_can_see_because_permission', ['permission' => 'view_backend']) }}
-                    </div>
-                </div><!-- panel -->
-
-            </div><!-- col-md-10 -->
-        @endif
-
-        @if (access()->hasPermissions(['view-backend', 2], true))
-            <div class="col-md-10 col-md-offset-1">
-
-                <div class="panel panel-default">
-                    <div class="panel-heading"><i class="fa fa-home"></i> {{ trans('strings.based_on.permission') . trans('strings.using_access_helper.array_permissions') }}</div>
-
-                    <div class="panel-body">
-                        {{ trans('strings.you_can_see_because_permission', ['permission' => 'view_backend']) }}
-                    </div>
-                </div><!-- panel -->
-
-            </div><!-- col-md-10 -->
-        @endif
-
-            <div class="col-md-10 col-md-offset-1">
-
-                <div
-                        v-cloak
-                        v-show="!registered || !resumeUploaded || !preferencesSaved"
-                        v-bind:class="{ 'panel-default' : !registered, 'panel' : !registered }"
-                        class="homepage-modal panel panel-default"
-                >
-
-                    @if( auth()->guest() )
+                @if( auth()->guest() )
 
                     <div class="panel-heading">
                         <h1>DO YOU LOVE YOUR CAREER?</h1>
@@ -249,7 +55,7 @@
 
                     @endif
 
-                    <!-- Modal Body -->
+                            <!-- Modal Body -->
                     <div class="modal" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
@@ -310,19 +116,19 @@
                                             <div class="col-lg-6">
                                                 <div class="checkbox">
                                                     <input v-model="gender"
-                                                            type="radio"
-                                                            name="gender"
-                                                            id="gender_male"
-                                                            value="male"
+                                                           type="radio"
+                                                           name="gender"
+                                                           id="gender_male"
+                                                           value="male"
                                                     />
                                                     <label for="gender_male">Male</label>
                                                 </div>
                                                 <div class="checkbox">
                                                     <input v-model="gender"
-                                                            type="radio"
-                                                            name="gender"
-                                                            id="gender_female"
-                                                            value="female"
+                                                           type="radio"
+                                                           name="gender"
+                                                           id="gender_female"
+                                                           value="female"
                                                     />
                                                     <label for="gender_female">Female</label>
                                                 </div>
@@ -527,226 +333,344 @@
                     </div>
                     <!-- Modal Body -->
 
+            </div>
+
+        </div>
+
+
+        <div class="container">
+
+            <div class="row">
+
+                <div class="col-md-10 col-offset-1">
+
+                    @if(count($pref_jobs_landing))
+
+                        @foreach($pref_jobs_landing as $job)
+
+                            <div class="col-md-4">
+                                <div class="job-card">
+                                    <div class="row">
+                                        <div class="col-md-12 heading">
+                                            <a href="{{ route('jobs.view' , [ $job->company->url_slug , $job->title_url_slug ] ) }}">{{ $job->title }}</a>
+                                        </div>
+                                        <div class="col-md-12">
+
+                                        </div>
+                                        <div class="col-md-12 sub-heading">
+                                            <a href="{{ route('companies.view', ['slug' => $job->company->url_slug]) }}">
+                                                {{ str_studly($job->company->title) }}
+                                            </a>
+                                            <br>
+                                <span class="label label-danger">
+                                    <a href="{{ route('jobs.search', ['level' => $job->level]) }}">
+                                        {{ str_studly($job->level) }}
+                                    </a>
+                                </span>
+                                        </div>
+                                        <hr>
+                                        <div class="col-md-12">
+                                            @foreach($job->categories as $category)
+                                                <div class="label label-info">
+                                                    <a href="{{ route('jobs.search', ['category' => $category->id]) }}">
+                                                        {{ $category->name }}
+                                                    </a>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <hr>
+                                        <div class="col-md-12">
+                                            @foreach($job->skills as $skill)
+                                                <div class="label label-success">
+                                                    <a href="{{ route('jobs.search', ['skill' => $skill->id]) }}">
+                                                        {{ $skill->name }}
+                                                    </a>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div for="" class="label label-info">
+                                                <a href="{{ route('jobs.search', ['country' => $job->country_id]) }}">
+                                                    {{ $job->country->name }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div for="" class="label label-info">
+                                                <a href="{{ route('jobs.search', ['state' => $job->state_id]) }}">
+                                                    {{ $job->state->name }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        @endforeach
+
+                    @elseif(count($jobs_landing))
+                        @foreach($jobs_landing as $job)
+
+
+                            <div class="col-md-4">
+                                <div class="job-card">
+                                    <div class="row">
+                                        <div class="col-md-12 heading">
+                                            <a href="{{ route('jobs.view' , [ $job->company->url_slug , $job->title_url_slug ] ) }}">{{ $job->title }}</a>
+                                        </div>
+                                        <div class="col-md-12">
+
+                                        </div>
+                                        <div class="col-md-12 sub-heading">
+                                            <a href="{{ route('companies.view', ['slug' => $job->company->url_slug]) }}">
+                                                {{ str_studly($job->company->title) }}
+                                            </a>
+                                            <br>
+                                <span class="label label-danger">
+                                    <a href="{{ route('jobs.search', ['level' => $job->level]) }}">
+                                        {{ str_studly($job->level) }}
+                                    </a>
+                                </span>
+                                        </div>
+                                        <hr>
+                                        <div class="col-md-12">
+                                            @foreach($job->categories as $category)
+                                                <div class="label label-info">
+                                                    <a href="{{ route('jobs.search', ['category' => $category->id]) }}">
+                                                        {{ $category->name }}
+                                                    </a>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <hr>
+                                        <div class="col-md-12">
+                                            @foreach($job->skills as $skill)
+                                                <div class="label label-success">
+                                                    <a href="{{ route('jobs.search', ['skill' => $skill->id]) }}">
+                                                        {{ $skill->name }}
+                                                    </a>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div for="" class="label label-info">
+                                                <a href="{{ route('jobs.search', ['country' => $job->country_id]) }}">
+                                                    {{ $job->country->name }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div for="" class="label label-info">
+                                                <a href="{{ route('jobs.search', ['state' => $job->state_id]) }}">
+                                                    {{ $job->state->name }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        @endforeach
+                    @endif
+
                 </div>
 
             </div>
 
-	</div>
+        </div>
+
+    </div>
 
 
 @endsection
 
 @section('after-scripts-end')
 
-	<script>
-
-            Dropzone.autoDiscover = false
-
-            var homeRegisterApp = new Vue({
-                el: '.homepage-modal',
-
-                data: {
-                    modalHeading            : 'Complete your registration here',
-                    name                    : '',
-                    email                   : '',
-                    password                : '',
-                    password_confirmation   : '',
-                    gender                  : '',
-                    dob                     : '',
-                    country_id              : '',
-                    state_id                : '',
-                    errors                  : [],
-                    user                    : {},
-                    registered              : {{ auth()->guest() ? "false" : "true" }},
-                    confirmed               : {{ auth()->user() && auth()->user()->confirmed ? "true" : "false" }},
-                    avatarUploaded          : {{ auth()->user() && auth()->user()->avatar_filename ? "true" : "false" }},
-                    resumeUploaded          : {{ auth()->user() && auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->has_resume ? "true" : "false" }},
-                    industries              : [],
-                    skills                  : [],
-                    job_categories          : [],
-                    size                    : '',
-                    preferencesSaved        : {{ auth()->user() && auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->preferences_saved ? "true" : "false" }},
+    <script>
+        Dropzone.autoDiscover = false
+        var homeRegisterApp = new Vue({
+            el: '.homepage-modal',
+            data: {
+                modalHeading            : 'Complete your registration here',
+                name                    : '',
+                email                   : '',
+                password                : '',
+                password_confirmation   : '',
+                gender                  : '',
+                dob                     : '',
+                country_id              : '',
+                state_id                : '',
+                errors                  : [],
+                user                    : {},
+                registered              : {{ auth()->guest() ? "false" : "true" }},
+                confirmed               : {{ auth()->user() && auth()->user()->confirmed ? "true" : "false" }},
+                avatarUploaded          : {{ auth()->user() && auth()->user()->avatar_filename ? "true" : "false" }},
+                resumeUploaded          : {{ auth()->user() && auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->has_resume ? "true" : "false" }},
+                industries              : [],
+                skills                  : [],
+                job_categories          : [],
+                size                    : '',
+                preferencesSaved        : {{ auth()->user() && auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->preferences_saved ? "true" : "false" }},
+            },
+            methods: {
+                showModal: function(event){
+                    event.preventDefault();
+                    $("#registrationModal").modal();
                 },
-
-                methods: {
-                    showModal: function(event){
-                        event.preventDefault();
-                        $("#registrationModal").modal();
-                    },
-
-                    validateRegistration: function(event){
-                        $(event.target).button('loading');
-                        var that = this;
-
-                        $.post( "{{ route('frontend.access.validate') }}", this.$data, function(data){
-
-                            $(event.target).button('reset');
-                            that.user = data.user;
-                            that.registered = true;
-                            that.errors = [];
-                            that.modalHeading = 'Please upload your profile image';
-                            that.enableProfileImageUploadDropZone();
-
-                        }).error(function(err, data){
-                            var errorArray = [];
-                            for(var key in err.responseJSON) {
-                                var error = err.responseJSON[key];
-                                error.forEach(function(element, index){
-                                    errorArray.push(error[index]);
-                                });
-                            }
-                            that.errors = errorArray;
-                            $(event.target).button('reset');
-                        });
-
-                    },
-
-                    enableProfileImageUploadDropZone: function(){
-
-                        var that = this;
-
-                        $("#upload-profile-image").addClass('dropzone').dropzone({
-                            url: "{{ route('frontend.profileimage.update') }}",
-                            dictDefaultMessage: 'Drag your profile image here or Click to upload.',
-                            paramName: "file",
-                            maxFilesize: 5,
-                            accept: function (file, done) {
-                                if (
-                                        ( file.type == 'image/png' ) ||
-                                        ( file.type == 'image/jpg' ) ||
-                                        ( file.type == 'image/jpeg' ) ||
-                                        ( file.type == 'image/bmp' )
-                                ) {
-                                    done();
-                                } else {
-                                    alert('Please upload an image file')
-                                }
-                            },
-                            sending: function (file, xhr, data) {
-                                data.append('_token', $('meta[name="_token"]').attr('content'));
-                            },
-                            success: function (file, xhr) {
-                                that.modalHeading = 'Please upload your resume now';
-                                that.avatarUploaded = true;
-                                that.enableResumeUploadDropZone();
-                            }
-                        });
-                    },
-
-                    enableResumeUploadDropZone: function(){
-
-                        var that = this;
-
-                        $("#upload-resume").addClass('dropzone').dropzone({
-                            url: "{{ route('frontend.profile.resume') }}",
-                            dictDefaultMessage: 'Drag your resume file here or Click to upload.',
-                            paramName: "file",
-                            maxFilesize: 5,
-                            accept: function (file, done) {
-                                if (
-                                        ( file.type == 'application/msword' ) ||
-                                        ( file.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ) ||
-                                        ( file.type == 'application/pdf' ) ||
-                                        ( file.type == 'application/kswps' )
-                                ) {
-                                    done();
-                                } else {
-                                    alert('Please upload doc/docx/pdf files')
-                                }
-                            },
-                            sending: function (file, xhr, data) {
-                                data.append('_token', $('meta[name="_token"]').attr('content'));
-                            },
-                            success: function (file, xhr) {
-                                that.modalHeading = 'One more step, fill in your skills and job categories';
-                                that.resumeUploaded = true;
-                            }
-                        });
-                    },
-
-                    submitPreferences: function(event){
-                        $(event.target).button('loading');
-                        var that = this;
-                        $.post( "{{ route('frontend.profile.preferences') }}",
-                                {
-                                    industries      : $('select#industries').select2().val(),
-                                    skills          : $('select#skills').select2().val(),
-                                    job_categories  : $('select#job_categories').select2().val(),
-                                    size            : $('input[type=radio][name=size]:checked').val()
-                                },
-                                function(data){
-                                    $(event.target).button('reset');
-                                    that.preferencesSaved = true;
-                                    that.errors = [];
-                                    that.modalHeading = '';
-                                    setTimeout(function () {
-                                        $("#registrationModal").modal('toggle');
-                                        location.href = '{{ route('frontend.dashboard') }}'+"?confirmed=false";
-                                    }, 1);
-                                }).error(function(err, data){
-                            var errorArray = [];
-                            for(var key in err.responseJSON) {
-                                var error = err.responseJSON[key];
-                                error.forEach(function(element, index){
-                                    errorArray.push(error[index]);
-                                });
-                            }
-                            that.errors = errorArray;
-                            $(event.target).button('reset');
-                        });
-                    }
-                }
-            });
-
-            @if( auth()->user() && access()->hasRole('User') )
-
-                    @if( auth()->user()->avatar_filename )
-
-                        @if(
-                            auth()->user()->job_seeker_details &&
-                            auth()->user()->job_seeker_details->has_resume
-                            )
-                            homeRegisterApp.resumeUploaded = true;
-    
-                            @if(
-                                auth()->user()->job_seeker_details &&
-                                auth()->user()->job_seeker_details->preferences_saved
-                                )
-                                homeRegisterApp.preferencesSaved = true;
-                            @else
-                                homeRegisterApp.modalHeading = "Please save your preferences";
-                                $("#registrationModal").modal();
-                            @endif
-    
-                        @else
-                            homeRegisterApp.modalHeading = "Please upload your resume";
-                            homeRegisterApp.registered = true;
-                            homeRegisterApp.enableResumeUploadDropZone();
-                            $("#registrationModal").modal();
-                        @endif
-                        
-                    @else
-
-                        homeRegisterApp.modalHeading = "Please upload your profile image";
-                        homeRegisterApp.registered = true;
-                        homeRegisterApp.enableProfileImageUploadDropZone();
-                        $("#registrationModal").modal();
-                        
-                    @endif
-            @endif
-
-            $('#country_id').on('change', function(){
-                $.getJSON('/get-states/'+$(this).val(), function(json){
-                    var listitems = '<option value="">Please select</option>';
-                    $.each(json,function(key, value)
-                    {
-                        listitems += '<option value=' + value.id + '>' + value.name + '</option>';
+                validateRegistration: function(event){
+                    $(event.target).button('loading');
+                    var that = this;
+                    $.post( "{{ route('frontend.access.validate') }}", this.$data, function(data){
+                        $(event.target).button('reset');
+                        that.user = data.user;
+                        that.registered = true;
+                        that.errors = [];
+                        that.modalHeading = 'Please upload your profile image';
+                        that.enableProfileImageUploadDropZone();
+                    }).error(function(err, data){
+                        var errorArray = [];
+                        for(var key in err.responseJSON) {
+                            var error = err.responseJSON[key];
+                            error.forEach(function(element, index){
+                                errorArray.push(error[index]);
+                            });
+                        }
+                        that.errors = errorArray;
+                        $(event.target).button('reset');
                     });
-                    $('#state_id').html(listitems);
+                },
+                enableProfileImageUploadDropZone: function(){
+                    var that = this;
+                    $("#upload-profile-image").addClass('dropzone').dropzone({
+                        url: "{{ route('frontend.profileimage.update') }}",
+                        dictDefaultMessage: 'Drag your profile image here or Click to upload.',
+                        paramName: "file",
+                        maxFilesize: 5,
+                        accept: function (file, done) {
+                            if (
+                                    ( file.type == 'image/png' ) ||
+                                    ( file.type == 'image/jpg' ) ||
+                                    ( file.type == 'image/jpeg' ) ||
+                                    ( file.type == 'image/bmp' )
+                            ) {
+                                done();
+                            } else {
+                                alert('Please upload an image file')
+                            }
+                        },
+                        sending: function (file, xhr, data) {
+                            data.append('_token', $('meta[name="_token"]').attr('content'));
+                        },
+                        success: function (file, xhr) {
+                            that.modalHeading = 'Please upload your resume now';
+                            that.avatarUploaded = true;
+                            that.enableResumeUploadDropZone();
+                        }
+                    });
+                },
+                enableResumeUploadDropZone: function(){
+                    var that = this;
+                    $("#upload-resume").addClass('dropzone').dropzone({
+                        url: "{{ route('frontend.profile.resume') }}",
+                        dictDefaultMessage: 'Drag your resume file here or Click to upload.',
+                        paramName: "file",
+                        maxFilesize: 5,
+                        accept: function (file, done) {
+                            if (
+                                    ( file.type == 'application/msword' ) ||
+                                    ( file.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ) ||
+                                    ( file.type == 'application/pdf' ) ||
+                                    ( file.type == 'application/kswps' )
+                            ) {
+                                done();
+                            } else {
+                                alert('Please upload doc/docx/pdf files')
+                            }
+                        },
+                        sending: function (file, xhr, data) {
+                            data.append('_token', $('meta[name="_token"]').attr('content'));
+                        },
+                        success: function (file, xhr) {
+                            that.modalHeading = 'One more step, fill in your skills and job categories';
+                            that.resumeUploaded = true;
+                        }
+                    });
+                },
+                submitPreferences: function(event){
+                    $(event.target).button('loading');
+                    var that = this;
+                    $.post( "{{ route('frontend.profile.preferences') }}",
+                            {
+                                industries      : $('select#industries').select2().val(),
+                                skills          : $('select#skills').select2().val(),
+                                job_categories  : $('select#job_categories').select2().val(),
+                                size            : $('input[type=radio][name=size]:checked').val()
+                            },
+                            function(data){
+                                $(event.target).button('reset');
+                                that.preferencesSaved = true;
+                                that.errors = [];
+                                that.modalHeading = '';
+                                setTimeout(function () {
+                                    $("#registrationModal").modal('toggle');
+                                    location.href = '{{ route('frontend.dashboard') }}'+"?confirmed=false";
+                                }, 1);
+                            }).error(function(err, data){
+                        var errorArray = [];
+                        for(var key in err.responseJSON) {
+                            var error = err.responseJSON[key];
+                            error.forEach(function(element, index){
+                                errorArray.push(error[index]);
+                            });
+                        }
+                        that.errors = errorArray;
+                        $(event.target).button('reset');
+                    });
+                }
+            }
+        });
+        @if( auth()->user() && access()->hasRole('User') )
+                @if( auth()->user()->avatar_filename )
+                @if(
+                    auth()->user()->job_seeker_details &&
+                    auth()->user()->job_seeker_details->has_resume
+                    )
+                homeRegisterApp.resumeUploaded = true;
+
+        @if(
+            auth()->user()->job_seeker_details &&
+            auth()->user()->job_seeker_details->preferences_saved
+            )
+                homeRegisterApp.preferencesSaved = true;
+        @else
+                homeRegisterApp.modalHeading = "Please save your preferences";
+        $("#registrationModal").modal();
+        @endif
+
+                @else
+                homeRegisterApp.modalHeading = "Please upload your resume";
+        homeRegisterApp.registered = true;
+        homeRegisterApp.enableResumeUploadDropZone();
+        $("#registrationModal").modal();
+        @endif
+
+                @else
+                homeRegisterApp.modalHeading = "Please upload your profile image";
+        homeRegisterApp.registered = true;
+        homeRegisterApp.enableProfileImageUploadDropZone();
+        $("#registrationModal").modal();
+
+        @endif
+@endif
+$('#country_id').on('change', function(){
+            $.getJSON('/get-states/'+$(this).val(), function(json){
+                var listitems = '<option value="">Please select</option>';
+                $.each(json,function(key, value)
+                {
+                    listitems += '<option value=' + value.id + '>' + value.name + '</option>';
                 });
+                $('#state_id').html(listitems);
             });
-
-
-
-	</script>
+        });
+    </script>
 @stop

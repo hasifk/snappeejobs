@@ -1,12 +1,15 @@
 <?php namespace App\Repositories\Frontend\Index;
 
 use App\Models\Access\User\User;
+use App\Models\Company\Company;
 use App\Models\Job\Job;
 use App\Models\JobSeeker\JobSeeker;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\DB;
+
 
 /**
  * Class EloquentUserRepository
@@ -80,7 +83,7 @@ class EloquentIndexRepository {
                     ])
                     ->get();
                 $searchObj = $searchObj->merge($searchObj1);
-                //$searchObj=$searchObj->$searchobj1;
+
             }
         }
 
@@ -120,7 +123,7 @@ class EloquentIndexRepository {
 
 
 
-
+/**************************************************************************************/
 
 
 }

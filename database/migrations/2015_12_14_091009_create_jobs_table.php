@@ -25,7 +25,7 @@ class CreateJobsTable extends Migration
             $table->boolean('status');
             $table->boolean('published')->default(false);
             $table->boolean('paid')->default(false);
-            $table->datetime('paid_expiry');
+            $table->datetime('paid_expiry')->default('0000-00-00 00:00:00');
             $table->timestamps();
             $table->softDeletes();
 

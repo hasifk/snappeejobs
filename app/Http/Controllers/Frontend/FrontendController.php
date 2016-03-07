@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\EmployerSignupRequest;
+use App\Models\Job\Job;
+use App\Models\JobSeeker\JobSeeker;
 use App\Repositories\Frontend\User\EloquentUserRepository;
 use DB;
 use Illuminate\Http\Request;
@@ -41,6 +43,21 @@ class FrontendController extends Controller {
 		$skills = \DB::table('skills')->select(['id', 'name'])->get();
 		$job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
 		$countries = \DB::table('countries')->select(['id', 'name'])->get();
+		$jobs_landing=Job::orderBy('likes','desc')->limit(3)->get();
+
+		/*$pref_jobs_landing= DB::table('job_seeker_details')
+
+			->join('category_preferences_job_seeker', 'category_preferences_job_seeker.user_id','=','job_seeker_details.id')
+			->join('category_preferences_jobs', 'category_preferences_jobs.job_category_id','=','category_preferences_job_seeker.job_category_id')
+			->join('jobs', 'jobs.id','=','category_preferences_jobs.job_id')
+			->where('job_seeker_details.id', '=', auth()->user()->job_seeker_details->id)
+			->select([
+				'jobs.*',
+
+			])
+			->get();*/
+
+
 		if ( $request->old('country_id') ) {
 
 			$states = \DB::table('states')
@@ -62,7 +79,9 @@ class FrontendController extends Controller {
 			'skills' 			=> $skills,
 			'job_categories' 	=> $job_categories,
 			'countries' 		=> $countries,
-			'states'    		=> $states
+			'states'    		=> $states,
+			'jobs_landing'    		=> $jobs_landing,
+			/*'pref_jobs_landing'       =>$pref_jobs_landing*/
 		];
 
 		return view('frontend.index', $view);

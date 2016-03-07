@@ -28,7 +28,7 @@ class CreateCompaniesTable extends Migration
             $table->integer('likes')->unsigned();
             $table->boolean('new')->default(true);
             $table->boolean('paid')->default(false);
-            $table->datetime('paid_expiry');
+            $table->datetime('paid_expiry')->default('0000-00-00 00:00:00');
             $table->timestamps();
 
             $table->foreign('employer_id')

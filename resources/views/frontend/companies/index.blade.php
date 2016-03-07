@@ -40,6 +40,7 @@
                                 @endif
                             @endforeach
                         @endif
+
                     </div>
                 </div><!-- panel -->
 
@@ -261,6 +262,7 @@
                 </div>
 
             </div>
+
         </div>
     </div>
 

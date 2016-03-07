@@ -12,6 +12,7 @@
         <!-- Tab panes -->
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane @if(!request()->has('search')) active @endif" id="browse_jobs">
+                @if (count($jobs) > 0)
                 @foreach($jobs as $job)
                      @if($job->paid_expiry > \Carbon\Carbon::now())
 
@@ -74,7 +75,7 @@
                     </div>
                     @endif
                 @endforeach
-
+              @endif
             </div>
             <div role="tabpanel" class="tab-pane @if(request()->has('search')) active @endif" id="search_jobs">
 

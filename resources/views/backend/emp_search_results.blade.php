@@ -21,7 +21,7 @@
 
             <div class="nav-tabs-custom">
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="@if(!request()->has('candidates')) active @endif"><a href="#candidates" aria-controls="candidates" role="tab" data-toggle="tab">Candidates</a></li>
+                    <li role="presentation" class="@if(request()->has('candidates')) active @endif"><a href="#candidates" aria-controls="candidates" role="tab" data-toggle="tab">Candidates</a></li>
                     <li role="presentation" class="@if(request()->has('staffmembers')) active @endif"><a href="#staffmembers" aria-controls="staffmembers" role="tab" data-toggle="tab">Staffmembers</a></li>
                     <li role="presentation" class="@if(request()->has('jobtype')) active @endif"><a href="#jobtype" aria-controls="jobtype" role="tab" data-toggle="tab">Job Types</a></li>
                     <li role="presentation" class="@if(request()->has('jobtitle')) active @endif"><a href="#jobtitle" aria-controls="jobtitle" role="tab" data-toggle="tab">Job Title</a></li>

@@ -46,8 +46,11 @@
                         <div class="col-md-1">
                             <img style="height: 25px; width: 25px;" src="{{ \App\Models\Access\User\User::find($message->sender_id)->picture }}" alt="User">
                         </div>
-                        <div class="col-md-11">
+                        <div class="col-md-9">
                             {!! $message->content !!}
+                        </div>
+                        <div class="col-md-2">
+                            {{ \Carbon\Carbon::parse($message->created_at)->diffForHumans() }}
                         </div>
                     </div>
                 </div>

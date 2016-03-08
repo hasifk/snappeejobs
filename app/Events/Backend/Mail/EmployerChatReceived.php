@@ -25,7 +25,7 @@ class EmployerChatReceived extends Event implements ShouldBroadcast
 
         $latest_message = \DB::table('messages')
             ->where('thread_id', $this->thread->id)
-            ->where('sender_id', $this->thread->employer_id)
+            ->where('sender_id', auth()->user()->id)
             ->orderBy('created_at', 'desc')
             ->skip(0)
             ->take(1)
@@ -34,7 +34,7 @@ class EmployerChatReceived extends Event implements ShouldBroadcast
         $this->message_details = new \stdClass();
 
         $this->message_details->{'last_message'} = str_limit($latest_message, 35);
-        $this->message_details->{'image'} = User::find($this->thread->employer_id)->picture;
+        $this->message_details->{'image'} = User::find(auth()->user()->id)->picture;
         $this->message_details->{'thread_id'} = $thread_id;
         $this->message_details->{'was_created'} = Carbon::parse($this->thread->updated_at)->diffForHumans();
     }

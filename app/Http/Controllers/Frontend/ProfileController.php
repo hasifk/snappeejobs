@@ -9,6 +9,7 @@ use App\Http\Requests\Frontend\Access\ResumeUploadRequest;
 use App\Http\Requests\Frontend\User\JobSeekerReplyMessage;
 use App\Models\Access\User\User;
 use App\Models\JobSeeker\JobSeeker;
+use App\Models\Mail\Thread;
 use App\Repositories\Backend\Mail\EloquentMailRepository;
 use App\Repositories\Frontend\User\UserContract;
 use App\Http\Requests\Frontend\User\UpdateProfileRequest;

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Backend\Employer\Mail;
 
+use App\Events\Frontend\Job\JobSeekerChatReceived;
+use App\Models\Mail\Thread;
 use App\Repositories\Backend\Mail\EloquentMailRepository;
 use Illuminate\Http\Request;
 
@@ -101,6 +103,12 @@ class MailController extends Controller
 
     public function reply(Requests\Backend\Employer\Mail\EmployerMailReplyRequest $request, $thread_id){
         $this->mail->sendReply($request, $thread_id);
+
+        $thread = Thread::find($thread_id);
+
+        if ( $thread->application_id ) {
+            event(new JobSeekerChatReceived($thread->id));
+        }
 
         return redirect()
             ->route('admin.employer.mail.sent')

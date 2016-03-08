@@ -1,10 +1,12 @@
 <?php namespace App\Http\Controllers\Frontend;
 
+use App\Events\Backend\Mail\EmployerChatReceived;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\Access\PreferencesSaveRequest;
 use App\Http\Requests\Frontend\Access\ProfileImagesUploadRequest;
 use App\Http\Requests\Frontend\Access\ProfileVideoUploadRequest;
 use App\Http\Requests\Frontend\Access\ResumeUploadRequest;
+use App\Http\Requests\Frontend\User\JobSeekerReplyMessage;
 use App\Models\Access\User\User;
 use App\Models\JobSeeker\JobSeeker;
 use App\Repositories\Backend\Mail\EloquentMailRepository;
@@ -561,6 +563,20 @@ class ProfileController extends Controller {
 	public function viewThread(EloquentMailRepository $mailRepository, $id){
 	    $thread = $mailRepository->getThread($id);
 		return view('frontend.user.mail.show', [ 'thread' => $thread ]);
+	}
+
+	public function replyThread(JobSeekerReplyMessage $request, EloquentMailRepository $mailRepository, $thread_id){
+		$mailRepository->sendReply($request, $thread_id);
+
+		$thread = Thread::find($thread_id);
+
+		if ( $thread->application_id ) {
+			event(new EmployerChatReceived($thread->id));
+		}
+
+		return redirect()
+			->route('frontend.message', $thread_id)
+			->withFlashSuccess('Successfully sent the reply');
 	}
 
 }

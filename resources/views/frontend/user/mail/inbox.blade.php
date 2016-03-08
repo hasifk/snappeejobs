@@ -43,11 +43,11 @@
                         </td>
                         <td class="mailbox-date">{{ \Carbon\Carbon::parse($thread->updated_at)->diffForHumans() }}</td>
                         <td>
-                            <a href="{{ route('admin.employer.mail.view', $thread->thread_id) }}" class="btn btn-xs btn-info">
+                            <a href="{{ route('frontend.message', $thread->thread_id) }}" class="btn btn-xs btn-info">
                                 <i class="fa fa-eye"></i>
                                 View
                             </a>
-                            <a href="{{ route('admin.employer.mail.destroy', $thread->thread_id) }}" data-method="delete" class="btn btn-xs btn-danger">
+                            <a href="{{ route('frontend.message.destroy', $thread->thread_id) }}" data-method="delete" class="btn btn-xs btn-danger">
                                 <i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="Delete"></i>
                                 Delete
                             </a>

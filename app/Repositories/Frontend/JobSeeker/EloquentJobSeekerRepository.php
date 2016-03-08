@@ -148,11 +148,20 @@ class EloquentJobSeekerRepository {
             ->join('companies', 'companies.id','=','jobs.company_id')
             ->where('job_applications.user_id', '=', $userid)
             ->select([
+                'job_applications.id',
                 'jobs.title',
                 'job_applications.created_at',
+                'job_applications.accepted_at',
+                'job_applications.declined_at',
                 \DB::raw('companies.title AS company_title')
             ])
             ->get();
+
+        if ( $applied ) {
+            foreach ($applied as $key => $item) {
+                $applied[$key]->{'thread_id'} = \DB::table('threads')->where('application_id', $item->id)->value('id');
+            }
+        }
 
         return $applied;
 

@@ -5,6 +5,7 @@ use App\Exceptions\Backend\Access\Employer\Mail\MessageDoesNotBelongToUser;
 use App\Exceptions\Backend\Access\Employer\Settings\SubscriptionPlanException;
 use App\Exceptions\Backend\Company\CompanyNeedDataFilledException;
 use App\Exceptions\Frontend\Job\JobDoesNotExist;
+use App\Exceptions\Frontend\Profile\ThreadDoesNotExists;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -82,6 +83,11 @@ class Handler extends ExceptionHandler {
 		if ($e instanceof CompanyNeedDataFilledException)
 		{
 			return redirect()->route('backend.dashboard')->withInput()->withFlashDanger($e->validationErrors());
+		}
+
+		if ($e instanceof ThreadDoesNotExists)
+		{
+			return redirect()->route('frontend.messages')->withInput()->withFlashDanger($e->validationErrors());
 		}
 
 		//Catch all

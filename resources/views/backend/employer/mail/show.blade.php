@@ -39,12 +39,21 @@
 
             </div>
 
-            @foreach($thread->messages as $message)
-            <div class="mailbox-read-message">
-                {!! $message->content !!}
+            <div class="mail_messages">
+                @foreach($thread->messages as $message)
+                <div class="mailbox-read-message">
+                    <div class="row">
+                        <div class="col-md-1">
+                            <img style="height: 25px; width: 25px;" src="{{ \App\Models\Access\User\User::find($message->sender_id)->picture }}" alt="User">
+                        </div>
+                        <div class="col-md-11">
+                            {!! $message->content !!}
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                @endforeach
             </div>
-            <hr>
-            @endforeach
 
         </div>
         <!-- /.box-footer -->
@@ -74,3 +83,16 @@
 
     <div class="clearfix"></div>
 @stop
+
+
+@section('after-scripts-end')
+    <script>
+
+        $(document).ready(function(){
+            socket.on('user.{{ auth()->user()->id }}:jobseekerchat-received', function(data){
+                $(".mail_messages").append('<div class="mailbox-read-message"><div class="row"><div class="col-md-1"><img style="height: 25px; width: 25px;" src="'+ data.message_details.image +'" alt="User"></div><div class="col-md-9">'+ data.message_details.last_message +'</div><div class="col-md-2">'+ data.message_details.was_created +'</div></div></div><hr>');
+            });
+        });
+
+    </script>
+@endsection

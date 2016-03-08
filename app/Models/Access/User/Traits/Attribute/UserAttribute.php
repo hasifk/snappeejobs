@@ -1,5 +1,6 @@
 <?php namespace App\Models\Access\User\Traits\Attribute;
 
+use App\Models\JobSeeker\JobSeeker;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use DB;
@@ -177,5 +178,25 @@ trait UserAttribute {
 
     public function getAgeAttribute(){
         return Carbon::parse($this->dob)->diffInYears();
+    }
+
+    public function getResumeAttribute(){
+        $jobSeeker = JobSeeker::where('user_id', $this->id)->first();
+        return $this->getFileUrl($jobSeeker->resume_path.$jobSeeker->resume_filename.'.'.$jobSeeker->resume_extension);
+    }
+
+    private function getFileUrl($key) {
+        $s3 = \Storage::disk('s3');
+        $client = $s3->getDriver()->getAdapter()->getClient();
+        $bucket = config('filesystems.disks.s3.bucket');
+
+        $command = $client->getCommand('GetObject', [
+            'Bucket' => $bucket,
+            'Key' => $key
+        ]);
+
+        $request = $client->createPresignedRequest($command, '+10 minutes');
+
+        return (string) $request->getUri();
     }
 }

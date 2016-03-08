@@ -54,10 +54,13 @@
             @endif
 
             @if($job_application->accepted_at)
-                <button class="btn btn-success">Accepted</button> {{ \Carbon\Carbon::parse($job_application->accepted_at)->diffForHumans() }}
 
                 <p>
-                    Resume : Show resume here
+                    <button class="btn">Accepted</button> {{ \Carbon\Carbon::parse($job_application->accepted_at)->diffForHumans() }}
+                </p>
+
+                <p>
+                    Resume : <a href="{{ $job_application->jobseeker->resume }}" class="btn btn-primary">Download</a>
                 </p>
 
             @endif

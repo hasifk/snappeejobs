@@ -15,71 +15,52 @@
 @section('content')
     <div class="row">
 
-
         @roles(['Employer'])
-        <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="@if(!request()->has('candidates')) active @endif"><a href="#candidates" aria-controls="candidates" role="tab" data-toggle="tab">Candidates</a></li>
-            <li role="presentation" class="@if(request()->has('staffmembers')) active @endif"><a href="#staffmembers" aria-controls="staffmembers" role="tab" data-toggle="tab">Staffmembers</a></li>
-            <li role="presentation" class="@if(request()->has('jobtype')) active @endif"><a href="#jobtype" aria-controls="jobtype" role="tab" data-toggle="tab">Job Types</a></li>
-            <li role="presentation" class="@if(request()->has('jobtitle')) active @endif"><a href="#jobtitle" aria-controls="jobtitle" role="tab" data-toggle="tab">Job Title</a></li>
-        </ul>
 
-        {{--<div role="tabpanel" class="tab-pane @if(!request()->has('candidates')) active @endif"id="candidates">
-            @if (count($candidates_info) === 0)
-                no articles found
-            @elseif (count($candidates_info) >= 1)
+        <div class="container">
 
-                @foreach($candidates_info as $candidates_info1)
-                    {{$candidates_info1->name}}
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="@if(!request()->has('candidates')) active @endif"><a href="#candidates" aria-controls="candidates" role="tab" data-toggle="tab">Candidates</a></li>
+                    <li role="presentation" class="@if(request()->has('staffmembers')) active @endif"><a href="#staffmembers" aria-controls="staffmembers" role="tab" data-toggle="tab">Staffmembers</a></li>
+                    <li role="presentation" class="@if(request()->has('jobtype')) active @endif"><a href="#jobtype" aria-controls="jobtype" role="tab" data-toggle="tab">Job Types</a></li>
+                    <li role="presentation" class="@if(request()->has('jobtitle')) active @endif"><a href="#jobtitle" aria-controls="jobtitle" role="tab" data-toggle="tab">Job Title</a></li>
+                </ul>
+            </div>
 
-                @endforeach
-            @endif
-        </div>--}}
+            <div class="tab-content">
 
-        <div role="tabpanel" class="tab-pane @if(!request()->has('staffmembers')) active @endif"id="staffmembers">
-            @if (count($staffinfo) === 0)
-                no articles found
-            @elseif (count($staffinfo) >= 1)
+                <div role="tabpanel" class="tab-pane active" id="staffmembers">
+                    @foreach($staffinfo as $staffinfo1)
+                        {{$staffinfo1->name}}
+                    @endforeach
+                    @unless($staffinfo)
+                        No Staffs found with this search.
+                    @endunless
+                </div>
 
-                @foreach($staffinfo as $staffinfo1)
+                <div role="tabpanel" class="tab-pane @if(request()->has('jobtype')) active @endif" id="jobtype">
+                    @foreach($job_cat_info as $job_cat_info1)
+                        {{$job_cat_info1->title}}
+                        {{$job_cat_info1->name}}
+                    @endforeach
+                    @unless($job_cat_info)
+                        No Job Categories found with this search.
+                    @endunless
+                </div>
 
-                    {{$staffinfo1->name}}
-                @endforeach
-            @endif
+                <div role="tabpanel" class="tab-pane @if(request()->has('jobtitle')) active @endif" id="jobtitle">
+                    @foreach($jobtitle as $jobtitle1)
+                        {{$jobtitle1->title}}
+                    @endforeach
+                    @unless($jobtitle)
+                        No jobs found with this search
+                    @endunless
+                </div>
+
+            </div>
+
         </div>
-
-
-
-        <div role="tabpanel" class="tab-pane @if(!request()->has('jobtype')) active @endif"id="jobtype">
-            @if (count($job_cat_info) === 0)
-                no articles found
-            @elseif (count($job_cat_info) >= 1)
-
-                @foreach($job_cat_info as $job_cat_info1)
-                    {{$job_cat_info1->title}}
-                    {{$job_cat_info1->name}}
-                @endforeach
-            @endif
-        </div>
-
-
-        <div role="tabpanel" class="tab-pane @if(!request()->has('jobtitle')) active @endif"id="jobtitle">
-        @if (count($jobtitle) === 0)
-             no articles found
-        @elseif (count($jobtitle) >= 1)
-
-            @foreach($jobtitle as $jobtitle1)
-               {{$jobtitle1->title}}
-            @endforeach
-        @endif
-        </div>
-
-
-
-
-
-
-
 
         @endauth
 

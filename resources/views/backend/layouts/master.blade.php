@@ -81,6 +81,7 @@
                     socket.on('user.{{ auth()->user()->id }}:jobapplication-received', function(data){
                         that.job_applications.push(data.jobApplication);
                     });
+                    
 
                 }
             });

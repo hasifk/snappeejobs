@@ -77,7 +77,7 @@
         @endauth
 
 
-        @roles(['Employer'])
+        @roles(['Employer', 'Employer Staff'])
 
         <div class="col-lg-3 col-xs-6">
             <!-- small box -->
@@ -138,4 +138,89 @@
         @endauth
 
     </div>
+
+    <div class="row">
+
+        @roles(['Employer', 'Employer Staff'])
+
+
+        @if($employer_notifications)
+        <div class="col-md-6">
+
+            <div class="employer-notitications">
+
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Employer Notifications</h3>
+
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                        </div>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <ul class="products-list product-list-in-box">
+
+                            @foreach($employer_notifications as $employer_notification)
+
+                                <li class="item">
+                                    @if( ($employer_notification->notification_type == 'job_created') || ($employer_notification->notification_type == 'job_updated') || ($employer_notification->notification_type == 'job_deleted') )
+                                        <div style="margin-left: 25px;" class="product-info">
+                                            <a href="#" class="product-title">
+                                                {{ unserialize($employer_notification->details)['job']->title }}
+                                                <span class="label label-warning pull-right">
+                                                {{ ucwords(str_replace('_', " ", $employer_notification->notification_type)) }}
+                                            </span>
+                                            </a>
+                                            <span class="product-description">
+                                              {{ ucwords(str_replace('_', " ", $employer_notification->notification_type)) }}
+                                            </span>
+                                            by {{ unserialize($employer_notification->details)['user']->name }}
+                                        </div>
+                                    @endif
+                                </li>
+
+                            @endforeach
+
+                        </ul>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer text-center">
+                        <a href="#" class="uppercase">View All Notifications</a>
+                    </div>
+                    <!-- /.box-footer -->
+                </div>
+
+            </div>
+
+        </div>
+        @endif
+
+        @endauth
+
+        <div class="col-md-6">
+
+
+
+        </div>
+    </div>
+
+@endsection
+
+@section('after-scripts-end')
+
+    <script>
+
+        $(document).ready(function(){
+
+            socket.on('employer_staff.{{ auth()->user()->id }}:employer_notifications', function(data){
+                console.log(data.eventDetails);
+            });
+
+        });
+
+    </script>
+
 @endsection

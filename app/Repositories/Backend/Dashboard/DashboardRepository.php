@@ -3,6 +3,7 @@
 namespace App\Repositories\Backend\Dashboard;
 
 
+use App\Models\Access\User\User;
 use Carbon\Carbon;
 
 class DashboardRepository
@@ -59,6 +60,15 @@ class DashboardRepository
             ->count();
 
         return $unread_count;
+    }
+
+    public function getEmployerNotifications(){
+        $employer_notifications = \DB::table('employer_notifications')
+            ->where('employer_id', auth()->user()->employer_id)
+            ->where('user_id', auth()->user()->id)
+            ->get();
+        
+        return $employer_notifications;
     }
 
 }

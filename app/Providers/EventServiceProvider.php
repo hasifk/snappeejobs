@@ -33,6 +33,9 @@ class EventServiceProvider extends ServiceProvider {
 		'App\Events\Backend\Job\JobCreated' => [
 			'App\Listeners\Backend\Job\JobCreatedHandler',
 		],
+		'App\Events\Backend\Job\JobUpdated' => [
+			'App\Listeners\Backend\Job\JobUpdatedHandler',
+		],
 		'App\Events\Frontend\Job\JobApplied' => [
 			'App\Listeners\Frontend\Job\JobAppliedHandler',
 		],

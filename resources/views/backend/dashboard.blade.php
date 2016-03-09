@@ -134,7 +134,9 @@
                 </div>
             </div>
         </div>
-
+     Total Visitors for Company: {{$visitors}}
+        <br>
+        Total Active Job Openings:{{$active_job_listings1}}
         @endauth
 
     </div>

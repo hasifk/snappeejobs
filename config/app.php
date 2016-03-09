@@ -175,7 +175,9 @@ return [
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 		Intervention\Image\ImageServiceProvider::class,
 		UxWeb\SweetAlert\SweetAlertServiceProvider::class,
-    ],
+		'Torann\GeoIP\GeoIPServiceProvider',
+
+	],
 
 	/*
 	|--------------------------------------------------------------------------
@@ -232,5 +234,6 @@ return [
 		'Socialite' => Laravel\Socialite\Facades\Socialite::class,
 		'Image' => 'Intervention\Image\Facades\Image',
 		'Alert' => UxWeb\SweetAlert\SweetAlert::class,
+		'GeoIP' => 'Torann\GeoIP\GeoIPFacade',
 	],
 ];

@@ -1,10 +1,12 @@
 <?php namespace App\Repositories\Frontend\Company;
 
+use App\Models\Access\User\ProfileVisitor;
 use App\Models\JobSeeker\JobSeeker;
 use Illuminate\Http\Request;
 use App\Models\Company\Company;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use GeoIP;
 /*use Illuminate\Support\Facades\Request;*/
 
 /**
@@ -150,5 +152,24 @@ class EloquentCompanyRepository {
         return Company::with('people','photos','videos','socialmedia','industries')
         ->where('companies.url_slug',$slug)->first();
     }
+
+    public function storeCompanyvisits($slug,$current_ip)
+    {
+        $location = GeoIP::getLocation($current_ip);
+        if(!empty($location)):
+            $cmp_id=Company::where('url_slug',$slug)->pluck('id') ;
+            $store_visitor=new ProfileVisitor();
+            $store_visitor->company_id = $cmp_id;
+            $store_visitor->country    = $location['country'];
+            $store_visitor->state      = $location['state'];
+            $store_visitor->latitude   = $location['lat'];;
+            $store_visitor->longitude  = $location['lon'];;
+            $store_visitor->save();
+            return 'true';
+        endif;
+
+
+    }
+
 
 }

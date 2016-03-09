@@ -230,6 +230,17 @@
                 </div>
 
                 <div style="margin-top: 25px;" class="col-md-12" id="companies_list">
+                    <?php
+                    $location = GeoIP::getLocation(
+                            '92.242.132.27');
+
+                            ?>
+                    {{Request::ip()}}
+                    {{$location['country']}}
+                        {{$location['country']}}
+                        {{$location['state']}}
+                        {{$location['city']}}
+                        {{$location['isoCode']}}
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3>{{ trans('strings.companies_title') }}</h3>

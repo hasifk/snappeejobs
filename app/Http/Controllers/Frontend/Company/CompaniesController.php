@@ -9,6 +9,11 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Session;
+
+//require_once 'vendor/autoload.php';
+/*use GeoIp2\Database\Reader;*/
+
 class CompaniesController extends Controller
 {
     /**
@@ -44,7 +49,11 @@ class CompaniesController extends Controller
                 ->select(['id', 'name'])
                 ->get();
         }
+       // $reader = new Reader('public/GeoLite2-City.mmdb');
 
+// Replace "city" with the appropriate method for your database, e.g.,
+// "country".
+       // $record = $reader->city( Request::ip());
         $companies_data = $this->companyRepository->getCompaniesPaginated($request, config('companies.default_per_page'));
 
         return view('frontend.companies.index',[
@@ -52,17 +61,35 @@ class CompaniesController extends Controller
             'states'            => $states,
             'industries'        =>  $industries,
             'companies'         =>  $companies,
-            'companies_data'    =>  $companies_data
+            'companies_data'    =>  $companies_data,
+            //'record'    =>  $record
         ]);
 
     }
 
-    public function company($slug)
+    public function company($slug,Request $request)
     {
 
         $company = $this->companyRepository->getCompanyBySlug($slug);
+        if (!Session::get('visitor-info-stored')):
 
-        return view('frontend.companies.company',['company'	=>	$company]);
+            $current_ip = $request->ip();
+            $visits = $this->companyRepository->storeCompanyvisits($slug, $current_ip);
+
+
+            if(!empty($visits)):
+                Session::put('visitor-info-stored', true);
+                Session::save();
+            else:
+                return redirect(route('companies.search'));
+            endif;
+
+        endif;
+
+             return view('frontend.companies.company',['company'	=>	$company]);
+
+
+
 
     }
 

@@ -44,5 +44,6 @@ class Kernel extends HttpKernel {
 		'access.routeNeedsPermission' => \App\Http\Middleware\RouteNeedsPermission::class,
 		'access.routeNeedsSubscription' => \App\Http\Middleware\RouteNeedsSubscription::class,
 		'access.routeNeedsCompany' => \App\Http\Middleware\RouteNeedsCompany::class,
+
 	];
 }

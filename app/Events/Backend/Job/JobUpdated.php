@@ -7,7 +7,7 @@ use App\Models\Job\Job;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class JobUpdated extends Event
+class JobUpdated extends Event implements ShouldBroadcast
 {
     use SerializesModels;
 
@@ -35,6 +35,7 @@ class JobUpdated extends Event
         $this->eventDetails = new \stdClass();
 
         $this->eventDetails->{'notification_type'} = 'job_updated';
+        $this->eventDetails->{'notification_type_text'} = 'Job Updated';
         $this->eventDetails->{'job_title'} = $job->title;
         $this->eventDetails->{'created_by'} = $user->name;
         $this->eventDetails->{'created_by_image'} = $user->picture;

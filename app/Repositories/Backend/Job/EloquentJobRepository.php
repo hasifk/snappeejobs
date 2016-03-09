@@ -1,6 +1,7 @@
 <?php namespace App\Repositories\Backend\Job;
 
 use App\Events\Backend\Job\JobCreated;
+use App\Events\Backend\Job\JobUpdated;
 use App\Models\Access\User\User;
 use App\Exceptions\GeneralException;
 use App\Models\Job\Job;
@@ -166,6 +167,8 @@ class EloquentJobRepository {
 		$job = $this->updateJobStub($job, $input);
 
 		if ( $job->save() ) {
+
+			Event::fire(new JobUpdated($job, auth()->user() ));
 
 			//Update new job categories
 			$job->detachCategories();

@@ -3,7 +3,11 @@
 use App\Http\Controllers\Controller;
 use App\Models\Access\User\User;
 use App\Repositories\Backend\Dashboard\DashboardRepository;
+use App\Repositories\Backend\Job\EloquentSearchJobRepository;
+use App\Repositories\Backend\JobSeeker\EloquentSearchJobSeekerRepository;
 use App\Repositories\Backend\Mail\EloquentMailRepository;
+use App\Repositories\Frontend\Job\EloquentJobRepository;
+use App\Repositories\Frontend\JobSeeker\EloquentJobSeekerRepository;
 use Carbon\Carbon;
 use \Illuminate\Http\Request;
 use App\Http\Requests\Backend\AdminProfileEditRequest;
@@ -20,16 +24,18 @@ class DashboardController extends Controller {
      * @var DashboardRepository
      */
     private $repository;
-
+    private $searchJobRepo;
 
     /**
      * DashboardController constructor.
      * @param DashboardRepository $repository
      */
-    public function __construct(DashboardRepository $repository)
+    public function __construct(DashboardRepository $repository,EloquentSearchJobRepository $searchJobRepo,EloquentSearchJobSeekerRepository $searchJobSeekerRepo)
     {
 
         $this->repository = $repository;
+        $this->searchJobRepo = $searchJobRepo;
+        $this->searchJobSeekerRepo = $searchJobSeekerRepo;
     }
 
 	/**
@@ -155,8 +161,18 @@ class DashboardController extends Controller {
         if ( access()->hasRole('Employer') ) {
             $query = $request->input('emp_search_key');
             if(!empty($query)):
-            $jobtitle= DB::table('jobs')->where('title', 'LIKE', '%' . $query . '%')
-                ->where('company_id', auth()->user()->company_id)->paginate(10);
+
+                $jobsResult = $this->searchJobRepo->getJobsPaginated( $request,$query, config('jobs.default_per_page'));
+
+                $paginator = $jobsResult['paginator'];
+                $jobtitle= $jobsResult['jobtitle'];
+
+
+                $candidateResult = $this->searchJobSeekerRepo->getJobsSeekersPaginated( $request,$query, config('jobs.default_per_page'));
+
+                $paginator1 = $candidateResult['paginator'];
+                $candidate_info= $candidateResult['candidate_info'];
+
                 $staffinfo= DB::table('users')->where('name', 'LIKE', '%' . $query . '%')->paginate(10)
                     ->where('employer_id', auth()->user()->employer_id);
 
@@ -177,8 +193,12 @@ class DashboardController extends Controller {
                 $search_results = [
                     'jobtitle'         =>  $jobtitle,
                     'staffinfo'            =>$staffinfo,
-                    'job_cat_info'=> $job_cat_info
+                    'job_cat_info'=> $job_cat_info,
+                    'paginator'         => $paginator,
+                    'candidate_info'  =>$candidate_info,
+                    'paginator1'         => $paginator1,
                 ];
+                $request->flash();
                 return view('backend.emp_search_results',$search_results);
 
 

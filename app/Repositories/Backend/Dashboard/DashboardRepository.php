@@ -4,6 +4,7 @@ namespace App\Repositories\Backend\Dashboard;
 
 
 use App\Models\Access\User\ProfileVisitor;
+use App\Models\Company\Company;
 use App\Models\Job\Job;
 use App\Models\Access\User\User;
 use Carbon\Carbon;
@@ -83,5 +84,10 @@ class DashboardRepository
 
                 return $employer_notifications;
         }
+
+        public function getThumbsUpsCount(){
+                return Company::where('id', auth()->user()->company_id)->pluck('likes');
+        }
+
 
 }

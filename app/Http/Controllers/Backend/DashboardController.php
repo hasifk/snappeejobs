@@ -54,6 +54,7 @@ class DashboardController extends Controller {
             $view['new_messages']  = $this->repository->getTotalNewMessagesCount();
             $view['visitors']  = $this->repository->getTotalVisitorsCount();
             $view['active_job_listings1']  = $this->repository->getActiveJobListingCount1();
+            $view['thumbs_ups']  = $this->repository->getThumbsUpsCount();
             $view['employer_notifications'] = $this->repository->getEmployerNotifications();
         }
 

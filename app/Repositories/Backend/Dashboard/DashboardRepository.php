@@ -68,22 +68,13 @@ class DashboardRepository
 
         public function getTotalVisitorsCount()
         {
-                if (!empty(auth()->user()->company_id)):
-                        return  ProfileVisitor::where('company_id', auth()->user()->company_id)
-                            ->count();
-
-
-
-                endif;
+            return  ProfileVisitor::where('company_id', auth()->user()->company_id)
+                ->count();
         }
 
         public function getActiveJobListingCount1(){
-                if (!empty(auth()->user()->company_id)):
-                        return Job::where('status', true)->where('company_id', auth()->user()->company_id)->count();
-                endif;
+            return Job::where('status', true)->where('company_id', auth()->user()->company_id)->count();
         }
-
-/******************************************************************************************************/
 
         public function getEmployerNotifications(){
                 $employer_notifications = \DB::table('employer_notifications')
@@ -93,12 +84,10 @@ class DashboardRepository
 
                 return $employer_notifications;
         }
-        /******************************************************************************************************/
-    public function getThumbsUpsCount(){
 
-            return Company::where('id', auth()->user()->company_id)->pluck('likes');
+        public function getThumbsUpsCount(){
+                return Company::where('id', auth()->user()->company_id)->pluck('likes');
+        }
 
-    }
-/*****************************************************************************************************************/
 
 }

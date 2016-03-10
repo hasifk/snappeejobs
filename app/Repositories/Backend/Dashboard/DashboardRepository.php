@@ -3,7 +3,9 @@
 namespace App\Repositories\Backend\Dashboard;
 
 
-
+use App\Models\Access\User\ProfileVisitor;
+use App\Models\Job\Job;
+use App\Models\Access\User\User;
 use Carbon\Carbon;
 
 class DashboardRepository
@@ -63,6 +65,33 @@ class DashboardRepository
     }
 
 
+        public function getTotalVisitorsCount()
+        {
+                if (!empty(auth()->user()->company_id)):
+                        return  ProfileVisitor::where('company_id', auth()->user()->company_id)
+                            ->count();
+
+
+
+                endif;
+        }
+
+        public function getActiveJobListingCount1(){
+                if (!empty(auth()->user()->company_id)):
+                        return Job::where('status', true)->where('company_id', auth()->user()->company_id)->count();
+                endif;
+        }
+
 /******************************************************************************************************/
+
+        public function getEmployerNotifications(){
+                $employer_notifications = \DB::table('employer_notifications')
+                    ->where('employer_id', auth()->user()->employer_id)
+                    ->where('user_id', auth()->user()->id)
+                    ->get();
+
+                return $employer_notifications;
+        }
+        /******************************************************************************************************/
 
 }

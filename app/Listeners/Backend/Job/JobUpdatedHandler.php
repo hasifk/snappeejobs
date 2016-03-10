@@ -2,12 +2,12 @@
 
 namespace App\Listeners\Backend\Job;
 
-use App\Events\Backend\Job\JobCreated;
+use App\Events\Backend\Job\JobUpdated;
 use Carbon\Carbon;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class JobCreatedHandler
+class JobUpdatedHandler
 {
     /**
      * Create the event listener.
@@ -22,10 +22,10 @@ class JobCreatedHandler
     /**
      * Handle the event.
      *
-     * @param  JobCreated  $event
+     * @param  JobUpdated  $event
      * @return void
      */
-    public function handle(JobCreated $event)
+    public function handle(JobUpdated $event)
     {
         // Insert into employer_notifications table for all the employers of this company
 
@@ -43,7 +43,7 @@ class JobCreatedHandler
             \DB::table('employer_notifications')->insert([
                 'employer_id'       => $user->employer_id,
                 'user_id'           => $staff,
-                'notification_type' => 'job_created',
+                'notification_type' => 'job_updated',
                 'details'           => $details,
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now()

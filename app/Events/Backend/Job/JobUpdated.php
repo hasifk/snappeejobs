@@ -7,9 +7,10 @@ use App\Models\Job\Job;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class JobCreated extends Event implements ShouldBroadcast
+class JobUpdated extends Event implements ShouldBroadcast
 {
     use SerializesModels;
+
     /**
      * @var Job
      */
@@ -24,8 +25,7 @@ class JobCreated extends Event implements ShouldBroadcast
     /**
      * Create a new event instance.
      *
-     * @param Job $job
-     * @param $user
+     * @return void
      */
     public function __construct(Job $job, $user)
     {
@@ -34,8 +34,8 @@ class JobCreated extends Event implements ShouldBroadcast
 
         $this->eventDetails = new \stdClass();
 
-        $this->eventDetails->{'notification_type'} = 'job_created';
-        $this->eventDetails->{'notification_type_text'} = 'Job Created';
+        $this->eventDetails->{'notification_type'} = 'job_updated';
+        $this->eventDetails->{'notification_type_text'} = 'Job Updated';
         $this->eventDetails->{'job_title'} = $job->title;
         $this->eventDetails->{'created_by'} = $user->name;
         $this->eventDetails->{'created_by_image'} = $user->picture;

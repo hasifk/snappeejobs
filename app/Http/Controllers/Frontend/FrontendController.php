@@ -104,7 +104,7 @@ class FrontendController extends Controller {
 
 
 		];
-		return view('frontend.Index', $view);
+		return view('frontend.index', $view);
 	}
 	/**
 	 * @return \Illuminate\View\View

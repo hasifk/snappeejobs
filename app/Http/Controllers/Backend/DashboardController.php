@@ -47,13 +47,11 @@ class DashboardController extends Controller {
             $view['active_job_listings']  = $this->repository->getActiveJobListingCount();
         }
 
-        if ( access()->hasRole('Employer') ) {
+        if ( access()->hasRoles(['Employer', 'Employer Staff']) ) {
             $view['total_jobs_posted']  = $this->repository->getTotalJobsPostedCount();
             $view['total_job_application']  = $this->repository->getTotalJobsApplicationsCount();
             $view['total_staff_members']  = $this->repository->getTotalStaffMembersCount();
             $view['new_messages']  = $this->repository->getTotalNewMessagesCount();
-            $view['visitors']  = $this->repository->getTotalVisitorsCount();
-            $view['active_job_listings1']  = $this->repository->getActiveJobListingCount1();
 
         }
 

@@ -68,14 +68,14 @@ $(function(){
     });
 });
 /*!
- * Vue.js v1.0.17
- * (c) 2016 Evan You
+ * Vue.js v1.0.13
+ * (c) 2015 Evan You
  * Released under the MIT License.
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global.Vue = factory());
+  global.Vue = factory();
 }(this, function () { 'use strict';
 
   function set(obj, key, val) {
@@ -152,7 +152,7 @@ $(function(){
    * @return {Boolean}
    */
 
-  var literalValueRE = /^\s?(true|false|-?[\d\.]+|'[^']*'|"[^"]*")\s?$/;
+  var literalValueRE = /^\s?(true|false|[\d\.]+|'[^']*'|"[^"]*")\s?$/;
 
   function isLiteral(exp) {
     return literalValueRE.test(exp);
@@ -279,7 +279,7 @@ $(function(){
    * @return {Function}
    */
 
-  function bind(fn, ctx) {
+  function bind$1(fn, ctx) {
     return function (a) {
       var l = arguments.length;
       return l ? l > 1 ? fn.apply(ctx, arguments) : fn.call(ctx, a) : fn.call(ctx);
@@ -462,13 +462,9 @@ $(function(){
   // Browser environment sniffing
   var inBrowser = typeof window !== 'undefined' && Object.prototype.toString.call(window) !== '[object Object]';
 
-  // detect devtools
-  var devtools = inBrowser && window.__VUE_DEVTOOLS_GLOBAL_HOOK__;
+  var isIE9 = inBrowser && navigator.userAgent.toLowerCase().indexOf('msie 9.0') > 0;
 
-  // UA sniffing for working around browser-specific quirks
-  var UA = inBrowser && window.navigator.userAgent.toLowerCase();
-  var isIE9 = UA && UA.indexOf('msie 9.0') > 0;
-  var isAndroid = UA && UA.indexOf('android') > 0;
+  var isAndroid = inBrowser && navigator.userAgent.toLowerCase().indexOf('android') > 0;
 
   var transitionProp = undefined;
   var transitionEndEvent = undefined;
@@ -507,7 +503,6 @@ $(function(){
         copies[i]();
       }
     }
-
     /* istanbul ignore if */
     if (typeof MutationObserver !== 'undefined') {
       var counter = 1;
@@ -521,11 +516,7 @@ $(function(){
         textNode.data = counter;
       };
     } else {
-      // webpack attempts to inject a shim for setImmediate
-      // if it is used as a global, so we have to work around that to
-      // avoid bundling unnecessary code.
-      var context = inBrowser ? window : typeof global !== 'undefined' ? global : {};
-      timerFunc = context.setImmediate || setTimeout;
+      timerFunc = setTimeout;
     }
     return function (cb, ctx) {
       var func = ctx ? function () {
@@ -559,29 +550,23 @@ $(function(){
    */
 
   p.put = function (key, value) {
-    var removed;
-    if (this.size === this.limit) {
-      removed = this.shift();
+    var entry = {
+      key: key,
+      value: value
+    };
+    this._keymap[key] = entry;
+    if (this.tail) {
+      this.tail.newer = entry;
+      entry.older = this.tail;
+    } else {
+      this.head = entry;
     }
-
-    var entry = this.get(key, true);
-    if (!entry) {
-      entry = {
-        key: key
-      };
-      this._keymap[key] = entry;
-      if (this.tail) {
-        this.tail.newer = entry;
-        entry.older = this.tail;
-      } else {
-        this.head = entry;
-      }
-      this.tail = entry;
+    this.tail = entry;
+    if (this.size === this.limit) {
+      return this.shift();
+    } else {
       this.size++;
     }
-    entry.value = value;
-
-    return removed;
   };
 
   /**
@@ -597,7 +582,6 @@ $(function(){
       this.head.older = undefined;
       entry.newer = entry.older = undefined;
       this._keymap[entry.key] = undefined;
-      this.size--;
     }
     return entry;
   };
@@ -722,6 +706,7 @@ $(function(){
    */
 
   function parseDirective(s) {
+
     var hit = cache$1.get(s);
     if (hit) {
       return hit;
@@ -785,7 +770,7 @@ $(function(){
     return dir;
   }
 
-var directive = Object.freeze({
+  var directive = Object.freeze({
     parseDirective: parseDirective
   });
 
@@ -880,17 +865,16 @@ var directive = Object.freeze({
    * into one single expression as '"a " + b + " c"'.
    *
    * @param {Array} tokens
-   * @param {Vue} [vm]
    * @return {String}
    */
 
-  function tokensToExp(tokens, vm) {
+  function tokensToExp(tokens) {
     if (tokens.length > 1) {
       return tokens.map(function (token) {
-        return formatToken(token, vm);
+        return formatToken(token);
       }).join('+');
     } else {
-      return formatToken(tokens[0], vm, true);
+      return formatToken(tokens[0], true);
     }
   }
 
@@ -898,13 +882,12 @@ var directive = Object.freeze({
    * Format a single token.
    *
    * @param {Object} token
-   * @param {Vue} [vm]
-   * @param {Boolean} [single]
+   * @param {Boolean} single
    * @return {String}
    */
 
-  function formatToken(token, vm, single) {
-    return token.tag ? token.oneTime && vm ? '"' + vm.$eval(token.value) + '"' : inlineFilters(token.value, single) : '"' + token.value + '"';
+  function formatToken(token, single) {
+    return token.tag ? inlineFilters(token.value, single) : '"' + token.value + '"';
   }
 
   /**
@@ -920,9 +903,9 @@ var directive = Object.freeze({
    * @return {String}
    */
 
-  var filterRE = /[^|]\|[^|]/;
+  var filterRE$1 = /[^|]\|[^|]/;
   function inlineFilters(exp, single) {
-    if (!filterRE.test(exp)) {
+    if (!filterRE$1.test(exp)) {
       return single ? exp : '(' + exp + ')';
     } else {
       var dir = parseDirective(exp);
@@ -937,7 +920,7 @@ var directive = Object.freeze({
     }
   }
 
-var text = Object.freeze({
+  var text$1 = Object.freeze({
     compileRegex: compileRegex,
     parseText: parseText,
     tokensToExp: tokensToExp
@@ -977,6 +960,14 @@ var text = Object.freeze({
      */
 
     warnExpressionErrors: true,
+
+    /**
+     * Whether or not to handle fully object properties which
+     * are already backed by getters and seters. Depending on
+     * use case and environment, this might introduce non-neglible
+     * performance penalties.
+     */
+    convertAllProperties: false,
 
     /**
      * Internal flag to indicate the delimiters have been
@@ -1139,13 +1130,6 @@ var text = Object.freeze({
     transition[action](op, cb);
   }
 
-var transition = Object.freeze({
-    appendWithTransition: appendWithTransition,
-    beforeWithTransition: beforeWithTransition,
-    removeWithTransition: removeWithTransition,
-    applyTransition: applyTransition
-  });
-
   /**
    * Query an element selector if it's not an element already.
    *
@@ -1296,11 +1280,10 @@ var transition = Object.freeze({
    * @param {Element} el
    * @param {String} event
    * @param {Function} cb
-   * @param {Boolean} [useCapture]
    */
 
-  function on(el, event, cb, useCapture) {
-    el.addEventListener(event, cb, useCapture);
+  function on$1(el, event, cb) {
+    el.addEventListener(event, cb);
   }
 
   /**
@@ -1327,7 +1310,7 @@ var transition = Object.freeze({
 
   function setClass(el, cls) {
     /* istanbul ignore if */
-    if (isIE9 && !/svg$/.test(el.namespaceURI)) {
+    if (isIE9 && !(el instanceof SVGElement)) {
       el.className = cls;
     } else {
       el.setAttribute('class', cls);
@@ -1381,14 +1364,14 @@ var transition = Object.freeze({
    *
    * @param {Element} el
    * @param {Boolean} asFragment
-   * @return {Element|DocumentFragment}
+   * @return {Element}
    */
 
   function extractContent(el, asFragment) {
     var child;
     var rawContent;
     /* istanbul ignore if */
-    if (isTemplate(el) && isFragment(el.content)) {
+    if (isTemplate(el) && el.content instanceof DocumentFragment) {
       el = el.content;
     }
     if (el.hasChildNodes()) {
@@ -1404,26 +1387,20 @@ var transition = Object.freeze({
   }
 
   /**
-   * Trim possible empty head/tail text and comment
-   * nodes inside a parent.
+   * Trim possible empty head/tail textNodes inside a parent.
    *
    * @param {Node} node
    */
 
   function trimNode(node) {
-    var child;
-    /* eslint-disable no-sequences */
-    while ((child = node.firstChild, isTrimmable(child))) {
-      node.removeChild(child);
-    }
-    while ((child = node.lastChild, isTrimmable(child))) {
-      node.removeChild(child);
-    }
-    /* eslint-enable no-sequences */
+    trim(node, node.firstChild);
+    trim(node, node.lastChild);
   }
 
-  function isTrimmable(node) {
-    return node && (node.nodeType === 3 && !node.data.trim() || node.nodeType === 8);
+  function trim(parent, node) {
+    if (node && node.nodeType === 3 && !node.data.trim()) {
+      parent.removeChild(node);
+    }
   }
 
   /**
@@ -1458,7 +1435,7 @@ var transition = Object.freeze({
 
   function createAnchor(content, persist) {
     var anchor = config.debug ? document.createComment(content) : document.createTextNode(persist ? ' ' : '');
-    anchor.__v_anchor = true;
+    anchor.__vue_anchor = true;
     return anchor;
   }
 
@@ -1533,53 +1510,8 @@ var transition = Object.freeze({
     }
   }
 
-  /**
-   * Check if a node is a DocumentFragment.
-   *
-   * @param {Node} node
-   * @return {Boolean}
-   */
-
-  function isFragment(node) {
-    return node && node.nodeType === 11;
-  }
-
-  /**
-   * Get outerHTML of elements, taking care
-   * of SVG elements in IE as well.
-   *
-   * @param {Element} el
-   * @return {String}
-   */
-
-  function getOuterHTML(el) {
-    if (el.outerHTML) {
-      return el.outerHTML;
-    } else {
-      var container = document.createElement('div');
-      container.appendChild(el.cloneNode(true));
-      return container.innerHTML;
-    }
-  }
-
   var commonTagRE = /^(div|p|span|img|a|b|i|br|ul|ol|li|h1|h2|h3|h4|h5|h6|code|pre|table|th|td|tr|form|label|input|select|option|nav|article|section|header|footer)$/;
   var reservedTagRE = /^(slot|partial|component)$/;
-
-  var isUnknownElement = undefined;
-  if ('development' !== 'production') {
-    isUnknownElement = function (el, tag) {
-      if (tag.indexOf('-') > -1) {
-        // http://stackoverflow.com/a/28210364/1070244
-        return el.constructor === window.HTMLUnknownElement || el.constructor === window.HTMLElement;
-      } else {
-        return (/HTMLUnknownElement/.test(el.toString()) &&
-          // Chrome returns unknown for several HTML5 elements.
-          // https://code.google.com/p/chromium/issues/detail?id=540526
-          !/^(data|time|rtc|rb)$/.test(tag)
-        );
-      }
-    };
-  }
 
   /**
    * Check if an element is a component, if yes return its
@@ -1601,11 +1533,11 @@ var transition = Object.freeze({
         if (is) {
           return is;
         } else if ('development' !== 'production') {
-          var expectedTag = options._componentNameMap && options._componentNameMap[tag];
-          if (expectedTag) {
-            warn('Unknown custom element: <' + tag + '> - ' + 'did you mean <' + expectedTag + '>? ' + 'HTML is case-insensitive, remember to use kebab-case in templates.');
-          } else if (isUnknownElement(el, tag)) {
-            warn('Unknown custom element: <' + tag + '> - did you ' + 'register the component correctly? For recursive components, ' + 'make sure to provide the "name" option.');
+          if (tag.indexOf('-') > -1 || /HTMLUnknownElement/.test(el.toString()) &&
+          // Chrome returns unknown for several HTML5 elements.
+          // https://code.google.com/p/chromium/issues/detail?id=540526
+          !/^(data|time|rtc|rb)$/.test(tag)) {
+            warn('Unknown custom element: <' + tag + '> - did you ' + 'register the component correctly?');
           }
         }
       }
@@ -1656,12 +1588,11 @@ var transition = Object.freeze({
    */
 
   function assertProp(prop, value) {
-    if (!prop.options.required && ( // non-required
-    prop.raw === null || // abscent
-    value == null) // null or undefined
-    ) {
-        return true;
-      }
+    // if a prop is not provided and is not required,
+    // skip the check.
+    if (prop.raw === null && !prop.required) {
+      return true;
+    }
     var options = prop.options;
     var type = options.type;
     var valid = true;
@@ -1695,7 +1626,7 @@ var transition = Object.freeze({
     }
     var validator = options.validator;
     if (validator) {
-      if (!validator(value)) {
+      if (!validator.call(null, value)) {
         'development' !== 'production' && warn('Invalid prop: custom validator check failed for ' + prop.path + '="' + prop.raw + '"');
         return false;
       }
@@ -1817,7 +1748,7 @@ var transition = Object.freeze({
    * Hooks and param attributes are merged as arrays.
    */
 
-  strats.init = strats.created = strats.ready = strats.attached = strats.detached = strats.beforeCompile = strats.compiled = strats.beforeDestroy = strats.destroyed = strats.activate = function (parentVal, childVal) {
+  strats.init = strats.created = strats.ready = strats.attached = strats.detached = strats.beforeCompile = strats.compiled = strats.beforeDestroy = strats.destroyed = function (parentVal, childVal) {
     return childVal ? parentVal ? parentVal.concat(childVal) : isArray(childVal) ? childVal : [childVal] : parentVal;
   };
 
@@ -1901,21 +1832,13 @@ var transition = Object.freeze({
   function guardComponents(options) {
     if (options.components) {
       var components = options.components = guardArrayAssets(options.components);
-      var ids = Object.keys(components);
       var def;
-      if ('development' !== 'production') {
-        var map = options._componentNameMap = {};
-      }
+      var ids = Object.keys(components);
       for (var i = 0, l = ids.length; i < l; i++) {
         var key = ids[i];
         if (commonTagRE.test(key) || reservedTagRE.test(key)) {
           'development' !== 'production' && warn('Do not use built-in or reserved HTML elements as component ' + 'id: ' + key);
           continue;
-        }
-        // record a all lowercase <-> kebab-case mapping for
-        // possible custom element case error warning
-        if ('development' !== 'production') {
-          map[key.replace(/-/g, '').toLowerCase()] = hyphenate(key);
         }
         def = components[key];
         if (isPlainObject(def)) {
@@ -2032,10 +1955,6 @@ var transition = Object.freeze({
    */
 
   function resolveAsset(options, type, id) {
-    /* istanbul ignore if */
-    if (typeof id !== 'string') {
-      return;
-    }
     var assets = options[type];
     var camelizedId;
     return assets[id] ||
@@ -2054,64 +1973,6 @@ var transition = Object.freeze({
       'development' !== 'production' && warn('Failed to resolve ' + type + ': ' + id);
     }
   }
-
-  var uid$1 = 0;
-
-  /**
-   * A dep is an observable that can have multiple
-   * directives subscribing to it.
-   *
-   * @constructor
-   */
-  function Dep() {
-    this.id = uid$1++;
-    this.subs = [];
-  }
-
-  // the current target watcher being evaluated.
-  // this is globally unique because there could be only one
-  // watcher being evaluated at any time.
-  Dep.target = null;
-
-  /**
-   * Add a directive subscriber.
-   *
-   * @param {Directive} sub
-   */
-
-  Dep.prototype.addSub = function (sub) {
-    this.subs.push(sub);
-  };
-
-  /**
-   * Remove a directive subscriber.
-   *
-   * @param {Directive} sub
-   */
-
-  Dep.prototype.removeSub = function (sub) {
-    this.subs.$remove(sub);
-  };
-
-  /**
-   * Add self as a dependency to the target watcher.
-   */
-
-  Dep.prototype.depend = function () {
-    Dep.target.addDep(this);
-  };
-
-  /**
-   * Notify all subscribers of a new value.
-   */
-
-  Dep.prototype.notify = function () {
-    // stablize the subscriber list first
-    var subs = toArray(this.subs);
-    for (var i = 0, l = subs.length; i < l; i++) {
-      subs[i].update();
-    }
-  };
 
   var arrayProto = Array.prototype;
   var arrayMethods = Object.create(arrayProto)
@@ -2183,6 +2044,64 @@ var transition = Object.freeze({
       return this.splice(index, 1);
     }
   });
+
+  var uid$3 = 0;
+
+  /**
+   * A dep is an observable that can have multiple
+   * directives subscribing to it.
+   *
+   * @constructor
+   */
+  function Dep() {
+    this.id = uid$3++;
+    this.subs = [];
+  }
+
+  // the current target watcher being evaluated.
+  // this is globally unique because there could be only one
+  // watcher being evaluated at any time.
+  Dep.target = null;
+
+  /**
+   * Add a directive subscriber.
+   *
+   * @param {Directive} sub
+   */
+
+  Dep.prototype.addSub = function (sub) {
+    this.subs.push(sub);
+  };
+
+  /**
+   * Remove a directive subscriber.
+   *
+   * @param {Directive} sub
+   */
+
+  Dep.prototype.removeSub = function (sub) {
+    this.subs.$remove(sub);
+  };
+
+  /**
+   * Add self as a dependency to the target watcher.
+   */
+
+  Dep.prototype.depend = function () {
+    Dep.target.addDep(this);
+  };
+
+  /**
+   * Notify all subscribers of a new value.
+   */
+
+  Dep.prototype.notify = function () {
+    // stablize the subscriber list first
+    var subs = toArray(this.subs);
+    for (var i = 0, l = subs.length; i < l; i++) {
+      subs[i].update();
+    }
+  };
 
   var arrayKeys = Object.getOwnPropertyNames(arrayMethods);
 
@@ -2285,9 +2204,7 @@ var transition = Object.freeze({
    */
 
   function protoAugment(target, src) {
-    /* eslint-disable no-proto */
     target.__proto__ = src;
-    /* eslint-enable no-proto */
   }
 
   /**
@@ -2343,14 +2260,16 @@ var transition = Object.freeze({
   function defineReactive(obj, key, val) {
     var dep = new Dep();
 
-    var property = Object.getOwnPropertyDescriptor(obj, key);
-    if (property && property.configurable === false) {
-      return;
-    }
-
     // cater for pre-defined getter/setters
-    var getter = property && property.get;
-    var setter = property && property.set;
+    var getter, setter;
+    if (config.convertAllProperties) {
+      var property = Object.getOwnPropertyDescriptor(obj, key);
+      if (property && property.configurable === false) {
+        return;
+      }
+      getter = property && property.get;
+      setter = property && property.set;
+    }
 
     var childOb = observe(val);
     Object.defineProperty(obj, key, {
@@ -2388,8 +2307,6 @@ var transition = Object.freeze({
     });
   }
 
-
-
   var util = Object.freeze({
   	defineReactive: defineReactive,
   	set: set,
@@ -2404,7 +2321,7 @@ var transition = Object.freeze({
   	camelize: camelize,
   	hyphenate: hyphenate,
   	classify: classify,
-  	bind: bind,
+  	bind: bind$1,
   	toArray: toArray,
   	extend: extend,
   	isObject: isObject,
@@ -2417,7 +2334,6 @@ var transition = Object.freeze({
   	isArray: isArray,
   	hasProto: hasProto,
   	inBrowser: inBrowser,
-  	devtools: devtools,
   	isIE9: isIE9,
   	isAndroid: isAndroid,
   	get transitionProp () { return transitionProp; },
@@ -2435,7 +2351,7 @@ var transition = Object.freeze({
   	remove: remove,
   	prepend: prepend,
   	replace: replace,
-  	on: on,
+  	on: on$1,
   	off: off,
   	setClass: setClass,
   	addClass: addClass,
@@ -2447,8 +2363,6 @@ var transition = Object.freeze({
   	findRef: findRef,
   	mapNodeRange: mapNodeRange,
   	removeNodeRange: removeNodeRange,
-  	isFragment: isFragment,
-  	getOuterHTML: getOuterHTML,
   	mergeOptions: mergeOptions,
   	resolveAsset: resolveAsset,
   	assertAsset: assertAsset,
@@ -2464,6 +2378,7 @@ var transition = Object.freeze({
   var uid = 0;
 
   function initMixin (Vue) {
+
     /**
      * The main init sequence. This is called for every
      * instance, including ones that are created from extended
@@ -2476,6 +2391,7 @@ var transition = Object.freeze({
      */
 
     Vue.prototype._init = function (options) {
+
       options = options || {};
 
       this.$el = null;
@@ -2504,7 +2420,7 @@ var transition = Object.freeze({
       this._fragmentEnd = null; // @type {Text|Comment}
 
       // lifecycle state
-      this._isCompiled = this._isDestroyed = this._isReady = this._isAttached = this._isBeingDestroyed = this._vForRemoving = false;
+      this._isCompiled = this._isDestroyed = this._isReady = this._isAttached = this._isBeingDestroyed = false;
       this._unlinkFn = null;
 
       // context:
@@ -2532,13 +2448,6 @@ var transition = Object.freeze({
       // push self into parent / transclusion host
       if (this.$parent) {
         this.$parent.$children.push(this);
-      }
-
-      // save raw constructor data before merge
-      // so that we know which properties are provided at
-      // instantiation.
-      if ('development' !== 'production') {
-        this._runtimeData = options.data;
       }
 
       // merge options.
@@ -2896,7 +2805,7 @@ var transition = Object.freeze({
     return true;
   }
 
-var path = Object.freeze({
+  var path = Object.freeze({
     parsePath: parsePath,
     getPath: getPath,
     setPath: setPath
@@ -2913,7 +2822,7 @@ var path = Object.freeze({
 
   var wsRE = /\s/g;
   var newlineRE = /\n/g;
-  var saveRE = /[\{,]\s*[\w\$_]+\s*:|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*\$\{|\}(?:[^`\\]|\\.)*`|`(?:[^`\\]|\\.)*`)|new |typeof |void /g;
+  var saveRE = /[\{,]\s*[\w\$_]+\s*:|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")|new |typeof |void /g;
   var restoreRE = /"(\d+)"/g;
   var pathTestRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['.*?'\]|\[".*?"\]|\[\d+\]|\[[A-Za-z_$][\w$]*\])*$/;
   var identRE = /[^\w$\.](?:[A-Za-z_$][\w$]*)/g;
@@ -3016,9 +2925,7 @@ var path = Object.freeze({
 
   function makeGetterFn(body) {
     try {
-      /* eslint-disable no-new-func */
       return new Function('scope', 'return ' + body + ';');
-      /* eslint-enable no-new-func */
     } catch (e) {
       'development' !== 'production' && warn('Invalid expression. ' + 'Generated function body: ' + body);
     }
@@ -3088,7 +2995,7 @@ var path = Object.freeze({
     exp.slice(0, 5) !== 'Math.';
   }
 
-var expression = Object.freeze({
+  var expression = Object.freeze({
     parseExpression: parseExpression,
     isSimplePath: isSimplePath
   });
@@ -3128,8 +3035,10 @@ var expression = Object.freeze({
     runBatcherQueue(userQueue);
     // dev tool hook
     /* istanbul ignore if */
-    if (devtools) {
-      devtools.emit('flush');
+    if ('development' !== 'production') {
+      if (inBrowser && window.__VUE_DEVTOOLS_GLOBAL_HOOK__) {
+        window.__VUE_DEVTOOLS_GLOBAL_HOOK__.emit('flush');
+      }
     }
     resetBatcherState();
   }
@@ -3454,10 +3363,9 @@ var expression = Object.freeze({
   Watcher.prototype.teardown = function () {
     if (this.active) {
       // remove self from vm's watcher list
-      // this is a somewhat expensive operation so we skip it
-      // if the vm is being destroyed or is performing a v-for
-      // re-render (the watcher list is then filtered by v-for).
-      if (!this.vm._isBeingDestroyed && !this.vm._vForRemoving) {
+      // we can skip this if the vm if being destroyed
+      // which can improve teardown performance.
+      if (!this.vm._isBeingDestroyed) {
         this.vm._watchers.$remove(this);
       }
       var depIds = Object.keys(this.deps);
@@ -3490,14 +3398,810 @@ var expression = Object.freeze({
     }
   }
 
-  var text$1 = {
+  var cloak = {
+    bind: function bind() {
+      var el = this.el;
+      this.vm.$once('pre-hook:compiled', function () {
+        el.removeAttribute('v-cloak');
+      });
+    }
+  };
+
+  var ref = {
+    bind: function bind() {
+      'development' !== 'production' && warn('v-ref:' + this.arg + ' must be used on a child ' + 'component. Found on <' + this.el.tagName.toLowerCase() + '>.');
+    }
+  };
+
+  var ON = 700;
+  var MODEL = 800;
+  var BIND = 850;
+  var TRANSITION = 1100;
+  var EL = 1500;
+  var COMPONENT = 1500;
+  var PARTIAL = 1750;
+  var SLOT = 1750;
+  var FOR = 2000;
+  var IF = 2000;
+
+  var el = {
+
+    priority: EL,
 
     bind: function bind() {
-      this.attr = this.el.nodeType === 3 ? 'data' : 'textContent';
+      /* istanbul ignore if */
+      if (!this.arg) {
+        return;
+      }
+      var id = this.id = camelize(this.arg);
+      var refs = (this._scope || this.vm).$els;
+      if (hasOwn(refs, id)) {
+        refs[id] = this.el;
+      } else {
+        defineReactive(refs, id, this.el);
+      }
+    },
+
+    unbind: function unbind() {
+      var refs = (this._scope || this.vm).$els;
+      if (refs[this.id] === this.el) {
+        refs[this.id] = null;
+      }
+    }
+  };
+
+  var prefixes = ['-webkit-', '-moz-', '-ms-'];
+  var camelPrefixes = ['Webkit', 'Moz', 'ms'];
+  var importantRE = /!important;?$/;
+  var propCache = Object.create(null);
+
+  var testEl = null;
+
+  var style = {
+
+    deep: true,
+
+    update: function update(value) {
+      if (typeof value === 'string') {
+        this.el.style.cssText = value;
+      } else if (isArray(value)) {
+        this.handleObject(value.reduce(extend, {}));
+      } else {
+        this.handleObject(value || {});
+      }
+    },
+
+    handleObject: function handleObject(value) {
+      // cache object styles so that only changed props
+      // are actually updated.
+      var cache = this.cache || (this.cache = {});
+      var name, val;
+      for (name in cache) {
+        if (!(name in value)) {
+          this.handleSingle(name, null);
+          delete cache[name];
+        }
+      }
+      for (name in value) {
+        val = value[name];
+        if (val !== cache[name]) {
+          cache[name] = val;
+          this.handleSingle(name, val);
+        }
+      }
+    },
+
+    handleSingle: function handleSingle(prop, value) {
+      prop = normalize(prop);
+      if (!prop) return; // unsupported prop
+      // cast possible numbers/booleans into strings
+      if (value != null) value += '';
+      if (value) {
+        var isImportant = importantRE.test(value) ? 'important' : '';
+        if (isImportant) {
+          value = value.replace(importantRE, '').trim();
+        }
+        this.el.style.setProperty(prop, value, isImportant);
+      } else {
+        this.el.style.removeProperty(prop);
+      }
+    }
+
+  };
+
+  /**
+   * Normalize a CSS property name.
+   * - cache result
+   * - auto prefix
+   * - camelCase -> dash-case
+   *
+   * @param {String} prop
+   * @return {String}
+   */
+
+  function normalize(prop) {
+    if (propCache[prop]) {
+      return propCache[prop];
+    }
+    var res = prefix(prop);
+    propCache[prop] = propCache[res] = res;
+    return res;
+  }
+
+  /**
+   * Auto detect the appropriate prefix for a CSS property.
+   * https://gist.github.com/paulirish/523692
+   *
+   * @param {String} prop
+   * @return {String}
+   */
+
+  function prefix(prop) {
+    prop = hyphenate(prop);
+    var camel = camelize(prop);
+    var upper = camel.charAt(0).toUpperCase() + camel.slice(1);
+    if (!testEl) {
+      testEl = document.createElement('div');
+    }
+    if (camel in testEl.style) {
+      return prop;
+    }
+    var i = prefixes.length;
+    var prefixed;
+    while (i--) {
+      prefixed = camelPrefixes[i] + upper;
+      if (prefixed in testEl.style) {
+        return prefixes[i] + prop;
+      }
+    }
+  }
+
+  // xlink
+  var xlinkNS = 'http://www.w3.org/1999/xlink';
+  var xlinkRE = /^xlink:/;
+
+  // check for attributes that prohibit interpolations
+  var disallowedInterpAttrRE = /^v-|^:|^@|^(is|transition|transition-mode|debounce|track-by|stagger|enter-stagger|leave-stagger)$/;
+
+  // these attributes should also set their corresponding properties
+  // because they only affect the initial state of the element
+  var attrWithPropsRE = /^(value|checked|selected|muted)$/;
+
+  // these attributes should set a hidden property for
+  // binding v-model to object values
+  var modelProps = {
+    value: '_value',
+    'true-value': '_trueValue',
+    'false-value': '_falseValue'
+  };
+
+  var bind = {
+
+    priority: BIND,
+
+    bind: function bind() {
+      var attr = this.arg;
+      var tag = this.el.tagName;
+      // should be deep watch on object mode
+      if (!attr) {
+        this.deep = true;
+      }
+      // handle interpolation bindings
+      if (this.descriptor.interp) {
+        // only allow binding on native attributes
+        if (disallowedInterpAttrRE.test(attr) || attr === 'name' && (tag === 'PARTIAL' || tag === 'SLOT')) {
+          'development' !== 'production' && warn(attr + '="' + this.descriptor.raw + '": ' + 'attribute interpolation is not allowed in Vue.js ' + 'directives and special attributes.');
+          this.el.removeAttribute(attr);
+          this.invalid = true;
+        }
+
+        /* istanbul ignore if */
+        if ('development' !== 'production') {
+          var raw = attr + '="' + this.descriptor.raw + '": ';
+          // warn src
+          if (attr === 'src') {
+            warn(raw + 'interpolation in "src" attribute will cause ' + 'a 404 request. Use v-bind:src instead.');
+          }
+
+          // warn style
+          if (attr === 'style') {
+            warn(raw + 'interpolation in "style" attribute will cause ' + 'the attribute to be discarded in Internet Explorer. ' + 'Use v-bind:style instead.');
+          }
+        }
+      }
     },
 
     update: function update(value) {
-      this.el[this.attr] = _toString(value);
+      if (this.invalid) {
+        return;
+      }
+      var attr = this.arg;
+      if (this.arg) {
+        this.handleSingle(attr, value);
+      } else {
+        this.handleObject(value || {});
+      }
+    },
+
+    // share object handler with v-bind:class
+    handleObject: style.handleObject,
+
+    handleSingle: function handleSingle(attr, value) {
+      var el = this.el;
+      var interp = this.descriptor.interp;
+      if (!interp && attrWithPropsRE.test(attr) && attr in el) {
+        el[attr] = attr === 'value' ? value == null // IE9 will set input.value to "null" for null...
+        ? '' : value : value;
+      }
+      // set model props
+      var modelProp = modelProps[attr];
+      if (!interp && modelProp) {
+        el[modelProp] = value;
+        // update v-model if present
+        var model = el.__v_model;
+        if (model) {
+          model.listener();
+        }
+      }
+      // do not set value attribute for textarea
+      if (attr === 'value' && el.tagName === 'TEXTAREA') {
+        el.removeAttribute(attr);
+        return;
+      }
+      // update attribute
+      if (value != null && value !== false) {
+        if (attr === 'class') {
+          // handle edge case #1960:
+          // class interpolation should not overwrite Vue transition class
+          if (el.__v_trans) {
+            value += ' ' + el.__v_trans.id + '-transition';
+          }
+          setClass(el, value);
+        } else if (xlinkRE.test(attr)) {
+          el.setAttributeNS(xlinkNS, attr, value);
+        } else {
+          el.setAttribute(attr, value);
+        }
+      } else {
+        el.removeAttribute(attr);
+      }
+    }
+  };
+
+  // keyCode aliases
+  var keyCodes = {
+    esc: 27,
+    tab: 9,
+    enter: 13,
+    space: 32,
+    'delete': 46,
+    up: 38,
+    left: 37,
+    right: 39,
+    down: 40
+  };
+
+  function keyFilter(handler, keys) {
+    var codes = keys.map(function (key) {
+      var charCode = key.charCodeAt(0);
+      if (charCode > 47 && charCode < 58) {
+        return parseInt(key, 10);
+      }
+      if (key.length === 1) {
+        charCode = key.toUpperCase().charCodeAt(0);
+        if (charCode > 64 && charCode < 91) {
+          return charCode;
+        }
+      }
+      return keyCodes[key];
+    });
+    return function keyHandler(e) {
+      if (codes.indexOf(e.keyCode) > -1) {
+        return handler.call(this, e);
+      }
+    };
+  }
+
+  function stopFilter(handler) {
+    return function stopHandler(e) {
+      e.stopPropagation();
+      return handler.call(this, e);
+    };
+  }
+
+  function preventFilter(handler) {
+    return function preventHandler(e) {
+      e.preventDefault();
+      return handler.call(this, e);
+    };
+  }
+
+  var on = {
+
+    acceptStatement: true,
+    priority: ON,
+
+    bind: function bind() {
+      // deal with iframes
+      if (this.el.tagName === 'IFRAME' && this.arg !== 'load') {
+        var self = this;
+        this.iframeBind = function () {
+          on$1(self.el.contentWindow, self.arg, self.handler);
+        };
+        this.on('load', this.iframeBind);
+      }
+    },
+
+    update: function update(handler) {
+      // stub a noop for v-on with no value,
+      // e.g. @mousedown.prevent
+      if (!this.descriptor.raw) {
+        handler = function () {};
+      }
+
+      if (typeof handler !== 'function') {
+        'development' !== 'production' && warn('v-on:' + this.arg + '="' + this.expression + '" expects a function value, ' + 'got ' + handler);
+        return;
+      }
+
+      // apply modifiers
+      if (this.modifiers.stop) {
+        handler = stopFilter(handler);
+      }
+      if (this.modifiers.prevent) {
+        handler = preventFilter(handler);
+      }
+      // key filter
+      var keys = Object.keys(this.modifiers).filter(function (key) {
+        return key !== 'stop' && key !== 'prevent';
+      });
+      if (keys.length) {
+        handler = keyFilter(handler, keys);
+      }
+
+      this.reset();
+      this.handler = handler;
+
+      if (this.iframeBind) {
+        this.iframeBind();
+      } else {
+        on$1(this.el, this.arg, this.handler);
+      }
+    },
+
+    reset: function reset() {
+      var el = this.iframeBind ? this.el.contentWindow : this.el;
+      if (this.handler) {
+        off(el, this.arg, this.handler);
+      }
+    },
+
+    unbind: function unbind() {
+      this.reset();
+    }
+  };
+
+  var checkbox = {
+
+    bind: function bind() {
+      var self = this;
+      var el = this.el;
+
+      this.getValue = function () {
+        return el.hasOwnProperty('_value') ? el._value : self.params.number ? toNumber(el.value) : el.value;
+      };
+
+      function getBooleanValue() {
+        var val = el.checked;
+        if (val && el.hasOwnProperty('_trueValue')) {
+          return el._trueValue;
+        }
+        if (!val && el.hasOwnProperty('_falseValue')) {
+          return el._falseValue;
+        }
+        return val;
+      }
+
+      this.listener = function () {
+        var model = self._watcher.value;
+        if (isArray(model)) {
+          var val = self.getValue();
+          if (el.checked) {
+            if (indexOf(model, val) < 0) {
+              model.push(val);
+            }
+          } else {
+            model.$remove(val);
+          }
+        } else {
+          self.set(getBooleanValue());
+        }
+      };
+
+      this.on('change', this.listener);
+      if (el.hasAttribute('checked')) {
+        this.afterBind = this.listener;
+      }
+    },
+
+    update: function update(value) {
+      var el = this.el;
+      if (isArray(value)) {
+        el.checked = indexOf(value, this.getValue()) > -1;
+      } else {
+        if (el.hasOwnProperty('_trueValue')) {
+          el.checked = looseEqual(value, el._trueValue);
+        } else {
+          el.checked = !!value;
+        }
+      }
+    }
+  };
+
+  var select = {
+
+    bind: function bind() {
+      var self = this;
+      var el = this.el;
+
+      // method to force update DOM using latest value.
+      this.forceUpdate = function () {
+        if (self._watcher) {
+          self.update(self._watcher.get());
+        }
+      };
+
+      // check if this is a multiple select
+      var multiple = this.multiple = el.hasAttribute('multiple');
+
+      // attach listener
+      this.listener = function () {
+        var value = getValue(el, multiple);
+        value = self.params.number ? isArray(value) ? value.map(toNumber) : toNumber(value) : value;
+        self.set(value);
+      };
+      this.on('change', this.listener);
+
+      // if has initial value, set afterBind
+      var initValue = getValue(el, multiple, true);
+      if (multiple && initValue.length || !multiple && initValue !== null) {
+        this.afterBind = this.listener;
+      }
+
+      // All major browsers except Firefox resets
+      // selectedIndex with value -1 to 0 when the element
+      // is appended to a new parent, therefore we have to
+      // force a DOM update whenever that happens...
+      this.vm.$on('hook:attached', this.forceUpdate);
+    },
+
+    update: function update(value) {
+      var el = this.el;
+      el.selectedIndex = -1;
+      var multi = this.multiple && isArray(value);
+      var options = el.options;
+      var i = options.length;
+      var op, val;
+      while (i--) {
+        op = options[i];
+        val = op.hasOwnProperty('_value') ? op._value : op.value;
+        /* eslint-disable eqeqeq */
+        op.selected = multi ? indexOf$1(value, val) > -1 : looseEqual(value, val);
+        /* eslint-enable eqeqeq */
+      }
+    },
+
+    unbind: function unbind() {
+      /* istanbul ignore next */
+      this.vm.$off('hook:attached', this.forceUpdate);
+    }
+  };
+
+  /**
+   * Get select value
+   *
+   * @param {SelectElement} el
+   * @param {Boolean} multi
+   * @param {Boolean} init
+   * @return {Array|*}
+   */
+
+  function getValue(el, multi, init) {
+    var res = multi ? [] : null;
+    var op, val, selected;
+    for (var i = 0, l = el.options.length; i < l; i++) {
+      op = el.options[i];
+      selected = init ? op.hasAttribute('selected') : op.selected;
+      if (selected) {
+        val = op.hasOwnProperty('_value') ? op._value : op.value;
+        if (multi) {
+          res.push(val);
+        } else {
+          return val;
+        }
+      }
+    }
+    return res;
+  }
+
+  /**
+   * Native Array.indexOf uses strict equal, but in this
+   * case we need to match string/numbers with custom equal.
+   *
+   * @param {Array} arr
+   * @param {*} val
+   */
+
+  function indexOf$1(arr, val) {
+    var i = arr.length;
+    while (i--) {
+      if (looseEqual(arr[i], val)) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  var radio = {
+
+    bind: function bind() {
+      var self = this;
+      var el = this.el;
+
+      this.getValue = function () {
+        // value overwrite via v-bind:value
+        if (el.hasOwnProperty('_value')) {
+          return el._value;
+        }
+        var val = el.value;
+        if (self.params.number) {
+          val = toNumber(val);
+        }
+        return val;
+      };
+
+      this.listener = function () {
+        self.set(self.getValue());
+      };
+      this.on('change', this.listener);
+
+      if (el.hasAttribute('checked')) {
+        this.afterBind = this.listener;
+      }
+    },
+
+    update: function update(value) {
+      this.el.checked = looseEqual(value, this.getValue());
+    }
+  };
+
+  var text$2 = {
+
+    bind: function bind() {
+      var self = this;
+      var el = this.el;
+      var isRange = el.type === 'range';
+      var lazy = this.params.lazy;
+      var number = this.params.number;
+      var debounce = this.params.debounce;
+
+      // handle composition events.
+      //   http://blog.evanyou.me/2014/01/03/composition-event/
+      // skip this for Android because it handles composition
+      // events quite differently. Android doesn't trigger
+      // composition events for language input methods e.g.
+      // Chinese, but instead triggers them for spelling
+      // suggestions... (see Discussion/#162)
+      var composing = false;
+      if (!isAndroid && !isRange) {
+        this.on('compositionstart', function () {
+          composing = true;
+        });
+        this.on('compositionend', function () {
+          composing = false;
+          // in IE11 the "compositionend" event fires AFTER
+          // the "input" event, so the input handler is blocked
+          // at the end... have to call it here.
+          //
+          // #1327: in lazy mode this is unecessary.
+          if (!lazy) {
+            self.listener();
+          }
+        });
+      }
+
+      // prevent messing with the input when user is typing,
+      // and force update on blur.
+      this.focused = false;
+      if (!isRange) {
+        this.on('focus', function () {
+          self.focused = true;
+        });
+        this.on('blur', function () {
+          self.focused = false;
+          // do not sync value after fragment removal (#2017)
+          if (!self._frag || self._frag.inserted) {
+            self.rawListener();
+          }
+        });
+      }
+
+      // Now attach the main listener
+      this.listener = this.rawListener = function () {
+        if (composing || !self._bound) {
+          return;
+        }
+        var val = number || isRange ? toNumber(el.value) : el.value;
+        self.set(val);
+        // force update on next tick to avoid lock & same value
+        // also only update when user is not typing
+        nextTick(function () {
+          if (self._bound && !self.focused) {
+            self.update(self._watcher.value);
+          }
+        });
+      };
+
+      // apply debounce
+      if (debounce) {
+        this.listener = _debounce(this.listener, debounce);
+      }
+
+      // Support jQuery events, since jQuery.trigger() doesn't
+      // trigger native events in some cases and some plugins
+      // rely on $.trigger()
+      //
+      // We want to make sure if a listener is attached using
+      // jQuery, it is also removed with jQuery, that's why
+      // we do the check for each directive instance and
+      // store that check result on itself. This also allows
+      // easier test coverage control by unsetting the global
+      // jQuery variable in tests.
+      this.hasjQuery = typeof jQuery === 'function';
+      if (this.hasjQuery) {
+        jQuery(el).on('change', this.listener);
+        if (!lazy) {
+          jQuery(el).on('input', this.listener);
+        }
+      } else {
+        this.on('change', this.listener);
+        if (!lazy) {
+          this.on('input', this.listener);
+        }
+      }
+
+      // IE9 doesn't fire input event on backspace/del/cut
+      if (!lazy && isIE9) {
+        this.on('cut', function () {
+          nextTick(self.listener);
+        });
+        this.on('keyup', function (e) {
+          if (e.keyCode === 46 || e.keyCode === 8) {
+            self.listener();
+          }
+        });
+      }
+
+      // set initial value if present
+      if (el.hasAttribute('value') || el.tagName === 'TEXTAREA' && el.value.trim()) {
+        this.afterBind = this.listener;
+      }
+    },
+
+    update: function update(value) {
+      this.el.value = _toString(value);
+    },
+
+    unbind: function unbind() {
+      var el = this.el;
+      if (this.hasjQuery) {
+        jQuery(el).off('change', this.listener);
+        jQuery(el).off('input', this.listener);
+      }
+    }
+  };
+
+  var handlers = {
+    text: text$2,
+    radio: radio,
+    select: select,
+    checkbox: checkbox
+  };
+
+  var model = {
+
+    priority: MODEL,
+    twoWay: true,
+    handlers: handlers,
+    params: ['lazy', 'number', 'debounce'],
+
+    /**
+     * Possible elements:
+     *   <select>
+     *   <textarea>
+     *   <input type="*">
+     *     - text
+     *     - checkbox
+     *     - radio
+     *     - number
+     */
+
+    bind: function bind() {
+      // friendly warning...
+      this.checkFilters();
+      if (this.hasRead && !this.hasWrite) {
+        'development' !== 'production' && warn('It seems you are using a read-only filter with ' + 'v-model. You might want to use a two-way filter ' + 'to ensure correct behavior.');
+      }
+      var el = this.el;
+      var tag = el.tagName;
+      var handler;
+      if (tag === 'INPUT') {
+        handler = handlers[el.type] || handlers.text;
+      } else if (tag === 'SELECT') {
+        handler = handlers.select;
+      } else if (tag === 'TEXTAREA') {
+        handler = handlers.text;
+      } else {
+        'development' !== 'production' && warn('v-model does not support element type: ' + tag);
+        return;
+      }
+      el.__v_model = this;
+      handler.bind.call(this);
+      this.update = handler.update;
+      this._unbind = handler.unbind;
+    },
+
+    /**
+     * Check read/write filter stats.
+     */
+
+    checkFilters: function checkFilters() {
+      var filters = this.filters;
+      if (!filters) return;
+      var i = filters.length;
+      while (i--) {
+        var filter = resolveAsset(this.vm.$options, 'filters', filters[i].name);
+        if (typeof filter === 'function' || filter.read) {
+          this.hasRead = true;
+        }
+        if (filter.write) {
+          this.hasWrite = true;
+        }
+      }
+    },
+
+    unbind: function unbind() {
+      this.el.__v_model = null;
+      this._unbind && this._unbind();
+    }
+  };
+
+  var show = {
+
+    bind: function bind() {
+      // check else block
+      var next = this.el.nextElementSibling;
+      if (next && getAttr(next, 'v-else') !== null) {
+        this.elseEl = next;
+      }
+    },
+
+    update: function update(value) {
+      this.apply(this.el, value);
+      if (this.elseEl) {
+        this.apply(this.elseEl, !value);
+      }
+    },
+
+    apply: function apply(el, value) {
+      if (inDoc(el)) {
+        applyTransition(el, value ? 1 : -1, toggle, this.vm);
+      } else {
+        toggle();
+      }
+      function toggle() {
+        el.style.display = value ? '' : 'none';
+      }
     }
   };
 
@@ -3528,7 +4232,7 @@ var expression = Object.freeze({
    */
 
   function isRealTemplate(node) {
-    return isTemplate(node) && isFragment(node.content);
+    return isTemplate(node) && node.content instanceof DocumentFragment;
   }
 
   var tagRE$1 = /<([\w:]+)/;
@@ -3546,8 +4250,7 @@ var expression = Object.freeze({
 
   function stringToFragment(templateString, raw) {
     // try a cache hit first
-    var cacheKey = raw ? templateString : templateString.trim();
-    var hit = templateCache.get(cacheKey);
+    var hit = templateCache.get(templateString);
     if (hit) {
       return hit;
     }
@@ -3560,6 +4263,7 @@ var expression = Object.freeze({
       // text only, return a single text node.
       frag.appendChild(document.createTextNode(templateString));
     } else {
+
       var tag = tagMatch && tagMatch[1];
       var wrap = map[tag] || map.efault;
       var depth = wrap[0];
@@ -3567,6 +4271,9 @@ var expression = Object.freeze({
       var suffix = wrap[2];
       var node = document.createElement('div');
 
+      if (!raw) {
+        templateString = templateString.trim();
+      }
       node.innerHTML = prefix + templateString + suffix;
       while (depth--) {
         node = node.lastChild;
@@ -3579,10 +4286,8 @@ var expression = Object.freeze({
         frag.appendChild(child);
       }
     }
-    if (!raw) {
-      trimNode(frag);
-    }
-    templateCache.put(cacheKey, frag);
+
+    templateCache.put(templateString, frag);
     return frag;
   }
 
@@ -3715,7 +4420,7 @@ var expression = Object.freeze({
 
     // if the template is already a document fragment,
     // do nothing
-    if (isFragment(template)) {
+    if (template instanceof DocumentFragment) {
       trimNode(template);
       return shouldClone ? cloneNode(template) : template;
     }
@@ -3745,48 +4450,10 @@ var expression = Object.freeze({
     return frag && shouldClone ? cloneNode(frag) : frag;
   }
 
-var template = Object.freeze({
+  var template = Object.freeze({
     cloneNode: cloneNode,
     parseTemplate: parseTemplate
   });
-
-  var html = {
-
-    bind: function bind() {
-      // a comment node means this is a binding for
-      // {{{ inline unescaped html }}}
-      if (this.el.nodeType === 8) {
-        // hold nodes
-        this.nodes = [];
-        // replace the placeholder with proper anchor
-        this.anchor = createAnchor('v-html');
-        replace(this.el, this.anchor);
-      }
-    },
-
-    update: function update(value) {
-      value = _toString(value);
-      if (this.nodes) {
-        this.swap(value);
-      } else {
-        this.el.innerHTML = value;
-      }
-    },
-
-    swap: function swap(value) {
-      // remove old nodes
-      var i = this.nodes.length;
-      while (i--) {
-        remove(this.nodes[i]);
-      }
-      // convert new value to a fragment
-      // do not attempt to retrieve from id selector
-      var frag = parseTemplate(value, true, true);
-      // save a reference to these nodes so we can remove later
-      this.nodes = toArray(frag.childNodes);
-      before(frag, this.anchor);
-    }
-  };
 
   /**
    * Abstraction for a partially-compiled fragment.
@@ -3811,7 +4478,7 @@ var template = Object.freeze({
     this.unlink = linker(vm, frag, host, scope, this);
     var single = this.single = frag.childNodes.length === 1 &&
     // do not go single mode if the only node is an anchor
-    !frag.childNodes[0].__v_anchor;
+    !frag.childNodes[0].__vue_anchor;
     if (single) {
       this.node = frag.childNodes[0];
       this.before = singleBefore;
@@ -3825,7 +4492,7 @@ var template = Object.freeze({
       this.before = multiBefore;
       this.remove = multiRemove;
     }
-    this.node.__v_frag = this;
+    this.node.__vfrag__ = this;
   }
 
   /**
@@ -3838,12 +4505,23 @@ var template = Object.freeze({
 
   Fragment.prototype.callHook = function (hook) {
     var i, l;
-    for (i = 0, l = this.childFrags.length; i < l; i++) {
-      this.childFrags[i].callHook(hook);
-    }
     for (i = 0, l = this.children.length; i < l; i++) {
       hook(this.children[i]);
     }
+    for (i = 0, l = this.childFrags.length; i < l; i++) {
+      this.childFrags[i].callHook(hook);
+    }
+  };
+
+  /**
+   * Destroy the fragment.
+   */
+
+  Fragment.prototype.destroy = function () {
+    if (this.parentFrag) {
+      this.parentFrag.childFrags.$remove(this);
+    }
+    this.unlink();
   };
 
   /**
@@ -3870,7 +4548,7 @@ var template = Object.freeze({
     this.inserted = false;
     var shouldCallRemove = inDoc(this.node);
     var self = this;
-    this.beforeRemove();
+    self.callHook(destroyChild);
     removeWithTransition(this.node, this.vm, function () {
       if (shouldCallRemove) {
         self.callHook(detach);
@@ -3906,7 +4584,7 @@ var template = Object.freeze({
     this.inserted = false;
     var self = this;
     var shouldCallRemove = inDoc(this.node);
-    this.beforeRemove();
+    self.callHook(destroyChild);
     removeNodeRange(this.node, this.end, this.vm, this.frag, function () {
       if (shouldCallRemove) {
         self.callHook(detach);
@@ -3914,46 +4592,6 @@ var template = Object.freeze({
       self.destroy();
     });
   }
-
-  /**
-   * Prepare the fragment for removal.
-   */
-
-  Fragment.prototype.beforeRemove = function () {
-    var i, l;
-    for (i = 0, l = this.childFrags.length; i < l; i++) {
-      // call the same method recursively on child
-      // fragments, depth-first
-      this.childFrags[i].beforeRemove(false);
-    }
-    for (i = 0, l = this.children.length; i < l; i++) {
-      // Call destroy for all contained instances,
-      // with remove:false and defer:true.
-      // Defer is necessary because we need to
-      // keep the children to call detach hooks
-      // on them.
-      this.children[i].$destroy(false, true);
-    }
-    var dirs = this.unlink.dirs;
-    for (i = 0, l = dirs.length; i < l; i++) {
-      // disable the watchers on all the directives
-      // so that the rendered content stays the same
-      // during removal.
-      dirs[i]._watcher && dirs[i]._watcher.teardown();
-    }
-  };
-
-  /**
-   * Destroy the fragment.
-   */
-
-  Fragment.prototype.destroy = function () {
-    if (this.parentFrag) {
-      this.parentFrag.childFrags.$remove(this);
-    }
-    this.node.__v_frag = null;
-    this.unlink();
-  };
 
   /**
    * Call attach hook for a Vue instance.
@@ -3965,6 +4603,20 @@ var template = Object.freeze({
     if (!child._isAttached) {
       child._callHook('attached');
     }
+  }
+
+  /**
+   * Call destroy for all contained instances,
+   * with remove:false and defer:true.
+   * Defer is necessary because we need to
+   * keep the children to call detach hooks
+   * on them.
+   *
+   * @param {Vue} child
+   */
+
+  function destroyChild(child) {
+    child.$destroy(false, true);
   }
 
   /**
@@ -4003,7 +4655,7 @@ var template = Object.freeze({
     var linker;
     var cid = vm.constructor.cid;
     if (cid > 0) {
-      var cacheId = cid + (isString ? el : getOuterHTML(el));
+      var cacheId = cid + (isString ? el : el.outerHTML);
       linker = linkerCache.get(cacheId);
       if (!linker) {
         linker = compile(template, vm.$options, true);
@@ -4028,18 +4680,68 @@ var template = Object.freeze({
     return new Fragment(this.linker, this.vm, frag, host, scope, parentFrag);
   };
 
-  var ON = 700;
-  var MODEL = 800;
-  var BIND = 850;
-  var TRANSITION = 1100;
-  var EL = 1500;
-  var COMPONENT = 1500;
-  var PARTIAL = 1750;
-  var FOR = 2000;
-  var IF = 2000;
-  var SLOT = 2100;
+  var vIf = {
 
-  var uid$3 = 0;
+    priority: IF,
+
+    bind: function bind() {
+      var el = this.el;
+      if (!el.__vue__) {
+        // check else block
+        var next = el.nextElementSibling;
+        if (next && getAttr(next, 'v-else') !== null) {
+          remove(next);
+          this.elseFactory = new FragmentFactory(this.vm, next);
+        }
+        // check main block
+        this.anchor = createAnchor('v-if');
+        replace(el, this.anchor);
+        this.factory = new FragmentFactory(this.vm, el);
+      } else {
+        'development' !== 'production' && warn('v-if="' + this.expression + '" cannot be ' + 'used on an instance root element.');
+        this.invalid = true;
+      }
+    },
+
+    update: function update(value) {
+      if (this.invalid) return;
+      if (value) {
+        if (!this.frag) {
+          this.insert();
+        }
+      } else {
+        this.remove();
+      }
+    },
+
+    insert: function insert() {
+      if (this.elseFrag) {
+        this.elseFrag.remove();
+        this.elseFrag = null;
+      }
+      this.frag = this.factory.create(this._host, this._scope, this._frag);
+      this.frag.before(this.anchor);
+    },
+
+    remove: function remove() {
+      if (this.frag) {
+        this.frag.remove();
+        this.frag = null;
+      }
+      if (this.elseFactory && !this.elseFrag) {
+        this.elseFrag = this.elseFactory.create(this._host, this._scope, this._frag);
+        this.elseFrag.before(this.anchor);
+      }
+    },
+
+    unbind: function unbind() {
+      if (this.frag) {
+        this.frag.destroy();
+      }
+    }
+  };
+
+  var uid$1 = 0;
 
   var vFor = {
 
@@ -4048,8 +4750,8 @@ var template = Object.freeze({
     params: ['track-by', 'stagger', 'enter-stagger', 'leave-stagger'],
 
     bind: function bind() {
-      // support "item in/of items" syntax
-      var inMatch = this.expression.match(/(.*) (?:in|of) (.*)/);
+      // support "item in items" syntax
+      var inMatch = this.expression.match(/(.*) in (.*)/);
       if (inMatch) {
         var itMatch = inMatch[1].match(/\((.*),(.*)\)/);
         if (itMatch) {
@@ -4067,7 +4769,7 @@ var template = Object.freeze({
       }
 
       // uid as a cache identifier
-      this.id = '__v-for__' + ++uid$3;
+      this.id = '__v-for__' + ++uid$1;
 
       // check if this is an option list,
       // so that we know if we need to update the <select>'s
@@ -4176,22 +4878,12 @@ var template = Object.freeze({
       // from cache)
       var removalIndex = 0;
       var totalRemoved = oldFrags.length - frags.length;
-      // when removing a large number of fragments, watcher removal
-      // turns out to be a perf bottleneck, so we batch the watcher
-      // removals into a single filter call!
-      this.vm._vForRemoving = true;
       for (i = 0, l = oldFrags.length; i < l; i++) {
         frag = oldFrags[i];
         if (!frag.reused) {
           this.deleteCachedFrag(frag);
           this.remove(frag, removalIndex++, totalRemoved, inDocument);
         }
-      }
-      this.vm._vForRemoving = false;
-      if (removalIndex) {
-        this.vm._watchers = this.vm._watchers.filter(function (w) {
-          return w.active;
-        });
       }
 
       // Final pass, move/insert new fragments into the
@@ -4317,7 +5009,7 @@ var template = Object.freeze({
         var anchor = frag.staggerAnchor;
         if (!anchor) {
           anchor = frag.staggerAnchor = createAnchor('stagger-anchor');
-          anchor.__v_frag = frag;
+          anchor.__vfrag__ = frag;
         }
         after(anchor, prevEl);
         var op = frag.staggerCb = cancellable(function () {
@@ -4372,14 +5064,6 @@ var template = Object.freeze({
      */
 
     move: function move(frag, prevEl) {
-      // fix a common issue with Sortable:
-      // if prevEl doesn't have nextSibling, this means it's
-      // been dragged after the end anchor. Just re-position
-      // the end anchor to the end of the container.
-      /* istanbul ignore if */
-      if (!prevEl.nextSibling) {
-        this.end.parentNode.appendChild(this.end);
-      }
       frag.before(prevEl.nextSibling, false);
     },
 
@@ -4523,7 +5207,7 @@ var template = Object.freeze({
         }
         return res;
       } else {
-        if (typeof value === 'number' && !isNaN(value)) {
+        if (typeof value === 'number') {
           value = range(value);
         }
         return value || [];
@@ -4566,12 +5250,12 @@ var template = Object.freeze({
     var el = frag.node.previousSibling;
     /* istanbul ignore if */
     if (!el) return;
-    frag = el.__v_frag;
+    frag = el.__vfrag__;
     while ((!frag || frag.forId !== id || !frag.inserted) && el !== anchor) {
       el = el.previousSibling;
       /* istanbul ignore if */
       if (!el) return;
-      frag = el.__v_frag;
+      frag = el.__vfrag__;
     }
     return frag;
   }
@@ -4603,7 +5287,7 @@ var template = Object.freeze({
 
   function range(n) {
     var i = -1;
-    var ret = new Array(Math.floor(n));
+    var ret = new Array(n);
     while (++i < n) {
       ret[i] = i;
     }
@@ -4616,971 +5300,517 @@ var template = Object.freeze({
     };
   }
 
-  var vIf = {
-
-    priority: IF,
+  var html = {
 
     bind: function bind() {
-      var el = this.el;
-      if (!el.__vue__) {
-        // check else block
-        var next = el.nextElementSibling;
-        if (next && getAttr(next, 'v-else') !== null) {
-          remove(next);
-          this.elseFactory = new FragmentFactory(next._context || this.vm, next);
-        }
-        // check main block
-        this.anchor = createAnchor('v-if');
-        replace(el, this.anchor);
-        this.factory = new FragmentFactory(this.vm, el);
+      // a comment node means this is a binding for
+      // {{{ inline unescaped html }}}
+      if (this.el.nodeType === 8) {
+        // hold nodes
+        this.nodes = [];
+        // replace the placeholder with proper anchor
+        this.anchor = createAnchor('v-html');
+        replace(this.el, this.anchor);
+      }
+    },
+
+    update: function update(value) {
+      value = _toString(value);
+      if (this.nodes) {
+        this.swap(value);
       } else {
-        'development' !== 'production' && warn('v-if="' + this.expression + '" cannot be ' + 'used on an instance root element.');
-        this.invalid = true;
+        this.el.innerHTML = value;
       }
     },
 
-    update: function update(value) {
-      if (this.invalid) return;
-      if (value) {
-        if (!this.frag) {
-          this.insert();
-        }
-      } else {
-        this.remove();
-      }
-    },
-
-    insert: function insert() {
-      if (this.elseFrag) {
-        this.elseFrag.remove();
-        this.elseFrag = null;
-      }
-      this.frag = this.factory.create(this._host, this._scope, this._frag);
-      this.frag.before(this.anchor);
-    },
-
-    remove: function remove() {
-      if (this.frag) {
-        this.frag.remove();
-        this.frag = null;
-      }
-      if (this.elseFactory && !this.elseFrag) {
-        this.elseFrag = this.elseFactory.create(this._host, this._scope, this._frag);
-        this.elseFrag.before(this.anchor);
-      }
-    },
-
-    unbind: function unbind() {
-      if (this.frag) {
-        this.frag.destroy();
-      }
-      if (this.elseFrag) {
-        this.elseFrag.destroy();
-      }
-    }
-  };
-
-  var show = {
-
-    bind: function bind() {
-      // check else block
-      var next = this.el.nextElementSibling;
-      if (next && getAttr(next, 'v-else') !== null) {
-        this.elseEl = next;
-      }
-    },
-
-    update: function update(value) {
-      this.apply(this.el, value);
-      if (this.elseEl) {
-        this.apply(this.elseEl, !value);
-      }
-    },
-
-    apply: function apply(el, value) {
-      if (inDoc(el)) {
-        applyTransition(el, value ? 1 : -1, toggle, this.vm);
-      } else {
-        toggle();
-      }
-      function toggle() {
-        el.style.display = value ? '' : 'none';
-      }
-    }
-  };
-
-  var text$2 = {
-
-    bind: function bind() {
-      var self = this;
-      var el = this.el;
-      var isRange = el.type === 'range';
-      var lazy = this.params.lazy;
-      var number = this.params.number;
-      var debounce = this.params.debounce;
-
-      // handle composition events.
-      //   http://blog.evanyou.me/2014/01/03/composition-event/
-      // skip this for Android because it handles composition
-      // events quite differently. Android doesn't trigger
-      // composition events for language input methods e.g.
-      // Chinese, but instead triggers them for spelling
-      // suggestions... (see Discussion/#162)
-      var composing = false;
-      if (!isAndroid && !isRange) {
-        this.on('compositionstart', function () {
-          composing = true;
-        });
-        this.on('compositionend', function () {
-          composing = false;
-          // in IE11 the "compositionend" event fires AFTER
-          // the "input" event, so the input handler is blocked
-          // at the end... have to call it here.
-          //
-          // #1327: in lazy mode this is unecessary.
-          if (!lazy) {
-            self.listener();
-          }
-        });
-      }
-
-      // prevent messing with the input when user is typing,
-      // and force update on blur.
-      this.focused = false;
-      if (!isRange && !lazy) {
-        this.on('focus', function () {
-          self.focused = true;
-        });
-        this.on('blur', function () {
-          self.focused = false;
-        });
-      }
-
-      // Now attach the main listener
-      this.listener = this.rawListener = function () {
-        if (composing || !self._bound) {
-          return;
-        }
-        var val = number || isRange ? toNumber(el.value) : el.value;
-        self.set(val);
-        // force update on next tick to avoid lock & same value
-        // also only update when user is not typing
-        nextTick(function () {
-          if (self._bound && !self.focused) {
-            self.update(self._watcher.value);
-          }
-        });
-      };
-
-      // apply debounce
-      if (debounce) {
-        this.listener = _debounce(this.listener, debounce);
-      }
-
-      // Support jQuery events, since jQuery.trigger() doesn't
-      // trigger native events in some cases and some plugins
-      // rely on $.trigger()
-      //
-      // We want to make sure if a listener is attached using
-      // jQuery, it is also removed with jQuery, that's why
-      // we do the check for each directive instance and
-      // store that check result on itself. This also allows
-      // easier test coverage control by unsetting the global
-      // jQuery variable in tests.
-      this.hasjQuery = typeof jQuery === 'function';
-      if (this.hasjQuery) {
-        var method = jQuery.fn.on ? 'on' : 'bind';
-        jQuery(el)[method]('change', this.rawListener);
-        if (!lazy) {
-          jQuery(el)[method]('input', this.listener);
-        }
-      } else {
-        this.on('change', this.rawListener);
-        if (!lazy) {
-          this.on('input', this.listener);
-        }
-      }
-
-      // IE9 doesn't fire input event on backspace/del/cut
-      if (!lazy && isIE9) {
-        this.on('cut', function () {
-          nextTick(self.listener);
-        });
-        this.on('keyup', function (e) {
-          if (e.keyCode === 46 || e.keyCode === 8) {
-            self.listener();
-          }
-        });
-      }
-
-      // set initial value if present
-      if (el.hasAttribute('value') || el.tagName === 'TEXTAREA' && el.value.trim()) {
-        this.afterBind = this.listener;
-      }
-    },
-
-    update: function update(value) {
-      this.el.value = _toString(value);
-    },
-
-    unbind: function unbind() {
-      var el = this.el;
-      if (this.hasjQuery) {
-        var method = jQuery.fn.off ? 'off' : 'unbind';
-        jQuery(el)[method]('change', this.listener);
-        jQuery(el)[method]('input', this.listener);
-      }
-    }
-  };
-
-  var radio = {
-
-    bind: function bind() {
-      var self = this;
-      var el = this.el;
-
-      this.getValue = function () {
-        // value overwrite via v-bind:value
-        if (el.hasOwnProperty('_value')) {
-          return el._value;
-        }
-        var val = el.value;
-        if (self.params.number) {
-          val = toNumber(val);
-        }
-        return val;
-      };
-
-      this.listener = function () {
-        self.set(self.getValue());
-      };
-      this.on('change', this.listener);
-
-      if (el.hasAttribute('checked')) {
-        this.afterBind = this.listener;
-      }
-    },
-
-    update: function update(value) {
-      this.el.checked = looseEqual(value, this.getValue());
-    }
-  };
-
-  var select = {
-
-    bind: function bind() {
-      var self = this;
-      var el = this.el;
-
-      // method to force update DOM using latest value.
-      this.forceUpdate = function () {
-        if (self._watcher) {
-          self.update(self._watcher.get());
-        }
-      };
-
-      // check if this is a multiple select
-      var multiple = this.multiple = el.hasAttribute('multiple');
-
-      // attach listener
-      this.listener = function () {
-        var value = getValue(el, multiple);
-        value = self.params.number ? isArray(value) ? value.map(toNumber) : toNumber(value) : value;
-        self.set(value);
-      };
-      this.on('change', this.listener);
-
-      // if has initial value, set afterBind
-      var initValue = getValue(el, multiple, true);
-      if (multiple && initValue.length || !multiple && initValue !== null) {
-        this.afterBind = this.listener;
-      }
-
-      // All major browsers except Firefox resets
-      // selectedIndex with value -1 to 0 when the element
-      // is appended to a new parent, therefore we have to
-      // force a DOM update whenever that happens...
-      this.vm.$on('hook:attached', this.forceUpdate);
-    },
-
-    update: function update(value) {
-      var el = this.el;
-      el.selectedIndex = -1;
-      var multi = this.multiple && isArray(value);
-      var options = el.options;
-      var i = options.length;
-      var op, val;
+    swap: function swap(value) {
+      // remove old nodes
+      var i = this.nodes.length;
       while (i--) {
-        op = options[i];
-        val = op.hasOwnProperty('_value') ? op._value : op.value;
-        /* eslint-disable eqeqeq */
-        op.selected = multi ? indexOf$1(value, val) > -1 : looseEqual(value, val);
-        /* eslint-enable eqeqeq */
+        remove(this.nodes[i]);
       }
-    },
-
-    unbind: function unbind() {
-      /* istanbul ignore next */
-      this.vm.$off('hook:attached', this.forceUpdate);
+      // convert new value to a fragment
+      // do not attempt to retrieve from id selector
+      var frag = parseTemplate(value, true, true);
+      // save a reference to these nodes so we can remove later
+      this.nodes = toArray(frag.childNodes);
+      before(frag, this.anchor);
     }
   };
 
-  /**
-   * Get select value
-   *
-   * @param {SelectElement} el
-   * @param {Boolean} multi
-   * @param {Boolean} init
-   * @return {Array|*}
-   */
-
-  function getValue(el, multi, init) {
-    var res = multi ? [] : null;
-    var op, val, selected;
-    for (var i = 0, l = el.options.length; i < l; i++) {
-      op = el.options[i];
-      selected = init ? op.hasAttribute('selected') : op.selected;
-      if (selected) {
-        val = op.hasOwnProperty('_value') ? op._value : op.value;
-        if (multi) {
-          res.push(val);
-        } else {
-          return val;
-        }
-      }
-    }
-    return res;
-  }
-
-  /**
-   * Native Array.indexOf uses strict equal, but in this
-   * case we need to match string/numbers with custom equal.
-   *
-   * @param {Array} arr
-   * @param {*} val
-   */
-
-  function indexOf$1(arr, val) {
-    var i = arr.length;
-    while (i--) {
-      if (looseEqual(arr[i], val)) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  var checkbox = {
+  var text = {
 
     bind: function bind() {
-      var self = this;
-      var el = this.el;
-
-      this.getValue = function () {
-        return el.hasOwnProperty('_value') ? el._value : self.params.number ? toNumber(el.value) : el.value;
-      };
-
-      function getBooleanValue() {
-        var val = el.checked;
-        if (val && el.hasOwnProperty('_trueValue')) {
-          return el._trueValue;
-        }
-        if (!val && el.hasOwnProperty('_falseValue')) {
-          return el._falseValue;
-        }
-        return val;
-      }
-
-      this.listener = function () {
-        var model = self._watcher.value;
-        if (isArray(model)) {
-          var val = self.getValue();
-          if (el.checked) {
-            if (indexOf(model, val) < 0) {
-              model.push(val);
-            }
-          } else {
-            model.$remove(val);
-          }
-        } else {
-          self.set(getBooleanValue());
-        }
-      };
-
-      this.on('change', this.listener);
-      if (el.hasAttribute('checked')) {
-        this.afterBind = this.listener;
-      }
+      this.attr = this.el.nodeType === 3 ? 'data' : 'textContent';
     },
 
     update: function update(value) {
-      var el = this.el;
-      if (isArray(value)) {
-        el.checked = indexOf(value, this.getValue()) > -1;
-      } else {
-        if (el.hasOwnProperty('_trueValue')) {
-          el.checked = looseEqual(value, el._trueValue);
-        } else {
-          el.checked = !!value;
-        }
-      }
-    }
-  };
-
-  var handlers = {
-    text: text$2,
-    radio: radio,
-    select: select,
-    checkbox: checkbox
-  };
-
-  var model = {
-
-    priority: MODEL,
-    twoWay: true,
-    handlers: handlers,
-    params: ['lazy', 'number', 'debounce'],
-
-    /**
-     * Possible elements:
-     *   <select>
-     *   <textarea>
-     *   <input type="*">
-     *     - text
-     *     - checkbox
-     *     - radio
-     *     - number
-     */
-
-    bind: function bind() {
-      // friendly warning...
-      this.checkFilters();
-      if (this.hasRead && !this.hasWrite) {
-        'development' !== 'production' && warn('It seems you are using a read-only filter with ' + 'v-model. You might want to use a two-way filter ' + 'to ensure correct behavior.');
-      }
-      var el = this.el;
-      var tag = el.tagName;
-      var handler;
-      if (tag === 'INPUT') {
-        handler = handlers[el.type] || handlers.text;
-      } else if (tag === 'SELECT') {
-        handler = handlers.select;
-      } else if (tag === 'TEXTAREA') {
-        handler = handlers.text;
-      } else {
-        'development' !== 'production' && warn('v-model does not support element type: ' + tag);
-        return;
-      }
-      el.__v_model = this;
-      handler.bind.call(this);
-      this.update = handler.update;
-      this._unbind = handler.unbind;
-    },
-
-    /**
-     * Check read/write filter stats.
-     */
-
-    checkFilters: function checkFilters() {
-      var filters = this.filters;
-      if (!filters) return;
-      var i = filters.length;
-      while (i--) {
-        var filter = resolveAsset(this.vm.$options, 'filters', filters[i].name);
-        if (typeof filter === 'function' || filter.read) {
-          this.hasRead = true;
-        }
-        if (filter.write) {
-          this.hasWrite = true;
-        }
-      }
-    },
-
-    unbind: function unbind() {
-      this.el.__v_model = null;
-      this._unbind && this._unbind();
-    }
-  };
-
-  // keyCode aliases
-  var keyCodes = {
-    esc: 27,
-    tab: 9,
-    enter: 13,
-    space: 32,
-    'delete': [8, 46],
-    up: 38,
-    left: 37,
-    right: 39,
-    down: 40
-  };
-
-  function keyFilter(handler, keys) {
-    var codes = keys.map(function (key) {
-      var charCode = key.charCodeAt(0);
-      if (charCode > 47 && charCode < 58) {
-        return parseInt(key, 10);
-      }
-      if (key.length === 1) {
-        charCode = key.toUpperCase().charCodeAt(0);
-        if (charCode > 64 && charCode < 91) {
-          return charCode;
-        }
-      }
-      return keyCodes[key];
-    });
-    codes = [].concat.apply([], codes);
-    return function keyHandler(e) {
-      if (codes.indexOf(e.keyCode) > -1) {
-        return handler.call(this, e);
-      }
-    };
-  }
-
-  function stopFilter(handler) {
-    return function stopHandler(e) {
-      e.stopPropagation();
-      return handler.call(this, e);
-    };
-  }
-
-  function preventFilter(handler) {
-    return function preventHandler(e) {
-      e.preventDefault();
-      return handler.call(this, e);
-    };
-  }
-
-  function selfFilter(handler) {
-    return function selfHandler(e) {
-      if (e.target === e.currentTarget) {
-        return handler.call(this, e);
-      }
-    };
-  }
-
-  var on$1 = {
-
-    priority: ON,
-    acceptStatement: true,
-    keyCodes: keyCodes,
-
-    bind: function bind() {
-      // deal with iframes
-      if (this.el.tagName === 'IFRAME' && this.arg !== 'load') {
-        var self = this;
-        this.iframeBind = function () {
-          on(self.el.contentWindow, self.arg, self.handler, self.modifiers.capture);
-        };
-        this.on('load', this.iframeBind);
-      }
-    },
-
-    update: function update(handler) {
-      // stub a noop for v-on with no value,
-      // e.g. @mousedown.prevent
-      if (!this.descriptor.raw) {
-        handler = function () {};
-      }
-
-      if (typeof handler !== 'function') {
-        'development' !== 'production' && warn('v-on:' + this.arg + '="' + this.expression + '" expects a function value, ' + 'got ' + handler);
-        return;
-      }
-
-      // apply modifiers
-      if (this.modifiers.stop) {
-        handler = stopFilter(handler);
-      }
-      if (this.modifiers.prevent) {
-        handler = preventFilter(handler);
-      }
-      if (this.modifiers.self) {
-        handler = selfFilter(handler);
-      }
-      // key filter
-      var keys = Object.keys(this.modifiers).filter(function (key) {
-        return key !== 'stop' && key !== 'prevent';
-      });
-      if (keys.length) {
-        handler = keyFilter(handler, keys);
-      }
-
-      this.reset();
-      this.handler = handler;
-
-      if (this.iframeBind) {
-        this.iframeBind();
-      } else {
-        on(this.el, this.arg, this.handler, this.modifiers.capture);
-      }
-    },
-
-    reset: function reset() {
-      var el = this.iframeBind ? this.el.contentWindow : this.el;
-      if (this.handler) {
-        off(el, this.arg, this.handler);
-      }
-    },
-
-    unbind: function unbind() {
-      this.reset();
-    }
-  };
-
-  var prefixes = ['-webkit-', '-moz-', '-ms-'];
-  var camelPrefixes = ['Webkit', 'Moz', 'ms'];
-  var importantRE = /!important;?$/;
-  var propCache = Object.create(null);
-
-  var testEl = null;
-
-  var style = {
-
-    deep: true,
-
-    update: function update(value) {
-      if (typeof value === 'string') {
-        this.el.style.cssText = value;
-      } else if (isArray(value)) {
-        this.handleObject(value.reduce(extend, {}));
-      } else {
-        this.handleObject(value || {});
-      }
-    },
-
-    handleObject: function handleObject(value) {
-      // cache object styles so that only changed props
-      // are actually updated.
-      var cache = this.cache || (this.cache = {});
-      var name, val;
-      for (name in cache) {
-        if (!(name in value)) {
-          this.handleSingle(name, null);
-          delete cache[name];
-        }
-      }
-      for (name in value) {
-        val = value[name];
-        if (val !== cache[name]) {
-          cache[name] = val;
-          this.handleSingle(name, val);
-        }
-      }
-    },
-
-    handleSingle: function handleSingle(prop, value) {
-      prop = normalize(prop);
-      if (!prop) return; // unsupported prop
-      // cast possible numbers/booleans into strings
-      if (value != null) value += '';
-      if (value) {
-        var isImportant = importantRE.test(value) ? 'important' : '';
-        if (isImportant) {
-          value = value.replace(importantRE, '').trim();
-        }
-        this.el.style.setProperty(prop, value, isImportant);
-      } else {
-        this.el.style.removeProperty(prop);
-      }
-    }
-
-  };
-
-  /**
-   * Normalize a CSS property name.
-   * - cache result
-   * - auto prefix
-   * - camelCase -> dash-case
-   *
-   * @param {String} prop
-   * @return {String}
-   */
-
-  function normalize(prop) {
-    if (propCache[prop]) {
-      return propCache[prop];
-    }
-    var res = prefix(prop);
-    propCache[prop] = propCache[res] = res;
-    return res;
-  }
-
-  /**
-   * Auto detect the appropriate prefix for a CSS property.
-   * https://gist.github.com/paulirish/523692
-   *
-   * @param {String} prop
-   * @return {String}
-   */
-
-  function prefix(prop) {
-    prop = hyphenate(prop);
-    var camel = camelize(prop);
-    var upper = camel.charAt(0).toUpperCase() + camel.slice(1);
-    if (!testEl) {
-      testEl = document.createElement('div');
-    }
-    var i = prefixes.length;
-    var prefixed;
-    while (i--) {
-      prefixed = camelPrefixes[i] + upper;
-      if (prefixed in testEl.style) {
-        return prefixes[i] + prop;
-      }
-    }
-    if (camel in testEl.style) {
-      return prop;
-    }
-  }
-
-  // xlink
-  var xlinkNS = 'http://www.w3.org/1999/xlink';
-  var xlinkRE = /^xlink:/;
-
-  // check for attributes that prohibit interpolations
-  var disallowedInterpAttrRE = /^v-|^:|^@|^(?:is|transition|transition-mode|debounce|track-by|stagger|enter-stagger|leave-stagger)$/;
-  // these attributes should also set their corresponding properties
-  // because they only affect the initial state of the element
-  var attrWithPropsRE = /^(?:value|checked|selected|muted)$/;
-  // these attributes expect enumrated values of "true" or "false"
-  // but are not boolean attributes
-  var enumeratedAttrRE = /^(?:draggable|contenteditable|spellcheck)$/;
-
-  // these attributes should set a hidden property for
-  // binding v-model to object values
-  var modelProps = {
-    value: '_value',
-    'true-value': '_trueValue',
-    'false-value': '_falseValue'
-  };
-
-  var bind$1 = {
-
-    priority: BIND,
-
-    bind: function bind() {
-      var attr = this.arg;
-      var tag = this.el.tagName;
-      // should be deep watch on object mode
-      if (!attr) {
-        this.deep = true;
-      }
-      // handle interpolation bindings
-      var descriptor = this.descriptor;
-      var tokens = descriptor.interp;
-      if (tokens) {
-        // handle interpolations with one-time tokens
-        if (descriptor.hasOneTime) {
-          this.expression = tokensToExp(tokens, this._scope || this.vm);
-        }
-
-        // only allow binding on native attributes
-        if (disallowedInterpAttrRE.test(attr) || attr === 'name' && (tag === 'PARTIAL' || tag === 'SLOT')) {
-          'development' !== 'production' && warn(attr + '="' + descriptor.raw + '": ' + 'attribute interpolation is not allowed in Vue.js ' + 'directives and special attributes.');
-          this.el.removeAttribute(attr);
-          this.invalid = true;
-        }
-
-        /* istanbul ignore if */
-        if ('development' !== 'production') {
-          var raw = attr + '="' + descriptor.raw + '": ';
-          // warn src
-          if (attr === 'src') {
-            warn(raw + 'interpolation in "src" attribute will cause ' + 'a 404 request. Use v-bind:src instead.');
-          }
-
-          // warn style
-          if (attr === 'style') {
-            warn(raw + 'interpolation in "style" attribute will cause ' + 'the attribute to be discarded in Internet Explorer. ' + 'Use v-bind:style instead.');
-          }
-        }
-      }
-    },
-
-    update: function update(value) {
-      if (this.invalid) {
-        return;
-      }
-      var attr = this.arg;
-      if (this.arg) {
-        this.handleSingle(attr, value);
-      } else {
-        this.handleObject(value || {});
-      }
-    },
-
-    // share object handler with v-bind:class
-    handleObject: style.handleObject,
-
-    handleSingle: function handleSingle(attr, value) {
-      var el = this.el;
-      var interp = this.descriptor.interp;
-      if (this.modifiers.camel) {
-        attr = camelize(attr);
-      }
-      if (!interp && attrWithPropsRE.test(attr) && attr in el) {
-        el[attr] = attr === 'value' ? value == null // IE9 will set input.value to "null" for null...
-        ? '' : value : value;
-      }
-      // set model props
-      var modelProp = modelProps[attr];
-      if (!interp && modelProp) {
-        el[modelProp] = value;
-        // update v-model if present
-        var model = el.__v_model;
-        if (model) {
-          model.listener();
-        }
-      }
-      // do not set value attribute for textarea
-      if (attr === 'value' && el.tagName === 'TEXTAREA') {
-        el.removeAttribute(attr);
-        return;
-      }
-      // update attribute
-      if (enumeratedAttrRE.test(attr)) {
-        el.setAttribute(attr, value ? 'true' : 'false');
-      } else if (value != null && value !== false) {
-        if (attr === 'class') {
-          // handle edge case #1960:
-          // class interpolation should not overwrite Vue transition class
-          if (el.__v_trans) {
-            value += ' ' + el.__v_trans.id + '-transition';
-          }
-          setClass(el, value);
-        } else if (xlinkRE.test(attr)) {
-          el.setAttributeNS(xlinkNS, attr, value === true ? '' : value);
-        } else {
-          el.setAttribute(attr, value === true ? '' : value);
-        }
-      } else {
-        el.removeAttribute(attr);
-      }
-    }
-  };
-
-  var el = {
-
-    priority: EL,
-
-    bind: function bind() {
-      /* istanbul ignore if */
-      if (!this.arg) {
-        return;
-      }
-      var id = this.id = camelize(this.arg);
-      var refs = (this._scope || this.vm).$els;
-      if (hasOwn(refs, id)) {
-        refs[id] = this.el;
-      } else {
-        defineReactive(refs, id, this.el);
-      }
-    },
-
-    unbind: function unbind() {
-      var refs = (this._scope || this.vm).$els;
-      if (refs[this.id] === this.el) {
-        refs[this.id] = null;
-      }
-    }
-  };
-
-  var ref = {
-    bind: function bind() {
-      'development' !== 'production' && warn('v-ref:' + this.arg + ' must be used on a child ' + 'component. Found on <' + this.el.tagName.toLowerCase() + '>.');
-    }
-  };
-
-  var cloak = {
-    bind: function bind() {
-      var el = this.el;
-      this.vm.$once('pre-hook:compiled', function () {
-        el.removeAttribute('v-cloak');
-      });
+      this.el[this.attr] = _toString(value);
     }
   };
 
   // must export plain object
-  var directives = {
-    text: text$1,
+  var publicDirectives = {
+    text: text,
     html: html,
     'for': vFor,
     'if': vIf,
     show: show,
     model: model,
-    on: on$1,
-    bind: bind$1,
+    on: on,
+    bind: bind,
     el: el,
     ref: ref,
     cloak: cloak
   };
 
-  var vClass = {
+  var queue$1 = [];
+  var queued = false;
 
-    deep: true,
+  /**
+   * Push a job into the queue.
+   *
+   * @param {Function} job
+   */
 
-    update: function update(value) {
-      if (value && typeof value === 'string') {
-        this.handleObject(stringToObject(value));
-      } else if (isPlainObject(value)) {
-        this.handleObject(value);
-      } else if (isArray(value)) {
-        this.handleArray(value);
+  function pushJob(job) {
+    queue$1.push(job);
+    if (!queued) {
+      queued = true;
+      nextTick(flush);
+    }
+  }
+
+  /**
+   * Flush the queue, and do one forced reflow before
+   * triggering transitions.
+   */
+
+  function flush() {
+    // Force layout
+    var f = document.documentElement.offsetHeight;
+    for (var i = 0; i < queue$1.length; i++) {
+      queue$1[i]();
+    }
+    queue$1 = [];
+    queued = false;
+    // dummy return, so js linters don't complain about
+    // unused variable f
+    return f;
+  }
+
+  var TYPE_TRANSITION = 1;
+  var TYPE_ANIMATION = 2;
+  var transDurationProp = transitionProp + 'Duration';
+  var animDurationProp = animationProp + 'Duration';
+
+  /**
+   * A Transition object that encapsulates the state and logic
+   * of the transition.
+   *
+   * @param {Element} el
+   * @param {String} id
+   * @param {Object} hooks
+   * @param {Vue} vm
+   */
+  function Transition(el, id, hooks, vm) {
+    this.id = id;
+    this.el = el;
+    this.enterClass = id + '-enter';
+    this.leaveClass = id + '-leave';
+    this.hooks = hooks;
+    this.vm = vm;
+    // async state
+    this.pendingCssEvent = this.pendingCssCb = this.cancel = this.pendingJsCb = this.op = this.cb = null;
+    this.justEntered = false;
+    this.entered = this.left = false;
+    this.typeCache = {};
+    // bind
+    var self = this;['enterNextTick', 'enterDone', 'leaveNextTick', 'leaveDone'].forEach(function (m) {
+      self[m] = bind$1(self[m], self);
+    });
+  }
+
+  var p$1 = Transition.prototype;
+
+  /**
+   * Start an entering transition.
+   *
+   * 1. enter transition triggered
+   * 2. call beforeEnter hook
+   * 3. add enter class
+   * 4. insert/show element
+   * 5. call enter hook (with possible explicit js callback)
+   * 6. reflow
+   * 7. based on transition type:
+   *    - transition:
+   *        remove class now, wait for transitionend,
+   *        then done if there's no explicit js callback.
+   *    - animation:
+   *        wait for animationend, remove class,
+   *        then done if there's no explicit js callback.
+   *    - no css transition:
+   *        done now if there's no explicit js callback.
+   * 8. wait for either done or js callback, then call
+   *    afterEnter hook.
+   *
+   * @param {Function} op - insert/show the element
+   * @param {Function} [cb]
+   */
+
+  p$1.enter = function (op, cb) {
+    this.cancelPending();
+    this.callHook('beforeEnter');
+    this.cb = cb;
+    addClass(this.el, this.enterClass);
+    op();
+    this.entered = false;
+    this.callHookWithCb('enter');
+    if (this.entered) {
+      return; // user called done synchronously.
+    }
+    this.cancel = this.hooks && this.hooks.enterCancelled;
+    pushJob(this.enterNextTick);
+  };
+
+  /**
+   * The "nextTick" phase of an entering transition, which is
+   * to be pushed into a queue and executed after a reflow so
+   * that removing the class can trigger a CSS transition.
+   */
+
+  p$1.enterNextTick = function () {
+
+    // Important hack:
+    // in Chrome, if a just-entered element is applied the
+    // leave class while its interpolated property still has
+    // a very small value (within one frame), Chrome will
+    // skip the leave transition entirely and not firing the
+    // transtionend event. Therefore we need to protected
+    // against such cases using a one-frame timeout.
+    this.justEntered = true;
+    var self = this;
+    setTimeout(function () {
+      self.justEntered = false;
+    }, 17);
+
+    var enterDone = this.enterDone;
+    var type = this.getCssTransitionType(this.enterClass);
+    if (!this.pendingJsCb) {
+      if (type === TYPE_TRANSITION) {
+        // trigger transition by removing enter class now
+        removeClass(this.el, this.enterClass);
+        this.setupCssCb(transitionEndEvent, enterDone);
+      } else if (type === TYPE_ANIMATION) {
+        this.setupCssCb(animationEndEvent, enterDone);
       } else {
-        this.cleanup();
+        enterDone();
       }
-    },
+    } else if (type === TYPE_TRANSITION) {
+      removeClass(this.el, this.enterClass);
+    }
+  };
 
-    handleObject: function handleObject(value) {
-      this.cleanup(value);
-      var keys = this.prevKeys = Object.keys(value);
-      for (var i = 0, l = keys.length; i < l; i++) {
-        var key = keys[i];
-        if (value[key]) {
-          addClass(this.el, key);
-        } else {
-          removeClass(this.el, key);
-        }
-      }
-    },
+  /**
+   * The "cleanup" phase of an entering transition.
+   */
 
-    handleArray: function handleArray(value) {
-      this.cleanup(value);
-      for (var i = 0, l = value.length; i < l; i++) {
-        if (value[i]) {
-          addClass(this.el, value[i]);
-        }
-      }
-      this.prevKeys = value.slice();
-    },
+  p$1.enterDone = function () {
+    this.entered = true;
+    this.cancel = this.pendingJsCb = null;
+    removeClass(this.el, this.enterClass);
+    this.callHook('afterEnter');
+    if (this.cb) this.cb();
+  };
 
-    cleanup: function cleanup(value) {
-      if (this.prevKeys) {
-        var i = this.prevKeys.length;
-        while (i--) {
-          var key = this.prevKeys[i];
-          if (key && (!value || !contains(value, key))) {
-            removeClass(this.el, key);
-          }
-        }
+  /**
+   * Start a leaving transition.
+   *
+   * 1. leave transition triggered.
+   * 2. call beforeLeave hook
+   * 3. add leave class (trigger css transition)
+   * 4. call leave hook (with possible explicit js callback)
+   * 5. reflow if no explicit js callback is provided
+   * 6. based on transition type:
+   *    - transition or animation:
+   *        wait for end event, remove class, then done if
+   *        there's no explicit js callback.
+   *    - no css transition:
+   *        done if there's no explicit js callback.
+   * 7. wait for either done or js callback, then call
+   *    afterLeave hook.
+   *
+   * @param {Function} op - remove/hide the element
+   * @param {Function} [cb]
+   */
+
+  p$1.leave = function (op, cb) {
+    this.cancelPending();
+    this.callHook('beforeLeave');
+    this.op = op;
+    this.cb = cb;
+    addClass(this.el, this.leaveClass);
+    this.left = false;
+    this.callHookWithCb('leave');
+    if (this.left) {
+      return; // user called done synchronously.
+    }
+    this.cancel = this.hooks && this.hooks.leaveCancelled;
+    // only need to handle leaveDone if
+    // 1. the transition is already done (synchronously called
+    //    by the user, which causes this.op set to null)
+    // 2. there's no explicit js callback
+    if (this.op && !this.pendingJsCb) {
+      // if a CSS transition leaves immediately after enter,
+      // the transitionend event never fires. therefore we
+      // detect such cases and end the leave immediately.
+      if (this.justEntered) {
+        this.leaveDone();
+      } else {
+        pushJob(this.leaveNextTick);
       }
     }
   };
 
-  function stringToObject(value) {
-    var res = {};
-    var keys = value.trim().split(/\s+/);
-    var i = keys.length;
-    while (i--) {
-      res[keys[i]] = true;
+  /**
+   * The "nextTick" phase of a leaving transition.
+   */
+
+  p$1.leaveNextTick = function () {
+    var type = this.getCssTransitionType(this.leaveClass);
+    if (type) {
+      var event = type === TYPE_TRANSITION ? transitionEndEvent : animationEndEvent;
+      this.setupCssCb(event, this.leaveDone);
+    } else {
+      this.leaveDone();
     }
-    return res;
+  };
+
+  /**
+   * The "cleanup" phase of a leaving transition.
+   */
+
+  p$1.leaveDone = function () {
+    this.left = true;
+    this.cancel = this.pendingJsCb = null;
+    this.op();
+    removeClass(this.el, this.leaveClass);
+    this.callHook('afterLeave');
+    if (this.cb) this.cb();
+    this.op = null;
+  };
+
+  /**
+   * Cancel any pending callbacks from a previously running
+   * but not finished transition.
+   */
+
+  p$1.cancelPending = function () {
+    this.op = this.cb = null;
+    var hasPending = false;
+    if (this.pendingCssCb) {
+      hasPending = true;
+      off(this.el, this.pendingCssEvent, this.pendingCssCb);
+      this.pendingCssEvent = this.pendingCssCb = null;
+    }
+    if (this.pendingJsCb) {
+      hasPending = true;
+      this.pendingJsCb.cancel();
+      this.pendingJsCb = null;
+    }
+    if (hasPending) {
+      removeClass(this.el, this.enterClass);
+      removeClass(this.el, this.leaveClass);
+    }
+    if (this.cancel) {
+      this.cancel.call(this.vm, this.el);
+      this.cancel = null;
+    }
+  };
+
+  /**
+   * Call a user-provided synchronous hook function.
+   *
+   * @param {String} type
+   */
+
+  p$1.callHook = function (type) {
+    if (this.hooks && this.hooks[type]) {
+      this.hooks[type].call(this.vm, this.el);
+    }
+  };
+
+  /**
+   * Call a user-provided, potentially-async hook function.
+   * We check for the length of arguments to see if the hook
+   * expects a `done` callback. If true, the transition's end
+   * will be determined by when the user calls that callback;
+   * otherwise, the end is determined by the CSS transition or
+   * animation.
+   *
+   * @param {String} type
+   */
+
+  p$1.callHookWithCb = function (type) {
+    var hook = this.hooks && this.hooks[type];
+    if (hook) {
+      if (hook.length > 1) {
+        this.pendingJsCb = cancellable(this[type + 'Done']);
+      }
+      hook.call(this.vm, this.el, this.pendingJsCb);
+    }
+  };
+
+  /**
+   * Get an element's transition type based on the
+   * calculated styles.
+   *
+   * @param {String} className
+   * @return {Number}
+   */
+
+  p$1.getCssTransitionType = function (className) {
+    /* istanbul ignore if */
+    if (!transitionEndEvent ||
+    // skip CSS transitions if page is not visible -
+    // this solves the issue of transitionend events not
+    // firing until the page is visible again.
+    // pageVisibility API is supported in IE10+, same as
+    // CSS transitions.
+    document.hidden ||
+    // explicit js-only transition
+    this.hooks && this.hooks.css === false ||
+    // element is hidden
+    isHidden(this.el)) {
+      return;
+    }
+    var type = this.typeCache[className];
+    if (type) return type;
+    var inlineStyles = this.el.style;
+    var computedStyles = window.getComputedStyle(this.el);
+    var transDuration = inlineStyles[transDurationProp] || computedStyles[transDurationProp];
+    if (transDuration && transDuration !== '0s') {
+      type = TYPE_TRANSITION;
+    } else {
+      var animDuration = inlineStyles[animDurationProp] || computedStyles[animDurationProp];
+      if (animDuration && animDuration !== '0s') {
+        type = TYPE_ANIMATION;
+      }
+    }
+    if (type) {
+      this.typeCache[className] = type;
+    }
+    return type;
+  };
+
+  /**
+   * Setup a CSS transitionend/animationend callback.
+   *
+   * @param {String} event
+   * @param {Function} cb
+   */
+
+  p$1.setupCssCb = function (event, cb) {
+    this.pendingCssEvent = event;
+    var self = this;
+    var el = this.el;
+    var onEnd = this.pendingCssCb = function (e) {
+      if (e.target === el) {
+        off(el, event, onEnd);
+        self.pendingCssEvent = self.pendingCssCb = null;
+        if (!self.pendingJsCb && cb) {
+          cb();
+        }
+      }
+    };
+    on$1(el, event, onEnd);
+  };
+
+  /**
+   * Check if an element is hidden - in that case we can just
+   * skip the transition alltogether.
+   *
+   * @param {Element} el
+   * @return {Boolean}
+   */
+
+  function isHidden(el) {
+    return !(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
   }
 
-  function contains(value, key) {
-    return isArray(value) ? value.indexOf(key) > -1 : hasOwn(value, key);
-  }
+  var transition = {
+
+    priority: TRANSITION,
+
+    update: function update(id, oldId) {
+      var el = this.el;
+      // resolve on owner vm
+      var hooks = resolveAsset(this.vm.$options, 'transitions', id);
+      id = id || 'v';
+      // apply on closest vm
+      el.__v_trans = new Transition(el, id, hooks, this.el.__vue__ || this.vm);
+      if (oldId) {
+        removeClass(el, oldId + '-transition');
+      }
+      addClass(el, id + '-transition');
+    }
+  };
+
+  var bindingModes = config._propBindingModes;
+
+  var propDef = {
+
+    bind: function bind() {
+
+      var child = this.vm;
+      var parent = child._context;
+      // passed in from compiler directly
+      var prop = this.descriptor.prop;
+      var childKey = prop.path;
+      var parentKey = prop.parentPath;
+      var twoWay = prop.mode === bindingModes.TWO_WAY;
+
+      var parentWatcher = this.parentWatcher = new Watcher(parent, parentKey, function (val) {
+        val = coerceProp(prop, val);
+        if (assertProp(prop, val)) {
+          child[childKey] = val;
+        }
+      }, {
+        twoWay: twoWay,
+        filters: prop.filters,
+        // important: props need to be observed on the
+        // v-for scope if present
+        scope: this._scope
+      });
+
+      // set the child initial value.
+      initProp(child, prop, parentWatcher.value);
+
+      // setup two-way binding
+      if (twoWay) {
+        // important: defer the child watcher creation until
+        // the created hook (after data observation)
+        var self = this;
+        child.$once('pre-hook:created', function () {
+          self.childWatcher = new Watcher(child, childKey, function (val) {
+            parentWatcher.set(val);
+          }, {
+            // ensure sync upward before parent sync down.
+            // this is necessary in cases e.g. the child
+            // mutates a prop array, then replaces it. (#1683)
+            sync: true
+          });
+        });
+      }
+    },
+
+    unbind: function unbind() {
+      this.parentWatcher.teardown();
+      if (this.childWatcher) {
+        this.childWatcher.teardown();
+      }
+    }
+  };
 
   var component = {
 
@@ -5703,12 +5933,12 @@ var template = Object.freeze({
       // actual mount
       this.unbuild(true);
       var self = this;
-      var activateHooks = this.Component.options.activate;
+      var activateHook = this.Component.options.activate;
       var cached = this.getCached();
       var newComponent = this.build();
-      if (activateHooks && !cached) {
+      if (activateHook && !cached) {
         this.waitingFor = newComponent;
-        callActivateHooks(activateHooks, newComponent, function () {
+        activateHook.call(newComponent, function () {
           if (self.waitingFor !== newComponent) {
             return;
           }
@@ -5918,493 +6148,78 @@ var template = Object.freeze({
     }
   };
 
-  /**
-   * Call activate hooks in order (asynchronous)
-   *
-   * @param {Array} hooks
-   * @param {Vue} vm
-   * @param {Function} cb
-   */
+  var vClass = {
 
-  function callActivateHooks(hooks, vm, cb) {
-    var total = hooks.length;
-    var called = 0;
-    hooks[0].call(vm, next);
-    function next() {
-      if (++called >= total) {
-        cb();
+    deep: true,
+
+    update: function update(value) {
+      if (value && typeof value === 'string') {
+        this.handleObject(stringToObject(value));
+      } else if (isPlainObject(value)) {
+        this.handleObject(value);
+      } else if (isArray(value)) {
+        this.handleArray(value);
       } else {
-        hooks[called].call(vm, next);
-      }
-    }
-  }
-
-  var bindingModes = config._propBindingModes;
-
-  var propDef = {
-
-    bind: function bind() {
-      var child = this.vm;
-      var parent = child._context;
-      // passed in from compiler directly
-      var prop = this.descriptor.prop;
-      var childKey = prop.path;
-      var parentKey = prop.parentPath;
-      var twoWay = prop.mode === bindingModes.TWO_WAY;
-
-      var parentWatcher = this.parentWatcher = new Watcher(parent, parentKey, function (val) {
-        val = coerceProp(prop, val);
-        if (assertProp(prop, val)) {
-          child[childKey] = val;
-        }
-      }, {
-        twoWay: twoWay,
-        filters: prop.filters,
-        // important: props need to be observed on the
-        // v-for scope if present
-        scope: this._scope
-      });
-
-      // set the child initial value.
-      initProp(child, prop, parentWatcher.value);
-
-      // setup two-way binding
-      if (twoWay) {
-        // important: defer the child watcher creation until
-        // the created hook (after data observation)
-        var self = this;
-        child.$once('pre-hook:created', function () {
-          self.childWatcher = new Watcher(child, childKey, function (val) {
-            parentWatcher.set(val);
-          }, {
-            // ensure sync upward before parent sync down.
-            // this is necessary in cases e.g. the child
-            // mutates a prop array, then replaces it. (#1683)
-            sync: true
-          });
-        });
+        this.cleanup();
       }
     },
 
-    unbind: function unbind() {
-      this.parentWatcher.teardown();
-      if (this.childWatcher) {
-        this.childWatcher.teardown();
-      }
-    }
-  };
-
-  var queue$1 = [];
-  var queued = false;
-
-  /**
-   * Push a job into the queue.
-   *
-   * @param {Function} job
-   */
-
-  function pushJob(job) {
-    queue$1.push(job);
-    if (!queued) {
-      queued = true;
-      nextTick(flush);
-    }
-  }
-
-  /**
-   * Flush the queue, and do one forced reflow before
-   * triggering transitions.
-   */
-
-  function flush() {
-    // Force layout
-    var f = document.documentElement.offsetHeight;
-    for (var i = 0; i < queue$1.length; i++) {
-      queue$1[i]();
-    }
-    queue$1 = [];
-    queued = false;
-    // dummy return, so js linters don't complain about
-    // unused variable f
-    return f;
-  }
-
-  var TYPE_TRANSITION = 'transition';
-  var TYPE_ANIMATION = 'animation';
-  var transDurationProp = transitionProp + 'Duration';
-  var animDurationProp = animationProp + 'Duration';
-
-  /**
-   * A Transition object that encapsulates the state and logic
-   * of the transition.
-   *
-   * @param {Element} el
-   * @param {String} id
-   * @param {Object} hooks
-   * @param {Vue} vm
-   */
-  function Transition(el, id, hooks, vm) {
-    this.id = id;
-    this.el = el;
-    this.enterClass = hooks && hooks.enterClass || id + '-enter';
-    this.leaveClass = hooks && hooks.leaveClass || id + '-leave';
-    this.hooks = hooks;
-    this.vm = vm;
-    // async state
-    this.pendingCssEvent = this.pendingCssCb = this.cancel = this.pendingJsCb = this.op = this.cb = null;
-    this.justEntered = false;
-    this.entered = this.left = false;
-    this.typeCache = {};
-    // check css transition type
-    this.type = hooks && hooks.type;
-    /* istanbul ignore if */
-    if ('development' !== 'production') {
-      if (this.type && this.type !== TYPE_TRANSITION && this.type !== TYPE_ANIMATION) {
-        warn('invalid CSS transition type for transition="' + this.id + '": ' + this.type);
-      }
-    }
-    // bind
-    var self = this;['enterNextTick', 'enterDone', 'leaveNextTick', 'leaveDone'].forEach(function (m) {
-      self[m] = bind(self[m], self);
-    });
-  }
-
-  var p$1 = Transition.prototype;
-
-  /**
-   * Start an entering transition.
-   *
-   * 1. enter transition triggered
-   * 2. call beforeEnter hook
-   * 3. add enter class
-   * 4. insert/show element
-   * 5. call enter hook (with possible explicit js callback)
-   * 6. reflow
-   * 7. based on transition type:
-   *    - transition:
-   *        remove class now, wait for transitionend,
-   *        then done if there's no explicit js callback.
-   *    - animation:
-   *        wait for animationend, remove class,
-   *        then done if there's no explicit js callback.
-   *    - no css transition:
-   *        done now if there's no explicit js callback.
-   * 8. wait for either done or js callback, then call
-   *    afterEnter hook.
-   *
-   * @param {Function} op - insert/show the element
-   * @param {Function} [cb]
-   */
-
-  p$1.enter = function (op, cb) {
-    this.cancelPending();
-    this.callHook('beforeEnter');
-    this.cb = cb;
-    addClass(this.el, this.enterClass);
-    op();
-    this.entered = false;
-    this.callHookWithCb('enter');
-    if (this.entered) {
-      return; // user called done synchronously.
-    }
-    this.cancel = this.hooks && this.hooks.enterCancelled;
-    pushJob(this.enterNextTick);
-  };
-
-  /**
-   * The "nextTick" phase of an entering transition, which is
-   * to be pushed into a queue and executed after a reflow so
-   * that removing the class can trigger a CSS transition.
-   */
-
-  p$1.enterNextTick = function () {
-    // Important hack:
-    // in Chrome, if a just-entered element is applied the
-    // leave class while its interpolated property still has
-    // a very small value (within one frame), Chrome will
-    // skip the leave transition entirely and not firing the
-    // transtionend event. Therefore we need to protected
-    // against such cases using a one-frame timeout.
-    this.justEntered = true;
-    var self = this;
-    setTimeout(function () {
-      self.justEntered = false;
-    }, 17);
-
-    var enterDone = this.enterDone;
-    var type = this.getCssTransitionType(this.enterClass);
-    if (!this.pendingJsCb) {
-      if (type === TYPE_TRANSITION) {
-        // trigger transition by removing enter class now
-        removeClass(this.el, this.enterClass);
-        this.setupCssCb(transitionEndEvent, enterDone);
-      } else if (type === TYPE_ANIMATION) {
-        this.setupCssCb(animationEndEvent, enterDone);
-      } else {
-        enterDone();
-      }
-    } else if (type === TYPE_TRANSITION) {
-      removeClass(this.el, this.enterClass);
-    }
-  };
-
-  /**
-   * The "cleanup" phase of an entering transition.
-   */
-
-  p$1.enterDone = function () {
-    this.entered = true;
-    this.cancel = this.pendingJsCb = null;
-    removeClass(this.el, this.enterClass);
-    this.callHook('afterEnter');
-    if (this.cb) this.cb();
-  };
-
-  /**
-   * Start a leaving transition.
-   *
-   * 1. leave transition triggered.
-   * 2. call beforeLeave hook
-   * 3. add leave class (trigger css transition)
-   * 4. call leave hook (with possible explicit js callback)
-   * 5. reflow if no explicit js callback is provided
-   * 6. based on transition type:
-   *    - transition or animation:
-   *        wait for end event, remove class, then done if
-   *        there's no explicit js callback.
-   *    - no css transition:
-   *        done if there's no explicit js callback.
-   * 7. wait for either done or js callback, then call
-   *    afterLeave hook.
-   *
-   * @param {Function} op - remove/hide the element
-   * @param {Function} [cb]
-   */
-
-  p$1.leave = function (op, cb) {
-    this.cancelPending();
-    this.callHook('beforeLeave');
-    this.op = op;
-    this.cb = cb;
-    addClass(this.el, this.leaveClass);
-    this.left = false;
-    this.callHookWithCb('leave');
-    if (this.left) {
-      return; // user called done synchronously.
-    }
-    this.cancel = this.hooks && this.hooks.leaveCancelled;
-    // only need to handle leaveDone if
-    // 1. the transition is already done (synchronously called
-    //    by the user, which causes this.op set to null)
-    // 2. there's no explicit js callback
-    if (this.op && !this.pendingJsCb) {
-      // if a CSS transition leaves immediately after enter,
-      // the transitionend event never fires. therefore we
-      // detect such cases and end the leave immediately.
-      if (this.justEntered) {
-        this.leaveDone();
-      } else {
-        pushJob(this.leaveNextTick);
-      }
-    }
-  };
-
-  /**
-   * The "nextTick" phase of a leaving transition.
-   */
-
-  p$1.leaveNextTick = function () {
-    var type = this.getCssTransitionType(this.leaveClass);
-    if (type) {
-      var event = type === TYPE_TRANSITION ? transitionEndEvent : animationEndEvent;
-      this.setupCssCb(event, this.leaveDone);
-    } else {
-      this.leaveDone();
-    }
-  };
-
-  /**
-   * The "cleanup" phase of a leaving transition.
-   */
-
-  p$1.leaveDone = function () {
-    this.left = true;
-    this.cancel = this.pendingJsCb = null;
-    this.op();
-    removeClass(this.el, this.leaveClass);
-    this.callHook('afterLeave');
-    if (this.cb) this.cb();
-    this.op = null;
-  };
-
-  /**
-   * Cancel any pending callbacks from a previously running
-   * but not finished transition.
-   */
-
-  p$1.cancelPending = function () {
-    this.op = this.cb = null;
-    var hasPending = false;
-    if (this.pendingCssCb) {
-      hasPending = true;
-      off(this.el, this.pendingCssEvent, this.pendingCssCb);
-      this.pendingCssEvent = this.pendingCssCb = null;
-    }
-    if (this.pendingJsCb) {
-      hasPending = true;
-      this.pendingJsCb.cancel();
-      this.pendingJsCb = null;
-    }
-    if (hasPending) {
-      removeClass(this.el, this.enterClass);
-      removeClass(this.el, this.leaveClass);
-    }
-    if (this.cancel) {
-      this.cancel.call(this.vm, this.el);
-      this.cancel = null;
-    }
-  };
-
-  /**
-   * Call a user-provided synchronous hook function.
-   *
-   * @param {String} type
-   */
-
-  p$1.callHook = function (type) {
-    if (this.hooks && this.hooks[type]) {
-      this.hooks[type].call(this.vm, this.el);
-    }
-  };
-
-  /**
-   * Call a user-provided, potentially-async hook function.
-   * We check for the length of arguments to see if the hook
-   * expects a `done` callback. If true, the transition's end
-   * will be determined by when the user calls that callback;
-   * otherwise, the end is determined by the CSS transition or
-   * animation.
-   *
-   * @param {String} type
-   */
-
-  p$1.callHookWithCb = function (type) {
-    var hook = this.hooks && this.hooks[type];
-    if (hook) {
-      if (hook.length > 1) {
-        this.pendingJsCb = cancellable(this[type + 'Done']);
-      }
-      hook.call(this.vm, this.el, this.pendingJsCb);
-    }
-  };
-
-  /**
-   * Get an element's transition type based on the
-   * calculated styles.
-   *
-   * @param {String} className
-   * @return {Number}
-   */
-
-  p$1.getCssTransitionType = function (className) {
-    /* istanbul ignore if */
-    if (!transitionEndEvent ||
-    // skip CSS transitions if page is not visible -
-    // this solves the issue of transitionend events not
-    // firing until the page is visible again.
-    // pageVisibility API is supported in IE10+, same as
-    // CSS transitions.
-    document.hidden ||
-    // explicit js-only transition
-    this.hooks && this.hooks.css === false ||
-    // element is hidden
-    isHidden(this.el)) {
-      return;
-    }
-    var type = this.type || this.typeCache[className];
-    if (type) return type;
-    var inlineStyles = this.el.style;
-    var computedStyles = window.getComputedStyle(this.el);
-    var transDuration = inlineStyles[transDurationProp] || computedStyles[transDurationProp];
-    if (transDuration && transDuration !== '0s') {
-      type = TYPE_TRANSITION;
-    } else {
-      var animDuration = inlineStyles[animDurationProp] || computedStyles[animDurationProp];
-      if (animDuration && animDuration !== '0s') {
-        type = TYPE_ANIMATION;
-      }
-    }
-    if (type) {
-      this.typeCache[className] = type;
-    }
-    return type;
-  };
-
-  /**
-   * Setup a CSS transitionend/animationend callback.
-   *
-   * @param {String} event
-   * @param {Function} cb
-   */
-
-  p$1.setupCssCb = function (event, cb) {
-    this.pendingCssEvent = event;
-    var self = this;
-    var el = this.el;
-    var onEnd = this.pendingCssCb = function (e) {
-      if (e.target === el) {
-        off(el, event, onEnd);
-        self.pendingCssEvent = self.pendingCssCb = null;
-        if (!self.pendingJsCb && cb) {
-          cb();
+    handleObject: function handleObject(value) {
+      this.cleanup(value);
+      var keys = this.prevKeys = Object.keys(value);
+      for (var i = 0, l = keys.length; i < l; i++) {
+        var key = keys[i];
+        if (value[key]) {
+          addClass(this.el, key);
+        } else {
+          removeClass(this.el, key);
         }
       }
-    };
-    on(el, event, onEnd);
+    },
+
+    handleArray: function handleArray(value) {
+      this.cleanup(value);
+      for (var i = 0, l = value.length; i < l; i++) {
+        if (value[i]) {
+          addClass(this.el, value[i]);
+        }
+      }
+      this.prevKeys = value.slice();
+    },
+
+    cleanup: function cleanup(value) {
+      if (this.prevKeys) {
+        var i = this.prevKeys.length;
+        while (i--) {
+          var key = this.prevKeys[i];
+          if (key && (!value || !contains$1(value, key))) {
+            removeClass(this.el, key);
+          }
+        }
+      }
+    }
   };
 
-  /**
-   * Check if an element is hidden - in that case we can just
-   * skip the transition alltogether.
-   *
-   * @param {Element} el
-   * @return {Boolean}
-   */
-
-  function isHidden(el) {
-    if (/svg$/.test(el.namespaceURI)) {
-      // SVG elements do not have offset(Width|Height)
-      // so we need to check the client rect
-      var rect = el.getBoundingClientRect();
-      return !(rect.width || rect.height);
-    } else {
-      return !(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+  function stringToObject(value) {
+    var res = {};
+    var keys = value.trim().split(/\s+/);
+    var i = keys.length;
+    while (i--) {
+      res[keys[i]] = true;
     }
+    return res;
   }
 
-  var transition$1 = {
-
-    priority: TRANSITION,
-
-    update: function update(id, oldId) {
-      var el = this.el;
-      // resolve on owner vm
-      var hooks = resolveAsset(this.vm.$options, 'transitions', id);
-      id = id || 'v';
-      el.__v_trans = new Transition(el, id, hooks, this.vm);
-      if (oldId) {
-        removeClass(el, oldId + '-transition');
-      }
-      addClass(el, id + '-transition');
-    }
-  };
+  function contains$1(value, key) {
+    return isArray(value) ? value.indexOf(key) > -1 : hasOwn(value, key);
+  }
 
   var internalDirectives = {
     style: style,
     'class': vClass,
     component: component,
     prop: propDef,
-    transition: transition$1
+    transition: transition
   };
 
   var propBindingModes = config._propBindingModes;
@@ -6470,7 +6285,7 @@ var template = Object.freeze({
         value = parsed.expression;
         prop.filters = parsed.filters;
         // check binding type
-        if (isLiteral(value) && !parsed.filters) {
+        if (isLiteral(value)) {
           // for expressions containing literal numbers and
           // booleans, there's no need to setup a prop binding,
           // so we can optimize them as a one-time set.
@@ -6492,16 +6307,9 @@ var template = Object.freeze({
       } else if ((value = getAttr(el, attr)) !== null) {
         // has literal binding!
         prop.raw = value;
-      } else if ('development' !== 'production') {
-        // check possible camelCase prop usage
-        var lowerCaseName = path.toLowerCase();
-        value = /[A-Z\-]/.test(name) && (el.getAttribute(lowerCaseName) || el.getAttribute(':' + lowerCaseName) || el.getAttribute('v-bind:' + lowerCaseName) || el.getAttribute(':' + lowerCaseName + '.once') || el.getAttribute('v-bind:' + lowerCaseName + '.once') || el.getAttribute(':' + lowerCaseName + '.sync') || el.getAttribute('v-bind:' + lowerCaseName + '.sync'));
-        if (value) {
-          warn('Possible usage error for prop `' + lowerCaseName + '` - ' + 'did you mean `' + attr + '`? HTML is case-insensitive, remember to use ' + 'kebab-case for props in templates.');
-        } else if (options.required) {
-          // warn missing required
-          warn('Missing required prop: ' + name);
-        }
+      } else if (options.required) {
+        // warn missing required
+        'development' !== 'production' && warn('Missing required prop: ' + name);
       }
       // push prop
       props.push(prop);
@@ -6533,23 +6341,22 @@ var template = Object.freeze({
           initProp(vm, prop, getDefault(vm, options));
         } else if (prop.dynamic) {
           // dynamic prop
-          if (prop.mode === propBindingModes.ONE_TIME) {
-            // one time binding
-            value = (scope || vm._context || vm).$get(prop.parentPath);
-            initProp(vm, prop, value);
-          } else {
-            if (vm._context) {
+          if (vm._context) {
+            if (prop.mode === propBindingModes.ONE_TIME) {
+              // one time binding
+              value = (scope || vm._context).$get(prop.parentPath);
+              initProp(vm, prop, value);
+            } else {
               // dynamic binding
               vm._bindDir({
                 name: 'prop',
                 def: propDef,
                 prop: prop
               }, null, null, scope); // el, host, scope
-            } else {
-                // root instance
-                initProp(vm, prop, vm.$get(prop.parentPath));
-              }
-          }
+            }
+          } else {
+              'development' !== 'production' && warn('Cannot bind dynamic prop on a root instance' + ' with no parent: ' + prop.name + '="' + raw + '"');
+            }
         } else if (prop.optimizedLiteral) {
           // optimized literal, cast it and just set once
           var stripped = stripQuotes(raw);
@@ -6591,7 +6398,7 @@ var template = Object.freeze({
   // special binding prefixes
   var bindRE = /^v-bind:|^:/;
   var onRE = /^v-on:|^@/;
-  var dirAttrRE = /^v-([^:]+)(?:$|:(.*)$)/;
+  var argRE = /:(.*)$/;
   var modifierRE = /\.[^\.]+/g;
   var transitionRE = /^(v-bind:|:)?transition$/;
 
@@ -6658,8 +6465,6 @@ var template = Object.freeze({
    */
 
   function linkAndCapture(linker, vm) {
-    /* istanbul ignore if */
-    if ('development' === 'production') {}
     var originalDirCount = vm._directives.length;
     linker();
     var dirs = vm._directives.slice(originalDirCount);
@@ -6699,15 +6504,12 @@ var template = Object.freeze({
    */
 
   function makeUnlinkFn(vm, dirs, context, contextDirs) {
-    function unlink(destroying) {
+    return function unlink(destroying) {
       teardownDirs(vm, dirs, destroying);
       if (context && contextDirs) {
         teardownDirs(context, contextDirs);
       }
-    }
-    // expose linked directives
-    unlink.dirs = dirs;
-    return unlink;
+    };
   }
 
   /**
@@ -6722,7 +6524,7 @@ var template = Object.freeze({
     var i = dirs.length;
     while (i--) {
       dirs[i]._teardown();
-      if ('development' !== 'production' && !destroying) {
+      if (!destroying) {
         vm._directives.$remove(dirs[i]);
       }
     }
@@ -6755,6 +6557,7 @@ var template = Object.freeze({
    *
    * If this is a fragment instance, we only need to compile 1.
    *
+   * @param {Vue} vm
    * @param {Element} el
    * @param {Object} options
    * @param {Object} contextOptions
@@ -6802,7 +6605,6 @@ var template = Object.freeze({
       }
     }
 
-    options._containerAttrs = options._replacerAttrs = null;
     return function rootLinkFn(vm, el, scope) {
       // link context scope dirs
       var context = vm._context;
@@ -6964,7 +6766,7 @@ var template = Object.freeze({
       var parsed = parseDirective(token.value);
       token.descriptor = {
         name: type,
-        def: directives[type],
+        def: publicDirectives[type],
         expression: parsed.expression,
         filters: parsed.filters
       };
@@ -7061,8 +6863,11 @@ var template = Object.freeze({
 
   function checkElementDirectives(el, options) {
     var tag = el.tagName.toLowerCase();
-    if (commonTagRE.test(tag)) {
-      return;
+    if (commonTagRE.test(tag)) return;
+    // special case: give named slot a higher priority
+    // than unnamed slots
+    if (tag === 'slot' && hasBindAttr(el, 'name')) {
+      tag = '_namedSlot';
     }
     var def = resolveAsset(options, 'elementDirectives', tag);
     if (def) {
@@ -7127,10 +6932,11 @@ var template = Object.freeze({
     var value, dirName;
     for (var i = 0, l = terminalDirectives.length; i < l; i++) {
       dirName = terminalDirectives[i];
-      value = el.getAttribute('v-' + dirName);
-      if (value != null) {
+      /* eslint-disable no-cond-assign */
+      if (value = el.getAttribute('v-' + dirName)) {
         return makeTerminalNodeLinkFn(el, dirName, value, options);
       }
+      /* eslint-enable no-cond-assign */
     }
   }
 
@@ -7159,8 +6965,7 @@ var template = Object.freeze({
       filters: parsed.filters,
       raw: value,
       // either an element directive, or if/for
-      // #2366 or custom terminal directive
-      def: def || resolveAsset(options, 'directives', dirName)
+      def: def || publicDirectives[dirName]
     };
     // check ref for v-for and router-view
     if (dirName === 'for' || dirName === 'router-view') {
@@ -7187,7 +6992,7 @@ var template = Object.freeze({
   function compileDirectives(attrs, options) {
     var i = attrs.length;
     var dirs = [];
-    var attr, name, value, rawName, rawValue, dirName, arg, modifiers, dirDef, tokens, matched;
+    var attr, name, value, rawName, rawValue, dirName, arg, modifiers, dirDef, tokens;
     while (i--) {
       attr = attrs[i];
       name = rawName = attr.name;
@@ -7203,7 +7008,7 @@ var template = Object.freeze({
       if (tokens) {
         value = tokensToExp(tokens);
         arg = name;
-        pushDir('bind', directives.bind, tokens);
+        pushDir('bind', publicDirectives.bind, true);
         // warn against mixing mustaches with v-bind
         if ('development' !== 'production') {
           if (name === 'class' && Array.prototype.some.call(attrs, function (attr) {
@@ -7223,7 +7028,7 @@ var template = Object.freeze({
           // event handlers
           if (onRE.test(name)) {
             arg = name.replace(onRE, '');
-            pushDir('on', directives.on);
+            pushDir('on', publicDirectives.on);
           } else
 
             // attribute bindings
@@ -7233,14 +7038,19 @@ var template = Object.freeze({
                 pushDir(dirName, internalDirectives[dirName]);
               } else {
                 arg = dirName;
-                pushDir('bind', directives.bind);
+                pushDir('bind', publicDirectives.bind);
               }
             } else
 
               // normal directives
-              if (matched = name.match(dirAttrRE)) {
-                dirName = matched[1];
-                arg = matched[2];
+              if (name.indexOf('v-') === 0) {
+                // check arg
+                arg = (arg = name.match(argRE)) && arg[1];
+                if (arg) {
+                  name = name.replace(argRE, '');
+                }
+                // extract directive name
+                dirName = name.slice(2);
 
                 // skip v-else (when used with v-show)
                 if (dirName === 'else') {
@@ -7264,12 +7074,11 @@ var template = Object.freeze({
      *
      * @param {String} dirName
      * @param {Object|Function} def
-     * @param {Array} [interpTokens]
+     * @param {Boolean} [interp]
      */
 
-    function pushDir(dirName, def, interpTokens) {
-      var hasOneTimeToken = interpTokens && hasOneTime(interpTokens);
-      var parsed = !hasOneTimeToken && parseDirective(value);
+    function pushDir(dirName, def, interp) {
+      var parsed = parseDirective(value);
       dirs.push({
         name: dirName,
         attr: rawName,
@@ -7277,13 +7086,9 @@ var template = Object.freeze({
         def: def,
         arg: arg,
         modifiers: modifiers,
-        // conversion from interpolation strings with one-time token
-        // to expression is differed until directive bind time so that we
-        // have access to the actual vm context for one-time bindings.
-        expression: parsed && parsed.expression,
-        filters: parsed && parsed.filters,
-        interp: interpTokens,
-        hasOneTime: hasOneTimeToken
+        expression: parsed.expression,
+        filters: parsed.filters,
+        interp: interp
       });
     }
 
@@ -7328,20 +7133,6 @@ var template = Object.freeze({
     };
   }
 
-  /**
-   * Check if an interpolation string contains one-time tokens.
-   *
-   * @param {Array} tokens
-   * @return {Boolean}
-   */
-
-  function hasOneTime(tokens) {
-    var i = tokens.length;
-    while (i--) {
-      if (tokens[i].oneTime) return true;
-    }
-  }
-
   var specialCharRE = /[^\w\-:\.]/;
 
   /**
@@ -7379,7 +7170,7 @@ var template = Object.freeze({
         el = transcludeTemplate(el, options);
       }
     }
-    if (isFragment(el)) {
+    if (el instanceof DocumentFragment) {
       // anchors for fragment instance
       // passing in `persist: true` to avoid them being
       // discarded by IE during template cloning
@@ -7471,7 +7262,7 @@ var template = Object.freeze({
       value = attrs[i].value;
       if (!to.hasAttribute(name) && !specialCharRE.test(name)) {
         to.setAttribute(name, value);
-      } else if (name === 'class' && !parseText(value)) {
+      } else if (name === 'class') {
         value.split(/\s+/).forEach(function (cls) {
           addClass(to, cls);
         });
@@ -7479,89 +7270,15 @@ var template = Object.freeze({
     }
   }
 
-  /**
-   * Scan and determine slot content distribution.
-   * We do this during transclusion instead at compile time so that
-   * the distribution is decoupled from the compilation order of
-   * the slots.
-   *
-   * @param {Element|DocumentFragment} template
-   * @param {Element} content
-   * @param {Vue} vm
-   */
-
-  function scanSlots(template, content, vm) {
-    if (!content) {
-      return;
-    }
-    var contents = vm._slotContents = {};
-    var slots = template.querySelectorAll('slot');
-    if (slots.length) {
-      var hasDefault, slot, name;
-      for (var i = 0, l = slots.length; i < l; i++) {
-        slot = slots[i];
-        /* eslint-disable no-cond-assign */
-        if (name = slot.getAttribute('name')) {
-          select(slot, name);
-        } else if ('development' !== 'production' && (name = getBindAttr(slot, 'name'))) {
-          warn('<slot :name="' + name + '">: slot names cannot be dynamic.');
-        } else {
-          // default slot
-          hasDefault = true;
-        }
-        /* eslint-enable no-cond-assign */
-      }
-      if (hasDefault) {
-        contents['default'] = extractFragment(content.childNodes, content);
-      }
-    }
-
-    function select(slot, name) {
-      // named slot
-      var selector = '[slot="' + name + '"]';
-      var nodes = content.querySelectorAll(selector);
-      if (nodes.length) {
-        contents[name] = extractFragment(nodes, content);
-      }
-    }
-  }
-
-  /**
-   * Extract qualified content nodes from a node list.
-   *
-   * @param {NodeList} nodes
-   * @param {Element} parent
-   * @return {DocumentFragment}
-   */
-
-  function extractFragment(nodes, parent) {
-    var frag = document.createDocumentFragment();
-    nodes = toArray(nodes);
-    for (var i = 0, l = nodes.length; i < l; i++) {
-      var node = nodes[i];
-      if (node.parentNode === parent) {
-        if (isTemplate(node) && !node.hasAttribute('v-if') && !node.hasAttribute('v-for')) {
-          parent.removeChild(node);
-          node = parseTemplate(node);
-        }
-        frag.appendChild(node);
-      }
-    }
-    return frag;
-  }
-
-
-
   var compiler = Object.freeze({
   	compile: compile,
   	compileAndLinkProps: compileAndLinkProps,
   	compileRoot: compileRoot,
-  	terminalDirectives: terminalDirectives,
-  	transclude: transclude,
-  	scanSlots: scanSlots
+  	transclude: transclude
   });
 
   function stateMixin (Vue) {
+
     /**
      * Accessor for `$data` property, since setting $data
      * requires observing the new object and updating
@@ -7621,15 +7338,10 @@ var template = Object.freeze({
       var propsData = this._data;
       var optionsDataFn = this.$options.data;
       var optionsData = optionsDataFn && optionsDataFn();
-      var runtimeData;
-      if ('development' !== 'production') {
-        runtimeData = (typeof this._runtimeData === 'function' ? this._runtimeData() : this._runtimeData) || {};
-        this._runtimeData = null;
-      }
       if (optionsData) {
         this._data = optionsData;
         for (var prop in propsData) {
-          if ('development' !== 'production' && hasOwn(optionsData, prop) && !hasOwn(runtimeData, prop)) {
+          if ('development' !== 'production' && hasOwn(optionsData, prop)) {
             warn('Data field "' + prop + '" is already defined ' + 'as a prop. Use prop default value instead.');
           }
           if (this._props[prop].raw !== null || !hasOwn(optionsData, prop)) {
@@ -7754,8 +7466,8 @@ var template = Object.freeze({
             def.get = makeComputedGetter(userDef, this);
             def.set = noop;
           } else {
-            def.get = userDef.get ? userDef.cache !== false ? makeComputedGetter(userDef.get, this) : bind(userDef.get, this) : noop;
-            def.set = userDef.set ? bind(userDef.set, this) : noop;
+            def.get = userDef.get ? userDef.cache !== false ? makeComputedGetter(userDef.get, this) : bind$1(userDef.get, this) : noop;
+            def.set = userDef.set ? bind$1(userDef.set, this) : noop;
           }
           Object.defineProperty(this, key, def);
         }
@@ -7787,7 +7499,7 @@ var template = Object.freeze({
       var methods = this.$options.methods;
       if (methods) {
         for (var key in methods) {
-          this[key] = bind(methods[key], this);
+          this[key] = bind$1(methods[key], this);
         }
       }
     };
@@ -7809,6 +7521,7 @@ var template = Object.freeze({
   var eventRE = /^v-on:|^@/;
 
   function eventsMixin (Vue) {
+
     /**
      * Setup the instance's option events & watchers.
      * If the value is a string, we pull it from the
@@ -7839,12 +7552,7 @@ var template = Object.freeze({
         if (eventRE.test(name)) {
           name = name.replace(eventRE, '');
           handler = (vm._scope || vm._context).$eval(attrs[i].value, true);
-          if (typeof handler === 'function') {
-            handler._fromParent = true;
-            vm.$on(name.replace(eventRE), handler);
-          } else if ('development' !== 'production') {
-            warn('v-on:' + name + '="' + attrs[i].value + '"' + (vm.$options.name ? ' on component <' + vm.$options.name + '>' : '') + ' expects a function value, got ' + handler);
-          }
+          vm.$on(name.replace(eventRE), handler);
         }
       }
     }
@@ -8072,8 +7780,8 @@ var template = Object.freeze({
       } else {
         this._update = noop;
       }
-      var preProcess = this._preProcess ? bind(this._preProcess, this) : null;
-      var postProcess = this._postProcess ? bind(this._postProcess, this) : null;
+      var preProcess = this._preProcess ? bind$1(this._preProcess, this) : null;
+      var postProcess = this._postProcess ? bind$1(this._postProcess, this) : null;
       var watcher = this._watcher = new Watcher(this.vm, this.expression, this._update, // callback
       {
         filters: this.filters,
@@ -8225,11 +7933,10 @@ var template = Object.freeze({
    *
    * @param {String} event
    * @param {Function} handler
-   * @param {Boolean} [useCapture]
    */
 
-  Directive.prototype.on = function (event, handler, useCapture) {
-    on(this.el, event, handler, useCapture);(this._listeners || (this._listeners = [])).push([event, handler]);
+  Directive.prototype.on = function (event, handler) {
+    on$1(this.el, event, handler);(this._listeners || (this._listeners = [])).push([event, handler]);
   };
 
   /**
@@ -8268,6 +7975,7 @@ var template = Object.freeze({
   };
 
   function lifecycleMixin (Vue) {
+
     /**
      * Update v-ref for component.
      *
@@ -8298,6 +8006,7 @@ var template = Object.freeze({
      * Otherwise we need to call transclude/compile/link here.
      *
      * @param {Element} el
+     * @return {Element}
      */
 
     Vue.prototype._compile = function (el) {
@@ -8321,10 +8030,6 @@ var template = Object.freeze({
       // container attrs and props can be different every time.
       var contextOptions = this._context && this._context.$options;
       var rootLinker = compileRoot(el, options, contextOptions);
-
-      // scan for slot distribution before compiling the content
-      // so that it's decoupeld from slot/directive compilation order
-      scanSlots(el, options._content, this);
 
       // compile and link the rest
       var contentLinkFn;
@@ -8359,6 +8064,7 @@ var template = Object.freeze({
 
       this._isCompiled = true;
       this._callHook('compiled');
+      return el;
     };
 
     /**
@@ -8369,7 +8075,7 @@ var template = Object.freeze({
      */
 
     Vue.prototype._initElement = function (el) {
-      if (isFragment(el)) {
+      if (el instanceof DocumentFragment) {
         this._isFragment = true;
         this.$el = this._fragmentStart = el.firstChild;
         this._fragmentEnd = el.lastChild;
@@ -8518,6 +8224,7 @@ var template = Object.freeze({
   }
 
   function miscMixin (Vue) {
+
     /**
      * Apply a list of filter (descriptors) to a value.
      * Using plain for loops here because this will be called in
@@ -8585,7 +8292,7 @@ var template = Object.freeze({
         } else {
           factory.requested = true;
           var cbs = factory.pendingCallbacks = [cb];
-          factory.call(this, function resolve(res) {
+          factory(function resolve(res) {
             if (isPlainObject(res)) {
               res = Vue.extend(res);
             }
@@ -8606,9 +8313,165 @@ var template = Object.freeze({
     };
   }
 
-  var filterRE$1 = /[^|]\|[^|]/;
+  function globalAPI (Vue) {
+
+    /**
+     * Expose useful internals
+     */
+
+    Vue.util = util;
+    Vue.config = config;
+    Vue.set = set;
+    Vue['delete'] = del;
+    Vue.nextTick = nextTick;
+
+    /**
+     * The following are exposed for advanced usage / plugins
+     */
+
+    Vue.compiler = compiler;
+    Vue.FragmentFactory = FragmentFactory;
+    Vue.internalDirectives = internalDirectives;
+    Vue.parsers = {
+      path: path,
+      text: text$1,
+      template: template,
+      directive: directive,
+      expression: expression
+    };
+
+    /**
+     * Each instance constructor, including Vue, has a unique
+     * cid. This enables us to create wrapped "child
+     * constructors" for prototypal inheritance and cache them.
+     */
+
+    Vue.cid = 0;
+    var cid = 1;
+
+    /**
+     * Class inheritance
+     *
+     * @param {Object} extendOptions
+     */
+
+    Vue.extend = function (extendOptions) {
+      extendOptions = extendOptions || {};
+      var Super = this;
+      var isFirstExtend = Super.cid === 0;
+      if (isFirstExtend && extendOptions._Ctor) {
+        return extendOptions._Ctor;
+      }
+      var name = extendOptions.name || Super.options.name;
+      if ('development' !== 'production') {
+        if (!/^[a-zA-Z][\w-]+$/.test(name)) {
+          warn('Invalid component name: ' + name);
+          name = null;
+        }
+      }
+      var Sub = createClass(name || 'VueComponent');
+      Sub.prototype = Object.create(Super.prototype);
+      Sub.prototype.constructor = Sub;
+      Sub.cid = cid++;
+      Sub.options = mergeOptions(Super.options, extendOptions);
+      Sub['super'] = Super;
+      // allow further extension
+      Sub.extend = Super.extend;
+      // create asset registers, so extended classes
+      // can have their private assets too.
+      config._assetTypes.forEach(function (type) {
+        Sub[type] = Super[type];
+      });
+      // enable recursive self-lookup
+      if (name) {
+        Sub.options.components[name] = Sub;
+      }
+      // cache constructor
+      if (isFirstExtend) {
+        extendOptions._Ctor = Sub;
+      }
+      return Sub;
+    };
+
+    /**
+     * A function that returns a sub-class constructor with the
+     * given name. This gives us much nicer output when
+     * logging instances in the console.
+     *
+     * @param {String} name
+     * @return {Function}
+     */
+
+    function createClass(name) {
+      return new Function('return function ' + classify(name) + ' (options) { this._init(options) }')();
+    }
+
+    /**
+     * Plugin system
+     *
+     * @param {Object} plugin
+     */
+
+    Vue.use = function (plugin) {
+      /* istanbul ignore if */
+      if (plugin.installed) {
+        return;
+      }
+      // additional parameters
+      var args = toArray(arguments, 1);
+      args.unshift(this);
+      if (typeof plugin.install === 'function') {
+        plugin.install.apply(plugin, args);
+      } else {
+        plugin.apply(null, args);
+      }
+      plugin.installed = true;
+      return this;
+    };
+
+    /**
+     * Apply a global mixin by merging it into the default
+     * options.
+     */
+
+    Vue.mixin = function (mixin) {
+      Vue.options = mergeOptions(Vue.options, mixin);
+    };
+
+    /**
+     * Create asset registration methods with the following
+     * signature:
+     *
+     * @param {String} id
+     * @param {*} definition
+     */
+
+    config._assetTypes.forEach(function (type) {
+      Vue[type] = function (id, definition) {
+        if (!definition) {
+          return this.options[type + 's'][id];
+        } else {
+          /* istanbul ignore if */
+          if ('development' !== 'production') {
+            if (type === 'component' && (commonTagRE.test(id) || reservedTagRE.test(id))) {
+              warn('Do not use built-in or reserved HTML elements as component ' + 'id: ' + id);
+            }
+          }
+          if (type === 'component' && isPlainObject(definition)) {
+            definition.name = id;
+            definition = Vue.extend(definition);
+          }
+          this.options[type + 's'][id] = definition;
+          return definition;
+        }
+      };
+    });
+  }
+
+  var filterRE = /[^|]\|[^|]/;
 
   function dataAPI (Vue) {
+
     /**
      * Get the value from an expression on this vm.
      *
@@ -8624,9 +8487,8 @@ var template = Object.freeze({
           var self = this;
           return function statementHandler() {
             self.$arguments = toArray(arguments);
-            var result = res.get.call(self, self);
+            res.get.call(self, self);
             self.$arguments = null;
-            return result;
           };
         } else {
           try {
@@ -8705,7 +8567,7 @@ var template = Object.freeze({
 
     Vue.prototype.$eval = function (text, asStatement) {
       // check for filters.
-      if (filterRE$1.test(text)) {
+      if (filterRE.test(text)) {
         var dir = parseDirective(text);
         // the filter regex check might give false positive
         // for pipes inside strings, so it's possible that
@@ -8777,6 +8639,7 @@ var template = Object.freeze({
   }
 
   function domAPI (Vue) {
+
     /**
      * Convenience on-instance nextTick. The callback is
      * auto-bound to the instance, and this avoids component
@@ -8962,6 +8825,7 @@ var template = Object.freeze({
   }
 
   function eventsAPI (Vue) {
+
     /**
      * Listen on the given `event` with `fn`.
      *
@@ -9044,32 +8908,19 @@ var template = Object.freeze({
     /**
      * Trigger an event on self.
      *
-     * @param {String|Object} event
+     * @param {String} event
      * @return {Boolean} shouldPropagate
      */
 
     Vue.prototype.$emit = function (event) {
-      var isSource = typeof event === 'string';
-      event = isSource ? event : event.name;
       var cbs = this._events[event];
-      var shouldPropagate = isSource || !cbs;
+      var shouldPropagate = !cbs;
       if (cbs) {
         cbs = cbs.length > 1 ? toArray(cbs) : cbs;
-        // this is a somewhat hacky solution to the question raised
-        // in #2102: for an inline component listener like <comp @test="doThis">,
-        // the propagation handling is somewhat broken. Therefore we
-        // need to treat these inline callbacks differently.
-        var hasParentCbs = isSource && cbs.some(function (cb) {
-          return cb._fromParent;
-        });
-        if (hasParentCbs) {
-          shouldPropagate = false;
-        }
         var args = toArray(arguments, 1);
         for (var i = 0, l = cbs.length; i < l; i++) {
-          var cb = cbs[i];
-          var res = cb.apply(this, args);
-          if (res === true && (!hasParentCbs || cb._fromParent)) {
+          var res = cbs[i].apply(this, args);
+          if (res === true) {
             shouldPropagate = true;
           }
         }
@@ -9080,28 +8931,20 @@ var template = Object.freeze({
     /**
      * Recursively broadcast an event to all children instances.
      *
-     * @param {String|Object} event
+     * @param {String} event
      * @param {...*} additional arguments
      */
 
     Vue.prototype.$broadcast = function (event) {
-      var isSource = typeof event === 'string';
-      event = isSource ? event : event.name;
       // if no child has registered for this event,
       // then there's no need to broadcast.
       if (!this._eventsCount[event]) return;
       var children = this.$children;
-      var args = toArray(arguments);
-      if (isSource) {
-        // use object event to indicate non-source emit
-        // on children
-        args[0] = { name: event, source: this };
-      }
       for (var i = 0, l = children.length; i < l; i++) {
         var child = children[i];
-        var shouldPropagate = child.$emit.apply(child, args);
+        var shouldPropagate = child.$emit.apply(child, arguments);
         if (shouldPropagate) {
-          child.$broadcast.apply(child, args);
+          child.$broadcast.apply(child, arguments);
         }
       }
       return this;
@@ -9114,16 +8957,11 @@ var template = Object.freeze({
      * @param {...*} additional arguments
      */
 
-    Vue.prototype.$dispatch = function (event) {
-      var shouldPropagate = this.$emit.apply(this, arguments);
-      if (!shouldPropagate) return;
+    Vue.prototype.$dispatch = function () {
+      this.$emit.apply(this, arguments);
       var parent = this.$parent;
-      var args = toArray(arguments);
-      // use object event to indicate non-source emit
-      // on parents
-      args[0] = { name: event, source: this };
       while (parent) {
-        shouldPropagate = parent.$emit.apply(parent, args);
+        var shouldPropagate = parent.$emit.apply(parent, arguments);
         parent = shouldPropagate ? parent.$parent : null;
       }
       return this;
@@ -9153,6 +8991,7 @@ var template = Object.freeze({
   }
 
   function lifecycleAPI (Vue) {
+
     /**
      * Set instance target element and kick off the compilation
      * process. The passed in `el` can be a selector string, an
@@ -9241,105 +9080,12 @@ var template = Object.freeze({
   lifecycleMixin(Vue);
   miscMixin(Vue);
 
-  // install instance APIs
+  // install APIs
+  globalAPI(Vue);
   dataAPI(Vue);
   domAPI(Vue);
   eventsAPI(Vue);
   lifecycleAPI(Vue);
-
-  var slot = {
-
-    priority: SLOT,
-    params: ['name'],
-
-    bind: function bind() {
-      // this was resolved during component transclusion
-      var name = this.params.name || 'default';
-      var content = this.vm._slotContents && this.vm._slotContents[name];
-      if (!content || !content.hasChildNodes()) {
-        this.fallback();
-      } else {
-        this.compile(content.cloneNode(true), this.vm._context, this.vm);
-      }
-    },
-
-    compile: function compile(content, context, host) {
-      if (content && context) {
-        if (this.el.hasChildNodes() && content.childNodes.length === 1 && content.childNodes[0].nodeType === 1 && content.childNodes[0].hasAttribute('v-if')) {
-          // if the inserted slot has v-if
-          // inject fallback content as the v-else
-          var elseBlock = document.createElement('template');
-          elseBlock.setAttribute('v-else', '');
-          elseBlock.innerHTML = this.el.innerHTML;
-          // the else block should be compiled in child scope
-          elseBlock._context = this.vm;
-          content.appendChild(elseBlock);
-        }
-        var scope = host ? host._scope : this._scope;
-        this.unlink = context.$compile(content, host, scope, this._frag);
-      }
-      if (content) {
-        replace(this.el, content);
-      } else {
-        remove(this.el);
-      }
-    },
-
-    fallback: function fallback() {
-      this.compile(extractContent(this.el, true), this.vm);
-    },
-
-    unbind: function unbind() {
-      if (this.unlink) {
-        this.unlink();
-      }
-    }
-  };
-
-  var partial = {
-
-    priority: PARTIAL,
-
-    params: ['name'],
-
-    // watch changes to name for dynamic partials
-    paramWatchers: {
-      name: function name(value) {
-        vIf.remove.call(this);
-        if (value) {
-          this.insert(value);
-        }
-      }
-    },
-
-    bind: function bind() {
-      this.anchor = createAnchor('v-partial');
-      replace(this.el, this.anchor);
-      this.insert(this.params.name);
-    },
-
-    insert: function insert(id) {
-      var partial = resolveAsset(this.vm.$options, 'partials', id);
-      if ('development' !== 'production') {
-        assertAsset(partial, 'partial', id);
-      }
-      if (partial) {
-        this.factory = new FragmentFactory(this.vm, partial);
-        vIf.insert.call(this);
-      }
-    },
-
-    unbind: function unbind() {
-      if (this.frag) {
-        this.frag.destroy();
-      }
-    }
-  };
-
-  var elementDirectives = {
-    slot: slot,
-    partial: partial
-  };
 
   var convertArray = vFor._postProcess;
 
@@ -9352,7 +9098,6 @@ var template = Object.freeze({
 
   function limitBy(arr, n, offset) {
     offset = offset ? parseInt(offset, 10) : 0;
-    n = toNumber(n);
     return typeof n === 'number' ? arr.slice(offset, offset + n) : arr;
   }
 
@@ -9390,12 +9135,12 @@ var template = Object.freeze({
       if (j) {
         while (j--) {
           key = keys[j];
-          if (key === '$key' && contains$1(item.$key, search) || contains$1(getPath(val, key), search)) {
+          if (key === '$key' && contains(item.$key, search) || contains(getPath(val, key), search)) {
             res.push(item);
             break;
           }
         }
-      } else if (contains$1(item, search)) {
+      } else if (contains(item, search)) {
         res.push(item);
       }
     }
@@ -9434,20 +9179,20 @@ var template = Object.freeze({
    * @param {String} search
    */
 
-  function contains$1(val, search) {
+  function contains(val, search) {
     var i;
     if (isPlainObject(val)) {
       var keys = Object.keys(val);
       i = keys.length;
       while (i--) {
-        if (contains$1(val[keys[i]], search)) {
+        if (contains(val[keys[i]], search)) {
           return true;
         }
       }
     } else if (isArray(val)) {
       i = val.length;
       while (i--) {
-        if (contains$1(val[i], search)) {
+        if (contains(val[i], search)) {
           return true;
         }
       }
@@ -9526,7 +9271,7 @@ var template = Object.freeze({
       var head = i > 0 ? _int.slice(0, i) + (_int.length > 3 ? ',' : '') : '';
       var _float = stringified.slice(-3);
       var sign = value < 0 ? '-' : '';
-      return sign + _currency + head + _int.slice(i).replace(digitsRE, '$1,') + _float;
+      return _currency + sign + head + _int.slice(i).replace(digitsRE, '$1,') + _float;
     },
 
     /**
@@ -9564,194 +9309,193 @@ var template = Object.freeze({
     }
   };
 
-  function installGlobalAPI (Vue) {
-    /**
-     * Vue and every constructor that extends Vue has an
-     * associated options object, which can be accessed during
-     * compilation steps as `this.constructor.options`.
-     *
-     * These can be seen as the default options of every
-     * Vue instance.
-     */
+  var partial = {
 
-    Vue.options = {
-      directives: directives,
-      elementDirectives: elementDirectives,
-      filters: filters,
-      transitions: {},
-      components: {},
-      partials: {},
-      replace: true
-    };
+    priority: PARTIAL,
 
-    /**
-     * Expose useful internals
-     */
+    params: ['name'],
 
-    Vue.util = util;
-    Vue.config = config;
-    Vue.set = set;
-    Vue['delete'] = del;
-    Vue.nextTick = nextTick;
-
-    /**
-     * The following are exposed for advanced usage / plugins
-     */
-
-    Vue.compiler = compiler;
-    Vue.FragmentFactory = FragmentFactory;
-    Vue.internalDirectives = internalDirectives;
-    Vue.parsers = {
-      path: path,
-      text: text,
-      template: template,
-      directive: directive,
-      expression: expression
-    };
-
-    /**
-     * Each instance constructor, including Vue, has a unique
-     * cid. This enables us to create wrapped "child
-     * constructors" for prototypal inheritance and cache them.
-     */
-
-    Vue.cid = 0;
-    var cid = 1;
-
-    /**
-     * Class inheritance
-     *
-     * @param {Object} extendOptions
-     */
-
-    Vue.extend = function (extendOptions) {
-      extendOptions = extendOptions || {};
-      var Super = this;
-      var isFirstExtend = Super.cid === 0;
-      if (isFirstExtend && extendOptions._Ctor) {
-        return extendOptions._Ctor;
-      }
-      var name = extendOptions.name || Super.options.name;
-      if ('development' !== 'production') {
-        if (!/^[a-zA-Z][\w-]*$/.test(name)) {
-          warn('Invalid component name: "' + name + '". Component names ' + 'can only contain alphanumeric characaters and the hyphen.');
-          name = null;
+    // watch changes to name for dynamic partials
+    paramWatchers: {
+      name: function name(value) {
+        vIf.remove.call(this);
+        if (value) {
+          this.insert(value);
         }
       }
-      var Sub = createClass(name || 'VueComponent');
-      Sub.prototype = Object.create(Super.prototype);
-      Sub.prototype.constructor = Sub;
-      Sub.cid = cid++;
-      Sub.options = mergeOptions(Super.options, extendOptions);
-      Sub['super'] = Super;
-      // allow further extension
-      Sub.extend = Super.extend;
-      // create asset registers, so extended classes
-      // can have their private assets too.
-      config._assetTypes.forEach(function (type) {
-        Sub[type] = Super[type];
-      });
-      // enable recursive self-lookup
-      if (name) {
-        Sub.options.components[name] = Sub;
-      }
-      // cache constructor
-      if (isFirstExtend) {
-        extendOptions._Ctor = Sub;
-      }
-      return Sub;
-    };
+    },
 
-    /**
-     * A function that returns a sub-class constructor with the
-     * given name. This gives us much nicer output when
-     * logging instances in the console.
-     *
-     * @param {String} name
-     * @return {Function}
-     */
+    bind: function bind() {
+      this.anchor = createAnchor('v-partial');
+      replace(this.el, this.anchor);
+      this.insert(this.params.name);
+    },
 
-    function createClass(name) {
-      /* eslint-disable no-new-func */
-      return new Function('return function ' + classify(name) + ' (options) { this._init(options) }')();
-      /* eslint-enable no-new-func */
+    insert: function insert(id) {
+      var partial = resolveAsset(this.vm.$options, 'partials', id);
+      if ('development' !== 'production') {
+        assertAsset(partial, 'partial', id);
+      }
+      if (partial) {
+        this.factory = new FragmentFactory(this.vm, partial);
+        vIf.insert.call(this);
+      }
+    },
+
+    unbind: function unbind() {
+      if (this.frag) {
+        this.frag.destroy();
+      }
     }
+  };
 
-    /**
-     * Plugin system
-     *
-     * @param {Object} plugin
-     */
+  // This is the elementDirective that handles <content>
+  // transclusions. It relies on the raw content of an
+  // instance being stored as `$options._content` during
+  // the transclude phase.
 
-    Vue.use = function (plugin) {
-      /* istanbul ignore if */
-      if (plugin.installed) {
+  // We are exporting two versions, one for named and one
+  // for unnamed, because the unnamed slots must be compiled
+  // AFTER all named slots have selected their content. So
+  // we need to give them different priorities in the compilation
+  // process. (See #1965)
+
+  var slot = {
+
+    priority: SLOT,
+
+    bind: function bind() {
+      var host = this.vm;
+      var raw = host.$options._content;
+      if (!raw) {
+        this.fallback();
         return;
       }
-      // additional parameters
-      var args = toArray(arguments, 1);
-      args.unshift(this);
-      if (typeof plugin.install === 'function') {
-        plugin.install.apply(plugin, args);
+      var context = host._context;
+      var slotName = this.params && this.params.name;
+      if (!slotName) {
+        // Default slot
+        this.tryCompile(extractFragment(raw.childNodes, raw, true), context, host);
       } else {
-        plugin.apply(null, args);
-      }
-      plugin.installed = true;
-      return this;
-    };
-
-    /**
-     * Apply a global mixin by merging it into the default
-     * options.
-     */
-
-    Vue.mixin = function (mixin) {
-      Vue.options = mergeOptions(Vue.options, mixin);
-    };
-
-    /**
-     * Create asset registration methods with the following
-     * signature:
-     *
-     * @param {String} id
-     * @param {*} definition
-     */
-
-    config._assetTypes.forEach(function (type) {
-      Vue[type] = function (id, definition) {
-        if (!definition) {
-          return this.options[type + 's'][id];
+        // Named slot
+        var selector = '[slot="' + slotName + '"]';
+        var nodes = raw.querySelectorAll(selector);
+        if (nodes.length) {
+          this.tryCompile(extractFragment(nodes, raw), context, host);
         } else {
-          /* istanbul ignore if */
-          if ('development' !== 'production') {
-            if (type === 'component' && (commonTagRE.test(id) || reservedTagRE.test(id))) {
-              warn('Do not use built-in or reserved HTML elements as component ' + 'id: ' + id);
-            }
-          }
-          if (type === 'component' && isPlainObject(definition)) {
-            definition.name = id;
-            definition = Vue.extend(definition);
-          }
-          this.options[type + 's'][id] = definition;
-          return definition;
+          this.fallback();
         }
-      };
-    });
+      }
+    },
 
-    // expose internal transition API
-    extend(Vue.transition, transition);
+    tryCompile: function tryCompile(content, context, host) {
+      if (content.hasChildNodes()) {
+        this.compile(content, context, host);
+      } else {
+        this.fallback();
+      }
+    },
+
+    compile: function compile(content, context, host) {
+      if (content && context) {
+        var scope = host ? host._scope : this._scope;
+        this.unlink = context.$compile(content, host, scope, this._frag);
+      }
+      if (content) {
+        replace(this.el, content);
+      } else {
+        remove(this.el);
+      }
+    },
+
+    fallback: function fallback() {
+      this.compile(extractContent(this.el, true), this.vm);
+    },
+
+    unbind: function unbind() {
+      if (this.unlink) {
+        this.unlink();
+      }
+    }
+  };
+
+  var namedSlot = extend(extend({}, slot), {
+    priority: slot.priority + 1,
+    params: ['name']
+  });
+
+  /**
+   * Extract qualified content nodes from a node list.
+   *
+   * @param {NodeList} nodes
+   * @param {Element} parent
+   * @param {Boolean} main
+   * @return {DocumentFragment}
+   */
+
+  function extractFragment(nodes, parent, main) {
+    var frag = document.createDocumentFragment();
+    for (var i = 0, l = nodes.length; i < l; i++) {
+      var node = nodes[i];
+      // if this is the main outlet, we want to skip all
+      // previously selected nodes;
+      // otherwise, we want to mark the node as selected.
+      // clone the node so the original raw content remains
+      // intact. this ensures proper re-compilation in cases
+      // where the outlet is inside a conditional block
+      if (main && !node.__v_selected) {
+        append(node);
+      } else if (!main && node.parentNode === parent) {
+        node.__v_selected = true;
+        append(node);
+      }
+    }
+    return frag;
+
+    function append(node) {
+      if (isTemplate(node) && !node.hasAttribute('v-if') && !node.hasAttribute('v-for')) {
+        node = parseTemplate(node);
+      }
+      node = cloneNode(node);
+      frag.appendChild(node);
+    }
   }
 
-  installGlobalAPI(Vue);
+  var elementDirectives = {
+    slot: slot,
+    _namedSlot: namedSlot, // same as slot but with higher priority
+    partial: partial
+  };
 
-  Vue.version = '1.0.17';
+  Vue.version = '1.0.13';
+
+  /**
+   * Vue and every constructor that extends Vue has an
+   * associated options object, which can be accessed during
+   * compilation steps as `this.constructor.options`.
+   *
+   * These can be seen as the default options of every
+   * Vue instance.
+   */
+
+  Vue.options = {
+    directives: publicDirectives,
+    elementDirectives: elementDirectives,
+    filters: filters,
+    transitions: {},
+    components: {},
+    partials: {},
+    replace: true
+  };
 
   // devtools global hook
-  /* istanbul ignore next */
-  if (devtools) {
-    devtools.emit('init', Vue);
-  } else if ('development' !== 'production' && inBrowser && /Chrome\/\d+/.test(window.navigator.userAgent)) {
-    console.log('Download the Vue Devtools for a better development experience:\n' + 'https://github.com/vuejs/vue-devtools');
+  /* istanbul ignore if */
+  if ('development' !== 'production' && inBrowser) {
+    if (window.__VUE_DEVTOOLS_GLOBAL_HOOK__) {
+      window.__VUE_DEVTOOLS_GLOBAL_HOOK__.emit('init', Vue);
+    } else if (/Chrome\/\d+/.test(navigator.userAgent)) {
+      console.log('Download the Vue Devtools for a better development experience:\n' + 'https://github.com/vuejs/vue-devtools');
+    }
   }
 
   return Vue;
@@ -37764,6 +37508,1611 @@ function toArray(list, index) {
 
 },{}]},{},[31])(31)
 });
+
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(["jquery"], function ($) {
+      return (root.returnExportsGlobal = factory($));
+    });
+  } else if (typeof exports === 'object') {
+    // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like enviroments that support module.exports,
+    // like Node.
+    module.exports = factory(require("jquery"));
+  } else {
+    factory(jQuery);
+  }
+}(this, function ($) {
+
+/*
+  Implement Github like autocomplete mentions
+  http://ichord.github.com/At.js
+
+  Copyright (c) 2013 chord.luo@gmail.com
+  Licensed under the MIT license.
+*/
+
+/*
+本插件操作 textarea 或者 input 内的插入符
+只实现了获得插入符在文本框中的位置，我设置
+插入符的位置.
+*/
+
+"use strict";
+var EditableCaret, InputCaret, Mirror, Utils, discoveryIframeOf, methods, oDocument, oFrame, oWindow, pluginName, setContextBy;
+
+pluginName = 'caret';
+
+EditableCaret = (function() {
+  function EditableCaret($inputor) {
+    this.$inputor = $inputor;
+    this.domInputor = this.$inputor[0];
+  }
+
+  EditableCaret.prototype.setPos = function(pos) {
+    return this.domInputor;
+  };
+
+  EditableCaret.prototype.getIEPosition = function() {
+    return this.getPosition();
+  };
+
+  EditableCaret.prototype.getPosition = function() {
+    var inputor_offset, offset;
+    offset = this.getOffset();
+    inputor_offset = this.$inputor.offset();
+    offset.left -= inputor_offset.left;
+    offset.top -= inputor_offset.top;
+    return offset;
+  };
+
+  EditableCaret.prototype.getOldIEPos = function() {
+    var preCaretTextRange, textRange;
+    textRange = oDocument.selection.createRange();
+    preCaretTextRange = oDocument.body.createTextRange();
+    preCaretTextRange.moveToElementText(this.domInputor);
+    preCaretTextRange.setEndPoint("EndToEnd", textRange);
+    return preCaretTextRange.text.length;
+  };
+
+  EditableCaret.prototype.getPos = function() {
+    var clonedRange, pos, range;
+    if (range = this.range()) {
+      clonedRange = range.cloneRange();
+      clonedRange.selectNodeContents(this.domInputor);
+      clonedRange.setEnd(range.endContainer, range.endOffset);
+      pos = clonedRange.toString().length;
+      clonedRange.detach();
+      return pos;
+    } else if (oDocument.selection) {
+      return this.getOldIEPos();
+    }
+  };
+
+  EditableCaret.prototype.getOldIEOffset = function() {
+    var range, rect;
+    range = oDocument.selection.createRange().duplicate();
+    range.moveStart("character", -1);
+    rect = range.getBoundingClientRect();
+    return {
+      height: rect.bottom - rect.top,
+      left: rect.left,
+      top: rect.top
+    };
+  };
+
+  EditableCaret.prototype.getOffset = function(pos) {
+    var clonedRange, offset, range, rect, shadowCaret;
+    if (oWindow.getSelection && (range = this.range())) {
+      if (range.endOffset - 1 > 0 && range.endContainer === !this.domInputor) {
+        clonedRange = range.cloneRange();
+        clonedRange.setStart(range.endContainer, range.endOffset - 1);
+        clonedRange.setEnd(range.endContainer, range.endOffset);
+        rect = clonedRange.getBoundingClientRect();
+        offset = {
+          height: rect.height,
+          left: rect.left + rect.width,
+          top: rect.top
+        };
+        clonedRange.detach();
+      }
+      if (!offset || (offset != null ? offset.height : void 0) === 0) {
+        clonedRange = range.cloneRange();
+        shadowCaret = $(oDocument.createTextNode("|"));
+        clonedRange.insertNode(shadowCaret[0]);
+        clonedRange.selectNode(shadowCaret[0]);
+        rect = clonedRange.getBoundingClientRect();
+        offset = {
+          height: rect.height,
+          left: rect.left,
+          top: rect.top
+        };
+        shadowCaret.remove();
+        clonedRange.detach();
+      }
+    } else if (oDocument.selection) {
+      offset = this.getOldIEOffset();
+    }
+    if (offset) {
+      offset.top += $(oWindow).scrollTop();
+      offset.left += $(oWindow).scrollLeft();
+    }
+    return offset;
+  };
+
+  EditableCaret.prototype.range = function() {
+    var sel;
+    if (!oWindow.getSelection) {
+      return;
+    }
+    sel = oWindow.getSelection();
+    if (sel.rangeCount > 0) {
+      return sel.getRangeAt(0);
+    } else {
+      return null;
+    }
+  };
+
+  return EditableCaret;
+
+})();
+
+InputCaret = (function() {
+  function InputCaret($inputor) {
+    this.$inputor = $inputor;
+    this.domInputor = this.$inputor[0];
+  }
+
+  InputCaret.prototype.getIEPos = function() {
+    var endRange, inputor, len, normalizedValue, pos, range, textInputRange;
+    inputor = this.domInputor;
+    range = oDocument.selection.createRange();
+    pos = 0;
+    if (range && range.parentElement() === inputor) {
+      normalizedValue = inputor.value.replace(/\r\n/g, "\n");
+      len = normalizedValue.length;
+      textInputRange = inputor.createTextRange();
+      textInputRange.moveToBookmark(range.getBookmark());
+      endRange = inputor.createTextRange();
+      endRange.collapse(false);
+      if (textInputRange.compareEndPoints("StartToEnd", endRange) > -1) {
+        pos = len;
+      } else {
+        pos = -textInputRange.moveStart("character", -len);
+      }
+    }
+    return pos;
+  };
+
+  InputCaret.prototype.getPos = function() {
+    if (oDocument.selection) {
+      return this.getIEPos();
+    } else {
+      return this.domInputor.selectionStart;
+    }
+  };
+
+  InputCaret.prototype.setPos = function(pos) {
+    var inputor, range;
+    inputor = this.domInputor;
+    if (oDocument.selection) {
+      range = inputor.createTextRange();
+      range.move("character", pos);
+      range.select();
+    } else if (inputor.setSelectionRange) {
+      inputor.setSelectionRange(pos, pos);
+    }
+    return inputor;
+  };
+
+  InputCaret.prototype.getIEOffset = function(pos) {
+    var h, textRange, x, y;
+    textRange = this.domInputor.createTextRange();
+    pos || (pos = this.getPos());
+    textRange.move('character', pos);
+    x = textRange.boundingLeft;
+    y = textRange.boundingTop;
+    h = textRange.boundingHeight;
+    return {
+      left: x,
+      top: y,
+      height: h
+    };
+  };
+
+  InputCaret.prototype.getOffset = function(pos) {
+    var $inputor, offset, position;
+    $inputor = this.$inputor;
+    if (oDocument.selection) {
+      offset = this.getIEOffset(pos);
+      offset.top += $(oWindow).scrollTop() + $inputor.scrollTop();
+      offset.left += $(oWindow).scrollLeft() + $inputor.scrollLeft();
+      return offset;
+    } else {
+      offset = $inputor.offset();
+      position = this.getPosition(pos);
+      return offset = {
+        left: offset.left + position.left - $inputor.scrollLeft(),
+        top: offset.top + position.top - $inputor.scrollTop(),
+        height: position.height
+      };
+    }
+  };
+
+  InputCaret.prototype.getPosition = function(pos) {
+    var $inputor, at_rect, end_range, format, html, mirror, start_range;
+    $inputor = this.$inputor;
+    format = function(value) {
+      value = value.replace(/<|>|`|"|&/g, '?').replace(/\r\n|\r|\n/g, "<br/>");
+      if (/firefox/i.test(navigator.userAgent)) {
+        value = value.replace(/\s/g, '&nbsp;');
+      }
+      return value;
+    };
+    if (pos === void 0) {
+      pos = this.getPos();
+    }
+    start_range = $inputor.val().slice(0, pos);
+    end_range = $inputor.val().slice(pos);
+    html = "<span style='position: relative; display: inline;'>" + format(start_range) + "</span>";
+    html += "<span id='caret' style='position: relative; display: inline;'>|</span>";
+    html += "<span style='position: relative; display: inline;'>" + format(end_range) + "</span>";
+    mirror = new Mirror($inputor);
+    return at_rect = mirror.create(html).rect();
+  };
+
+  InputCaret.prototype.getIEPosition = function(pos) {
+    var h, inputorOffset, offset, x, y;
+    offset = this.getIEOffset(pos);
+    inputorOffset = this.$inputor.offset();
+    x = offset.left - inputorOffset.left;
+    y = offset.top - inputorOffset.top;
+    h = offset.height;
+    return {
+      left: x,
+      top: y,
+      height: h
+    };
+  };
+
+  return InputCaret;
+
+})();
+
+Mirror = (function() {
+  Mirror.prototype.css_attr = ["borderBottomWidth", "borderLeftWidth", "borderRightWidth", "borderTopStyle", "borderRightStyle", "borderBottomStyle", "borderLeftStyle", "borderTopWidth", "boxSizing", "fontFamily", "fontSize", "fontWeight", "height", "letterSpacing", "lineHeight", "marginBottom", "marginLeft", "marginRight", "marginTop", "outlineWidth", "overflow", "overflowX", "overflowY", "paddingBottom", "paddingLeft", "paddingRight", "paddingTop", "textAlign", "textOverflow", "textTransform", "whiteSpace", "wordBreak", "wordWrap"];
+
+  function Mirror($inputor) {
+    this.$inputor = $inputor;
+  }
+
+  Mirror.prototype.mirrorCss = function() {
+    var css,
+      _this = this;
+    css = {
+      position: 'absolute',
+      left: -9999,
+      top: 0,
+      zIndex: -20000
+    };
+    if (this.$inputor.prop('tagName') === 'TEXTAREA') {
+      this.css_attr.push('width');
+    }
+    $.each(this.css_attr, function(i, p) {
+      return css[p] = _this.$inputor.css(p);
+    });
+    return css;
+  };
+
+  Mirror.prototype.create = function(html) {
+    this.$mirror = $('<div></div>');
+    this.$mirror.css(this.mirrorCss());
+    this.$mirror.html(html);
+    this.$inputor.after(this.$mirror);
+    return this;
+  };
+
+  Mirror.prototype.rect = function() {
+    var $flag, pos, rect;
+    $flag = this.$mirror.find("#caret");
+    pos = $flag.position();
+    rect = {
+      left: pos.left,
+      top: pos.top,
+      height: $flag.height()
+    };
+    this.$mirror.remove();
+    return rect;
+  };
+
+  return Mirror;
+
+})();
+
+Utils = {
+  contentEditable: function($inputor) {
+    return !!($inputor[0].contentEditable && $inputor[0].contentEditable === 'true');
+  }
+};
+
+methods = {
+  pos: function(pos) {
+    if (pos || pos === 0) {
+      return this.setPos(pos);
+    } else {
+      return this.getPos();
+    }
+  },
+  position: function(pos) {
+    if (oDocument.selection) {
+      return this.getIEPosition(pos);
+    } else {
+      return this.getPosition(pos);
+    }
+  },
+  offset: function(pos) {
+    var offset;
+    offset = this.getOffset(pos);
+    return offset;
+  }
+};
+
+oDocument = null;
+
+oWindow = null;
+
+oFrame = null;
+
+setContextBy = function(settings) {
+  var iframe;
+  if (iframe = settings != null ? settings.iframe : void 0) {
+    oFrame = iframe;
+    oWindow = iframe.contentWindow;
+    return oDocument = iframe.contentDocument || oWindow.document;
+  } else {
+    oFrame = void 0;
+    oWindow = window;
+    return oDocument = document;
+  }
+};
+
+discoveryIframeOf = function($dom) {
+  var error;
+  oDocument = $dom[0].ownerDocument;
+  oWindow = oDocument.defaultView || oDocument.parentWindow;
+  try {
+    return oFrame = oWindow.frameElement;
+  } catch (_error) {
+    error = _error;
+  }
+};
+
+$.fn.caret = function(method, value, settings) {
+  var caret;
+  if (methods[method]) {
+    if ($.isPlainObject(value)) {
+      setContextBy(value);
+      value = void 0;
+    } else {
+      setContextBy(settings);
+    }
+    caret = Utils.contentEditable(this) ? new EditableCaret(this) : new InputCaret(this);
+    return methods[method].apply(caret, [value]);
+  } else {
+    return $.error("Method " + method + " does not exist on jQuery.caret");
+  }
+};
+
+$.fn.caret.EditableCaret = EditableCaret;
+
+$.fn.caret.InputCaret = InputCaret;
+
+$.fn.caret.Utils = Utils;
+
+$.fn.caret.apis = methods;
+
+
+}));
+
+/**
+ * at.js - 1.5.0
+ * Copyright (c) 2016 chord.luo <chord.luo@gmail.com>;
+ * Homepage: http://ichord.github.com/At.js
+ * License: MIT
+ */
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module unless amdModuleId is set
+    define(["jquery"], function (a0) {
+      return (factory(a0));
+    });
+  } else if (typeof exports === 'object') {
+    // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like environments that support module.exports,
+    // like Node.
+    module.exports = factory(require("jquery"));
+  } else {
+    factory(jQuery);
+  }
+}(this, function ($) {
+var DEFAULT_CALLBACKS, KEY_CODE;
+
+KEY_CODE = {
+  DOWN: 40,
+  UP: 38,
+  ESC: 27,
+  TAB: 9,
+  ENTER: 13,
+  CTRL: 17,
+  A: 65,
+  P: 80,
+  N: 78,
+  LEFT: 37,
+  UP: 38,
+  RIGHT: 39,
+  DOWN: 40,
+  BACKSPACE: 8,
+  SPACE: 32
+};
+
+DEFAULT_CALLBACKS = {
+  beforeSave: function(data) {
+    return Controller.arrayToDefaultHash(data);
+  },
+  matcher: function(flag, subtext, should_startWithSpace, acceptSpaceBar) {
+    var _a, _y, match, regexp, space;
+    flag = flag.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    if (should_startWithSpace) {
+      flag = '(?:^|\\s)' + flag;
+    }
+    _a = decodeURI("%C3%80");
+    _y = decodeURI("%C3%BF");
+    space = acceptSpaceBar ? "\ " : "";
+    regexp = new RegExp(flag + "([A-Za-z" + _a + "-" + _y + "0-9_" + space + "\'\.\+\-]*)$|" + flag + "([^\\x00-\\xff]*)$", 'gi');
+    match = regexp.exec(subtext);
+    if (match) {
+      return match[2] || match[1];
+    } else {
+      return null;
+    }
+  },
+  filter: function(query, data, searchKey) {
+    var _results, i, item, len;
+    _results = [];
+    for (i = 0, len = data.length; i < len; i++) {
+      item = data[i];
+      if (~new String(item[searchKey]).toLowerCase().indexOf(query.toLowerCase())) {
+        _results.push(item);
+      }
+    }
+    return _results;
+  },
+  remoteFilter: null,
+  sorter: function(query, items, searchKey) {
+    var _results, i, item, len;
+    if (!query) {
+      return items;
+    }
+    _results = [];
+    for (i = 0, len = items.length; i < len; i++) {
+      item = items[i];
+      item.atwho_order = new String(item[searchKey]).toLowerCase().indexOf(query.toLowerCase());
+      if (item.atwho_order > -1) {
+        _results.push(item);
+      }
+    }
+    return _results.sort(function(a, b) {
+      return a.atwho_order - b.atwho_order;
+    });
+  },
+  tplEval: function(tpl, map) {
+    var error, error1, template;
+    template = tpl;
+    try {
+      if (typeof tpl !== 'string') {
+        template = tpl(map);
+      }
+      return template.replace(/\$\{([^\}]*)\}/g, function(tag, key, pos) {
+        return map[key];
+      });
+    } catch (error1) {
+      error = error1;
+      return "";
+    }
+  },
+  highlighter: function(li, query) {
+    var regexp;
+    if (!query) {
+      return li;
+    }
+    regexp = new RegExp(">\\s*(\\w*?)(" + query.replace("+", "\\+") + ")(\\w*)\\s*<", 'ig');
+    return li.replace(regexp, function(str, $1, $2, $3) {
+      return '> ' + $1 + '<strong>' + $2 + '</strong>' + $3 + ' <';
+    });
+  },
+  beforeInsert: function(value, $li) {
+    return value;
+  },
+  beforeReposition: function(offset) {
+    return offset;
+  },
+  afterMatchFailed: function(at, el) {}
+};
+
+var App;
+
+App = (function() {
+  function App(inputor) {
+    this.currentFlag = null;
+    this.controllers = {};
+    this.aliasMaps = {};
+    this.$inputor = $(inputor);
+    this.setupRootElement();
+    this.listen();
+  }
+
+  App.prototype.createContainer = function(doc) {
+    var ref;
+    if ((ref = this.$el) != null) {
+      ref.remove();
+    }
+    return $(doc.body).append(this.$el = $("<div class='atwho-container'></div>"));
+  };
+
+  App.prototype.setupRootElement = function(iframe, asRoot) {
+    var error, error1;
+    if (asRoot == null) {
+      asRoot = false;
+    }
+    if (iframe) {
+      this.window = iframe.contentWindow;
+      this.document = iframe.contentDocument || this.window.document;
+      this.iframe = iframe;
+    } else {
+      this.document = this.$inputor[0].ownerDocument;
+      this.window = this.document.defaultView || this.document.parentWindow;
+      try {
+        this.iframe = this.window.frameElement;
+      } catch (error1) {
+        error = error1;
+        this.iframe = null;
+        if ($.fn.atwho.debug) {
+          throw new Error("iframe auto-discovery is failed.\nPlease use `setIframe` to set the target iframe manually.\n" + error);
+        }
+      }
+    }
+    return this.createContainer((this.iframeAsRoot = asRoot) ? this.document : document);
+  };
+
+  App.prototype.controller = function(at) {
+    var c, current, currentFlag, ref;
+    if (this.aliasMaps[at]) {
+      current = this.controllers[this.aliasMaps[at]];
+    } else {
+      ref = this.controllers;
+      for (currentFlag in ref) {
+        c = ref[currentFlag];
+        if (currentFlag === at) {
+          current = c;
+          break;
+        }
+      }
+    }
+    if (current) {
+      return current;
+    } else {
+      return this.controllers[this.currentFlag];
+    }
+  };
+
+  App.prototype.setContextFor = function(at) {
+    this.currentFlag = at;
+    return this;
+  };
+
+  App.prototype.reg = function(flag, setting) {
+    var base, controller;
+    controller = (base = this.controllers)[flag] || (base[flag] = this.$inputor.is('[contentEditable]') ? new EditableController(this, flag) : new TextareaController(this, flag));
+    if (setting.alias) {
+      this.aliasMaps[setting.alias] = flag;
+    }
+    controller.init(setting);
+    return this;
+  };
+
+  App.prototype.listen = function() {
+    return this.$inputor.on('compositionstart', (function(_this) {
+      return function(e) {
+        var ref;
+        if ((ref = _this.controller()) != null) {
+          ref.view.hide();
+        }
+        _this.isComposing = true;
+        return null;
+      };
+    })(this)).on('compositionend', (function(_this) {
+      return function(e) {
+        _this.isComposing = false;
+        return null;
+      };
+    })(this)).on('keyup.atwhoInner', (function(_this) {
+      return function(e) {
+        return _this.onKeyup(e);
+      };
+    })(this)).on('keydown.atwhoInner', (function(_this) {
+      return function(e) {
+        return _this.onKeydown(e);
+      };
+    })(this)).on('blur.atwhoInner', (function(_this) {
+      return function(e) {
+        var c;
+        if (c = _this.controller()) {
+          c.expectedQueryCBId = null;
+          return c.view.hide(e, c.getOpt("displayTimeout"));
+        }
+      };
+    })(this)).on('click.atwhoInner', (function(_this) {
+      return function(e) {
+        return _this.dispatch(e);
+      };
+    })(this)).on('scroll.atwhoInner', (function(_this) {
+      return function() {
+        var lastScrollTop;
+        lastScrollTop = _this.$inputor.scrollTop();
+        return function(e) {
+          var currentScrollTop, ref;
+          currentScrollTop = e.target.scrollTop;
+          if (lastScrollTop !== currentScrollTop) {
+            if ((ref = _this.controller()) != null) {
+              ref.view.hide(e);
+            }
+          }
+          lastScrollTop = currentScrollTop;
+          return true;
+        };
+      };
+    })(this)());
+  };
+
+  App.prototype.shutdown = function() {
+    var _, c, ref;
+    ref = this.controllers;
+    for (_ in ref) {
+      c = ref[_];
+      c.destroy();
+      delete this.controllers[_];
+    }
+    this.$inputor.off('.atwhoInner');
+    return this.$el.remove();
+  };
+
+  App.prototype.dispatch = function(e) {
+    var _, c, ref, results;
+    ref = this.controllers;
+    results = [];
+    for (_ in ref) {
+      c = ref[_];
+      results.push(c.lookUp(e));
+    }
+    return results;
+  };
+
+  App.prototype.onKeyup = function(e) {
+    var ref;
+    switch (e.keyCode) {
+      case KEY_CODE.ESC:
+        e.preventDefault();
+        if ((ref = this.controller()) != null) {
+          ref.view.hide();
+        }
+        break;
+      case KEY_CODE.DOWN:
+      case KEY_CODE.UP:
+      case KEY_CODE.CTRL:
+      case KEY_CODE.ENTER:
+        $.noop();
+        break;
+      case KEY_CODE.P:
+      case KEY_CODE.N:
+        if (!e.ctrlKey) {
+          this.dispatch(e);
+        }
+        break;
+      default:
+        this.dispatch(e);
+    }
+  };
+
+  App.prototype.onKeydown = function(e) {
+    var ref, view;
+    view = (ref = this.controller()) != null ? ref.view : void 0;
+    if (!(view && view.visible())) {
+      return;
+    }
+    switch (e.keyCode) {
+      case KEY_CODE.ESC:
+        e.preventDefault();
+        view.hide(e);
+        break;
+      case KEY_CODE.UP:
+        e.preventDefault();
+        view.prev();
+        break;
+      case KEY_CODE.DOWN:
+        e.preventDefault();
+        view.next();
+        break;
+      case KEY_CODE.P:
+        if (!e.ctrlKey) {
+          return;
+        }
+        e.preventDefault();
+        view.prev();
+        break;
+      case KEY_CODE.N:
+        if (!e.ctrlKey) {
+          return;
+        }
+        e.preventDefault();
+        view.next();
+        break;
+      case KEY_CODE.TAB:
+      case KEY_CODE.ENTER:
+      case KEY_CODE.SPACE:
+        if (!view.visible()) {
+          return;
+        }
+        if (!this.controller().getOpt('spaceSelectsMatch') && e.keyCode === KEY_CODE.SPACE) {
+          return;
+        }
+        if (!this.controller().getOpt('tabSelectsMatch') && e.keyCode === KEY_CODE.TAB) {
+          return;
+        }
+        if (view.highlighted()) {
+          e.preventDefault();
+          view.choose(e);
+        } else {
+          view.hide(e);
+        }
+        break;
+      default:
+        $.noop();
+    }
+  };
+
+  return App;
+
+})();
+
+var Controller,
+  slice = [].slice;
+
+Controller = (function() {
+  Controller.prototype.uid = function() {
+    return (Math.random().toString(16) + "000000000").substr(2, 8) + (new Date().getTime());
+  };
+
+  function Controller(app, at1) {
+    this.app = app;
+    this.at = at1;
+    this.$inputor = this.app.$inputor;
+    this.id = this.$inputor[0].id || this.uid();
+    this.expectedQueryCBId = null;
+    this.setting = null;
+    this.query = null;
+    this.pos = 0;
+    this.range = null;
+    if ((this.$el = $("#atwho-ground-" + this.id, this.app.$el)).length === 0) {
+      this.app.$el.append(this.$el = $("<div id='atwho-ground-" + this.id + "'></div>"));
+    }
+    this.model = new Model(this);
+    this.view = new View(this);
+  }
+
+  Controller.prototype.init = function(setting) {
+    this.setting = $.extend({}, this.setting || $.fn.atwho["default"], setting);
+    this.view.init();
+    return this.model.reload(this.setting.data);
+  };
+
+  Controller.prototype.destroy = function() {
+    this.trigger('beforeDestroy');
+    this.model.destroy();
+    this.view.destroy();
+    return this.$el.remove();
+  };
+
+  Controller.prototype.callDefault = function() {
+    var args, error, error1, funcName;
+    funcName = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    try {
+      return DEFAULT_CALLBACKS[funcName].apply(this, args);
+    } catch (error1) {
+      error = error1;
+      return $.error(error + " Or maybe At.js doesn't have function " + funcName);
+    }
+  };
+
+  Controller.prototype.trigger = function(name, data) {
+    var alias, eventName;
+    if (data == null) {
+      data = [];
+    }
+    data.push(this);
+    alias = this.getOpt('alias');
+    eventName = alias ? name + "-" + alias + ".atwho" : name + ".atwho";
+    return this.$inputor.trigger(eventName, data);
+  };
+
+  Controller.prototype.callbacks = function(funcName) {
+    return this.getOpt("callbacks")[funcName] || DEFAULT_CALLBACKS[funcName];
+  };
+
+  Controller.prototype.getOpt = function(at, default_value) {
+    var e, error1;
+    try {
+      return this.setting[at];
+    } catch (error1) {
+      e = error1;
+      return null;
+    }
+  };
+
+  Controller.prototype.insertContentFor = function($li) {
+    var data, tpl;
+    tpl = this.getOpt('insertTpl');
+    data = $.extend({}, $li.data('item-data'), {
+      'atwho-at': this.at
+    });
+    return this.callbacks("tplEval").call(this, tpl, data, "onInsert");
+  };
+
+  Controller.prototype.renderView = function(data) {
+    var searchKey;
+    searchKey = this.getOpt("searchKey");
+    data = this.callbacks("sorter").call(this, this.query.text, data.slice(0, 1001), searchKey);
+    return this.view.render(data.slice(0, this.getOpt('limit')));
+  };
+
+  Controller.arrayToDefaultHash = function(data) {
+    var i, item, len, results;
+    if (!$.isArray(data)) {
+      return data;
+    }
+    results = [];
+    for (i = 0, len = data.length; i < len; i++) {
+      item = data[i];
+      if ($.isPlainObject(item)) {
+        results.push(item);
+      } else {
+        results.push({
+          name: item
+        });
+      }
+    }
+    return results;
+  };
+
+  Controller.prototype.lookUp = function(e) {
+    var query, wait;
+    if (e && e.type === 'click' && !this.getOpt('lookUpOnClick')) {
+      return;
+    }
+    if (this.getOpt('suspendOnComposing') && this.app.isComposing) {
+      return;
+    }
+    query = this.catchQuery(e);
+    if (!query) {
+      this.expectedQueryCBId = null;
+      return query;
+    }
+    this.app.setContextFor(this.at);
+    if (wait = this.getOpt('delay')) {
+      this._delayLookUp(query, wait);
+    } else {
+      this._lookUp(query);
+    }
+    return query;
+  };
+
+  Controller.prototype._delayLookUp = function(query, wait) {
+    var now, remaining;
+    now = Date.now ? Date.now() : new Date().getTime();
+    this.previousCallTime || (this.previousCallTime = now);
+    remaining = wait - (now - this.previousCallTime);
+    if ((0 < remaining && remaining < wait)) {
+      this.previousCallTime = now;
+      this._stopDelayedCall();
+      return this.delayedCallTimeout = setTimeout((function(_this) {
+        return function() {
+          _this.previousCallTime = 0;
+          _this.delayedCallTimeout = null;
+          return _this._lookUp(query);
+        };
+      })(this), wait);
+    } else {
+      this._stopDelayedCall();
+      if (this.previousCallTime !== now) {
+        this.previousCallTime = 0;
+      }
+      return this._lookUp(query);
+    }
+  };
+
+  Controller.prototype._stopDelayedCall = function() {
+    if (this.delayedCallTimeout) {
+      clearTimeout(this.delayedCallTimeout);
+      return this.delayedCallTimeout = null;
+    }
+  };
+
+  Controller.prototype._generateQueryCBId = function() {
+    return {};
+  };
+
+  Controller.prototype._lookUp = function(query) {
+    var _callback;
+    _callback = function(queryCBId, data) {
+      if (queryCBId !== this.expectedQueryCBId) {
+        return;
+      }
+      if (data && data.length > 0) {
+        return this.renderView(this.constructor.arrayToDefaultHash(data));
+      } else {
+        return this.view.hide();
+      }
+    };
+    this.expectedQueryCBId = this._generateQueryCBId();
+    return this.model.query(query.text, $.proxy(_callback, this, this.expectedQueryCBId));
+  };
+
+  return Controller;
+
+})();
+
+var TextareaController,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+TextareaController = (function(superClass) {
+  extend(TextareaController, superClass);
+
+  function TextareaController() {
+    return TextareaController.__super__.constructor.apply(this, arguments);
+  }
+
+  TextareaController.prototype.catchQuery = function() {
+    var caretPos, content, end, isString, query, start, subtext;
+    content = this.$inputor.val();
+    caretPos = this.$inputor.caret('pos', {
+      iframe: this.app.iframe
+    });
+    subtext = content.slice(0, caretPos);
+    query = this.callbacks("matcher").call(this, this.at, subtext, this.getOpt('startWithSpace'));
+    isString = typeof query === 'string';
+    if (isString && query.length < this.getOpt('minLen', 0)) {
+      return;
+    }
+    if (isString && query.length <= this.getOpt('maxLen', 20)) {
+      start = caretPos - query.length;
+      end = start + query.length;
+      this.pos = start;
+      query = {
+        'text': query,
+        'headPos': start,
+        'endPos': end
+      };
+      this.trigger("matched", [this.at, query.text]);
+    } else {
+      query = null;
+      this.view.hide();
+    }
+    return this.query = query;
+  };
+
+  TextareaController.prototype.rect = function() {
+    var c, iframeOffset, scaleBottom;
+    if (!(c = this.$inputor.caret('offset', this.pos - 1, {
+      iframe: this.app.iframe
+    }))) {
+      return;
+    }
+    if (this.app.iframe && !this.app.iframeAsRoot) {
+      iframeOffset = $(this.app.iframe).offset();
+      c.left += iframeOffset.left;
+      c.top += iframeOffset.top;
+    }
+    scaleBottom = this.app.document.selection ? 0 : 2;
+    return {
+      left: c.left,
+      top: c.top,
+      bottom: c.top + c.height + scaleBottom
+    };
+  };
+
+  TextareaController.prototype.insert = function(content, $li) {
+    var $inputor, source, startStr, suffix, text;
+    $inputor = this.$inputor;
+    source = $inputor.val();
+    startStr = source.slice(0, Math.max(this.query.headPos - this.at.length, 0));
+    suffix = (suffix = this.getOpt('suffix')) === "" ? suffix : suffix || " ";
+    content += suffix;
+    text = "" + startStr + content + (source.slice(this.query['endPos'] || 0));
+    $inputor.val(text);
+    $inputor.caret('pos', startStr.length + content.length, {
+      iframe: this.app.iframe
+    });
+    if (!$inputor.is(':focus')) {
+      $inputor.focus();
+    }
+    return $inputor.change();
+  };
+
+  return TextareaController;
+
+})(Controller);
+
+var EditableController,
+  extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+  hasProp = {}.hasOwnProperty;
+
+EditableController = (function(superClass) {
+  extend(EditableController, superClass);
+
+  function EditableController() {
+    return EditableController.__super__.constructor.apply(this, arguments);
+  }
+
+  EditableController.prototype._getRange = function() {
+    var sel;
+    sel = this.app.window.getSelection();
+    if (sel.rangeCount > 0) {
+      return sel.getRangeAt(0);
+    }
+  };
+
+  EditableController.prototype._setRange = function(position, node, range) {
+    if (range == null) {
+      range = this._getRange();
+    }
+    if (!range) {
+      return;
+    }
+    node = $(node)[0];
+    if (position === 'after') {
+      range.setEndAfter(node);
+      range.setStartAfter(node);
+    } else {
+      range.setEndBefore(node);
+      range.setStartBefore(node);
+    }
+    range.collapse(false);
+    return this._clearRange(range);
+  };
+
+  EditableController.prototype._clearRange = function(range) {
+    var sel;
+    if (range == null) {
+      range = this._getRange();
+    }
+    sel = this.app.window.getSelection();
+    if (this.ctrl_a_pressed == null) {
+      sel.removeAllRanges();
+      return sel.addRange(range);
+    }
+  };
+
+  EditableController.prototype._movingEvent = function(e) {
+    var ref;
+    return e.type === 'click' || ((ref = e.which) === KEY_CODE.RIGHT || ref === KEY_CODE.LEFT || ref === KEY_CODE.UP || ref === KEY_CODE.DOWN);
+  };
+
+  EditableController.prototype._unwrap = function(node) {
+    var next;
+    node = $(node).unwrap().get(0);
+    if ((next = node.nextSibling) && next.nodeValue) {
+      node.nodeValue += next.nodeValue;
+      $(next).remove();
+    }
+    return node;
+  };
+
+  EditableController.prototype.catchQuery = function(e) {
+    var $inserted, $query, _range, index, inserted, isString, lastNode, matched, offset, query, query_content, range;
+    if (!(range = this._getRange())) {
+      return;
+    }
+    if (!range.collapsed) {
+      return;
+    }
+    if (e.which === KEY_CODE.ENTER) {
+      ($query = $(range.startContainer).closest('.atwho-query')).contents().unwrap();
+      if ($query.is(':empty')) {
+        $query.remove();
+      }
+      ($query = $(".atwho-query", this.app.document)).text($query.text()).contents().last().unwrap();
+      this._clearRange();
+      return;
+    }
+    if (/firefox/i.test(navigator.userAgent)) {
+      if ($(range.startContainer).is(this.$inputor)) {
+        this._clearRange();
+        return;
+      }
+      if (e.which === KEY_CODE.BACKSPACE && range.startContainer.nodeType === document.ELEMENT_NODE && (offset = range.startOffset - 1) >= 0) {
+        _range = range.cloneRange();
+        _range.setStart(range.startContainer, offset);
+        if ($(_range.cloneContents()).contents().last().is('.atwho-inserted')) {
+          inserted = $(range.startContainer).contents().get(offset);
+          this._setRange('after', $(inserted).contents().last());
+        }
+      } else if (e.which === KEY_CODE.LEFT && range.startContainer.nodeType === document.TEXT_NODE) {
+        $inserted = $(range.startContainer.previousSibling);
+        if ($inserted.is('.atwho-inserted') && range.startOffset === 0) {
+          this._setRange('after', $inserted.contents().last());
+        }
+      }
+    }
+    $(range.startContainer).closest('.atwho-inserted').addClass('atwho-query').siblings().removeClass('atwho-query');
+    if (($query = $(".atwho-query", this.app.document)).length > 0 && $query.is(':empty') && $query.text().length === 0) {
+      $query.remove();
+    }
+    if (!this._movingEvent(e)) {
+      $query.removeClass('atwho-inserted');
+    }
+    if ($query.length > 0) {
+      switch (e.which) {
+        case KEY_CODE.LEFT:
+          this._setRange('before', $query.get(0), range);
+          $query.removeClass('atwho-query');
+          return;
+        case KEY_CODE.RIGHT:
+          this._setRange('after', $query.get(0).nextSibling, range);
+          $query.removeClass('atwho-query');
+          return;
+      }
+    }
+    if ($query.length > 0 && (query_content = $query.attr('data-atwho-at-query'))) {
+      $query.empty().html(query_content).attr('data-atwho-at-query', null);
+      this._setRange('after', $query.get(0), range);
+    }
+    _range = range.cloneRange();
+    _range.setStart(range.startContainer, 0);
+    matched = this.callbacks("matcher").call(this, this.at, _range.toString(), this.getOpt('startWithSpace'));
+    isString = typeof matched === 'string';
+    if ($query.length === 0 && isString && (index = range.startOffset - this.at.length - matched.length) >= 0) {
+      range.setStart(range.startContainer, index);
+      $query = $('<span/>', this.app.document).attr(this.getOpt("editableAtwhoQueryAttrs")).addClass('atwho-query');
+      range.surroundContents($query.get(0));
+      lastNode = $query.contents().last().get(0);
+      if (/firefox/i.test(navigator.userAgent)) {
+        range.setStart(lastNode, lastNode.length);
+        range.setEnd(lastNode, lastNode.length);
+        this._clearRange(range);
+      } else {
+        this._setRange('after', lastNode, range);
+      }
+    }
+    if (isString && matched.length < this.getOpt('minLen', 0)) {
+      return;
+    }
+    if (isString && matched.length <= this.getOpt('maxLen', 20)) {
+      query = {
+        text: matched,
+        el: $query
+      };
+      this.trigger("matched", [this.at, query.text]);
+      return this.query = query;
+    } else {
+      this.view.hide();
+      this.query = {
+        el: $query
+      };
+      if ($query.text().indexOf(this.at) >= 0) {
+        if (this._movingEvent(e) && $query.hasClass('atwho-inserted')) {
+          $query.removeClass('atwho-query');
+        } else if (false !== this.callbacks('afterMatchFailed').call(this, this.at, $query)) {
+          this._setRange("after", this._unwrap($query.text($query.text()).contents().first()));
+        }
+      }
+      return null;
+    }
+  };
+
+  EditableController.prototype.rect = function() {
+    var $iframe, iframeOffset, rect;
+    rect = this.query.el.offset();
+    if (this.app.iframe && !this.app.iframeAsRoot) {
+      iframeOffset = ($iframe = $(this.app.iframe)).offset();
+      rect.left += iframeOffset.left - this.$inputor.scrollLeft();
+      rect.top += iframeOffset.top - this.$inputor.scrollTop();
+    }
+    rect.bottom = rect.top + this.query.el.height();
+    return rect;
+  };
+
+  EditableController.prototype.insert = function(content, $li) {
+    var data, range, suffix, suffixNode;
+    if (!this.$inputor.is(':focus')) {
+      this.$inputor.focus();
+    }
+    suffix = (suffix = this.getOpt('suffix')) === "" ? suffix : suffix || "\u00A0";
+    data = $li.data('item-data');
+    this.query.el.removeClass('atwho-query').addClass('atwho-inserted').html(content).attr('data-atwho-at-query', "" + data['atwho-at'] + this.query.text);
+    if (range = this._getRange()) {
+      range.setEndAfter(this.query.el[0]);
+      range.collapse(false);
+      range.insertNode(suffixNode = this.app.document.createTextNode("\u200D" + suffix));
+      this._setRange('after', suffixNode, range);
+    }
+    if (!this.$inputor.is(':focus')) {
+      this.$inputor.focus();
+    }
+    return this.$inputor.change();
+  };
+
+  return EditableController;
+
+})(Controller);
+
+var Model;
+
+Model = (function() {
+  function Model(context) {
+    this.context = context;
+    this.at = this.context.at;
+    this.storage = this.context.$inputor;
+  }
+
+  Model.prototype.destroy = function() {
+    return this.storage.data(this.at, null);
+  };
+
+  Model.prototype.saved = function() {
+    return this.fetch() > 0;
+  };
+
+  Model.prototype.query = function(query, callback) {
+    var _remoteFilter, data, searchKey;
+    data = this.fetch();
+    searchKey = this.context.getOpt("searchKey");
+    data = this.context.callbacks('filter').call(this.context, query, data, searchKey) || [];
+    _remoteFilter = this.context.callbacks('remoteFilter');
+    if (data.length > 0 || (!_remoteFilter && data.length === 0)) {
+      return callback(data);
+    } else {
+      return _remoteFilter.call(this.context, query, callback);
+    }
+  };
+
+  Model.prototype.fetch = function() {
+    return this.storage.data(this.at) || [];
+  };
+
+  Model.prototype.save = function(data) {
+    return this.storage.data(this.at, this.context.callbacks("beforeSave").call(this.context, data || []));
+  };
+
+  Model.prototype.load = function(data) {
+    if (!(this.saved() || !data)) {
+      return this._load(data);
+    }
+  };
+
+  Model.prototype.reload = function(data) {
+    return this._load(data);
+  };
+
+  Model.prototype._load = function(data) {
+    if (typeof data === "string") {
+      return $.ajax(data, {
+        dataType: "json"
+      }).done((function(_this) {
+        return function(data) {
+          return _this.save(data);
+        };
+      })(this));
+    } else {
+      return this.save(data);
+    }
+  };
+
+  return Model;
+
+})();
+
+var View;
+
+View = (function() {
+  function View(context) {
+    this.context = context;
+    this.$el = $("<div class='atwho-view'><ul class='atwho-view-ul'></ul></div>");
+    this.$elUl = this.$el.children();
+    this.timeoutID = null;
+    this.context.$el.append(this.$el);
+    this.bindEvent();
+  }
+
+  View.prototype.init = function() {
+    var header_tpl, id;
+    id = this.context.getOpt("alias") || this.context.at.charCodeAt(0);
+    header_tpl = this.context.getOpt("headerTpl");
+    if (header_tpl && this.$el.children().length === 1) {
+      this.$el.prepend(header_tpl);
+    }
+    return this.$el.attr({
+      'id': "at-view-" + id
+    });
+  };
+
+  View.prototype.destroy = function() {
+    return this.$el.remove();
+  };
+
+  View.prototype.bindEvent = function() {
+    var $menu, lastCoordX, lastCoordY;
+    $menu = this.$el.find('ul');
+    lastCoordX = 0;
+    lastCoordY = 0;
+    return $menu.on('mousemove.atwho-view', 'li', (function(_this) {
+      return function(e) {
+        var $cur;
+        if (lastCoordX === e.clientX && lastCoordY === e.clientY) {
+          return;
+        }
+        lastCoordX = e.clientX;
+        lastCoordY = e.clientY;
+        $cur = $(e.currentTarget);
+        if ($cur.hasClass('cur')) {
+          return;
+        }
+        $menu.find('.cur').removeClass('cur');
+        return $cur.addClass('cur');
+      };
+    })(this)).on('click.atwho-view', 'li', (function(_this) {
+      return function(e) {
+        $menu.find('.cur').removeClass('cur');
+        $(e.currentTarget).addClass('cur');
+        _this.choose(e);
+        return e.preventDefault();
+      };
+    })(this));
+  };
+
+  View.prototype.visible = function() {
+    return this.$el.is(":visible");
+  };
+
+  View.prototype.highlighted = function() {
+    return this.$el.find(".cur").length > 0;
+  };
+
+  View.prototype.choose = function(e) {
+    var $li, content;
+    if (($li = this.$el.find(".cur")).length) {
+      content = this.context.insertContentFor($li);
+      this.context._stopDelayedCall();
+      this.context.insert(this.context.callbacks("beforeInsert").call(this.context, content, $li), $li);
+      this.context.trigger("inserted", [$li, e]);
+      this.hide(e);
+    }
+    if (this.context.getOpt("hideWithoutSuffix")) {
+      return this.stopShowing = true;
+    }
+  };
+
+  View.prototype.reposition = function(rect) {
+    var _window, offset, overflowOffset, ref;
+    _window = this.context.app.iframeAsRoot ? this.context.app.window : window;
+    if (rect.bottom + this.$el.height() - $(_window).scrollTop() > $(_window).height()) {
+      rect.bottom = rect.top - this.$el.height();
+    }
+    if (rect.left > (overflowOffset = $(_window).width() - this.$el.width() - 5)) {
+      rect.left = overflowOffset;
+    }
+    offset = {
+      left: rect.left,
+      top: rect.bottom
+    };
+    if ((ref = this.context.callbacks("beforeReposition")) != null) {
+      ref.call(this.context, offset);
+    }
+    this.$el.offset(offset);
+    return this.context.trigger("reposition", [offset]);
+  };
+
+  View.prototype.next = function() {
+    var cur, next, nextEl, offset;
+    cur = this.$el.find('.cur').removeClass('cur');
+    next = cur.next();
+    if (!next.length) {
+      next = this.$el.find('li:first');
+    }
+    next.addClass('cur');
+    nextEl = next[0];
+    offset = nextEl.offsetTop + nextEl.offsetHeight + (nextEl.nextSibling ? nextEl.nextSibling.offsetHeight : 0);
+    return this.scrollTop(Math.max(0, offset - this.$el.height()));
+  };
+
+  View.prototype.prev = function() {
+    var cur, offset, prev, prevEl;
+    cur = this.$el.find('.cur').removeClass('cur');
+    prev = cur.prev();
+    if (!prev.length) {
+      prev = this.$el.find('li:last');
+    }
+    prev.addClass('cur');
+    prevEl = prev[0];
+    offset = prevEl.offsetTop + prevEl.offsetHeight + (prevEl.nextSibling ? prevEl.nextSibling.offsetHeight : 0);
+    return this.scrollTop(Math.max(0, offset - this.$el.height()));
+  };
+
+  View.prototype.scrollTop = function(scrollTop) {
+    var scrollDuration;
+    scrollDuration = this.context.getOpt('scrollDuration');
+    if (scrollDuration) {
+      return this.$elUl.animate({
+        scrollTop: scrollTop
+      }, scrollDuration);
+    } else {
+      return this.$elUl.scrollTop(scrollTop);
+    }
+  };
+
+  View.prototype.show = function() {
+    var rect;
+    if (this.stopShowing) {
+      this.stopShowing = false;
+      return;
+    }
+    if (!this.visible()) {
+      this.$el.show();
+      this.$el.scrollTop(0);
+      this.context.trigger('shown');
+    }
+    if (rect = this.context.rect()) {
+      return this.reposition(rect);
+    }
+  };
+
+  View.prototype.hide = function(e, time) {
+    var callback;
+    if (!this.visible()) {
+      return;
+    }
+    if (isNaN(time)) {
+      this.$el.hide();
+      return this.context.trigger('hidden', [e]);
+    } else {
+      callback = (function(_this) {
+        return function() {
+          return _this.hide();
+        };
+      })(this);
+      clearTimeout(this.timeoutID);
+      return this.timeoutID = setTimeout(callback, time);
+    }
+  };
+
+  View.prototype.render = function(list) {
+    var $li, $ul, i, item, len, li, tpl;
+    if (!($.isArray(list) && list.length > 0)) {
+      this.hide();
+      return;
+    }
+    this.$el.find('ul').empty();
+    $ul = this.$el.find('ul');
+    tpl = this.context.getOpt('displayTpl');
+    for (i = 0, len = list.length; i < len; i++) {
+      item = list[i];
+      item = $.extend({}, item, {
+        'atwho-at': this.context.at
+      });
+      li = this.context.callbacks("tplEval").call(this.context, tpl, item, "onDisplay");
+      $li = $(this.context.callbacks("highlighter").call(this.context, li, this.context.query.text));
+      $li.data("item-data", item);
+      $ul.append($li);
+    }
+    this.show();
+    if (this.context.getOpt('highlightFirst')) {
+      return $ul.find("li:first").addClass("cur");
+    }
+  };
+
+  return View;
+
+})();
+
+var Api;
+
+Api = {
+  load: function(at, data) {
+    var c;
+    if (c = this.controller(at)) {
+      return c.model.load(data);
+    }
+  },
+  isSelecting: function() {
+    var ref;
+    return !!((ref = this.controller()) != null ? ref.view.visible() : void 0);
+  },
+  hide: function() {
+    var ref;
+    return (ref = this.controller()) != null ? ref.view.hide() : void 0;
+  },
+  reposition: function() {
+    var c;
+    if (c = this.controller()) {
+      return c.view.reposition(c.rect());
+    }
+  },
+  setIframe: function(iframe, asRoot) {
+    this.setupRootElement(iframe, asRoot);
+    return null;
+  },
+  run: function() {
+    return this.dispatch();
+  },
+  destroy: function() {
+    this.shutdown();
+    return this.$inputor.data('atwho', null);
+  }
+};
+
+$.fn.atwho = function(method) {
+  var _args, result;
+  _args = arguments;
+  result = null;
+  this.filter('textarea, input, [contenteditable=""], [contenteditable=true]').each(function() {
+    var $this, app;
+    if (!(app = ($this = $(this)).data("atwho"))) {
+      $this.data('atwho', (app = new App(this)));
+    }
+    if (typeof method === 'object' || !method) {
+      return app.reg(method.at, method);
+    } else if (Api[method] && app) {
+      return result = Api[method].apply(app, Array.prototype.slice.call(_args, 1));
+    } else {
+      return $.error("Method " + method + " does not exist on jQuery.atwho");
+    }
+  });
+  if (result != null) {
+    return result;
+  } else {
+    return this;
+  }
+};
+
+$.fn.atwho["default"] = {
+  at: void 0,
+  alias: void 0,
+  data: null,
+  displayTpl: "<li>${name}</li>",
+  insertTpl: "${atwho-at}${name}",
+  headerTpl: null,
+  callbacks: DEFAULT_CALLBACKS,
+  searchKey: "name",
+  suffix: void 0,
+  hideWithoutSuffix: false,
+  startWithSpace: true,
+  highlightFirst: true,
+  limit: 5,
+  maxLen: 20,
+  minLen: 0,
+  displayTimeout: 300,
+  delay: null,
+  spaceSelectsMatch: false,
+  tabSelectsMatch: true,
+  editableAtwhoQueryAttrs: {},
+  scrollDuration: 150,
+  suspendOnComposing: true,
+  lookUpOnClick: true
+};
+
+$.fn.atwho.debug = false;
+
+}));
 
 $(function() {
     toastr.options = {

@@ -40,6 +40,7 @@ elixir(function(mix) {
             './resources/assets/js/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.css',
             './resources/assets/js/Ionicons/scss/ionicons.scss',
             'backend/plugin/select2/select2.scss',
+            './resources/assets/js/At.js/dist/css/jquery.atwho.css',
         ], 'resources/assets/css/backend/main.css')
         .styles([ // Combine pre-processed CSS files
                 'backend/main.css',
@@ -56,6 +57,8 @@ elixir(function(mix) {
                 'bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.all.js',
                 'select2/dist/js/select2.js',
                 './node_modules/socket.io/node_modules/socket.io-client/socket.io.js',
+                'Caret.js/dist/jquery.caret.js',
+                'At.js/dist/js/jquery.atwho.js',
                 'backend/custom.js',
             ], 'public/js/backend.js')
 

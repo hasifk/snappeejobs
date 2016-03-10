@@ -1,6 +1,7 @@
 <?php namespace App\Repositories\Backend\Job;
 
 use App\Events\Backend\Job\JobCreated;
+use App\Events\Backend\Job\JobDeleted;
 use App\Events\Backend\Job\JobUpdated;
 use App\Models\Access\User\User;
 use App\Exceptions\GeneralException;
@@ -213,8 +214,9 @@ class EloquentJobRepository {
 	public function destroy($id) {
 
 		$job = $this->findOrThrowException($id);
-		if ($job->delete())
-			return true;
+		$job->delete();
+
+		return true;
 
 		throw new GeneralException("There was a problem deleting this user. Please try again.");
 	}

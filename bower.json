@@ -22,6 +22,7 @@
     "vue": "~1.0.13",
     "bootstrap-datepicker": "*",
     "dropzone": "~4.2.0",
-    "sweetalert": "~1.1.3"
+    "sweetalert": "~1.1.3",
+    "At.js": "~1.5.0"
   }
 }

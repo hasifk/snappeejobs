@@ -100,6 +100,14 @@
                       </a>
                     </li>
                   @endauth
+                  <li class="{{ Active::pattern('admin/employer/groupchat') }}">
+                    <a href="{!! route('admin.employer.groupchat') !!}">
+                      <i class="fa fa-wechat"></i>
+                          <span>
+                            Global Chat Room
+                          </span>
+                    </a>
+                  </li>
                 @endauth
 
                 @roles(['Employer', 'Employer Staff'])

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Backend\Employer\Jobs;
 
+use App\Events\Backend\Job\JobDeleted;
 use App\Events\Frontend\Job\JobSeekerChatReceived;
 use App\Http\Requests\Backend\Employer\Job\HideJobRequest;
 use App\Http\Requests\Backend\Employer\Job\MarkJobRequest;
 use App\Http\Requests\Backend\Employer\Job\PublishJobRequest;
+use App\Models\Job\Job;
 use App\Models\Job\JobApplication\JobApplication;
 use App\Models\JobSeeker\JobSeeker;
 use App\Repositories\Backend\Job\EloquentJobRepository;
@@ -178,7 +180,6 @@ class JobsController extends Controller
     public function destroy(Requests\Backend\Employer\Job\DeleteJobRequest $request, $id)
     {
         $this->jobs->destroy($id);
-
         return redirect()->back()->withFlashSuccess('Job deleted successfully');
     }
 

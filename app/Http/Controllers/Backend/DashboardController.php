@@ -62,6 +62,7 @@ class DashboardController extends Controller {
             $view['active_job_listings1']  = $this->repository->getActiveJobListingCount1();
             $view['thumbs_ups']  = $this->repository->getThumbsUpsCount();
             $view['employer_notifications'] = $this->repository->getEmployerNotifications();
+            $view['interest_map_info']  = $this->repository->getInterestMapInfo();
         }
 
         return view('backend.dashboard', $view);

@@ -21,6 +21,7 @@ return [
         'dashboard_title' => 'Administrative Dashboard',
         'profile_title' => 'Profile',
         'emp_search_results' => 'Search Results',
+        'dashboard_interest_map' => 'Interest Map',
     ],
     'based_on' => [
         'permission' => 'Permission Based - ',

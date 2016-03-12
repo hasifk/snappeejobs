@@ -200,62 +200,24 @@
 
         <div class="col-md-6">
 
-            <div id="carousel-example-captions" class="carousel slide" data-ride="carousel">
-                <ol class="carousel-indicators">
-                    <li data-target="#carousel-example-captions" data-slide-to="0" class=""></li>
-                    <li data-target="#carousel-example-captions" data-slide-to="1" class="active"></li>
-                    <li data-target="#carousel-example-captions" data-slide-to="2" class=""></li>
-                </ol>
-                <div class="carousel-inner" role="listbox">
-                    <div class="item">
-
-                        <div class="carousel-caption"><h3>First slide label</h3>
-                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-
-                        </div>
-                    </div>
-                    <div class="item active">
-                        <div class="carousel-caption"><h3>Second slide label</h3>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                            <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <div class="carousel-caption"><h3>Third slide label</h3>
-                            <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p></div>
-                    </div>
-                </div>
-                <a class="left carousel-control" href="#carousel-example-captions" role="button" data-slide="prev">
-                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> <span class="sr-only">Previous</span>
-                </a> <a class="right carousel-control" href="#carousel-example-captions" role="button"
-                        data-slide="next"> <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span> </a></div>
-
-            <div id="employer-scrolling-info" class="carousel slide" data-ride="carousel">
-                <ol class="carousel-indicators">
-                    <li data-target="#employer-scrolling-info" data-slide-to="0" class=""></li>
-                    <li data-target="#employer-scrolling-info" data-slide-to="1" class="active"></li>
-                    <li data-target="#employer-scrolling-info" data-slide-to="2" class=""></li>
-                </ol>
-                <div class="carousel-inner" role="listbox">
-                    <div class="item">
+            <div class="owl-carousel owl-theme">
+                <div class="item" style="text-align: center; background-color: #00c0ef; min-height: 100px; line-height: 100px; color: #fff;">
+                    <p>
                         Total Visitors for Company: {{$visitors}}
-                    </div>
-                    <div class="item">
+                    </p>
+                </div>
+                <div class="item" style="text-align: center; background-color: #00a65a; min-height: 100px; line-height: 100px; color: #fff;">
+                    <p>
                         Total Active Job Openings:{{$active_job_listings1}}
-                    </div>
-                    <div class="item">
+                    </p>
+                </div>
+                <div class="item" style="text-align: center; background-color: #dd4b39; min-height: 100px; line-height: 100px; color: #fff;">
+                    <p>
                         Active Job Openings:{{ $total_jobs_posted }}
-                    </div>
+                    </p>
                 </div>
             </div>
+
         </div>
 
         <div class="box-body no-padding">
@@ -360,6 +322,12 @@
 
         }
 
+        $(".owl-carousel").owlCarousel({
+            slideSpeed : 300,
+            paginationSpeed : 400,
+            singleItem:true,
+            autoHeight: true
+        });
 
     </script>
 

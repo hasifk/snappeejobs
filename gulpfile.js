@@ -41,6 +41,8 @@ elixir(function(mix) {
             './resources/assets/js/Ionicons/scss/ionicons.scss',
             'backend/plugin/select2/select2.scss',
             './resources/assets/js/At.js/dist/css/jquery.atwho.css',
+            './resources/assets/js/owlcarousel/owl-carousel/owl.carousel.css',
+            './resources/assets/js/owlcarousel/owl-carousel/owl.theme.css'
         ], 'resources/assets/css/backend/main.css')
         .styles([ // Combine pre-processed CSS files
                 'backend/main.css',
@@ -58,6 +60,7 @@ elixir(function(mix) {
                 'select2/dist/js/select2.js',
                 './node_modules/socket.io/node_modules/socket.io-client/socket.io.js',
                 'Caret.js/dist/jquery.caret.js',
+                'owlcarousel/owl-carousel/owl.carousel.js',
                 'At.js/dist/js/jquery.atwho.js',
                 'backend/custom.js',
             ], 'public/js/backend.js')

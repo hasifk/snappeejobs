@@ -89,5 +89,11 @@ class DashboardRepository
                 return Company::where('id', auth()->user()->company_id)->pluck('likes');
         }
 
+    public function getInterestMapInfo(){
+       return ProfileVisitor::where('company_id', auth()->user()->company_id)->get();
+
+    }
+
+
 
 }

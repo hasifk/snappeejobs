@@ -267,9 +267,6 @@
     <script>
         
         function initMap() {
-
-            return;
-
             var map = new google.maps.Map(document.getElementById('world-map-markers'), {
                 zoom: 10,
                 center: {lat: -33.9, lng: 151.2}
@@ -283,6 +280,8 @@
 
                 @if (count($interest_map_info) > 0)
         var beaches=<?php echo $interest_map_info; ?>;
+        @else
+        var beaches= [];
         @endif
 
         function setMarkers(map) {

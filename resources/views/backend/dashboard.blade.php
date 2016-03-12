@@ -267,6 +267,9 @@
     <script>
         
         function initMap() {
+
+            return;
+
             var map = new google.maps.Map(document.getElementById('world-map-markers'), {
                 zoom: 10,
                 center: {lat: -33.9, lng: 151.2}

@@ -30,10 +30,12 @@ class DashboardController extends Controller {
      * DashboardController constructor.
      * @param DashboardRepository $repository
      */
-    public function __construct(DashboardRepository $repository,EloquentSearchJobRepository $searchJobRepo,EloquentSearchJobSeekerRepository $searchJobSeekerRepo)
+    public function __construct(DashboardRepository $repository,EloquentSearchJobRepository $searchJobRepo,EloquentSearchJobSeekerRepository $searchJobSeekerRepo,
+                                EloquentJobRepository $jobRepository)
     {
 
         $this->repository = $repository;
+        $this->jobRepository = $jobRepository;
         $this->searchJobRepo = $searchJobRepo;
         $this->searchJobSeekerRepo = $searchJobSeekerRepo;
     }
@@ -208,6 +210,43 @@ class DashboardController extends Controller {
                     endif;
         }
     }
+    /************************************************************************************************************/
+    public function showstaffmembers(Request $request,$id)
+    {
+        if ( access()->hasRole('Employer') ) {
+            $staff_in_detail=User::find($id);
+            $view = [
+                'staff_in_detail'              => $staff_in_detail
+            ];
+            return view('frontend.user.profile.employer_staff_show',$view);
+
+        }
+    }
 /************************************************************************************************************/
+    public function interestedjobsanalytics(Request $request)
+    {
+        if ( access()->hasRole('Employer','Employer Staff') ) {
+            $jobsResult = $this->jobRepository->getJobsPaginated( $request, config('jobs.default_per_page'));
+
+            $paginator = $jobsResult['paginator'];
+            $interested_jobs = $jobsResult['jobs'];
+            $view = [
+                'interested_jobs'              => $interested_jobs,
+                'paginator'         => $paginator
+            ];
+                return view('backend.emp_analytics_intjobs',$view);
+
+        }
+    }
+    /************************************************************************************************************/
+    public function favouritejobsanalytics(Request $request)
+    {
+        if ( access()->hasRole('Employer','Employer Staff') ) {
+
+            return view('backend.emp_analytics_favjobs');
+
+        }
+    }
+    /************************************************************************************************************/
 
 }

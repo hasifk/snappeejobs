@@ -10,3 +10,9 @@ get('get-states/{id}', function($id){
     $states = DB::table('states')->where('country_id', $id)->select(['id', 'name'])->get();
     return response()->json($states);
 });
+
+get('employeranalytics/interestedjobs', 'DashboardController@interestedjobsanalytics')->name('backend.employerintjobs');
+get('employeranalytics/favouritejobs', 'DashboardController@favouritejobsanalytics')->name('backend.employerfavjobs');
+get('staffmemebers/{id}', 'DashboardController@showstaffmembers')->name('staffmembers.show');
+
+

@@ -102,7 +102,8 @@
                     <ul class="list-group">
                     @foreach($staffinfo as $staffinfo1)
                             <li class="list-group-item">
-                        {{$staffinfo1->name}}
+                                <a href="{{ route('staffmembers.show' , [ $staffinfo1->id ] ) }}">
+                        {{$staffinfo1->name}}</a>
                                 </li>
                     @endforeach
                         </ul>

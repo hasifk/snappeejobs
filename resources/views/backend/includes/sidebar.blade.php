@@ -193,6 +193,28 @@
                 @endauth
                 @endauth
 
+                @roles(['Employer','Employer Staff'])
+
+                <li class="{{ Active::pattern('admin/employer/employeranalytics') }} treeview">
+                  <a href="#">
+                    <i class="fa fa-envelope"></i>
+                    <span>Employer Analytics</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </a>
+                  <ul
+                          class="treeview-menu {{ Active::pattern('admin/employer/employeranalytics/*', 'menu-open') }}"
+                          style="display: none; {{ Active::pattern('admin/employer/mail/*', 'display: block;') }}">
+                    <li class="{{ Active::pattern('admin/employeranalytics/interested') }}">
+                      <a href="{!! url('admin/employeranalytics/interestedjobs') !!}">{{ 'Jobs Interested' }}</a>
+                    </li>
+
+                    <li class="{{ Active::pattern('admin/employeranalytics/favourite') }}">
+                      <a href="{!! url('admin/employeranalytics/favouritejobs') !!}">{{ 'Favourite Jobs' }}</a>
+                    </li>
+                  </ul>
+                </li>
+                @endauth
+
                  <li class="{{ Active::pattern('admin/log-viewer*') }} treeview">
                   <a href="#">
                     <span>{{ trans('menus.log-viewer.main') }}</span>

@@ -219,7 +219,8 @@
             </div>
 
         </div>
-
+        @roles(['Employer'])
+        @if (count($interest_map_info) > 0)
         <div class="box-body no-padding">
 
             <div class="row">
@@ -232,7 +233,8 @@
                 </div>
                 </div>
                 </div>
-
+        @endif
+        @endauth
 
 
 
@@ -262,8 +264,8 @@
             src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBfE_cndXYeZfY4bK1R9LKq50YxicFVZF4
 &callback=initMap">
     </script>
-
-
+    @roles(['Employer'])
+    @if (count($interest_map_info) > 0)
     <script>
 
         function initMap() {
@@ -277,12 +279,12 @@
 
         // Data for the markers consisting of a name, a LatLng and a zIndex for the
         // order in which these markers should display on top of each other.
+        //var beaches= [];
 
-                @if (count($interest_map_info) > 0)
         var beaches=<?php echo $interest_map_info; ?>;
-        @else
-        var beaches= [];
-        @endif
+
+
+
 
         function setMarkers(map) {
             // Adds markers to the map.
@@ -332,5 +334,8 @@
         });
 
     </script>
+
+    @endif
+    @endauth
 
 @endsection

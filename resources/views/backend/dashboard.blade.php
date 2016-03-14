@@ -199,24 +199,25 @@
 
 
         <div class="col-md-6">
-            <div id="employer-scrolling-info" class="carousel slide" data-ride="carousel">
-                <ol class="carousel-indicators">
-                    <li data-target="#employer-scrolling-info" data-slide-to="0" class=""></li>
-                    <li data-target="#employer-scrolling-info" data-slide-to="1" class="active"></li>
-                    <li data-target="#employer-scrolling-info" data-slide-to="2" class=""></li>
-                </ol>
-                <div class="carousel-inner" role="listbox">
-                    <div class="item">
+
+            <div class="owl-carousel owl-theme">
+                <div class="item" style="text-align: center; background-color: #00c0ef; min-height: 100px; line-height: 100px; color: #fff;">
+                    <p>
                         Total Visitors for Company: {{$visitors}}
-                    </div>
-                    <div class="item">
+                    </p>
+                </div>
+                <div class="item" style="text-align: center; background-color: #00a65a; min-height: 100px; line-height: 100px; color: #fff;">
+                    <p>
                         Total Active Job Openings:{{$active_job_listings1}}
-                    </div>
-                    <div class="item">
+                    </p>
+                </div>
+                <div class="item" style="text-align: center; background-color: #dd4b39; min-height: 100px; line-height: 100px; color: #fff;">
+                    <p>
                         Active Job Openings:{{ $total_jobs_posted }}
-                    </div>
+                    </p>
                 </div>
             </div>
+
         </div>
 
         <div class="box-body no-padding">
@@ -251,6 +252,8 @@
                 $('.employer-notitications .employer-notitications-list').append('<li class="item"><div class="product-info" style="margin-left: 25px;"><a class="product-title" href="#">'+ data.eventDetails.job_title +'<span class="label label-warning pull-right">'+ data.eventDetails.notification_type_text +'</span></a><span class="product-description">'+ data.eventDetails.notification_type_text +'</span>'+ data.eventDetails.created_by +'</div></li>');
             });
 
+            $("#employer-scrolling-info").carousel();
+
         });
 
     </script>
@@ -277,6 +280,8 @@
 
                 @if (count($interest_map_info) > 0)
         var beaches=<?php echo $interest_map_info; ?>;
+        @else
+        var beaches= [];
         @endif
 
         function setMarkers(map) {
@@ -319,6 +324,12 @@
 
         }
 
+        $(".owl-carousel").owlCarousel({
+            slideSpeed : 300,
+            paginationSpeed : 400,
+            singleItem:true,
+            autoHeight: true
+        });
 
     </script>
 

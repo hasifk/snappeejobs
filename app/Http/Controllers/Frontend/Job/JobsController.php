@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Frontend\Job;
 
-use App\Models\Company\Company;
 use App\Models\Job\Job;
 use App\Models\JobSeeker\JobSeeker;
 use App\Repositories\Frontend\Job\EloquentJobRepository;
@@ -12,6 +11,7 @@ use Illuminate\Http\Request;
 use DB;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 
 class JobsController extends Controller
 {
@@ -66,7 +66,7 @@ class JobsController extends Controller
         return view('frontend.jobs.index', $view);
     }
 
-    public function show(Requests\Frontend\Job\JobViewRequest $request, $company, $slug){
+    public function show($company, $slug,Request $request){
 
         $job_id = \DB::table('jobs')
             ->join('companies', 'companies.id', '=', 'jobs.company_id')
@@ -75,6 +75,21 @@ class JobsController extends Controller
             ->value('jobs.id');
 
         $job = Job::find($job_id);
+
+        if (!Session::get('job_visitor-info-stored')):
+
+            $current_ip = $request->ip();
+            $visits = $this->jobRepository->storeJobvisits($job_id, $current_ip);
+
+
+            if(!empty($visits)):
+                Session::put('job_visitor-info-stored', true);
+                Session::save();
+            else:
+                return redirect(route('jobs.search'));
+            endif;
+
+        endif;
 
         $view = [
             'job' => $job

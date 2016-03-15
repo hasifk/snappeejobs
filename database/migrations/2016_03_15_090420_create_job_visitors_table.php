@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProfileVisitorsTable extends Migration
+class CreateJobVisitorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,9 +12,9 @@ class CreateProfileVisitorsTable extends Migration
      */
     public function up()
     {
-        Schema::create('profile_visitors', function (Blueprint $table) {
+        Schema::create('job_visitors', function (Blueprint $table) {
             $table->increments('id')->unsigned();
-            $table->integer('company_id')->unsigned();
+            $table->integer('job_id')->unsigned();
             $table->string('country');
             $table->string('state');
             $table->string('latitude');
@@ -22,9 +22,9 @@ class CreateProfileVisitorsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('company_id')
+            $table->foreign('job_id')
                 ->references('id')
-                ->on('companies')
+                ->on('jobs')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
@@ -38,11 +38,11 @@ class CreateProfileVisitorsTable extends Migration
      */
     public function down()
     {
-        Schema::table('profile_visitors', function (Blueprint $table) {
-            $table->dropForeign('profile_visitors_company_id_foreign');
+        Schema::table('job_visitors', function (Blueprint $table) {
+            $table->dropForeign('job_visitors_job_id_foreign');
 
         });
 
-        Schema::drop('profile_visitors');
+        Schema::drop('job_visitors');
     }
 }

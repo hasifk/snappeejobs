@@ -203,7 +203,12 @@
             <div class="owl-carousel owl-theme">
                 <div class="item" style="text-align: center; background-color: #00c0ef; min-height: 100px; line-height: 100px; color: #fff;">
                     <p>
-                        Total Visitors for Company: {{$visitors}}
+                        Total Visitors for Company: {{$company_visitors}}
+                    </p>
+                </div>
+                <div class="item" style="text-align: center; background-color: #b5d592; min-height: 100px; line-height: 100px; color: #fff;">
+                    <p>
+                        Total Visitors for Jobs: {{$job_visitors}}
                     </p>
                 </div>
                 <div class="item" style="text-align: center; background-color: #00a65a; min-height: 100px; line-height: 100px; color: #fff;">
@@ -220,13 +225,13 @@
 
         </div>
         @roles(['Employer'])
-        @if (count($interest_map_info) > 0)
+        @if (count($cmp_interest_map_info) > 0)
         <div class="box-body no-padding">
 
             <div class="row">
                 <div class="col-md-9 col-sm-8">
                     <div class="pad">
-                        <h3>{{ trans('strings.backend.dashboard_interest_map') }}</h3>
+                        <h3>{{ trans('strings.backend.dashboard_cmp_interest_map') }}</h3>
                         <!-- Map will be created here -->
                         <div id="world-map-markers" style="width: 500px;height: 400px; background-color: #CCC;"></div>
                     </div>
@@ -265,7 +270,7 @@
 &callback=initMap">
     </script>
     @roles(['Employer'])
-    @if (count($interest_map_info) > 0)
+    @if (count($cmp_interest_map_info) > 0)
     <script>
 
         function initMap() {
@@ -281,7 +286,7 @@
         // order in which these markers should display on top of each other.
         //var beaches= [];
 
-        var beaches=<?php echo $interest_map_info; ?>;
+        var beaches=<?php echo $cmp_interest_map_info; ?>;
 
 
 

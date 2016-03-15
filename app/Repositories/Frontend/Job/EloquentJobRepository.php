@@ -1,6 +1,7 @@
 <?php namespace App\Repositories\Frontend\Job;
 
 use App\Events\Frontend\Job\JobApplied;
+use App\Models\Access\User\JobVisitor;
 use App\Models\Access\User\User;
 use App\Models\Job\Job;
 use App\Models\JobSeeker\JobSeeker;
@@ -8,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use GeoIP;
 
 /**
  * Class EloquentUserRepository
@@ -192,5 +194,26 @@ class EloquentJobRepository {
 
         return true;
     }
+
+ /****************************************************************/
+
+    public function storeJobvisits($job_id,$current_ip)
+    {
+        $location = GeoIP::getLocation($current_ip);
+        if(!empty($location)):
+            $store_visitor=new JobVisitor();
+            $store_visitor->job_id = $job_id;
+            $store_visitor->country    = $location['country'];
+            $store_visitor->state      = $location['state'];
+            $store_visitor->latitude   = $location['lat'];;
+            $store_visitor->longitude  = $location['lon'];;
+            $store_visitor->save();
+            return 'true';
+        endif;
+
+
+    }
+ /***************************************************************************************/
+
 
 }

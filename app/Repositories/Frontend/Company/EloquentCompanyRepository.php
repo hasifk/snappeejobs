@@ -1,13 +1,13 @@
 <?php namespace App\Repositories\Frontend\Company;
 
-use App\Models\Access\User\ProfileVisitor;
+use App\Models\Access\User\CompanyVisitor;
 use App\Models\JobSeeker\JobSeeker;
 use Illuminate\Http\Request;
 use App\Models\Company\Company;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use GeoIP;
-/*use Illuminate\Support\Facades\Request;*/
+
 
 /**
  * Class EloquentUserRepository
@@ -158,7 +158,7 @@ class EloquentCompanyRepository {
         $location = GeoIP::getLocation($current_ip);
         if(!empty($location)):
             $cmp_id=Company::where('url_slug',$slug)->pluck('id') ;
-            $store_visitor=new ProfileVisitor();
+            $store_visitor=new CompanyVisitor();
             $store_visitor->company_id = $cmp_id;
             $store_visitor->country    = $location['country'];
             $store_visitor->state      = $location['state'];

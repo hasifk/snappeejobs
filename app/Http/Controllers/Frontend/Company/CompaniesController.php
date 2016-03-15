@@ -49,11 +49,7 @@ class CompaniesController extends Controller
                 ->select(['id', 'name'])
                 ->get();
         }
-       // $reader = new Reader('public/GeoLite2-City.mmdb');
 
-// Replace "city" with the appropriate method for your database, e.g.,
-// "country".
-       // $record = $reader->city( Request::ip());
         $companies_data = $this->companyRepository->getCompaniesPaginated($request, config('companies.default_per_page'));
 
         return view('frontend.companies.index',[
@@ -61,8 +57,7 @@ class CompaniesController extends Controller
             'states'            => $states,
             'industries'        =>  $industries,
             'companies'         =>  $companies,
-            'companies_data'    =>  $companies_data,
-            //'record'    =>  $record
+            'companies_data'    =>  $companies_data
         ]);
 
     }

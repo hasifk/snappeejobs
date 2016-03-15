@@ -3,7 +3,8 @@
 namespace App\Repositories\Backend\Dashboard;
 
 
-use App\Models\Access\User\ProfileVisitor;
+use App\Models\Access\User\CompanyVisitor;
+use App\Models\Access\User\JobVisitor;
 use App\Models\Company\Company;
 use App\Models\Job\Job;
 use App\Models\Access\User\User;
@@ -66,11 +67,21 @@ class DashboardRepository
     }
 
 
-        public function getTotalVisitorsCount()
+        public function getTotalCmpVisitorsCount()
         {
-            return  ProfileVisitor::where('company_id', auth()->user()->company_id)
+            return  CompanyVisitor::where('company_id', auth()->user()->company_id)
                 ->count();
         }
+
+    public function getTotalJobVisitorsCount()
+    {
+        return Company::join('jobs', 'jobs.company_id','=','companies.id')
+            ->join('job_visitors', 'job_visitors.job_id','=','jobs.id')
+            ->where('companies.id', '=', auth()->user()->company_id)
+            ->select([
+                'job_visitors.*',
+            ])->count();
+    }
 
         public function getActiveJobListingCount1(){
             return Job::where('status', true)->where('company_id', auth()->user()->company_id)->count();
@@ -89,10 +100,22 @@ class DashboardRepository
                 return Company::where('id', auth()->user()->company_id)->pluck('likes');
         }
 
-    public function getInterestMapInfo(){
-       return ProfileVisitor::where('company_id', auth()->user()->company_id)->get();
+    public function getCompanyInterestMapInfo(){
+       return CompanyVisitor::where('company_id', auth()->user()->company_id)->get();
 
     }
+
+    public function getJobInterestMapInfo(){
+       return Company::join('jobs', 'jobs.company_id','=','companies.id')
+            ->join('job_visitors', 'job_visitors.job_id','=','jobs.id')
+            ->where('companies.id', '=', auth()->user()->company_id)
+            ->select([
+                'job_visitors.*',
+            ])
+            ->get();
+
+    }
+
 
 
 

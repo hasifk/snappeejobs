@@ -208,9 +208,6 @@
                       <a href="{!! url('admin/employeranalytics/interestedjobs') !!}">{{ 'Jobs Interested' }}</a>
                     </li>
 
-                    <li class="{{ Active::pattern('admin/employeranalytics/favourite') }}">
-                      <a href="{!! url('admin/employeranalytics/favouritejobs') !!}">{{ 'Favourite Jobs' }}</a>
-                    </li>
                   </ul>
                 </li>
                 @endauth

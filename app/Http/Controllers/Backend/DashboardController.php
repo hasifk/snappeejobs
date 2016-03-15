@@ -60,11 +60,13 @@ class DashboardController extends Controller {
             $view['total_job_application']  = $this->repository->getTotalJobsApplicationsCount();
             $view['total_staff_members']  = $this->repository->getTotalStaffMembersCount();
             $view['new_messages']  = $this->repository->getTotalNewMessagesCount();
-            $view['visitors']  = $this->repository->getTotalVisitorsCount();
+            $view['company_visitors']  = $this->repository->getTotalCmpVisitorsCount();
+            $view['job_visitors']  = $this->repository->getTotalJobVisitorsCount();
             $view['active_job_listings1']  = $this->repository->getActiveJobListingCount1();
             $view['thumbs_ups']  = $this->repository->getThumbsUpsCount();
             $view['employer_notifications'] = $this->repository->getEmployerNotifications();
-            $view['interest_map_info']  = $this->repository->getInterestMapInfo();
+            $view['cmp_interest_map_info']  = $this->repository->getCompanyInterestMapInfo();
+            $view['job_interest_map_info']  = $this->repository->getJobInterestMapInfo();
         }
 
         return view('backend.dashboard', $view);
@@ -235,15 +237,6 @@ class DashboardController extends Controller {
                 'paginator'         => $paginator
             ];
                 return view('backend.emp_analytics_intjobs',$view);
-
-        }
-    }
-    /************************************************************************************************************/
-    public function favouritejobsanalytics(Request $request)
-    {
-        if ( access()->hasRole('Employer','Employer Staff') ) {
-
-            return view('backend.emp_analytics_favjobs');
 
         }
     }

@@ -31,6 +31,7 @@ class CreateUsersTable extends Migration {
             $table->enum('gender', ['male', 'female'])->nullable();
 			$table->boolean('no_password')->default(false);
 			$table->integer('employer_id');
+			$table->string('group_token');
 			$table->timestamps();
 			$table->softDeletes();
 		});

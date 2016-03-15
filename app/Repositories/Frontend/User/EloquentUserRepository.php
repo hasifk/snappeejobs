@@ -278,6 +278,7 @@ class EloquentUserRepository implements UserContract {
 		]);
 
 		$user->employer_id = $user->id;
+		$user->group_token = str_random(20);
 		$user->save();
 
 		$this->sendConfirmationEmail($user);

@@ -239,14 +239,5 @@ class DashboardController extends Controller {
         }
     }
     /************************************************************************************************************/
-    public function favouritejobsanalytics(Request $request)
-    {
-        if ( access()->hasRole('Employer','Employer Staff') ) {
-
-            return view('backend.emp_analytics_favjobs');
-
-        }
-    }
-    /************************************************************************************************************/
 
 }

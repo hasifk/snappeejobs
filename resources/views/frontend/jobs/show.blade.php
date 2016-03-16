@@ -93,6 +93,7 @@
                             </div>
                         </td>
                     </tr>
+                        @roles(['User'])
                     <tr>
                         <td>Like this Job? </td>
                         <td>
@@ -102,6 +103,7 @@
                             </button>
                         </td>
                     </tr>
+                        @endauth
                     @endif
                 </table>
 

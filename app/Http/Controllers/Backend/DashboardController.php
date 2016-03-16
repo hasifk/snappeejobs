@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Controller;
 use App\Models\Access\User\User;
+use App\Models\Job\Job;
+use App\Models\JobSeeker\JobSeeker;
 use App\Repositories\Backend\Dashboard\DashboardRepository;
 use App\Repositories\Backend\Job\EloquentSearchJobRepository;
 use App\Repositories\Backend\JobSeeker\EloquentSearchJobSeekerRepository;
@@ -228,13 +230,21 @@ class DashboardController extends Controller {
     public function interestedjobsanalytics(Request $request)
     {
         if ( access()->hasRole('Employer','Employer Staff') ) {
-            $jobsResult = $this->jobRepository->getJobsPaginated( $request, config('jobs.default_per_page'));
+            /*$jobsResult = $this->jobRepository->getInterestedJobsPaginated( $request, config('jobs.default_per_page'));
 
             $paginator = $jobsResult['paginator'];
-            $interested_jobs = $jobsResult['jobs'];
+            $interested_jobs = $jobsResult['jobs'];*/
+            $interested_jobs=Job::join('like_jobs','like_jobs.job_id','=','jobs.id')
+                ->join('users','users.id','=','like_jobs.user_id')
+                ->join('job_seeker_details','job_seeker_details.user_id','=','users.id')
+                ->select([
+                    'jobs.*',
+                    'job_seeker_details.id',
+                    'users.name',
+                    \DB::raw('users.id AS userid'),
+                ])->paginate(config('jobs.default_per_page'));
             $view = [
                 'interested_jobs'              => $interested_jobs,
-                'paginator'         => $paginator
             ];
                 return view('backend.emp_analytics_intjobs',$view);
 
@@ -257,5 +267,7 @@ class DashboardController extends Controller {
         }
     }
     /************************************************************************************************************/
+
+
 
 }

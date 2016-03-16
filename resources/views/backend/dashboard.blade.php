@@ -218,7 +218,7 @@
                 </div>
                 <div class="item" style="text-align: center; background-color: #dd4b39; min-height: 100px; line-height: 100px; color: #fff;">
                     <p>
-                        Active Job Openings:{{ $total_jobs_posted }}
+                       Total Jobs Posted:{{ $total_jobs_posted }}
                     </p>
                 </div>
             </div>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Employer\GroupChat;
 
+use App\Events\Backend\GroupChat\GroupChatReceived;
 use App\Models\Access\User\User;
 use App\Models\GroupMessage\GroupMessage;
 use App\Models\GroupMessage\GroupMessageMention;
@@ -22,7 +23,6 @@ class EmployerGroupChatController extends Controller
         $group_contacts = \DB::table('staff_employer')
         ->join('users', 'staff_employer.user_id', '=', 'users.id')
         ->where('users.employer_id', auth()->user()->employer_id)
-        ->where('staff_employer.user_id', '<>', auth()->user()->id)
         ->select(['users.id', 'users.name', 'users.email'])
         ->get();
 
@@ -56,6 +56,10 @@ class EmployerGroupChatController extends Controller
 
     public function sendmessage(Request $request){
 
+        if ( ! $request->get('message') ) {
+            return;
+        }
+
         $group_contacts = \DB::table('staff_employer')
             ->join('users', 'staff_employer.user_id', '=', 'users.id')
             ->where('users.employer_id', auth()->user()->employer_id)
@@ -70,6 +74,14 @@ class EmployerGroupChatController extends Controller
 
         preg_match($pattern, $request->get('message'), $matches);
 
+        $group_message = GroupMessage::create([
+            'employer_id'   => auth()->user()->employer_id,
+            'sender_id'     => auth()->user()->id,
+            'message'       => $request->get('message')
+        ]);
+
+        event(new GroupChatReceived($group_message));
+
         if ( $matches ) {
 
             $users_to_be_notified = [];
@@ -81,12 +93,6 @@ class EmployerGroupChatController extends Controller
             }
 
             if ( $users_to_be_notified ) {
-                $group_message = GroupMessage::create([
-                    'employer_id'   => auth()->user()->employer_id,
-                    'sender_id'     => auth()->user()->id,
-                    'message'       => $request->get('message')
-                ]);
-
 
                 foreach ($users_to_be_notified as $item) {
                     GroupMessageMention::create([

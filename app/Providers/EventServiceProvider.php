@@ -48,6 +48,9 @@ class EventServiceProvider extends ServiceProvider {
 		'App\Events\Backend\Mail\EmployerChatReceived' => [
 			'App\Listeners\Backend\Mail\EmployerChatReceivedHandler',
 		],
+		'App\Events\Backend\GroupChat\GroupChatReceived' => [
+			'App\Listeners\Backend\GroupChat\GroupChatReceivedHandler'
+		]
 	];
 
 	/**

@@ -89,7 +89,7 @@
                     $.post( "{{ route('admin.employer.groupchat.sendmessage') }}",
                             { message: message },
                             function(data){
-                                console.log(data);
+                                $("#message").val("");
                             }).error(function(err, data){}
                     );
 
@@ -100,8 +100,8 @@
 
         $(document).ready(function(){
 
-            socket.on('group_chat{{ group_chat }}:chat_received', function(data){
-                $(".group_messages").append('<div class="mailbox-read-message"><div class="row"><div class="col-md-1"><img style="height: 25px; width: 25px;" src="'+ data.message_details.image +'" alt="User"></div><div class="col-md-9">'+ data.message_details.last_message +'</div><div class="col-md-2">'+ data.message_details.was_created +'</div></div></div><hr>');
+            socket.on('group_chat{{ $group_token }}:chat_received', function(data){
+                $(".group_messages").prepend('<div class="mailbox-read-message"><div class="row"><div class="col-md-1"><img style="height: 25px; width: 25px;" src="'+ data.eventDetails.sender_picture +'" alt="User"></div><div class="col-md-9">'+ data.eventDetails.message +'</div><div class="col-md-2">'+ data.eventDetails.sent_at +'</div></div></div><hr>');
             });
 
         });

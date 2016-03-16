@@ -66,7 +66,7 @@ class DashboardController extends Controller {
             $view['thumbs_ups']  = $this->repository->getThumbsUpsCount();
             $view['employer_notifications'] = $this->repository->getEmployerNotifications();
             $view['cmp_interest_map_info']  = $this->repository->getCompanyInterestMapInfo();
-            $view['job_interest_map_info']  = $this->repository->getJobInterestMapInfo();
+
         }
 
         return view('backend.dashboard', $view);
@@ -237,6 +237,22 @@ class DashboardController extends Controller {
                 'paginator'         => $paginator
             ];
                 return view('backend.emp_analytics_intjobs',$view);
+
+        }
+    }
+    /************************************************************************************************************/
+    public function notinterestedjobsanalytics(Request $request)
+    {
+        if ( access()->hasRole('Employer','Employer Staff') ) {
+            $jobsResult = $this->jobRepository->getJobsPaginated( $request, config('jobs.default_per_page'));
+
+            $paginator = $jobsResult['paginator'];
+            $not_interested_jobs = $jobsResult['jobs'];
+            $view = [
+                'not_interested_jobs'              => $not_interested_jobs,
+                'paginator'         => $paginator
+            ];
+            return view('backend.emp_analytics_nt_intjobs',$view);
 
         }
     }

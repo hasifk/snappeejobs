@@ -105,16 +105,7 @@ class DashboardRepository
 
     }
 
-    public function getJobInterestMapInfo(){
-       return Company::join('jobs', 'jobs.company_id','=','companies.id')
-            ->join('job_visitors', 'job_visitors.job_id','=','jobs.id')
-            ->where('companies.id', '=', auth()->user()->company_id)
-            ->select([
-                'job_visitors.*',
-            ])
-            ->get();
 
-    }
 
 
 

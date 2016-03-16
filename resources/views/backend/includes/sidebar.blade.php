@@ -204,8 +204,11 @@
                   <ul
                           class="treeview-menu {{ Active::pattern('admin/employer/employeranalytics/*', 'menu-open') }}"
                           style="display: none; {{ Active::pattern('admin/employer/mail/*', 'display: block;') }}">
-                    <li class="{{ Active::pattern('admin/employeranalytics/interested') }}">
+                    <li class="{{ Active::pattern('admin/employeranalytics/interestedjobs') }}">
                       <a href="{!! url('admin/employeranalytics/interestedjobs') !!}">{{ 'Jobs Interested' }}</a>
+                    </li>
+                    <li class="{{ Active::pattern('admin/employeranalytics/notinterestedjobs') }}">
+                      <a href="{!! url('admin/employeranalytics/notinterestedjobs') !!}">{{ 'Jobs Not Interested' }}</a>
                     </li>
 
                   </ul>

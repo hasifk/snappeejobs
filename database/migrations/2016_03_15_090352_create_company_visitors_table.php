@@ -16,7 +16,7 @@ class CreateCompanyVisitorsTable extends Migration
             $table->increments('id')->unsigned();
             $table->integer('company_id')->unsigned();
             $table->string('country');
-            $table->string('state');
+            $table->string('state')->nullable();
             $table->string('latitude');
             $table->string('longitude');
             $table->timestamps();

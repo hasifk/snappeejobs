@@ -16,7 +16,7 @@ class CreateJobVisitorsTable extends Migration
             $table->increments('id')->unsigned();
             $table->integer('job_id')->unsigned();
             $table->string('country');
-            $table->string('state');
+            $table->string('state')->nullable();
             $table->string('latitude');
             $table->string('longitude');
             $table->timestamps();

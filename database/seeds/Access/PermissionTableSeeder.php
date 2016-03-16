@@ -64,6 +64,17 @@ class PermissionTableSeeder extends Seeder {
 		$viewAccessManagement->updated_at = Carbon::now();
 		$viewAccessManagement->save();
 
+		$permission_model = config('access.permission');
+		$message_employers = new $permission_model;
+		$message_employers->name = 'message-employers';
+		$message_employers->display_name = 'Send Message to Employers';
+		$message_employers->system = true;
+		$message_employers->group_id = 1;
+		$message_employers->sort = 2;
+		$message_employers->created_at = Carbon::now();
+		$message_employers->updated_at = Carbon::now();
+		$message_employers->save();
+
 		/**
 		 * Access Permissions
 		 */

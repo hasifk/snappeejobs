@@ -215,6 +215,21 @@
                 </li>
                 @endauth
 
+                @role('Administrator')
+                  @permission('message-employers')
+
+                    <li class="{{ Active::pattern('admin/mail/*') }}">
+                      <a href="{{ route('admin.mail.index') }}">
+                        <i class="fa fa-envelope"></i>
+                            <span>
+                              Send Message
+                            </span>
+                      </a>
+                    </li>
+
+                  @endauth
+                @endauth
+
                  <li class="{{ Active::pattern('admin/log-viewer*') }} treeview">
                   <a href="#">
                     <span>{{ trans('menus.log-viewer.main') }}</span>

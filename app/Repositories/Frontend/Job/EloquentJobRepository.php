@@ -200,9 +200,16 @@ class EloquentJobRepository {
     public function storeJobvisits($job_id,$current_ip)
     {
         $location = GeoIP::getLocation($current_ip);
+
+        $user_id='';
+        if(!empty(auth()->user()->id)):
+            $user_id=auth()->user()->id;
+        endif;
+
         if(!empty($location)):
             $store_visitor=new JobVisitor();
             $store_visitor->job_id = $job_id;
+            $store_visitor->user_id = $user_id;
             $store_visitor->country    = $location['country'];
             $store_visitor->state      = $location['state'];
             $store_visitor->latitude   = $location['lat'];;

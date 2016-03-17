@@ -156,10 +156,16 @@ class EloquentCompanyRepository {
     public function storeCompanyvisits($slug,$current_ip)
     {
         $location = GeoIP::getLocation($current_ip);
+        $user_id='';
+        if(!empty(auth()->user()->id)):
+            $user_id=auth()->user()->id;
+            endif;
+
         if(!empty($location)):
             $cmp_id=Company::where('url_slug',$slug)->pluck('id') ;
             $store_visitor=new CompanyVisitor();
             $store_visitor->company_id = $cmp_id;
+            $store_visitor->user_id = $user_id;
             $store_visitor->country    = $location['country'];
             $store_visitor->state      = $location['state'];
             $store_visitor->latitude   = $location['lat'];;

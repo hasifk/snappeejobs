@@ -15,6 +15,7 @@ class CreateJobVisitorsTable extends Migration
         Schema::create('job_visitors', function (Blueprint $table) {
             $table->increments('id')->unsigned();
             $table->integer('job_id')->unsigned();
+            $table->integer('user_id')->unsigned()->nullable();
             $table->string('country');
             $table->string('state')->nullable();
             $table->string('latitude');
@@ -28,6 +29,8 @@ class CreateJobVisitorsTable extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
+
+
         });
     }
 
@@ -40,6 +43,7 @@ class CreateJobVisitorsTable extends Migration
     {
         Schema::table('job_visitors', function (Blueprint $table) {
             $table->dropForeign('job_visitors_job_id_foreign');
+
 
         });
 

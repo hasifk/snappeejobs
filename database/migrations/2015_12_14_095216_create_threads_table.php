@@ -18,6 +18,7 @@ class CreateThreadsTable extends Migration
             $table->string('last_message');
             $table->integer('application_id')->unsigned()->nullable();
             $table->integer('employer_id')->unsigned()->nullable();
+            $table->boolean('from_admin')->default(false);
             $table->integer('message_count')->unsigned();
             $table->timestamps();
 

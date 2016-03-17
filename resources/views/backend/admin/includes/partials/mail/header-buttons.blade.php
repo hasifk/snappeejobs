@@ -6,13 +6,18 @@
         </button>
         <ul class="dropdown-menu" role="menu">
             <li>
-                <a href="{{route('admin.company.index')}}">
+                <a href="{{route('admin.mail.create')}}">
                     New Message
                 </a>
             </li>
             <li>
-                <a href="{{route('admin.company.newcompanies')}}">
+                <a href="{{route('admin.mail.index')}}">
                     Inbox
+                </a>
+            </li>
+            <li>
+                <a href="{{route('admin.mail.sent')}}">
+                    Sent
                 </a>
             </li>
         </ul>

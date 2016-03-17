@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Backend\Mail;
+namespace App\Repositories\Backend\Admin\Mail;
 
 
 use App\Events\Backend\Company\CompanyCreated;
@@ -15,57 +15,18 @@ use Event;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 
-class EloquentMailRepository
+class EloquentAdminMailRepository
 {
     public $unReadMessageCount;
     public $unReadMessages;
-    /**
-     * @var RoleRepositoryContract
-     */
-    private $role;
-    /**
-     * @var AuthenticationContract
-     */
-    private $auth;
-    /**
-     * @var Guard
-     */
     private $user;
-    private $employerId;
     private $thread;
     private $threadParticipants;
 
-    /**
-     * EloquentCompanyRepository constructor.
-     * @param RoleRepositoryContract $role
-     * @param AuthenticationContract $auth
-     * @param Guard $user
-     */
-    public function __construct(RoleRepositoryContract $role, AuthenticationContract $auth, Guard $user)
+
+    public function __construct(Guard $user)
     {
-
-        $this->role = $role;
-        $this->auth = $auth;
         $this->user = $user;
-        $this->employerId = $this->user->user() ? $this->getemployerId($this->user->user()) : null;
-    }
-
-    public function getemployerId(User $user){
-        $employer_id = \DB::table('staff_employer')
-            ->where('user_id', $user->id)
-            ->where('is_admin', true)
-            ->orderBy('created_at')
-            ->value('employer_id');
-        return $employer_id;
-    }
-
-    public function getEmployers(){
-        return \DB::table('staff_employer')
-            ->join('users', 'staff_employer.user_id', '=', 'users.id')
-            ->where('staff_employer.employer_id', $this->employerId)
-            ->where('staff_employer.user_id', '<>', $this->user->user()->id)
-            ->select(['users.id', 'users.name'])
-            ->get();
     }
 
     public function findOrThrowException($id) {
@@ -220,12 +181,9 @@ class EloquentMailRepository
                 'users.name',
                 'threads.last_message',
                 'threads.updated_at',
-                'threads.from_admin',
                 'thread_participants.thread_id'
             ])
-            ->orderBy('threads.from_admin', 'desc')
-            ->orderBy('threads.updated_at', 'desc')
-            ->get();
+            ->orderBy('threads.updated_at', 'desc')->get();
 
         $this->unReadMessages = $unread_messages;
 
@@ -237,6 +195,7 @@ class EloquentMailRepository
         $thread = Thread::create([
             'subject'               => $data['subject'],
             'last_message'          => $data['message'],
+            'from_admin'            => true,
             'message_count'         => 1
         ]);
 

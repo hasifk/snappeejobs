@@ -15,6 +15,7 @@ class CreateCompanyVisitorsTable extends Migration
         Schema::create('company_visitors', function (Blueprint $table) {
             $table->increments('id')->unsigned();
             $table->integer('company_id')->unsigned();
+            $table->integer('user_id')->unsigned()->nullable();
             $table->string('country');
             $table->string('state')->nullable();
             $table->string('latitude');
@@ -28,6 +29,8 @@ class CreateCompanyVisitorsTable extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
 
+
+
         });
     }
 
@@ -40,6 +43,7 @@ class CreateCompanyVisitorsTable extends Migration
     {
         Schema::table('company_visitors', function (Blueprint $table) {
             $table->dropForeign('company_visitors_company_id_foreign');
+
 
         });
 

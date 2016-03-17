@@ -246,7 +246,11 @@
         @endauth
 
     </div>
+    <?php
+    $location = GeoIP::getLocation(Request::ip());
 
+    ?>
+    
 @endsection
 
 @section('after-scripts-end')
@@ -275,8 +279,9 @@
 
         function initMap() {
             var map = new google.maps.Map(document.getElementById('world-map-markers'), {
-                zoom: 10,
-                center: {lat: -33.9, lng: 151.2}
+                zoom: 0,
+                center: {lat:<?php echo $location['lat']; ?>, lng: <?php echo $location['lon']; ?>},
+                disableDefaultUI: true
             });
 
             setMarkers(map);

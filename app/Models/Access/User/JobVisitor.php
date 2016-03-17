@@ -1,5 +1,6 @@
 <?php namespace App\Models\Access\User;
 
+use App\Models\Access\User\Traits\Attribute\JobVisitorAttribute;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -7,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * @package App\Models\Access\User
  */
 class JobVisitor extends Model {
-
+    use JobVisitorAttribute;
     /**
      * The database table used by the model.
      *

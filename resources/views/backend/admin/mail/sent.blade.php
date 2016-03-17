@@ -27,7 +27,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                @foreach ($inbox as $thread)
+                @foreach ($sent as $thread)
                     <tr>
                         <td>
                             @if (!$thread->read_at)
@@ -35,7 +35,7 @@
                             @endif
                         </td>
                         <td class="mailbox-name">
-                            <a href="{{ route('admin.employer.mail.view', $thread->thread_id) }}">
+                            <a href="{{ route('admin.mail.view', $thread->thread_id) }}">
                                 {{ $thread->name }}
                             </a>
                         </td>
@@ -58,7 +58,7 @@
                                 <i class="fa fa-eye"></i>
                                 View
                             </a>
-                            <a href="{{ route('admin.mail.destroy', $thread->thread_id) }}" data-method="delete" class="btn btn-xs btn-danger">
+                            <a href="{{ route('admin.employer.mail.destroy', $thread->thread_id) }}" data-method="delete" class="btn btn-xs btn-danger">
                                 <i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="Delete"></i>
                                 Delete
                             </a>
@@ -71,11 +71,11 @@
             <br>
 
             <div class="pull-left">
-                {{ $inbox->total() }} thread(s) total
+                {{ $sent->total() }} thread(s) total
             </div>
 
             <div class="pull-right">
-                {!! $inbox->render() !!}
+                {!! $sent->render() !!}
             </div>
 
 

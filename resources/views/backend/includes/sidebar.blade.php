@@ -222,7 +222,7 @@
                       <a href="{{ route('admin.mail.index') }}">
                         <i class="fa fa-envelope"></i>
                             <span>
-                              Send Message
+                              Mailbox
                             </span>
                       </a>
                     </li>

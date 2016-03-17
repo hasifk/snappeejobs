@@ -28,7 +28,11 @@
                         <ul class="menu">
                           @foreach($unread_messages as $unread_message)
                           <li><!-- start message -->
-                            <a href="{{ route('admin.employer.mail.view', $unread_message->thread_id) }}">
+                            @role('Administrator')
+                            <a href="{{ route('admin.mail.view', $unread_message->thread_id) }}">
+                            @else
+                                <a href="{{ route('admin.employer.mail.view', $unread_message->thread_id) }}">
+                            @endauth
                               <div class="pull-left">
                                 <!-- User Image -->
                                 <img src="{!! \App\Models\Access\User\User::find($unread_message->id)->picture !!}" class="img-circle" alt="User Image"/>

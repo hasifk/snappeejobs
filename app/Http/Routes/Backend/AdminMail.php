@@ -12,5 +12,6 @@ $router->group([
      */
     $router->group(['namespace' => 'AdminMail'], function() use ($router) {
         get('', 'AdminMailController@index')->name('admin.mail.index');
+        get('/getusers/{company_id}', 'AdminMailController@getCompanyUsers');
     });
 });

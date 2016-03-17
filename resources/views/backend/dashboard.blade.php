@@ -250,7 +250,7 @@
     $location = GeoIP::getLocation(Request::ip());
 
     ?>
-    
+
 @endsection
 
 @section('after-scripts-end')

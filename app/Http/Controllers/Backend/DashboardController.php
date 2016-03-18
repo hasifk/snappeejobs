@@ -68,6 +68,7 @@ class DashboardController extends Controller {
             $view['thumbs_ups']  = $this->repository->getThumbsUpsCount();
             $view['employer_notifications'] = $this->repository->getEmployerNotifications();
             $view['cmp_interest_map_info']  = $this->repository->getCompanyInterestMapInfo();
+            $view['job_interest_level']  = $this->repository->getJobInterestLevel();
 
         }
 

@@ -242,6 +242,32 @@
         @endauth
 
 
+        @if(count($job_interest_level)>0)
+
+        <div class="col-md-6">
+            <div class="box box-solid">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Jobs Interest Level</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    @foreach($job_interest_level as $job)
+
+                        <?php
+                        $new_width = ($job->items / $job_visitors)*100 .'%'  ;
+                        ?>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-green" role="progressbar" aria-valuenow="{{$job->items}}" aria-valuemin="0" aria-valuemax="{{count($job_interest_level)}}" style="width:{{$new_width}}">
+                            <span>{{$job->title}}</span>
+                        </div>
+                        <span>{{$job->items }}/ {{$job_visitors}}</span>
+                    </div>
+                    @endforeach
+
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div><!-- /.col (right) -->
+
+        @endif
 
         @endauth
 

@@ -202,9 +202,11 @@ class EloquentJobRepository {
         $location = GeoIP::getLocation($current_ip);
 
         $user_id='';
+        if ( access()->hasRole('User') ):
         if(!empty(auth()->user()->id)):
             $user_id=auth()->user()->id;
         endif;
+            endif;
 
         if(!empty($location)):
             $store_visitor=new JobVisitor();

@@ -66,14 +66,14 @@ class CompaniesController extends Controller
     {
 
         $company = $this->companyRepository->getCompanyBySlug($slug);
-        if (!Session::get('visitor-info-stored')):
+        if (!Session::get('company_visitor_info_stored')):
 
             $current_ip = $request->ip();
             $visits = $this->companyRepository->storeCompanyvisits($slug, $current_ip);
 
 
             if(!empty($visits)):
-                Session::put('visitor-info-stored', true);
+                Session::put('company_visitor_info_stored', true);
                 Session::save();
             else:
                 return redirect(route('companies.search'));

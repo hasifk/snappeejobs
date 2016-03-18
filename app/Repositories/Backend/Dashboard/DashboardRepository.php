@@ -10,6 +10,7 @@ use App\Models\Job\Job;
 use App\Models\Access\User\User;
 use Carbon\Carbon;
 
+
 class DashboardRepository
 {
 
@@ -131,9 +132,10 @@ class DashboardRepository
             ->join('companies', function ($join) use ($company_id) {
                 $join->on('companies.id', '=', 'jobs.company_id')
                     ->where('jobs.company_id', '=', $company_id);
-            })->whereNull('user_id')
+            })->whereNull('job_visitors.user_id')
             ->select([
                 'job_visitors.*',
+                'jobs.title',
                 'jobs.title_url_slug',
                 'companies.url_slug'
             ])->get();
@@ -155,8 +157,14 @@ class DashboardRepository
             ])->get();
     }
 
+    public function getJobInterestLevel()
+    {
+        return Company::join('jobs', 'jobs.company_id','=','companies.id')
+            ->join('job_visitors', 'job_visitors.job_id','=','jobs.id')
+            ->where('companies.id', '=', auth()->user()->company_id)->groupBy('jobs.id')
+            ->get(['job_visitors.*',\DB::raw('count(jobs.id) as items')]);
 
-
+    }
 
 
 }

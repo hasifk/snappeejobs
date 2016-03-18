@@ -173,7 +173,7 @@ class DashboardRepository
         return Company::join('jobs', 'jobs.company_id','=','companies.id')
             ->join('job_visitors', 'job_visitors.job_id','=','jobs.id')
             ->where('companies.id', '=', auth()->user()->company_id)->groupBy('jobs.id')
-            ->get(['job_visitors.*',\DB::raw('count(jobs.id) as items')]);
+            ->get(['job_visitors.*',\DB::raw('count(jobs.id) as items'),'jobs.title']);
 
     }
 

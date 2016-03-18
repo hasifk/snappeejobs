@@ -19,57 +19,59 @@
 
 
         @roles(['Employer', 'Employer Staff'])
-        <h3>Job Visitors</h3>
-
-        @if(count($job_auth_visitors)>0)
-
-            @foreach($job_auth_visitors as $job)
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <a href="{{ route('jobs.view' , [ $job->url_slug , $job->title_url_slug ] ) }}">{{ $job->title }}</a>
-                    </li>
-                    <li class="list-group-item">
-                    Visited by:<a href="{{ route('jobseeker.show' , [ $job->user_id ] ) }}">{{ $job->name }}</a>
-                    </li>
-                    <li class="list-group-item">
-                        Country:{{$job->country}}
-                    </li>
-                    <li class="list-group-item">
-                        Latitude:{{$job->latitude}}
-                    </li>
-                    <li class="list-group-item">
-                        Longitude:{{$job->longitude}}
-                    </li>
-                </ul>
-
-            @endforeach
 
 
-        @endif
-        @if(count($job_visitors)>0)
-
-            @foreach($job_visitors as $job)
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <a href="{{ route('jobs.view' , [ $job->url_slug , $job->title_url_slug ] ) }}">{{ $job->title }}</a>
-                    </li>
-                    <li class="list-group-item">
-                        Visited by:Guest
-                    </li>
-                    <li class="list-group-item">
-                        Country:{{$job->country}}
-                    </li>
-                    <li class="list-group-item">
-                        Latitude:{{$job->latitude}}
-                    </li>
-                    <li class="list-group-item">
-                        Longitude:{{$job->longitude}}
-                    </li>
-                </ul>
-
-            @endforeach
+        @if(count($job_visitors)>0 ||  count($job_auth_visitors)>0 )
 
 
+
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Job Visitors</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>Job</th>
+                            <th>Visited by</th>
+                            <th>Country</th>
+                            <th>Latitude</th>
+                            <th style="width: 40px">Longitude</th>
+                        </tr>
+
+                        @if(count($job_auth_visitors)>0)
+                            @foreach($job_auth_visitors as $job)
+                                <tr>
+                                    <td><a href="{{ route('jobs.view' , [ $job->url_slug , $job->title_url_slug ] ) }}">{{ $job->title }}</a></td>
+                                    <td><a href="{{ route('jobseeker.show' , [ $job->user_id ] ) }}">{{ $job->name }}</a></td>
+                                    <td>{{$job->country}}</td>
+                                    <td>
+                                        {{$job->latitude}}
+                                    </td>
+                                    <td>{{$job->longitude}}</td>
+                                </tr>
+                            @endforeach
+                        @endif
+
+
+                        @if(count($job_visitors)>0)
+                            @foreach($job_visitors as $job)
+                                <tr>
+                                    <td><a href="{{ route('jobs.view' , [ $job->url_slug , $job->title_url_slug ] ) }}">{{ $job->title }}</a></td>
+                                    <td>Guest</td>
+                                    <td>{{$job->country}}</td>
+                                    <td>
+                                        {{$job->latitude}}
+                                    </td>
+                                    <td>{{$job->longitude}}</td>
+                                </tr>
+                            @endforeach
+                        @endif
+
+                    </table>
+                </div><!-- /.box-body -->
+
+            </div><!-- /.box -->
         @endif
         @endauth
 

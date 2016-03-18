@@ -19,57 +19,61 @@
 
 
         @roles(['Employer', 'Employer Staff'])
-        <h3>Company Visitors</h3>
-        @if(count($company_auth_visitors)>0)
 
 
-                @foreach($company_auth_visitors as $cmp)
-                <ul class="list-group">
-                        <li class="list-group-item">
-                       <a href="{{ route('jobseeker.show' , [ $cmp->user_id ] ) }}">Name:{{ $cmp->name }}</a>
-                        </li>
-                    <li class="list-group-item">
-                        Country:{{$cmp->country}}
-                    </li>
-                    <li class="list-group-item">
-                        Latitude:{{$cmp->latitude}}
-                    </li>
-                    <li class="list-group-item">
-                        Longitude:{{$cmp->longitude}}
-                    </li>
-                </ul>
 
-                @endforeach
+        @if(count($company_visitors)>0 || count($company_auth_visitors)>0 )
 
 
+
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">Company Visitors</h3>
+            </div><!-- /.box-header -->
+            <div class="box-body">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Name</th>
+                        <th>Country</th>
+                        <th>Latitude</th>
+                        <th style="width: 40px">Longitude</th>
+                    </tr>
+
+                    @if(count($company_auth_visitors)>0)
+                        @foreach($company_auth_visitors as $cmp)
+                            <tr>
+                                <td> <a href="{{ route('jobseeker.show' , [ $cmp->user_id ] ) }}">{{ $cmp->name }}</a></td>
+                                <td>{{$cmp->country}}</td>
+                                <td>
+                                    {{$cmp->latitude}}
+                                </td>
+                                <td>{{$cmp->longitude}}</td>
+                            </tr>
+                        @endforeach
+                         @endif
+
+
+    @if(count($company_visitors)>0)
+    @foreach($company_visitors as $cmp)
+    <tr>
+        <td>Guest.</td>
+        <td>{{$cmp->country}}</td>
+        <td>
+            {{$cmp->latitude}}
+        </td>
+        <td>{{$cmp->longitude}}</td>
+    </tr>
+ @endforeach
         @endif
 
-        @if(count($company_visitors)>0)
+</table>
+</div><!-- /.box-body -->
 
+</div><!-- /.box -->
+@endif
+@endauth
 
-            @foreach($company_visitors as $cmp)
-                <ul class="list-group">
-                    <li class="list-group-item">
-                       Name:Guest
-                    </li>
-                    <li class="list-group-item">
-                        Country:{{$cmp->country}}
-                    </li>
-                    <li class="list-group-item">
-                        Latitude:{{$cmp->latitude}}
-                    </li>
-                    <li class="list-group-item">
-                        Longitude:{{$cmp->longitude}}
-                    </li>
-                </ul>
-
-            @endforeach
-
-
-        @endif
-        @endauth
-
-    </div>
+</div>
 
 
 

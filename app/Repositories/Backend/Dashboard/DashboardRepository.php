@@ -60,7 +60,7 @@ class DashboardRepository
         $notifications = EmployerNotification
             ::where('employer_id', auth()->user()->employer_id)
             ->where('user_id', auth()->user()->id)
-            ->get();
+            ->paginate(1);
 
         return $notifications;
     }

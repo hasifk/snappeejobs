@@ -32,5 +32,9 @@
         <h5>No Notifications</h5>
     @endunless
 
+    <div class="col-md-12 center-block">
+        {!! $paginator->render() !!}
+    </div>
+
 @endsection
 

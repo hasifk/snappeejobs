@@ -14,5 +14,7 @@ get('get-states/{id}', function($id){
 get('employeranalytics/interestedjobs', 'DashboardController@interestedjobsanalytics')->name('backend.employerintjobs');
 get('employeranalytics/notinterestedjobs', 'DashboardController@notinterestedjobsanalytics')->name('backend.employernotintjobs');
 get('staffmemebers/{id}', 'DashboardController@showstaffmembers')->name('staffmembers.show');
+get('employeranalytics/companyvisitors', 'DashboardController@companyVisitors')->name('backend.companyvisitors');
+get('employeranalytics/jobvisitors', 'DashboardController@jobVisitors')->name('backend.jobvisitors');
 
 

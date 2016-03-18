@@ -44,8 +44,3 @@
 
 @endsection
 
-@section('after-scripts-end')
-
-
-
-@endsection

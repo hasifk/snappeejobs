@@ -230,10 +230,7 @@ class DashboardController extends Controller {
     public function interestedjobsanalytics(Request $request)
     {
         if ( access()->hasRole('Employer','Employer Staff') ) {
-            /*$jobsResult = $this->jobRepository->getInterestedJobsPaginated( $request, config('jobs.default_per_page'));
 
-            $paginator = $jobsResult['paginator'];
-            $interested_jobs = $jobsResult['jobs'];*/
             $interested_jobs=Job::join('like_jobs','like_jobs.job_id','=','jobs.id')
                 ->join('users','users.id','=','like_jobs.user_id')
                 ->join('job_seeker_details','job_seeker_details.user_id','=','users.id')
@@ -263,6 +260,36 @@ class DashboardController extends Controller {
                 'paginator'         => $paginator
             ];
             return view('backend.emp_analytics_nt_intjobs',$view);
+
+        }
+    }
+    /************************************************************************************************************/
+    public function companyVisitors(Request $request)
+    {
+        if ( access()->hasRole('Employer','Employer Staff') ) {
+            $company_visitors =$this->repository->getTotalCmpVisitors();
+            $company_auth_visitors =$this->repository->getTotalAuthCmpVisitors();
+
+            $view = [
+                'company_visitors'              => $company_visitors,
+                'company_auth_visitors'         => $company_auth_visitors,
+            ];
+            return view('backend.emp_analytics_cmp_visitors',$view);
+
+        }
+    }
+    /************************************************************************************************************/
+    public function jobVisitors(Request $request)
+    {
+        if ( access()->hasRole('Employer','Employer Staff') ) {
+            $job_visitors =$this->repository->getTotalJobVisitors();
+            $job_auth_visitors =$this->repository->getTotalAuthJobVisitors();
+
+            $view = [
+                'job_visitors'              => $job_visitors,
+                'job_auth_visitors'         => $job_auth_visitors,
+            ];
+            return view('backend.emp_analytics_job_visitors',$view);
 
         }
     }

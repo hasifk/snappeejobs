@@ -33,7 +33,7 @@
     @endunless
 
     <div class="col-md-12 center-block">
-        {!! $paginator->render() !!}
+        {!! $notifications->render() !!}
     </div>
 
 @endsection

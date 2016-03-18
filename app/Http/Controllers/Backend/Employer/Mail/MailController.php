@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Employer\Mail;
 
 use App\Events\Frontend\Job\JobSeekerChatReceived;
+use App\Models\Job\JobApplication\JobApplication;
 use App\Models\Mail\Thread;
 use App\Repositories\Backend\Mail\EloquentMailRepository;
 use Illuminate\Http\Request;
@@ -94,8 +95,13 @@ class MailController extends Controller
     public function show(Requests\Backend\Employer\Mail\EmployerMailInboxSingleView $request, $thread_id)
     {
 
+        $thread = $this->mail->getThread($thread_id);
+
+        $job_application = JobApplication::find($thread->application_id);
+
         $view = [
-            'thread' => $this->mail->getThread($thread_id)
+            'thread'            => $thread,
+            'job_application'   => $job_application
         ];
 
         return view('backend.employer.mail.show', $view);

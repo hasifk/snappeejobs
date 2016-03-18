@@ -188,7 +188,7 @@
                     </div>
                     <!-- /.box-body -->
                     <div class="box-footer text-center">
-                        <a href="#" class="uppercase">View All Notifications</a>
+                        <a href="{{ route('backend.notifications.history') }}" class="uppercase">View All Notifications</a>
                     </div>
                     <!-- /.box-footer -->
                 </div>

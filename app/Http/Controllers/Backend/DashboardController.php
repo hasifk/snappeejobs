@@ -91,6 +91,15 @@ class DashboardController extends Controller {
         ];
 		return view('backend.profile', $data);
 	}
+    
+    public function notificationsHistory(){
+
+        $data = [
+            'notifications' => $this->repository->employerNotifications()
+        ];
+
+        return view('backend.notification_history', $data);
+    }
 
     public function editProfile(AdminProfileEditRequest $request)
     {

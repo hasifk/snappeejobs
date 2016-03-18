@@ -11,6 +11,7 @@ get('get-states/{id}', function($id){
     return response()->json($states);
 });
 
+get('employeranalytics/notifications_history', 'DashboardController@notificationsHistory')->name('backend.notifications.history');
 get('employeranalytics/interestedjobs', 'DashboardController@interestedjobsanalytics')->name('backend.employerintjobs');
 get('employeranalytics/notinterestedjobs', 'DashboardController@notinterestedjobsanalytics')->name('backend.employernotintjobs');
 get('staffmemebers/{id}', 'DashboardController@showstaffmembers')->name('staffmembers.show');

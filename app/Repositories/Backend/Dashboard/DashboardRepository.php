@@ -6,6 +6,7 @@ namespace App\Repositories\Backend\Dashboard;
 use App\Models\Access\User\CompanyVisitor;
 use App\Models\Access\User\JobVisitor;
 use App\Models\Company\Company;
+use App\Models\Company\Notifications\EmployerNotification;
 use App\Models\Job\Job;
 use App\Models\Access\User\User;
 use Carbon\Carbon;
@@ -53,6 +54,16 @@ class DashboardRepository
         return \DB::table('staff_employer')
             ->where('employer_id', auth()->user()->employer_id)
             ->count();
+    }
+
+    public function employerNotifications(){
+
+        $notifications = EmployerNotification
+            ::where('employer_id', auth()->user()->employer_id)
+            ->where('user_id', auth()->user()->id)
+            ->paginate(1);
+
+        return $notifications;
     }
 
     public function getTotalNewMessagesCount(){

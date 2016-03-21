@@ -168,11 +168,25 @@ class DashboardRepository
             ])->get();
     }
 
+
+    public function getTodaysJobVisitorsCount()
+    {
+        return Company::join('jobs', 'jobs.company_id','=','companies.id')
+            ->join('job_visitors', 'job_visitors.job_id','=','jobs.id')
+            ->where('companies.id', '=', auth()->user()->company_id)
+            ->whereRaw('DATE(job_visitors.created_at) = CURRENT_DATE')
+            ->select([
+                'job_visitors.*',
+            ])->count();
+    }
+
+
     public function getJobInterestLevel()
     {
         return Company::join('jobs', 'jobs.company_id','=','companies.id')
             ->join('job_visitors', 'job_visitors.job_id','=','jobs.id')
-            ->where('companies.id', '=', auth()->user()->company_id)->groupBy('jobs.id')
+            ->where('companies.id', '=', auth()->user()->company_id)
+            ->whereRaw('DATE(job_visitors.created_at) = CURRENT_DATE')->groupBy('jobs.id')
             ->get(['job_visitors.*',\DB::raw('count(jobs.id) as items'),'jobs.title']);
 
     }

@@ -254,11 +254,16 @@
 
                         <?php
                         $new_width = ($job->items / $job_visitors_today)*100 .'%'  ;
-                        ?>
-                    <div class="progress">
-                        <div class="progress-bar progress-bar-green" role="progressbar" aria-valuenow="{{$job->items}}" aria-valuemin="0" aria-valuemax="{{count($job_interest_level)}}" style="width:{{$new_width}}">
-                            <span>{{$job->title}}</span>
-                            <span>({{$job->items }}/ {{$job_visitors_today}})</span>
+                       ?>
+
+
+                    <div class="progress_group">
+                        <span class="progress-text">{{$job->title}}</span>
+                        <span class="progress-number">({{$job->items }} / {{$job_visitors_today}})</span>
+                        <div class="progress">
+                        <div class="progress-bar progress-bar-green progress-bar-striped active" role="progressbar" aria-valuenow="{{$job->items}}" aria-valuemin="0" aria-valuemax="{{count($job_interest_level)}}" style="width:{{$new_width}}">
+
+                        </div>
                         </div>
 
                     </div>

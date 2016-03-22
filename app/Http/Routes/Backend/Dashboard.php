@@ -12,10 +12,12 @@ get('get-states/{id}', function($id){
 });
 
 get('employeranalytics/notifications_history', 'DashboardController@notificationsHistory')->name('backend.notifications.history');
-get('employeranalytics/interestedjobs', 'DashboardController@interestedjobsanalytics')->name('backend.employerintjobs');
-get('employeranalytics/notinterestedjobs', 'DashboardController@notinterestedjobsanalytics')->name('backend.employernotintjobs');
+get('employeranalytics/interestedjobs', 'EmployerAnalyticsController@interestedjobsanalytics')->name('backend.employerintjobs');
+get('employeranalytics/notinterestedjobs', 'EmployerAnalyticsController@notinterestedjobsanalytics')->name('backend.employernotintjobs');
 get('staffmemebers/{id}', 'DashboardController@showstaffmembers')->name('staffmembers.show');
-get('employeranalytics/companyvisitors', 'DashboardController@companyVisitors')->name('backend.companyvisitors');
-get('employeranalytics/jobvisitors', 'DashboardController@jobVisitors')->name('backend.jobvisitors');
+get('employeranalytics/companyvisitors', 'EmployerAnalyticsController@companyVisitors')->name('backend.companyvisitors');
+get('employeranalytics/jobvisitors', 'EmployerAnalyticsController@jobVisitors')->name('backend.jobvisitors');
+get('employeranalytics/uniquejobvisitors', 'EmployerAnalyticsController@uniqueJobVisitors')->name('backend.uniquejobvisitors');
+get('employeranalytics/uniquecompanyvisitors', 'EmployerAnalyticsController@uniqueCompanyVisitors')->name('backend.uniquecompanyvisitors');
 
 

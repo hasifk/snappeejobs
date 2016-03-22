@@ -218,6 +218,12 @@
                       <a href="{!! url('admin/employeranalytics/jobvisitors') !!}">{{ 'Job Visitors' }}</a>
                     </li>
 
+                    <li class="{{ Active::pattern('admin/employeranalytics/uniquejobvisitors') }}">
+                      <a href="{!! url('admin/employeranalytics/uniquejobvisitors') !!}">{{ 'Unique Job Visitors' }}</a>
+                    </li>
+                    <li class="{{ Active::pattern('admin/employeranalytics/uniquecompanyvisitors') }}">
+                      <a href="{!! url('admin/employeranalytics/uniquecompanyvisitors') !!}">{{ 'Unique Company Visitors' }}</a>
+                    </li>
                   </ul>
                 </li>
                 @endauth

@@ -72,6 +72,20 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-lg-3 col-xs-6">
+            <!-- small box -->
+            <div class="small-box bg-purple">
+                <div class="inner">
+                    <h3>{{ $job_seeker_count }}</h3>
+
+                    <p>Job Seeker Count</p>
+                </div>
+                <div class="icon">
+                    <i class="ion-person-stalker"></i>
+                </div>
+            </div>
+        </div>
         <!-- ./col -->
 
         @endauth

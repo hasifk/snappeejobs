@@ -1,6 +1,7 @@
 <?php namespace App\Repositories\Backend\JobSeeker;
 
 use App\Models\JobSeeker\JobSeeker;
+use App\Models\JobSeeker\JobSeekerVideoLinks;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -140,5 +141,28 @@ class EloquentJobSeekerRepository {
 
         return $paginator;
     }
+/****************************************************************************************************/
+    public function storeJobSeekerVideoLink($link)
+    {
+        $youtube_id=$vimeo_id='';
+        if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $link, $match))
+        {
+            $youtube_id=$match[1];
+        }
+        if (preg_match('/(https?:\/\/)?(www\.)?(player\.)?vimeo\.com\/([a-z]*\/)*([0-9]{6,11})[?]?.*/', $link, $match))
+        {
+            $vimeo_id = $match[5];
+        }
+           $jobSeeker = auth()->user()->jobseeker_details;
+           $store_videolink=new JobSeekerVideoLinks;
+            $store_videolink->user_id=$jobSeeker->id;
+            $store_videolink->youtube_id=$youtube_id;
+            $store_videolink->vimeo_id=$vimeo_id;
+            $store_videolink->save();
+            return "Video Link Saved Successfully";
 
+
+
+    }
+    /*********************************************************************************************************/
 }

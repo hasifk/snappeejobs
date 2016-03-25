@@ -6,10 +6,12 @@ use App\Http\Requests\Frontend\Access\PreferencesSaveRequest;
 use App\Http\Requests\Frontend\Access\ProfileImagesUploadRequest;
 use App\Http\Requests\Frontend\Access\ProfileVideoUploadRequest;
 use App\Http\Requests\Frontend\Access\ResumeUploadRequest;
+use App\Http\Requests\Frontend\JobSeeker\JobSeekerVideoLinkRequest;
 use App\Http\Requests\Frontend\User\JobSeekerReplyMessage;
 use App\Models\Access\User\User;
 use App\Models\JobSeeker\JobSeeker;
 use App\Models\Mail\Thread;
+use App\Repositories\Backend\JobSeeker\EloquentJobSeekerRepository;
 use App\Repositories\Backend\Mail\EloquentMailRepository;
 use App\Repositories\Frontend\User\UserContract;
 use App\Http\Requests\Frontend\User\UpdateProfileRequest;
@@ -33,10 +35,11 @@ class ProfileController extends Controller {
 	 * ProfileController constructor.
 	 * @param UserContract $users
      */
-	public function __construct(UserContract $users)
+	public function __construct(UserContract $users,EloquentJobSeekerRepository $videorepo)
 	{
 
 		$this->users = $users;
+        $this->videorepo =$videorepo;
 	}
 
 	/**
@@ -354,7 +357,8 @@ class ProfileController extends Controller {
 		$jobSeeker = auth()->user()->jobseeker_details;
 		$jobSeekerObj = JobSeeker::findOrNew($jobSeeker->id);
 		$jobSeekerVideo = $jobSeekerObj->videos()->first();
-		return view('frontend.user.profile.videos', [ 'video' => $jobSeekerVideo ]);
+        $videoLink = $jobSeekerObj->videoLink()->first();
+		return view('frontend.user.profile.videos', [ 'video' => $jobSeekerVideo,'videolink' => $videoLink ]);
 	}
 
 	public function uploadVideos(ProfileVideoUploadRequest $request){
@@ -394,7 +398,19 @@ class ProfileController extends Controller {
 
 		return response()->json(['status' => 1]);
 	}
+/***************************************************************************************************************/
+	public function storeVideoLinks(JobSeekerVideoLinkRequest $request){
 
+      if($videolink=$this->videorepo->storeJobSeekerVideoLink($request->videolink)):
+        $request->session()->flash('success', $videolink);
+        else:
+        $request->session()->flash('failure','Failed to Store VideoLink.Please try again. ') ;
+        endif;
+
+        return back();
+        //return view('frontend.user.profile.videos', ['key' => $key]);
+	}
+/**************************************************************************************************************/
 	public function images(){
 
 		$jobSeeker = auth()->user()->jobseeker_details;

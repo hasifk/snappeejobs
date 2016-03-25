@@ -172,5 +172,6 @@ class EloquentJobSeekerRepository {
         $companies = Company::all();
         return $companies;
     }
+/********************************************************************************************************/
 
 }

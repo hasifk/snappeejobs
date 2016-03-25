@@ -160,6 +160,7 @@ return [
 		'App\Providers\MacroServiceProvider',
 		'App\Providers\ComposerServiceProvider',
 		'App\Providers\ModelUpdateServiceProvider',
+        'App\Providers\YoutubeVimeoValidator',
 
 		/*
 		 * Third party service providers

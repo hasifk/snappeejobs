@@ -44,6 +44,10 @@ class JobSeeker extends Model
         return $this->hasMany('App\Models\JobSeeker\JobSeekerVideo', 'user_id');
     }
 
+    public function videoLink(){
+        return $this->hasMany('App\Models\JobSeeker\JobSeekerVideoLinks', 'user_id');
+    }
+
     public function images(){
         return $this->hasMany('App\Models\JobSeeker\JobSeekerImage', 'user_id');
     }

@@ -27,6 +27,9 @@ return [
         'permission' => 'Permission Based - ',
         'role' => 'Role Based - ',
     ],
+    'front_end' => [
+        'youtube_vimeo' => 'Add Youtube/Vimeo Link',
+    ],
     'be_right_back' => 'Be Right Back.',
     'cancel_button' => 'Cancel',
     'click_here_to_confirm_account' => 'Click here to confirm your account:',

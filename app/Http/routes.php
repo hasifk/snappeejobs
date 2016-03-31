@@ -48,6 +48,7 @@ $router->group(['namespace' => 'Backend'], function () use ($router)
 			require(__DIR__ . "/Routes/Backend/Settings.php");
 			require(__DIR__ . "/Routes/Backend/Subscription.php");
 			require(__DIR__ . "/Routes/Backend/JobSeekers.php");
+			require(__DIR__ . "/Routes/Backend/Projects.php");
 		});
 	});
 

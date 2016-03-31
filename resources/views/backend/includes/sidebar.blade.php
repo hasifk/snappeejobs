@@ -193,6 +193,27 @@
                 @endauth
                 @endauth
 
+                @roles(['Employer'])
+                <li class="{{ Active::pattern('admin/socialmediafeeds/twitterfeeds') }}treeview>">
+                <a href="#">
+                    <i class="fa fa-envelope"></i>
+                        <span>
+                          Twitter Feeds
+                        </span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                  </a>
+                    <ul class="treeview-menu {{ Active::pattern('admin/socialmediafeeds/employeranalytics/*', 'menu-open') }}"
+                            style="display: none; {{ Active::pattern('admin/employer/mail/*', 'display: block;') }}">
+                        <li class="{{ Active::pattern('admin/socialmediafeeds/addtwitterinfo') }}">
+                            <a href="{!! url('admin/socialmediafeeds/addtwitterinfo') !!}">{{ 'Add Twitter Info' }}</a>
+                        </li>
+                        <li class="{{ Active::pattern('admin/socialmediafeeds/twitterfeeds') }}">
+                            <a href="{!!url('admin/socialmediafeeds/twitterfeeds')!!}">{{ 'Twitter Feeds' }}</a>
+                        </li>
+                    </ul>
+                </li>
+                @endauth
+
                 @roles(['Employer','Employer Staff'])
 
                 <li class="{{ Active::pattern('admin/employer/employeranalytics') }} treeview">

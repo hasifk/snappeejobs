@@ -19,5 +19,7 @@ get('employeranalytics/companyvisitors', 'EmployerAnalyticsController@companyVis
 get('employeranalytics/jobvisitors', 'EmployerAnalyticsController@jobVisitors')->name('backend.jobvisitors');
 get('employeranalytics/uniquejobvisitors', 'EmployerAnalyticsController@uniqueJobVisitors')->name('backend.uniquejobvisitors');
 get('employeranalytics/uniquecompanyvisitors', 'EmployerAnalyticsController@uniqueCompanyVisitors')->name('backend.uniquecompanyvisitors');
-
+get('socialmediafeeds/addtwitterinfo', 'SocialMediaFeedsController@addtwitterinfo')->name('backend.addtwitterinfo');
+post('socialmediafeeds/storetwitterinfo', 'SocialMediaFeedsController@storetwitterinfo')->name('backend.storetwitterinfo');
+get('socialmediafeeds/twitterfeeds', 'SocialMediaFeedsController@twitterfeeds')->name('backend.twitterfeeds');
 

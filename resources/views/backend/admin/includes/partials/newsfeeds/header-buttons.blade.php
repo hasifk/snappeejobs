@@ -1,8 +1,6 @@
 <div style="margin-bottom:10px;">
     <div class="btn-group">
-        <button type="button" class="btn btn-primary btn-xs">
-            <a href="{{route('backend.admin.newsfeed')}}">Create New</a>
-        </button>
+            <a href="{{route('backend.admin.newsfeed')}}" class="btn btn-primary btn-xs">Create New</a>
     </div>
 </div>
 

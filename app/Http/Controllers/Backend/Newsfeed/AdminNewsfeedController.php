@@ -43,4 +43,23 @@ class AdminNewsfeedController extends Controller {
         $user = $this->newsfeedRepository->save($request);
         return redirect()->route('backend.admin.newsfeeds');
     }
+    public function showNewsfeed($id)
+    {
+        $view = [
+            'newsfeed' => $this->newsfeedRepository->edit($id),
+        ];
+        return view('backend.admin.newsfeed.show',$view);
+    }
+    public function EditNewsfeed($id)
+    {
+        $view = [
+            'newsfeed' => $this->newsfeedRepository->edit($id),
+        ];
+        return view('backend.admin.newsfeed.edit',$view);
+    }
+    public function DeleteNewsfeed($id)
+    {
+        Newsfeed::where('id', $id)->delete();
+        return redirect()->route('backend.admin.newsfeeds');
+    }
 }

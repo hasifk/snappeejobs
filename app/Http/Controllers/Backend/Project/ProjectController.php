@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Backend\Project;
 
+use App\Http\Requests\Backend\Employer\Project\ProjectCreateRequest;
+use App\Models\Project\Project;
 use App\Repositories\Backend\Project\EloquentProjectRepository;
 use Illuminate\Http\Request;
 
@@ -29,7 +31,14 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return view('backend.projects.index');
+
+        $projects = $this->projectRepository->getProjects(10);
+
+        $view = [
+            'projects' => $projects
+        ];
+
+        return view('backend.projects.index', $view);
     }
 
     /**
@@ -57,20 +66,46 @@ class ProjectController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProjectCreateRequest $request)
     {
-        //
+
+        $this->projectRepository->createProject($request);
+
+        return redirect()
+            ->route('admin.projects.index')
+            ->withFlashSuccess('Successfully created the Project');
+
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param Requests\Backend\Employer\Project\ProjectViewRequest $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Requests\Backend\Employer\Project\ProjectViewRequest $request, $id)
     {
-        //
+
+        $project = Project::find($id);
+
+        $project_members = \DB::table('members_project')
+            ->join('users', 'members_project.user_id', '=', 'users.id')
+            ->where('members_project.project_id', $project->id)
+            ->lists('users.name');
+
+        $job_listings = \DB::table('job_listing_project')
+            ->join('jobs', 'job_listing_project.job_id', '=', 'jobs.id')
+            ->where('job_listing_project.project_id', $project->id)
+            ->lists('jobs.title');
+
+        $view = [
+            'project' => $project,
+            'members' => implode(' , ', $project_members),
+            'job_listings' => implode(' , ', $job_listings)
+        ];
+
+        return view('backend.projects.show', $view);
     }
 
     /**

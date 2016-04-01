@@ -16,16 +16,18 @@
         <thead>
         <tr>
             <th>Title</th>
-            <th>Level</th>
-            <th>Status</th>
-            <th>Published</th>
-            <th>Likes</th>
-            <th>Country</th>
-            <th>State</th>
             <th>{{ trans('crud.actions') }}</th>
         </tr>
         </thead>
         <tbody>
+
+            @foreach($projects as $project)
+                <tr>
+                    <td>{{ $project->title }}</td>
+                    <td>{!! $project->action_buttons !!}</td>
+                </tr>
+                
+            @endforeach
 
         </tbody>
     </table>

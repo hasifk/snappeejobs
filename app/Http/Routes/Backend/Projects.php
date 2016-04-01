@@ -15,5 +15,7 @@ $router->group([
 
         resource('projects', 'ProjectController');
 
+        get('/assign-tasks/{id}', 'ProjectController@assignTasks')->name('admin.projects.assign-tasks');
+
     });
 });

@@ -17,6 +17,7 @@ class CreateTaskProjectTable extends Migration
             $table->integer('project_id')->unsigned();
             $table->string('title');
             $table->integer('created_by')->unsigned();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('project_id')

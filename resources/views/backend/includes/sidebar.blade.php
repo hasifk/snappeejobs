@@ -75,6 +75,15 @@
                               </span>
                         </a>
                       </li>
+                      
+                      <li class="{{ Active::pattern('admin/newsfeeds/*') }}">
+                        <a href="{!!url(route('backend.admin.newsfeeds'))!!}">
+                          <i class="fa fa-suitcase"></i>
+                              <span>
+                                {{ 'Newsfeeds' }}
+                              </span>
+                        </a>
+                      </li>
                     @endauth
                 @endauth
 
@@ -264,7 +273,24 @@
                   @endauth
                 @endauth
 
-                 <li class="{{ Active::pattern('admin/log-viewer*') }} treeview">
+
+                @role('Employer')
+                @permission('create-project')
+
+                <li class="{{ Active::pattern('admin/projects/*') }}">
+                  <a href="{{ route('admin.projects.index') }}">
+                    <i class="fa fa-folder-open"></i>
+                            <span>
+                              Projects
+                            </span>
+                  </a>
+                </li>
+
+                @endauth
+                @endauth
+
+
+                <li class="{{ Active::pattern('admin/log-viewer*') }} treeview">
                   <a href="#">
                     <span>{{ trans('menus.log-viewer.main') }}</span>
                     <i class="fa fa-angle-left pull-right"></i>

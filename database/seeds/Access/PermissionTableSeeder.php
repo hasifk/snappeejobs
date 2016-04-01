@@ -636,6 +636,102 @@ class PermissionTableSeeder extends Seeder {
          * Subscriptions
          */
 
+		/**
+		 * Projects and Tasks
+		 */
+
+		$permission_model = config('access.permission');
+		$showProject = new $permission_model;
+		$showProject->name = 'show-project';
+		$showProject->display_name = 'Show Projects';
+		$showProject->system = true;
+		$showProject->group_id = 7;
+		$showProject->sort = 1;
+		$showProject->created_at = Carbon::now();
+		$showProject->updated_at = Carbon::now();
+		$showProject->save();
+
+		$permission_model = config('access.permission');
+		$createProject = new $permission_model;
+		$createProject->name = 'create-project';
+		$createProject->display_name = 'Create Project';
+		$createProject->system = true;
+		$createProject->group_id = 7;
+		$createProject->sort = 2;
+		$createProject->created_at = Carbon::now();
+		$createProject->updated_at = Carbon::now();
+		$createProject->save();
+
+		$permission_model = config('access.permission');
+		$editProject = new $permission_model;
+		$editProject->name = 'edit-project';
+		$editProject->display_name = 'Edit Project';
+		$editProject->system = true;
+		$editProject->group_id = 7;
+		$editProject->sort = 3;
+		$editProject->created_at = Carbon::now();
+		$editProject->updated_at = Carbon::now();
+		$editProject->save();
+
+		$permission_model = config('access.permission');
+		$deleteProject = new $permission_model;
+		$deleteProject->name = 'delete-project';
+		$deleteProject->display_name = 'Delete Project';
+		$deleteProject->system = true;
+		$deleteProject->group_id = 7;
+		$deleteProject->sort = 4;
+		$deleteProject->created_at = Carbon::now();
+		$deleteProject->updated_at = Carbon::now();
+		$deleteProject->save();
+
+		$permission_model = config('access.permission');
+		$showTask = new $permission_model;
+		$showTask->name = 'show-task';
+		$showTask->display_name = 'Show Tasks';
+		$showTask->system = true;
+		$showTask->group_id = 7;
+		$showTask->sort = 5;
+		$showTask->created_at = Carbon::now();
+		$showTask->updated_at = Carbon::now();
+		$showTask->save();
+
+		$permission_model = config('access.permission');
+		$createTask = new $permission_model;
+		$createTask->name = 'create-task';
+		$createTask->display_name = 'Create Task';
+		$createTask->system = true;
+		$createTask->group_id = 7;
+		$createTask->sort = 6;
+		$createTask->created_at = Carbon::now();
+		$createTask->updated_at = Carbon::now();
+		$createTask->save();
+
+		$permission_model = config('access.permission');
+		$editTask = new $permission_model;
+		$editTask->name = 'edit-task';
+		$editTask->display_name = 'Edit Task';
+		$editTask->system = true;
+		$editTask->group_id = 7;
+		$editTask->sort = 7;
+		$editTask->created_at = Carbon::now();
+		$editTask->updated_at = Carbon::now();
+		$editTask->save();
+
+		$permission_model = config('access.permission');
+		$deleteTask = new $permission_model;
+		$deleteTask->name = 'delete-task';
+		$deleteTask->display_name = 'Delete Task';
+		$deleteTask->system = true;
+		$deleteTask->group_id = 7;
+		$deleteTask->sort = 8;
+		$deleteTask->created_at = Carbon::now();
+		$deleteTask->updated_at = Carbon::now();
+		$deleteTask->save();
+
+		/**
+		 * Projects and Tasks
+		 */
+
 		if(env('DB_DRIVER') == 'mysql')
 			DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 	}

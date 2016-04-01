@@ -1,0 +1,144 @@
+<?php
+
+namespace App\Http\Controllers\Backend\Project;
+
+use App\Http\Requests\Backend\Employer\Project\ProjectCreateRequest;
+use App\Models\Project\Project;
+use App\Repositories\Backend\Project\EloquentProjectRepository;
+use Illuminate\Http\Request;
+
+use App\Http\Requests;
+use App\Http\Controllers\Controller;
+
+class ProjectController extends Controller
+{
+
+    /**
+     * @var EloquentProjectRepository
+     */
+    private $projectRepository;
+
+    public function __construct(EloquentProjectRepository $projectRepository)
+    {
+
+        $this->projectRepository = $projectRepository;
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+
+        $projects = $this->projectRepository->getProjects(10);
+
+        $view = [
+            'projects' => $projects
+        ];
+
+        return view('backend.projects.index', $view);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+
+        $members = $this->projectRepository->getEmployers();
+        $job_listings = $this->projectRepository->getJobListings();
+
+        $view = [
+            'members' => $members,
+            'job_listings' => $job_listings
+        ];
+
+        return view('backend.projects.create', $view);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(ProjectCreateRequest $request)
+    {
+
+        $this->projectRepository->createProject($request);
+
+        return redirect()
+            ->route('admin.projects.index')
+            ->withFlashSuccess('Successfully created the Project');
+
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param Requests\Backend\Employer\Project\ProjectViewRequest $request
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Requests\Backend\Employer\Project\ProjectViewRequest $request, $id)
+    {
+
+        $project = Project::find($id);
+
+        $project_members = \DB::table('members_project')
+            ->join('users', 'members_project.user_id', '=', 'users.id')
+            ->where('members_project.project_id', $project->id)
+            ->lists('users.name');
+
+        $job_listings = \DB::table('job_listing_project')
+            ->join('jobs', 'job_listing_project.job_id', '=', 'jobs.id')
+            ->where('job_listing_project.project_id', $project->id)
+            ->lists('jobs.title');
+
+        $view = [
+            'project' => $project,
+            'members' => implode(' , ', $project_members),
+            'job_listings' => implode(' , ', $job_listings)
+        ];
+
+        return view('backend.projects.show', $view);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+}

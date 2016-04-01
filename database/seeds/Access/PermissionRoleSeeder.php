@@ -20,7 +20,8 @@ class PermissionRoleSeeder extends Seeder
 
     public function insertEmployeeStaffRolePermission(){
         $permissions = ['view-backend', 'view-access-management', 'employer-jobs-view','mail-send-private-message',
-            'mail-view-private-messages', 'mail-delete-private-messages','mail-send-group-messages'
+            'mail-view-private-messages', 'mail-delete-private-messages','mail-send-group-messages', 'show-project', 'create-project',
+            'edit-project', 'delete-project',  'create-task', 'create-task', 'edit-task', 'delete-task'
         ];
 
         $employer_role_id = \DB::table('roles')->where('name', 'Employer Staff')->value('id');
@@ -44,7 +45,8 @@ class PermissionRoleSeeder extends Seeder
             'mail-send-private-message','mail-view-private-messages', 'mail-delete-private-messages', 'mail-send-group-messages',
             'change-plan','create-employer-staff','edit-employer-staff', 'change-employer-staff-password',
             'deactivate-employer-staff','reactivate-employer-staff', 'ban-employer-staff', 'unban-employer-staff',
-            'delete-employer-staff','employer-resend-confirmation-email', 'employer-settings'
+            'delete-employer-staff','employer-resend-confirmation-email', 'employer-settings', 'show-project', 'create-project',
+            'edit-project', 'delete-project', 'show-task',  'create-task', 'edit-task', 'delete-task'
         ];
 
         $employer_role_id = \DB::table('roles')->where('name', 'Employer')->value('id');

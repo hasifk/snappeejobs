@@ -15,10 +15,17 @@ class CreateProjectsTable extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title');
+            $table->integer('employer_id')->unsigned();
             $table->integer('created_by')->unsigned();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+            $table->foreign('employer_id')
                 ->references('id')
                 ->on('users')
                 ->onUpdate('cascade')
@@ -35,6 +42,7 @@ class CreateProjectsTable extends Migration
     {
         Schema::table('projects', function (Blueprint $table) {
             $table->dropForeign('projects_created_by_foreign');
+            $table->dropForeign('projects_employer_id_foreign');
         });
 
         Schema::drop('projects');

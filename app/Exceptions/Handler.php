@@ -4,6 +4,7 @@ use App\Exceptions\Backend\Access\Employer\EmployerNeedsRolesException;
 use App\Exceptions\Backend\Access\Employer\Mail\MessageDoesNotBelongToUser;
 use App\Exceptions\Backend\Access\Employer\Settings\SubscriptionPlanException;
 use App\Exceptions\Backend\Company\CompanyNeedDataFilledException;
+use App\Exceptions\Backend\Project\ProjectDoesNotBelongToUser;
 use App\Exceptions\Frontend\Job\JobDoesNotExist;
 use App\Exceptions\Frontend\Profile\ThreadDoesNotExists;
 use Exception;
@@ -88,6 +89,11 @@ class Handler extends ExceptionHandler {
 		if ($e instanceof ThreadDoesNotExists)
 		{
 			return redirect()->route('frontend.messages')->withInput()->withFlashDanger($e->validationErrors());
+		}
+
+		if ($e instanceof ProjectDoesNotBelongToUser)
+		{
+			return redirect()->route('admin.projects.index')->withInput()->withFlashDanger($e->validationErrors());
 		}
 
 		//Catch all

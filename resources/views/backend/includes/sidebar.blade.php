@@ -75,6 +75,15 @@
                               </span>
                         </a>
                       </li>
+                      
+                      <li class="{{ Active::pattern('admin/newsfeeds/*') }}">
+                        <a href="{!!url(route('backend.admin.newsfeeds'))!!}">
+                          <i class="fa fa-suitcase"></i>
+                              <span>
+                                {{ 'Newsfeeds' }}
+                              </span>
+                        </a>
+                      </li>
                     @endauth
                 @endauth
 

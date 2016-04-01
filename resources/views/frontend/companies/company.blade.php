@@ -23,9 +23,9 @@
                     </div>
                     @endforeach
                     <div class="col-md-3 pull-right company-container">
-                        <button v-cloak class="btn btn-default btn-block" v-on:click="likeCompany" v-show={{ count(auth()->user()) }}>
+                        <button v-cloak class="btn btn-default btn-block" v-on:click="followCompany" v-show={{ count(auth()->user()) }}>
                             <span class="glyphicon glyphicon-thumbs-up"></span>
-                            Like (@{{ companyLikes }})
+                            @{{{ followerStatus }}}(@{{ companyFollowers }})
                         </button>
                     </div>
                     <!--<div class="col-md-3">
@@ -112,16 +112,16 @@
         el: '.company-container',
         data: {
             companyId:{{ $company->id }},
-            companyLikes: {{ $company->likes }}
+            companyFollowers: {{ $company->followers }},
+            followerStatus: {{ $followingStatus }}
         },
         methods: {
 
-            likeCompany: function(event){
+            followCompany: function(event){
                 var that = this;
                 event.preventDefault();
-
                 $.ajax({
-                    url : '/companies/company/like',
+                    url : '/companies/company/follow',
                     method  : 'post',
                     data : {
                         companyId:this.companyId,
@@ -133,7 +133,8 @@
 
                         console.log(this);
 
-                        that.companyLikes = obj.likes;
+                        that.companyFollowers = obj.followers;
+                        that.followerStatus = 'Following';
 
                         //Like ({{ $company->likes }})
 

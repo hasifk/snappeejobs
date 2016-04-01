@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLikeCompaniesTable extends Migration
+class CreateFollowCompaniesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class CreateLikeCompaniesTable extends Migration
      */
     public function up()
     {
-        Schema::create('like_companies', function (Blueprint $table) {
+        Schema::create('follow_companies', function (Blueprint $table) {
             $table->increments('id')->unsigned();
             $table->integer('company_id')->unsigned();
             $table->integer('user_id')->unsigned();
@@ -38,11 +38,11 @@ class CreateLikeCompaniesTable extends Migration
      */
     public function down()
     {
-        Schema::table('like_companies', function (Blueprint $table) {
-            $table->dropForeign('like_companies_company_id_foreign');
-            $table->dropForeign('like_companies_user_id_foreign');
+        Schema::table('follow_companies', function (Blueprint $table) {
+            $table->dropForeign('follow_companies_company_id_foreign');
+            $table->dropForeign('follow_companies_user_id_foreign');
         });
 
-        Schema::drop('like_companies');
+        Schema::drop('follow_companies');
     }
 }

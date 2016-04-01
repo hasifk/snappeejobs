@@ -10,7 +10,7 @@ class CompanyTableSeeder extends Seeder
 
         \DB::statement(
            "
-            INSERT INTO `companies` (`id`, `employer_id`, `title`, `url_slug`, `size`, `description`, `what_it_does`, `office_life`, `country_id`, `state_id`, `default_photo_id`, `logo`, `likes`, `created_at`, `updated_at`) VALUES
+            INSERT INTO `companies` (`id`, `employer_id`, `title`, `url_slug`, `size`, `description`, `what_it_does`, `office_life`, `country_id`, `state_id`, `default_photo_id`, `logo`, `followers`, `created_at`, `updated_at`) VALUES
             (1, 2, 'Silverbloom Technologies', 'silverbloom-technologies', 'big', 'asd\r\nasd\r\nsa\r\ndsa\r\ndsd', 'asd\r\nasd\r\nsa\r\n\r\nsad\r\nsd\r\ndad\r\n', 'asd\r\nas\r\nd\r\nasd\r\nsad\r\nasd', 222, 3428, 0, '', 0, '2016-02-11 00:17:47', '2016-02-11 00:17:47');
             "
         );
@@ -73,7 +73,7 @@ class CompanyTableSeeder extends Seeder
                 'state_id'          => 605,
                 'default_photo_id'  => 1,
                 'logo'              => 'http://www.heinz.com/media/downloads/view/HeinzLogo.jpg',
-                'likes'             => 3,
+                'followers'             => 3,
                 'created_at'        => \Carbon\Carbon::now(),
                 'updated_at'        => \Carbon\Carbon::now()
             ],
@@ -89,7 +89,7 @@ class CompanyTableSeeder extends Seeder
                 'state_id'          => 290,
                 'default_photo_id'  => 2,
                 'logo'              => 'https://www.facebookbrand.com/img/fb-art.jpg',
-                'likes'             => 8,
+                'followers'             => 8,
                 'created_at'        => \Carbon\Carbon::now(),
                 'updated_at'        => \Carbon\Carbon::now()
             ]

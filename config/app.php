@@ -177,6 +177,7 @@ return [
 		Intervention\Image\ImageServiceProvider::class,
 		UxWeb\SweetAlert\SweetAlertServiceProvider::class,
 		'Torann\GeoIP\GeoIPServiceProvider',
+		'Thujohn\Twitter\TwitterServiceProvider',
 
 	],
 
@@ -236,5 +237,6 @@ return [
 		'Image' => 'Intervention\Image\Facades\Image',
 		'Alert' => UxWeb\SweetAlert\SweetAlert::class,
 		'GeoIP' => 'Torann\GeoIP\GeoIPFacade',
+        'Twitter' => 'Thujohn\Twitter\Facades\Twitter',
 	],
 ];

@@ -22,10 +22,10 @@
                         </a>
                     </div>
                     @endforeach
-                    <div class="col-md-3 pull-right company-container">
+                    <div class="col-md-4 pull-right company-container">
                         <button v-cloak class="btn btn-default btn-block" v-on:click="followCompany" v-show={{ count(auth()->user()) }}>
-                            <span class="glyphicon glyphicon-thumbs-up"></span>
-                            @{{{ followerStatus }}}(@{{ companyFollowers }})
+                            <span class="glyphicon glyphicon-ok"></span>
+                            @{{ followerStatus }}(@{{ companyFollowers }})
                         </button>
                     </div>
                     <!--<div class="col-md-3">
@@ -107,42 +107,41 @@
 @endsection
 
 @section('after-scripts-end')
-<script>
-    var vm = new Vue({
-        el: '.company-container',
-        data: {
-            companyId:{{ $company->id }},
-            companyFollowers: {{ $company->followers }},
-            followerStatus: {{ $followingStatus }}
-        },
-        methods: {
+                <script>
+                    var vm = new Vue({
+                        el: '.company-container',
+                        data: {
+                            companyId:{{ $company->id }},
+                            companyFollowers: {{ $company->followers }},
+                            followerStatus: '{{ $followingStatus }}'
+                        },
+                        methods: {
 
-            followCompany: function(event){
-                var that = this;
-                event.preventDefault();
-                $.ajax({
-                    url : '/companies/company/follow',
-                    method  : 'post',
-                    data : {
-                        companyId:this.companyId,
-                        '_token' : $('meta[name=_token]').attr("content")
-                    },
-                    success:function(data){
+                            followCompany: function(event){
+                                var that = this;
+                                event.preventDefault();
+                                $.ajax({
+                                    url : '/companies/company/follow',
+                                    method  : 'post',
+                                    data : {
+                                        companyId:this.companyId,
+                                        '_token' : $('meta[name=_token]').attr("content")
+                                    },
+                                    success:function(data){
 
-                        obj = $.parseJSON(data);
+                                        obj = $.parseJSON(data);
 
-                        console.log(this);
+                                        console.log(this);
 
-                        that.companyFollowers = obj.followers;
-                        that.followerStatus = 'Following';
+                                        that.companyFollowers = obj.followers;
+                                        that.followerStatus = obj.followerStatus;
 
-                        //Like ({{ $company->likes }})
 
-                    }
-                });
+                                    }
+                                });
 
-            }
-        }
-    });
-</script>
+                            }
+                        }
+                    });
+                </script>
 @endsection

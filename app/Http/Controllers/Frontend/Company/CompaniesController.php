@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Frontend\Company;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company\Company;
+use App\Models\Company\CompanyFollowers;
 use App\Models\Company\People\People;
 use App\Repositories\Frontend\Company\EloquentCompanyRepository;
 use Carbon\Carbon;
@@ -114,13 +116,17 @@ class CompaniesController extends Controller
             \DB::table('companies')
                 ->where('id',$companyId)
                 ->increment('followers');
+            $followerStatus='Following';
         }
+     else
+        {
+         CompanyFollowers::where('user_id',auth()->user()->id)->delete();
+         Company::where('id',$companyId)->decrement('followers');
+            $followerStatus='Follow';
+        }
+        $followers = Company::where('id',$companyId)->value('followers');
 
-        $followers = \DB::table('companies')
-            ->where('id',$companyId)
-            ->value('followers');
-
-        return json_encode(['status'=>1,'followers'=>$followers]);
+        return json_encode(['status'=>1,'followers'=>$followers,'followerStatus'=>$followerStatus]);
 
     }
 

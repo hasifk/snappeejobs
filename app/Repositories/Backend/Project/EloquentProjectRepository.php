@@ -6,6 +6,8 @@ namespace App\Repositories\Backend\Project;
 use App\Models\Project\Project;
 use App\Models\Project\ProjectJobListing;
 use App\Models\Project\ProjectMember;
+use App\Models\Task\Task;
+use App\Models\Task\TaskMember;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 
@@ -27,6 +29,14 @@ class EloquentProjectRepository
         return \DB::table('staff_employer')
             ->join('users', 'staff_employer.user_id', '=', 'users.id')
             ->where('staff_employer.employer_id', '=', $this->user->user()->employer_id)
+            ->select(['users.id', 'users.name'])
+            ->get();
+    }
+
+    public function getStaffForProject($project_id){
+        return \DB::table('members_project')
+            ->join('users', 'members_project.user_id', '=', 'users.id')
+            ->where('members_project.project_id', '=', $project_id)
             ->select(['users.id', 'users.name'])
             ->get();
     }
@@ -98,6 +108,26 @@ class EloquentProjectRepository
         }
 
         return;
+    }
+
+    public function createTask(Project $project, Request $request) {
+
+        $task = Task::create([
+            'project_id'        => $project->id,
+            'title'             => $request->get('title'),
+            'created_by'    => $this->user->user()->id,
+            'employer_id'   => $this->user->user()->employer_id
+        ]);
+
+        foreach ($request->get('members') as $member) {
+            TaskMember::create([
+                'task_id'       => $task->id,
+                'user_id'       => $member
+            ]);
+        }
+
+        return $task;
+
     }
 
 }

@@ -130,4 +130,31 @@ class EloquentProjectRepository
 
     }
 
+    private function updateProjectStub(Project $project, Request $request) {
+        $project->update([
+            'title'         => $request->get('title'),
+            'created_by'    => $this->user->user()->id,
+            'employer_id'   => $this->user->user()->employer_id
+        ]);
+
+        return $project;
+    }
+
+    public function updateProject(Project $project, $request)
+    {
+
+        $this->updateProjectStub($project, $request);
+
+        $this->flushAndCreateProjectMembers($project, $request);
+        $this->flushAndCreateProjectJobListings($project, $request);
+
+        return $project;
+
+    }
+
+    public function getTasks($id)
+    {
+        return Task::where('project_id', $id)->get();
+    }
+
 }

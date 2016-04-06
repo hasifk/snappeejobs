@@ -10,7 +10,7 @@
 
 @section('content')
 
-@include('backend.admin.includes.partials.company.header-buttons')
+@include('backend.admin.includes.partials.newsfeeds.header-buttons')
 
 <section class="content">
     <div class="row" id='notification_add'>

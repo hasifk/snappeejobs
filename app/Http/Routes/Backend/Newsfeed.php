@@ -7,6 +7,6 @@
         post('newsfeedsave', 'AdminNewsfeedController@SaveNewsfeed')->name('backend.admin.newsfeedsave');
         get('newsfeed/{id}', 'AdminNewsfeedController@showNewsfeed')->name('backend.admin.newsfeedshow');
         get('newsfeed/{id}/edit', 'AdminNewsfeedController@EditNewsfeed')->name('backend.admin.newsfeed.edit');
-        get('newsfeeds/destroy/{id}', 'AdminNewsfeedController@DeleteNewsfeed')->name('backend.admin.newsfeed.destroy');
+        get('newsfeed/destroy/{id}', 'AdminNewsfeedController@DeleteNewsfeed')->name('backend.admin.newsfeed.destroy');
 //        post('update-profile', 'CompanyController@updateProfile')->name('admin.employer.company.updateprofile');
     });

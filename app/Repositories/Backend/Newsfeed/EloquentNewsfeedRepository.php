@@ -30,5 +30,9 @@ class EloquentNewsfeedRepository {
     public function edit($id) {
         return Newsfeed::find($id);
     }
+    public function delete($id) {
+       Newsfeed::where('id', $id)->delete();
+    }
+    
 
 }

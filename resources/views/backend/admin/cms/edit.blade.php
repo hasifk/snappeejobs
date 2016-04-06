@@ -1,6 +1,6 @@
 @extends ('backend.layouts.master')
 
-@section ('title', 'Admin Create News Feeds')
+@section ('title', 'Admin Create Company Details')
 
 @section('page-header')
 <h1>

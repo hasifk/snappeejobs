@@ -4,7 +4,7 @@
 
 @section('page-header')
     <h1>
-        Projects Assign Tasks
+        Projects Edit Task
     </h1>
 @endsection
 
@@ -12,12 +12,12 @@
 
     @include('backend.projects.includes.partials.header-buttons')
 
-    {!! Form::open(['route' => ['admin.projects.createtask', $project_id], 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'post']) !!}
+    {!! Form::open(['route' => ['admin.projects.updatetask', $task->id], 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'post']) !!}
 
     <div class="form-group">
         {!! Form::label('name', 'Title', ['class' => 'col-lg-2 control-label']) !!}
         <div class="col-lg-10">
-            {!! Form::text('title', ( old('title') ? old('title') : '' ), ['class' => 'form-control', 'placeholder' => 'Task Title']) !!}
+            {!! Form::text('title', ( old('title') ? old('title') : $task->title ), ['class' => 'form-control', 'placeholder' => 'Task Title']) !!}
         </div>
     </div>
 
@@ -31,14 +31,15 @@
                     multiple="multiple"
                     style="width: 100%;"
             >
-                @if (count($members) > 0)
-                    @foreach($members as $member)
+                @if (count($task->members) > 0)
+                    @foreach($task->members as $member)
                         <option
-                                value="{{ $member->id }}"
+                                value="{{ $member->user->id }}"
                                 {{ old('members')
-                                && in_array($member->id, old('members')) ? 'selected="selected"' : '' }}
+                                && in_array($member->user->id, old('members')) ? 'selected="selected"' : '' }}
+                                {{ $task->members()->lists('user_id')->toArray() && in_array($member->user->id, $task->members()->lists('user_id')->toArray()) ? 'selected="selected"' : '' }}
                         >
-                            {{ $member->name }}
+                            {{ $member->user->name }}
                         </option>
                     @endforeach
                 @endif
@@ -60,31 +61,5 @@
     {!! Form::close() !!}
 
     <div class="clearfix"></div>
-
-    <h5><b>Tasks in this project</b></h5>
-
-    <table class="table">
-        <tr>
-            <th>Title</th>
-            <th>Members</th>
-        </tr>
-        @foreach($tasks as $task)
-        <tr>
-            <td>{{ $task->title }}</td>
-            <td>{{ $task->allmembers }}</td>
-            <td>
-                <a href="{{ route('admin.projects.edittask', $task->id) }}" class="btn btn-xs btn-info">
-                    <i
-                        class="fa fa-pencil"
-                        data-toggle="tooltip"
-                        data-placement="top"
-                        title=""
-                        data-original-title="Edit this task"
-                    ></i>
-                </a>
-            </td>
-        </tr>
-        @endforeach
-    </table>
 
 @stop

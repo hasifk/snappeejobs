@@ -1,10 +1,14 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Backend\Admin\Cms;
 
 use App\Http\Requests\Request;
 
-class ProjectEditViewRequest extends Request
+/**
+ * Class RegisterRequest
+ * @package App\Http\Requests\Frontend\Access
+ */
+class CmsRequests extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +17,7 @@ class ProjectEditViewRequest extends Request
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +28,8 @@ class ProjectEditViewRequest extends Request
     public function rules()
     {
         return [
-            //
+            'heading' => 'required',
+            'content' => 'required',
         ];
     }
 }

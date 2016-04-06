@@ -84,6 +84,14 @@
                               </span>
                         </a>
                       </li>
+                      <li class="{{ Active::pattern('admin/cms/*') }}">
+                        <a href="{!!url(route('backend.admin.cmss'))!!}">
+                          <i class="fa fa-suitcase"></i>
+                              <span>
+                                {{ 'Cms' }}
+                              </span>
+                        </a>
+                      </li>
                     @endauth
                 @endauth
 

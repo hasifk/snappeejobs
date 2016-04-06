@@ -1,6 +1,6 @@
 @extends ('backend.layouts.master')
 
-@section ('title', "News Feeds Management")
+@section ('title', "Company Management")
 
 @section('page-header')
 <h1>
@@ -21,12 +21,15 @@
             <td>{{ $newsfeed->news }}</td>
 
         </tr>
-        <tr><th></th><th>
+        <tr>
+            <th></th>
+            <th>
                 <a href="{{route('backend.admin.newsfeed.edit',$newsfeed->id)}}" class="btn btn-primary btn-xs">
                     Edit News
                 </a>
-            </th></tr>
-
+            </th>
+        </tr>
+        
     </tbody>
 </table>
 <div class="clearfix"></div>

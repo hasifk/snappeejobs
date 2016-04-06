@@ -13,7 +13,6 @@ class AdminCmsController extends Controller {
     /**
      * @var EloquentCompanyRepository
      */
-    
     private $cmsRepository;
 
     /**
@@ -30,38 +29,66 @@ class AdminCmsController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function showCmss() {
+    public function listsCms() {
         $view = [
             'cms' => $this->cmsRepository->getCmsPaginated(config('jobs.default_per_page')),
         ];
         return view('backend.admin.cms.index', $view);
     }
+
     public function createCms() {
         return view('backend.admin.cms.create');
     }
-    public function SaveCms(CmsRequests $request)
-    {
+
+    public function SaveCms(CmsRequests $request) {
         $user = $this->cmsRepository->save($request);
-        return redirect()->route('backend.admin.cms');
+        return redirect()->route('backend.admin.cms_lists');
     }
-    public function showCms($id)
-    {
+
+    public function showCms($id) {
         $view = [
-            'cms' => $this->cmsRepository->edit($id),
+            'cms' => $this->cmsRepository->find($id),
         ];
-        return view('backend.admin.cms.show',$view);
+        return view('backend.admin.cms.show', $view);
     }
-    public function EditCms($id)
-    {
+
+    public function EditCms($id) {
         $view = [
-            'cms' => $this->cmsRepository->edit($id),
+            'cms' => $this->cmsRepository->find($id),
         ];
-        return view('backend.admin.cms.edit',$view);
+        return view('backend.admin.cms.edit', $view);
     }
-    public function DeleteCms($id)
-    {
+
+    public function DeleteCms($id) {
         $this->cmsRepository->delete($id);
         //Cms::where('id', $id)->delete();
-        return redirect()->route('backend.admin.cms');
+        return redirect()->route('backend.admin.cms_lists');
     }
+
+    public function HideCms($id) {
+        $this->cmsRepository->hide($id);
+        //Cms::where('id', $id)->delete();
+        return redirect()->route('backend.admin.cms_lists');
+    }
+
+    public function PublishCms($id) {
+        $this->cmsRepository->publish($id);
+        //Cms::where('id', $id)->delete();
+        return redirect()->route('backend.admin.cms_lists');
+    }
+
+    public function articleCms() {
+        $view = [
+            'cms' => $this->cmsRepository->articles($id),
+        ];
+     return view('backend.admin.cms.show', $view);
+    }
+
+    public function blogCms() {
+        $view = [
+            'cms' => $this->cmsRepository->blog($id),
+        ];
+       return view('backend.admin.cms.show', $view);
+    }
+
 }

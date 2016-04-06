@@ -19,6 +19,7 @@ class CreateCmsTable extends Migration
             $table->string('type');
             $table->longText('content');
             $table->string('img');
+            $table->integer('published')->default(0);
             $table->timestamps();
 
             $table->foreign('user_id')

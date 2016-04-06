@@ -1,10 +1,10 @@
 @extends ('backend.layouts.master')
 
-@section ('title', 'Admin Create Company Details')
+@section ('title', 'Create CMS')
 
 @section('page-header')
 <h1>
-    Create Company Profile
+    Create CMS - Articles/Blogs
 </h1>
 @endsection
 
@@ -18,9 +18,7 @@
             <!-- left column -->
             <div class="col-md-12">
                 <div class="box box-primary">
-                    <!--                <div class="box-header with-border">
-                                        <h3 class="box-title">Add Push Notifications</h3>
-                                    </div> /.box-header -->
+                    
                     <!-- form start -->
                     <form method="POST" action="{{ route('backend.admin.cmssave') }}" accept-charset="UTF-8" role="form" enctype='multipart/form-data' >
                          {{ csrf_field() }}
@@ -48,11 +46,12 @@
                             <div class="form-group col-xs-6">
                                 
                                 <label for="exampleInputPassword1">Select Type</label>
+                                
                                 <select name="type" class="form-control">
                                     
-                                    <option value="articles">Article</option>
+                                    <option value="Article">Article</option>
                                     
-                                    <option value="blog">Blog</option>
+                                    <option value="Blog">Blog</option>
                                     
                                 </select>
                                 

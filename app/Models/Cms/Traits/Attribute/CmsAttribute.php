@@ -32,16 +32,35 @@ trait CmsAttribute {
 
      public function getShowButtonAttribute(){
         if (access()->can('show-cms'))
-            return '<a href="'.route('backend.admin.cmsshow', $this->id).'" class="btn btn-xs btn-primary"><i class="fa fa-eye" data-toggle="tooltip" data-placement="top" title="View"></i></a> ';
+            return '<a href="'.route('backend.admin.cmsshow', $this->id).'" class="btn btn-xs btn-success"><i class="fa fa-arrow-circle-right" data-toggle="tooltip" data-placement="top" title="View More"></i></a> ';
         return '';
     }
 
+     public function getPublishedTextAttribute(){
+        if ( $this->published ) {
+            return '<span class="btn btn-xs btn-success">Published</span>';
+        } else {
+            return '<span class="btn btn-xs btn-warning">Not Published</span>';
+        }
+        return '';
+    }
+    
+     public function getPublishedButtonAttribute(){
+        if ( $this->published ) {
+            return '<a href="'.route('backend.admin.cms.hide', [$this->id]).'" class="btn btn-xs btn-info"><i class="fa fa-eye-slash" data-toggle="tooltip" data-placement="top" title="Hide"></i></a> ';
+        } else {
+            return '<a href="'.route('backend.admin.cms.publish', [$this->id]).'" class="btn btn-xs btn-info"><i class="fa fa-eye" data-toggle="tooltip" data-placement="top" title="Publish"></i></a> ';
+        }
+    }
+    
     /**
      * @return string
      */
     
     public function getActionButtonsAttribute() {
+        
         return $this->getShowButtonAttribute().
+        $this->getPublishedButtonAttribute().
         $this->getEditButtonAttribute().
         $this->getDeleteButtonAttribute();
     }

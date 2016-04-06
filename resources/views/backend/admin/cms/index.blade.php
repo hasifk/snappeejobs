@@ -1,10 +1,10 @@
 @extends ('backend.layouts.master')
 
-@section ('title', "Company Management")
+@section ('title', "CMS Management")
 
 @section('page-header')
     <h1>
-        Company Management
+        CMS Management
     </h1>
 @endsection
 
@@ -16,7 +16,9 @@
         <thead>
         <tr>
             <th>No</th>
-            <th>Article</th>
+            <th>Heading</th>
+            <th>Type</th>
+            <th>Published</th>
             <th>Actions</th>
         </tr>
         </thead>
@@ -25,7 +27,9 @@
         @foreach ($cms as $value)
             <tr>
                 <td>{{ $f++ }}</td>
-                <td>{{ $value->header }}</td>
+                <td>{{ str_limit($value->header, $limit =80, $end = '...') }}</td>
+                <td>{{ $value->type }}</td>
+                <td>{!! $value->published_text !!}</td>
                 <td>{!! $value->action_buttons !!}</td>
             </tr>
         @endforeach

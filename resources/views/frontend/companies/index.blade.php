@@ -266,7 +266,7 @@
 
         </div>
     </div>
-
+@endsection
 @section('after-scripts-end')
     <script>
 
@@ -292,7 +292,6 @@
         });
 
     </script>
-@endsection
 @endsection
 
 

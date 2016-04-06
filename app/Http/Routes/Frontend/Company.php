@@ -13,7 +13,7 @@ $router->group(['namespace'=>'Company'], function() use ($router)
     get('companies/next/{company}', 'CompaniesController@next')->name('companies.next');
 
     $router->group(['middleware' => 'auth'], function (){
-        post('companies/company/like', 'CompaniesController@likeCompany')->name('company.like');
+        post('companies/company/follow', 'CompaniesController@followCompany')->name('company.follow');
     });
 
 

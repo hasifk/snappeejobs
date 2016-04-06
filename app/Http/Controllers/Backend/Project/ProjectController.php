@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Backend\Project;
 
+use App\Http\Requests\Backend\Employer\Task\EditTaskViewRequest;
 use App\Http\Requests\Backend\Employer\Project\ProjectCreateRequest;
+use App\Http\Requests\Backend\Employer\Task\CreateTaskRequest;
 use App\Models\Project\Project;
+use App\Models\Task\Task;
 use App\Repositories\Backend\Project\EloquentProjectRepository;
 use Illuminate\Http\Request;
 
@@ -99,10 +102,16 @@ class ProjectController extends Controller
             ->where('job_listing_project.project_id', $project->id)
             ->lists('jobs.title');
 
+        $project_tasks = \DB::table('task_project')
+            ->where('project_id', $id)
+            ->select(['task_project.id', 'task_project.title'])
+            ->get();
+
         $view = [
-            'project' => $project,
-            'members' => implode(' , ', $project_members),
-            'job_listings' => implode(' , ', $job_listings)
+            'project'           => $project,
+            'members'           => implode(' , ', $project_members),
+            'job_listings'      => implode(' , ', $job_listings),
+            'project_tasks'     => $project_tasks
         ];
 
         return view('backend.projects.show', $view);
@@ -111,12 +120,34 @@ class ProjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param Requests\Backend\Employer\Project\ProjectEditViewRequest $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Requests\Backend\Employer\Project\ProjectEditViewRequest $request, $id)
     {
-        //
+
+        $project = Project::findOrFail($id);
+        $members = $this->projectRepository->getEmployers();
+        $job_listings = $this->projectRepository->getJobListings();
+
+        $project_members = \DB::table('members_project')
+            ->where('project_id', $project->id)
+            ->lists('user_id');
+
+        $project_job_listings = \DB::table('job_listing_project')
+            ->where('project_id', $project->id)
+            ->lists('job_id');
+
+        $view = [
+            'project'                   => $project,
+            'members'                   => $members,
+            'job_listings'              => $job_listings,
+            'project_members'           => $project_members,
+            'project_job_listings'     => $project_job_listings
+        ];
+
+        return view('backend.projects.edit', $view);
     }
 
     /**
@@ -126,9 +157,16 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Requests\Backend\Employer\Project\ProjectEditRequest $request, $id)
     {
-        //
+
+        $project = Project::findOrFail($id);
+
+        $this->projectRepository->updateProject($project, $request);
+
+        return redirect()
+            ->route('admin.projects.index')
+            ->withFlashSuccess('Successfully updated the Project');
     }
 
     /**
@@ -141,4 +179,46 @@ class ProjectController extends Controller
     {
         //
     }
+    
+    public function assignTasks($id){
+
+        $members = $this->projectRepository->getStaffForProject($id);
+
+        $tasks = $this->projectRepository->getTasks($id);
+
+        $view = [
+            'members'       => $members,
+            'tasks'       => $tasks,
+            'project_id'    => $id
+        ];
+
+        return view('backend.projects.assigntasks', $view);
+    }
+
+    public function storeTask(CreateTaskRequest $request, $project_id){
+
+        $project = Project::findOrFail($project_id);
+
+        $this->projectRepository->createTask($project, $request);
+
+        return redirect()
+            ->route('admin.projects.index')
+            ->withFlashSuccess('Successfully created the Task');
+
+    }
+    
+    public function editTask(EditTaskViewRequest $request, $id){
+
+        $task = Task::findOrFail($id);
+
+        $view = [ 'task'=> $task ];
+
+        return view('backend.projects.edittasks', $view);
+
+    }
+
+    public function updateTask(Requests\Backend\Employer\Task\UpdateTaskRequest $request, $id){
+        dd($request->all());
+    }
+    
 }

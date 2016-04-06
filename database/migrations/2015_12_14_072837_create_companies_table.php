@@ -25,7 +25,7 @@ class CreateCompaniesTable extends Migration
             $table->integer('state_id')->unsigned();
             $table->integer('default_photo_id')->unsigned();
             $table->string('logo');
-            $table->integer('likes')->unsigned();
+            $table->integer('followers')->unsigned();
             $table->boolean('new')->default(true);
             $table->boolean('paid')->default(false);
             $table->datetime('paid_expiry')->default('0000-00-00 00:00:00');

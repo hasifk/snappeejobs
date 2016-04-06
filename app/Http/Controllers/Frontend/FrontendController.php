@@ -56,7 +56,7 @@ class FrontendController extends Controller {
 		endif;
 
 
-		$companies_landing = Company::orderBy('likes', 'desc')->limit(6)->get();
+		$companies_landing = Company::orderBy('followers', 'desc')->limit(6)->get();
 		if ( auth()->user() && (!empty(auth()->user()->job_seeker_details)) ) {
 			$companies_landing1 = Company::join('industry_company', 'industry_company.company_id', '=', 'companies.id')
 				->join('job_seeker_industry_preferences', 'job_seeker_industry_preferences.industry_id', '=', 'industry_company.industry_id')
@@ -73,7 +73,7 @@ class FrontendController extends Controller {
 		if(count($companies_landing1)>0):
 			if(count($companies_landing1)<4):
 				$complimit=6-count($companies_landing1);
-				$companies_landing = Company::orderBy('likes', 'desc')->limit($complimit)->get();
+				$companies_landing = Company::orderBy('followers', 'desc')->limit($complimit)->get();
 				$companies_landing=$companies_landing->merge($companies_landing1);
 				else:
 			    $companies_landing=$companies_landing1;

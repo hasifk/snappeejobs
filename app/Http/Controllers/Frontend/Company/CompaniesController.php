@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Frontend\Company;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company\Company;
+use App\Models\Company\CompanyFollowers;
 use App\Models\Company\People\People;
 use App\Repositories\Frontend\Company\EloquentCompanyRepository;
 use Carbon\Carbon;
@@ -80,8 +82,14 @@ class CompaniesController extends Controller
             endif;
 
         endif;
+        $followingStatus='follow';
+        if(!empty(auth()->user()->id)):
+        if ( \DB::table('follow_companies')->where('company_id', $company->id)->where('user_id', auth()->user()->id)->count() ) :
+                $followingStatus='following';
+         endif;
+        endif;
 
-             return view('frontend.companies.company',['company'	=>	$company]);
+                return view('frontend.companies.company',['company'	=>	$company,'followingStatus'	=>	$followingStatus]);
 
 
 
@@ -93,13 +101,13 @@ class CompaniesController extends Controller
         return redirect(route('companies.view', $nextCompanyUrlSlug));
     }
 
-    public function likeCompany(Request $request)
+    public function followCompany(Request $request)
     {
 
         $companyId = $request->get('companyId');
 
-        if (! \DB::table('like_companies')->where('company_id', $companyId)->where('user_id', auth()->user()->id)->count() ) {
-            \DB::table('like_companies')->insert([
+        if (! \DB::table('follow_companies')->where('company_id', $companyId)->where('user_id', auth()->user()->id)->count() ) {
+            \DB::table('follow_companies')->insert([
                 'company_id'    => $companyId,
                 'user_id'       => auth()->user()->id,
                 'created_at'    => Carbon::now(),
@@ -107,14 +115,18 @@ class CompaniesController extends Controller
             ]);
             \DB::table('companies')
                 ->where('id',$companyId)
-                ->increment('likes');
+                ->increment('followers');
+            $followerStatus='Following';
         }
+     else
+        {
+         CompanyFollowers::where('user_id',auth()->user()->id)->delete();
+         Company::where('id',$companyId)->decrement('followers');
+            $followerStatus='Follow';
+        }
+        $followers = Company::where('id',$companyId)->value('followers');
 
-        $likes = \DB::table('companies')
-            ->where('id',$companyId)
-            ->value('likes');
-
-        return json_encode(['status'=>1,'likes'=>$likes]);
+        return json_encode(['status'=>1,'followers'=>$followers,'followerStatus'=>$followerStatus]);
 
     }
 

@@ -75,7 +75,7 @@ class CustomTableSeeder extends \Illuminate\Database\Seeder
 
         \DB::statement(
             "
-            INSERT INTO `companies` (`id`, `employer_id`, `title`, `url_slug`, `size`, `description`, `what_it_does`, `office_life`, `country_id`, `state_id`, `default_photo_id`, `logo`, `likes`, `new`, `paid`, `paid_expiry`, `created_at`, `updated_at`) VALUES
+            INSERT INTO `companies` (`id`, `employer_id`, `title`, `url_slug`, `size`, `description`, `what_it_does`, `office_life`, `country_id`, `state_id`, `default_photo_id`, `logo`, `followers`, `new`, `paid`, `paid_expiry`, `created_at`, `updated_at`) VALUES
             (2, 6, 'Employer Company', 'employer-company', 'medium', 'asd\r\nad\r\nsa\r\nassa\r\n\r\ndas\r\nd', 'asd\r\nasd\r\nas\r\n', 'asd\r\nasd\r\nsa\r\n', 2, 51, 0, '', 0, 1, 0, '0000-00-00 00:00:00', '2016-03-07 03:16:23', '2016-03-07 03:16:23');
             "
         );

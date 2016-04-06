@@ -110,7 +110,7 @@ class DashboardRepository
         }
     /**************************************************************************************************************/
         public function getThumbsUpsCount(){
-                return Company::where('id', auth()->user()->company_id)->pluck('likes');
+                return Company::where('id', auth()->user()->company_id)->pluck('followers');
         }
     /**************************************************************************************************************/
     public function getCompanyInterestMapInfo(){

@@ -239,7 +239,7 @@
 
         </div>
         @roles(['Employer'])
-        @if (count($cmp_interest_map_info) > 0)
+        @if (!empty($cmp_interest_map_info))
         <div class="box-body no-padding">
 
             <div class="row">
@@ -321,7 +321,7 @@
 &callback=initMap">
     </script>
     @roles(['Employer'])
-    @if (count($cmp_interest_map_info) > 0)
+    @if (!empty($cmp_interest_map_info))
     <script>
 
         function initMap() {

@@ -3,6 +3,7 @@
 use App\Events\Backend\Job\JobCreated;
 use App\Events\Backend\Job\JobDeleted;
 use App\Events\Backend\Job\JobUpdated;
+use App\Jobs\SendNewJobNotifEmail;
 use App\Models\Access\User\User;
 use App\Exceptions\GeneralException;
 use App\Models\Job\Job;
@@ -12,6 +13,7 @@ use App\Repositories\Frontend\Auth\AuthenticationContract;
 use App\Exceptions\Backend\Access\User\UserNeedsRolesException;
 use Event;
 use Illuminate\Auth\Guard;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
 /**
  * Class EloquentUserRepository
@@ -19,6 +21,7 @@ use Illuminate\Auth\Guard;
  */
 class EloquentJobRepository {
 
+     use DispatchesJobs;
 	/**
 	 * @var RoleRepositoryContract
 	 */
@@ -148,6 +151,7 @@ class EloquentJobRepository {
 			$job->attachPrerequisites($input['prerequisites']);
 
             Event::fire(new JobCreated($job, auth()->user() ));
+            $this->dispatch(new SendNewJobNotifEmail($job));
 
 			return true;
 		}

@@ -1,13 +1,13 @@
 <?php
+namespace App\Listeners\Backend\NewsFeed;
 
-namespace App\Listeners\Backend\Job;
 
-use App\Events\Backend\Job\JobCreated;
+use App\Events\Backend\NewsFeed\NewsFeedCreated;
 use Carbon\Carbon;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class JobCreatedHandler
+class NewsFeedCreatedHandler
 {
     /**
      * Create the event listener.
@@ -25,25 +25,25 @@ class JobCreatedHandler
      * @param  JobCreated  $event
      * @return void
      */
-    public function handle(JobCreated $event)
+    public function handle(NewsFeedCreated $event)
     {
         // Insert into employer_notifications table for all the employers of this company
 
-        $staffs = \DB::table('staff_employer')->where('employer_id', $event->user->employer_id)->lists('user_id');
+        $staffs = \DB::table('staff_employer')->lists('user_id');
 
-        $user = $event->user->attributesToArray();
-        $job = $event->job->attributesToArray();
+        $adminuser = $event->adminuser;
+        $newsfeed = $event->newsfeed;
 
         $details = serialize([
-            'user'  => $user,
-            'job'   => $job
+            'adminuser'  => $adminuser,
+            'newsfeed'   => $newsfeed
         ]);
 
         foreach ($staffs as $staff) {
             \DB::table('employer_notifications')->insert([
-                'employer_id'       => $user['employer_id'],
                 'user_id'           => $staff,
-                'notification_type' => 'job_created',
+                'from_admin'        =>1,
+                'notification_type' => 'news_feed_created',
                 'details'           => $details,
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now()

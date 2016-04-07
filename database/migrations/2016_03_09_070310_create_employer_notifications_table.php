@@ -14,8 +14,9 @@ class CreateEmployerNotificationsTable extends Migration
     {
         Schema::create('employer_notifications', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('employer_id')->unsigned();
+            $table->integer('employer_id')->unsigned()->nullable();
             $table->integer('user_id')->unsigned();
+            $table->boolean('from_admin')->default(false);
             $table->enum('notification_type', [
                 'company_information_updated',
                 'job_created',
@@ -26,17 +27,16 @@ class CreateEmployerNotificationsTable extends Migration
                 'project_deleted',
                 'task_created',
                 'task_updated',
-                'task_deleted'
+                'task_deleted',
+                'news_feed_created',
+                'news_feed_updated',
+                'news_feed_deleted',
             ]);
             $table->timestamp('read_at')->nullable();
-            $table->binary('details');
+            $table->text('details');
             $table->timestamps();
 
-            $table->foreign('employer_id')
-                ->references('id')
-                ->on('users')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
@@ -53,7 +53,6 @@ class CreateEmployerNotificationsTable extends Migration
     public function down()
     {
         Schema::table('employer_notifications', function (Blueprint $table) {
-            $table->dropForeign('employer_notifications_employer_id_foreign');
             $table->dropForeign('employer_notifications_user_id_foreign');
         });
 

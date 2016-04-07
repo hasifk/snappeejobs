@@ -5,11 +5,13 @@ namespace App\Repositories\Backend\Cms;
 use App\Models\Cms\Cms;
 use Illuminate\Http\Request;
 use Auth;
+use Storage;
 
 class EloquentCmsRepository {
 
     public function getCmsPaginated($per_page, $order_by = 'cms.id', $sort = 'desc') {
-        return Cms::orderBy($order_by, $sort)
+        $userid = Auth::user()->id;
+        return Cms::where('user_id', $userid)->orderBy($order_by, $sort)
                         ->paginate($per_page);
     }
 
@@ -24,19 +26,20 @@ class EloquentCmsRepository {
         }
         $obj->header = $request->heading;
         if (!empty($request->img)):
-            if ($request->img->isValid()) {
-                $destinationPath = 'assets/clientassets/uploads/' . $userid . '/Gallery'; // upload path
-                $extension = $request->img->getClientOriginalExtension(); // getting image extension
-                if (!file_exists($destinationPath)) {
-                    mkdir($destinationPath, 0777, true);
-                }
+            $avatar = $request->img;
+            if ($avatar->isValid()) {
+                $filePath = "cms/" . $userid . '/';
+                $extension = $avatar->getClientOriginalExtension(); // getting image extension
+
                 $fileName = rand(11111, 99999) . '.' . $extension; // rename image
 
-                $request->img->move($destinationPath, $fileName); // uploading file to given path
-                // sending back with message
-                $obj->img = $destinationPath . '/' . $fileName;
+                Storage::put($filePath . $fileName, file_get_contents($avatar));
+                Storage::setVisibility($filePath . $fileName, 'public');
+
+                $obj->img = $filePath . $fileName;
             }
         endif;
+
         $obj->content = $request->content;
         $obj->type = $request->type;
 
@@ -48,6 +51,10 @@ class EloquentCmsRepository {
     }
 
     public function delete($id) {
+        $obj = Cms::find($id);
+        if(!empty($obj->img)):
+        Storage::delete($obj->img);
+        endif;
         Cms::where('id', $id)->delete();
     }
 
@@ -63,8 +70,14 @@ class EloquentCmsRepository {
         $obj->save();
     }
 
-    public function articles($id) {
-        return Cms::where('type', 'Article')->get();
+    public function article() {
+        $userid = Auth::user()->id;
+        return Cms::where('type', 'Article')->where('user_id', $userid)->get();
+    }
+
+    public function blog() {
+        $userid = Auth::user()->id;
+        return Cms::where('type', 'Blog')->where('user_id', $userid)->get();
     }
 
 }

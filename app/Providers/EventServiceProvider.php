@@ -50,6 +50,9 @@ class EventServiceProvider extends ServiceProvider {
 		],
 		'App\Events\Backend\GroupChat\GroupChatReceived' => [
 			'App\Listeners\Backend\GroupChat\GroupChatReceivedHandler'
+		],
+		'App\Events\Backend\NewsFeed\NewsFeedCreated' => [
+			'App\Listeners\Backend\NewsFeed\NewsFeedCreatedHandler'
 		]
 	];
 

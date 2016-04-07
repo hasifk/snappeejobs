@@ -4,7 +4,7 @@
 
 @section('page-header')
     <h1>
-        Company Management
+        {{ trans('strings.backend.newsfeed_management') }}
     </h1>
 @endsection
 

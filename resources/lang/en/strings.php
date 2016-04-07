@@ -22,6 +22,7 @@ return [
         'profile_title' => 'Profile',
         'emp_search_results' => 'Search Results',
         'dashboard_cmp_interest_map' => 'Company Interest Map',
+        'newsfeed_management' => 'News Feed Management',
     ],
     'based_on' => [
         'permission' => 'Permission Based - ',

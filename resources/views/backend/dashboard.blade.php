@@ -258,7 +258,7 @@
 
         @if(!empty($job_visitors_today))
             @if(count($job_interest_level)>0)
-        <div class="col-md-6">
+        <div class="col-md-6 ">
             <div class="box box-solid">
                 <div class="box-header with-border">
                     <h3 class="box-title">Jobs Interest Level Today (Total Visits:{{$job_visitors_today}})</h3>
@@ -290,6 +290,59 @@
         @endif
         @endif
 
+
+        <div class="col-md-6 pull-right" >
+
+            <div class="newsfeed_notifications">
+
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">News Feeds</h3>
+
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                        </div>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <ul class="products-list product-list-in-box newsfeed_notifications_list">
+
+                            @foreach($employer_notifications as $employer_notification)
+
+                                <li class="item">
+                                    @if( ($employer_notification->notification_type == 'newsfeed_created') || ($employer_notification->notification_type == 'newsfeed_updated') || ($employer_notification->notification_type == 'newsfeed_deleted') )
+                                        <div style="margin-left: 25px;" class="product-info">
+                                            <a href="#" class="product-title">
+                                                {{ unserialize($employer_notification->details)['newsfeed']->newsfeed }}
+                                                <span class="label label-warning pull-right">
+                                                {{ ucwords(str_replace('_', " ", $employer_notification->notification_type)) }}
+                                            </span>
+                                            </a>
+                                            <span class="product-description">
+                                              {{ ucwords(str_replace('_', " ", $employer_notification->notification_type)) }}
+                                            </span>
+                                            by {{ unserialize($employer_notification->details)['adminuser']->name }}
+                                        </div>
+                                    @endif
+                                </li>
+
+                            @endforeach
+
+                        </ul>
+                    </div>
+                    <!-- /.box-body -->
+                    <div class="box-footer text-center">
+                        <a href="{{ route('backend.notifications.history') }}" class="uppercase">View All Notifications</a>
+                    </div>
+                    <!-- /.box-footer -->
+                </div>
+
+            </div>
+
+        </div>
+
         @endauth
 
     </div>
@@ -308,6 +361,11 @@
 
             socket.on('employer_staff.{{ auth()->user()->id }}:employer_notifications', function(data){
                 $('.employer-notitications .employer-notitications-list').append('<li class="item"><div class="product-info" style="margin-left: 25px;"><a class="product-title" href="#">'+ data.eventDetails.job_title +'<span class="label label-warning pull-right">'+ data.eventDetails.notification_type_text +'</span></a><span class="product-description">'+ data.eventDetails.notification_type_text +'</span>'+ data.eventDetails.created_by +'</div></li>');
+                $('.newsfeed-notifications .newsfeed_notifications_list').append('<li class="item"><div class="product-info" style="margin-left: 25px;"><a class="product-title" href="#">'+ data.eventDetails.newsfeed +'<span class="label label-warning pull-right">'+ data.eventDetails.notification_type_text +'</span></a><span class="product-description">'+ data.eventDetails.notification_type_text +'</span>'+ data.eventDetails.created_by +'</div></li>');
+            });
+
+            socket.on('employer.{{ auth()->user()->id }}:newsfeed_notifications', function(data){
+                $('.newsfeed-notifications .newsfeed_notifications_list').append('<li class="item"><div class="product-info" style="margin-left: 25px;"><a class="product-title" href="#">'+ data.eventDetails.newsfeed +'<span class="label label-warning pull-right">'+ data.eventDetails.notification_type_text +'</span></a><span class="product-description">'+ data.eventDetails.notification_type_text +'</span>'+ data.eventDetails.created_by +'</div></li>');
             });
 
             $("#employer-scrolling-info").carousel();

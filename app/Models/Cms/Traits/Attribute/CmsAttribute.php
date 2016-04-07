@@ -26,7 +26,7 @@ trait CmsAttribute {
      */
     public function getDeleteButtonAttribute() {
         if (access()->can('delete-cms'))
-            return '<a href="'.route('backend.admin.cms.destroy', $this->id).'"  class="btn btn-xs btn-danger"><i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="' . trans('crud.delete_button') . '"></i></a>';
+            return '<a href="'.route('backend.admin.cms.destroy', $this->id).'"  class="cms_delete btn btn-xs btn-danger"><i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="' . trans('crud.delete_button') . '"></i></a>';
         return '';
     }
 
@@ -52,7 +52,13 @@ trait CmsAttribute {
             return '<a href="'.route('backend.admin.cms.publish', [$this->id]).'" class="btn btn-xs btn-info"><i class="fa fa-eye" data-toggle="tooltip" data-placement="top" title="Publish"></i></a> ';
         }
     }
-    
+    public function getAvatarImage($size) {
+        if ( $this->img ) {
+            return 'https://s3-'. env('AWS_S3_REGION', 'eu-west-1') .'.amazonaws.com/'.
+            env('AWS_S3_BUCKET', 'snappeejobs').'/'.
+            $this->img;
+        } 
+    }
     /**
      * @return string
      */

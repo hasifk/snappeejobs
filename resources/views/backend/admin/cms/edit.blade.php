@@ -48,7 +48,7 @@
                             $class="col-xs-4"; 
                              ?>
                             <div class="form-group col-xs-2">
-                                <img src="{{asset($cms->img)}}" width="60" height="50">
+                                <img src="{!! $cms->getAvatarImage(25) !!}" width="60" height="50">
                             </div>
                            <?php
                            else:

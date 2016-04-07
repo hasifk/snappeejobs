@@ -79,16 +79,16 @@ class AdminCmsController extends Controller {
 
     public function articleCms() {
         $view = [
-            'cms' => $this->cmsRepository->articles($id),
+            'cms' => $this->cmsRepository->article(),
         ];
-     return view('backend.admin.cms.show', $view);
+     return view('backend.admin.cms.index', $view);
     }
 
     public function blogCms() {
         $view = [
-            'cms' => $this->cmsRepository->blog($id),
+            'cms' => $this->cmsRepository->blog(),
         ];
-       return view('backend.admin.cms.show', $view);
+       return view('backend.admin.cms.index', $view);
     }
 
 }

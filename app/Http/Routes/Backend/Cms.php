@@ -10,7 +10,7 @@
         get('cms/destroy/{id}', 'AdminCmsController@DeleteCms')->name('backend.admin.cms.destroy');
         get('cms/hide/{id}', 'AdminCmsController@HideCms')->name('backend.admin.cms.hide');
         get('cms/publish/{id}', 'AdminCmsController@PublishCms')->name('backend.admin.cms.publish');
-        get('cms/articles', 'AdminCmsController@articleCms')->name('backend.admin.articles');
-        get('cms/blogs', 'AdminCmsController@blogCms')->name('backend.admin.blogs');
+        get('cms/lists/article', 'AdminCmsController@articleCms')->name('backend.admin.articles');
+        get('cms/lists/blogs', 'AdminCmsController@blogCms')->name('backend.admin.blogs');
 //        post('update-profile', 'CompanyController@updateProfile')->name('admin.employer.company.updateprofile');
     });

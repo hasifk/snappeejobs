@@ -31,7 +31,7 @@
         @if(!empty($cms->img))
         <tr>
             <th>Image</th>
-            <th><img src="{{asset($cms->img)}}" width="100" height="100"></th>
+            <th><img src="{!! $cms->getAvatarImage(25) !!}" width="100" height="100"></th>
             
         </tr>
         @endif

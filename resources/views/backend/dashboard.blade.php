@@ -183,7 +183,7 @@
                                     @if( ($employer_notification->notification_type == 'job_created') || ($employer_notification->notification_type == 'job_updated') || ($employer_notification->notification_type == 'job_deleted') )
                                         <div style="margin-left: 25px;" class="product-info">
                                             <a href="#" class="product-title">
-                                                {{ unserialize($employer_notification->details)['job']->title }}
+                                                {{ unserialize($employer_notification->details)['job']['title'] }}
                                                 <span class="label label-warning pull-right">
                                                 {{ ucwords(str_replace('_', " ", $employer_notification->notification_type)) }}
                                             </span>
@@ -191,7 +191,7 @@
                                             <span class="product-description">
                                               {{ ucwords(str_replace('_', " ", $employer_notification->notification_type)) }}
                                             </span>
-                                            by {{ unserialize($employer_notification->details)['user']->name }}
+                                            by {{ unserialize($employer_notification->details)['user']['name'] }}
                                         </div>
                                     @endif
                                 </li>

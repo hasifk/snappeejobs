@@ -29,7 +29,7 @@ class CreateEmployerNotificationsTable extends Migration
                 'task_deleted'
             ]);
             $table->timestamp('read_at')->nullable();
-            $table->binary('details');
+            $table->text('details');
             $table->timestamps();
 
             $table->foreign('employer_id')

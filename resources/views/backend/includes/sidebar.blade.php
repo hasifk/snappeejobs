@@ -85,7 +85,7 @@
                         </a>
                       </li>
                       <li class="{{ Active::pattern('admin/cms/*') }}">
-                        <a href="{!!url(route('backend.admin.cmss'))!!}">
+                        <a href="{!!url(route('backend.admin.cms_lists'))!!}">
                           <i class="fa fa-suitcase"></i>
                               <span>
                                 {{ 'Cms' }}

@@ -30,8 +30,8 @@ class JobDeletedHandler
 
         $staffs = \DB::table('staff_employer')->where('employer_id', $event->user->employer_id)->lists('user_id');
 
-        $user = $event->user;
-        $job = $event->job;
+        $user = $event->user->attributesToArray();
+        $job = $event->job->attributesToArray();
 
         $details = serialize([
             'user'  => $user,
@@ -40,7 +40,7 @@ class JobDeletedHandler
 
         foreach ($staffs as $staff) {
             \DB::table('employer_notifications')->insert([
-                'employer_id'       => $user->employer_id,
+                'employer_id'       => $user['employer_id'],
                 'user_id'           => $staff,
                 'notification_type' => 'job_deleted',
                 'details'           => $details,

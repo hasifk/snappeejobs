@@ -23,29 +23,48 @@ class EloquentCmsRepository {
             $obj->user_id = $userid;
         }
         $obj->header = $request->heading;
-        if ($request->img->isValid()) {
-            $destinationPath = 'assets/clientassets/uploads/' . $userid . '/Gallery'; // upload path
-            $extension = $request->img->getClientOriginalExtension(); // getting image extension
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0777, true);
+        if (!empty($request->img)):
+            if ($request->img->isValid()) {
+                $destinationPath = 'assets/clientassets/uploads/' . $userid . '/Gallery'; // upload path
+                $extension = $request->img->getClientOriginalExtension(); // getting image extension
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0777, true);
+                }
+                $fileName = rand(11111, 99999) . '.' . $extension; // rename image
+
+                $request->img->move($destinationPath, $fileName); // uploading file to given path
+                // sending back with message
+                $obj->img = $destinationPath . '/' . $fileName;
             }
-            $fileName = rand(11111, 99999) . '.' . $extension; // rename image
+        endif;
+        $obj->content = $request->content;
+        $obj->type = $request->type;
 
-            $request->img->move($destinationPath, $fileName); // uploading file to given path
-            // sending back with message
-
-            $obj->content = $request->content;
-            $obj->img = $destinationPath . '/' . $fileName;
-            $obj->save();
-        }
+        $obj->save();
     }
 
-    public function edit($id) {
+    public function find($id) {
         return Cms::find($id);
     }
 
     public function delete($id) {
         Cms::where('id', $id)->delete();
+    }
+
+    public function hide($id) {
+        $obj = Cms::find($id);
+        $obj->published = 0;
+        $obj->save();
+    }
+
+    public function publish($id) {
+        $obj = Cms::find($id);
+        $obj->published = 1;
+        $obj->save();
+    }
+
+    public function articles($id) {
+        return Cms::where('type', 'Article')->get();
     }
 
 }

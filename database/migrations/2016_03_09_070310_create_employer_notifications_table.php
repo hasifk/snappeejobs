@@ -33,7 +33,7 @@ class CreateEmployerNotificationsTable extends Migration
                 'news_feed_deleted',
             ]);
             $table->timestamp('read_at')->nullable();
-            $table->binary('details');
+            $table->text('details');
             $table->timestamps();
 
 

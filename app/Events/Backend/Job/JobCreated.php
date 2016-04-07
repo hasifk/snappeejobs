@@ -3,6 +3,7 @@
 namespace App\Events\Backend\Job;
 
 use App\Events\Event;
+use App\Models\Access\User\User;
 use App\Models\Job\Job;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -27,7 +28,7 @@ class JobCreated extends Event implements ShouldBroadcast
      * @param Job $job
      * @param $user
      */
-    public function __construct(Job $job, $user)
+    public function __construct(Job $job, User $user)
     {
         $this->job = $job;
         $this->user = $user;

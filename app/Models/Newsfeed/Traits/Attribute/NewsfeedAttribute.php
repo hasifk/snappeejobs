@@ -32,7 +32,7 @@ trait NewsfeedAttribute {
 
      public function getShowButtonAttribute(){
         if (access()->can('show-newsfeed'))
-            return '<a href="'.route('backend.admin.newsfeedshow', $this->id).'" class="btn btn-xs btn-primary"><i class="fa fa-eye" data-toggle="tooltip" data-placement="top" title="View"></i></a> ';
+            return '<a href="'.route('backend.admin.newsfeedshow', $this->id).'" class="btn btn-xs btn-success"><i class="fa fa-arrow-circle-right" data-toggle="tooltip" data-placement="top" title="View More"></i></a> ';
         return '';
     }
 

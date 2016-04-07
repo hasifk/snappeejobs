@@ -3,6 +3,7 @@
 namespace App\Repositories\Backend\Newsfeed;
 
 use App\Events\Backend\NewsFeed\NewsFeedCreated;
+use App\Events\Backend\NewsFeed\NewsFeedUpdated;
 use App\Models\Newsfeed\Newsfeed;
 use Illuminate\Http\Request;
 use Auth;
@@ -23,6 +24,7 @@ class EloquentNewsfeedRepository {
             $obj = Newsfeed::find($request->id);
             $obj->news = $request->newsfeed;
             $obj->save();
+            
         }
         else 
         {

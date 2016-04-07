@@ -361,7 +361,6 @@
 
             socket.on('employer_staff.{{ auth()->user()->id }}:employer_notifications', function(data){
                 $('.employer-notitications .employer-notitications-list').append('<li class="item"><div class="product-info" style="margin-left: 25px;"><a class="product-title" href="#">'+ data.eventDetails.job_title +'<span class="label label-warning pull-right">'+ data.eventDetails.notification_type_text +'</span></a><span class="product-description">'+ data.eventDetails.notification_type_text +'</span>'+ data.eventDetails.created_by +'</div></li>');
-                $('.newsfeed-notifications .newsfeed_notifications_list').append('<li class="item"><div class="product-info" style="margin-left: 25px;"><a class="product-title" href="#">'+ data.eventDetails.newsfeed +'<span class="label label-warning pull-right">'+ data.eventDetails.notification_type_text +'</span></a><span class="product-description">'+ data.eventDetails.notification_type_text +'</span>'+ data.eventDetails.created_by +'</div></li>');
             });
 
             socket.on('employer.{{ auth()->user()->id }}:newsfeed_notifications', function(data){

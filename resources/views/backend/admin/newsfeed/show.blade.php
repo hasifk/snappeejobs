@@ -18,7 +18,7 @@
 
         <tr>
             <th>News</th>
-            <td>{{ $newsfeed->news }}</td>
+            <td>{!! $newsfeed->news !!}</td>
 
         </tr>
         <tr><th></th><th>

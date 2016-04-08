@@ -26,7 +26,7 @@
             <th>Published</th><td><?php if($cms->published==1) echo "Published"; else echo "Note Published"; ?></td>
         </tr>
         <tr>
-            <th>Content</th><td>{{ $cms->content }}</td>
+            <th>Content</th><td>{!! $cms->content !!}</td>
         </tr>
         @if(!empty($cms->img))
         <tr>

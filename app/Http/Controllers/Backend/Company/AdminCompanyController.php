@@ -76,6 +76,7 @@ class AdminCompanyController extends Controller
      * @param $id EmployerId
      * @return \Illuminate\Http\Response
      */
+    
     public function store(NewCompanyCreateRequest $request, $id)
     {
         $this->companyRepository->create($request, $id);

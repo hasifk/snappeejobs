@@ -130,6 +130,25 @@ class EloquentProjectRepository
 
     }
 
+    public function updateTask(Task $task, Request $request){
+
+        $task->update([
+            'title' => $request->get('title')
+        ]);
+
+        TaskMember::where('task_id', $task->id)->delete();
+
+        foreach ($request->get('members') as $member) {
+            TaskMember::create([
+                'task_id'       => $task->id,
+                'user_id'       => $member
+            ]);
+        }
+
+        return $task;
+
+    }
+
     private function updateProjectStub(Project $project, Request $request) {
         $project->update([
             'title'         => $request->get('title'),

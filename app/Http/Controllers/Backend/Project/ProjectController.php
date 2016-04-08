@@ -217,8 +217,28 @@ class ProjectController extends Controller
 
     }
 
+    public function showTask(Requests\Backend\Employer\Task\ShowTaskViewRequest $request, $id){
+
+        $task = Task::find($id);
+
+        $view = [
+            'task' => $task
+        ];
+
+        return view('backend.projects.showtask', $view);
+
+    }
+
     public function updateTask(Requests\Backend\Employer\Task\UpdateTaskRequest $request, $id){
-        dd($request->all());
+
+        $task = Task::find($id);
+
+        $this->projectRepository->updateTask($task, $request);
+
+        return redirect()
+            ->route('admin.projects.showtask', $id)
+            ->withFlashSuccess('Successfully updated the Task');
+
     }
     
 }

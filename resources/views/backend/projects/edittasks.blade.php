@@ -8,6 +8,12 @@
     </h1>
 @endsection
 
+@section ('breadcrumbs')
+    <li><a href="{!!route('admin.projects.index')!!}"><i class="fa fa-dashboard"></i> All Projects</a></li>
+    <li>{!! link_to_route('admin.projects.show', $task->projectname, $task->project_id) !!}</li>
+    <li class="active">{!! link_to_route('admin.projects.showtask', $task->title, $task->id) !!}</li>
+@stop
+
 @section('content')
 
     @include('backend.projects.includes.partials.header-buttons')

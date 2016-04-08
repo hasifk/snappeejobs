@@ -31,8 +31,8 @@ class NewsFeedCreatedHandler
 
         $staffs = \DB::table('staff_employer')->lists('user_id');
 
-        $adminuser = $event->adminuser;
-        $newsfeed = $event->newsfeed;
+        $adminuser = $event->adminuser->attributesToArray();
+        $newsfeed = $event->newsfeed->attributesToArray();
 
         $details = serialize([
             'adminuser'  => $adminuser,

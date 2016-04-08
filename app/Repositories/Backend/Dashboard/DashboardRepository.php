@@ -67,6 +67,15 @@ class DashboardRepository
         return $notifications;
     }
     /**************************************************************************************************************/
+    public function getNewsfeedNotifications()
+    {
+        $newsfeed_notifications = \DB::table('employer_notifications')
+            ->where('user_id', auth()->user()->id)
+            ->get();
+
+        return $newsfeed_notifications;
+    }
+    /**************************************************************************************************************/
     public function getTotalNewMessagesCount(){
         $unread_count = \DB::table('thread_participants')
             ->join('threads','thread_participants.thread_id','=','threads.id')

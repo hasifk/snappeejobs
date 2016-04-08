@@ -37,7 +37,7 @@
                             &nbsp;
                             <a href="#" class="btn btn-primary">View</a>
                             &nbsp;
-                            <a href="#" class="btn btn-primary">Edit</a>
+                            <a href="{{ route('admin.projects.edittask', $project_task->id) }}" class="btn btn-primary">Edit</a>
                         </li>
                         @endforeach
                     </ul>

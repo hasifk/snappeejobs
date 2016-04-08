@@ -3,7 +3,9 @@
 namespace App\Events\Backend\NewsFeed;
 
 use App\Events\Event;
+use App\Models\Access\User\User;
 use App\Models\Job\Job;
+use App\Models\Newsfeed\Newsfeed;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
@@ -23,10 +25,10 @@ class NewsFeedCreated extends Event implements ShouldBroadcast
 
     /**
      * Create a new event instance.
-     *
-
+     * @param Newsfeed $newsfeed
+     * @param $adminuser
      */
-    public function __construct($newsfeed, $adminuser)
+    public function __construct(Newsfeed $newsfeed, User $adminuser)
     {
         $this->newsfeed= $newsfeed;
         $this->adminuser = $adminuser;
@@ -34,8 +36,8 @@ class NewsFeedCreated extends Event implements ShouldBroadcast
         $this->eventDetails = new \stdClass();
 
         $this->eventDetails->{'notification_type'} = 'news_feed_created';
-        $this->eventDetails->{'notification_type_text'} = 'news_feed_created';
-        $this->eventDetails->{'newsfeed'} = $newsfeed->newsfeed;
+        $this->eventDetails->{'notification_type_text'} = 'News From Admin';
+        $this->eventDetails->{'newsfeed'} = $newsfeed->news;
         $this->eventDetails->{'created_by'} = $adminuser->name;
     }
 

@@ -29,8 +29,6 @@ class CreateEmployerNotificationsTable extends Migration
                 'task_updated',
                 'task_deleted',
                 'news_feed_created',
-                'news_feed_updated',
-                'news_feed_deleted',
             ]);
             $table->timestamp('read_at')->nullable();
             $table->text('details');

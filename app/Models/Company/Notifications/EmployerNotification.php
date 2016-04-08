@@ -3,10 +3,12 @@
 namespace App\Models\Company\Notifications;
 
 use App\Models\Access\User\User;
+use App\Models\Company\Notifications\Traits\Attribute\EmployerNotificationAttribute;
 use Illuminate\Database\Eloquent\Model;
 
 class EmployerNotification extends Model
 {
+    use EmployerNotificationAttribute;
     protected $table = 'employer_notifications';
     protected $guarded = ['id'];
 
@@ -20,7 +22,8 @@ class EmployerNotification extends Model
         'project_deleted'               => 'Project Deleted',
         'task_created'                  => 'Task Created',
         'task_updated'                  => 'Task Updated',
-        'task_deleted'                  => 'Task Deleted'
+        'task_deleted'                  => 'Task Deleted',
+        'news_feed_created'              => 'News Feed Created'
     ];
 
     public function getActiontakerAttribute(){
@@ -32,6 +35,12 @@ class EmployerNotification extends Model
             ($this->attributes['notification_type'] == 'job_deleted')
         ) {
             return $details['user']->name;
+        }
+
+        if (
+            ($this->attributes['notification_type'] == 'news_feed_created')
+        ) {
+            return $details['adminuser']->name;
         }
     }
 
@@ -49,6 +58,8 @@ class EmployerNotification extends Model
         ) {
             return $details['job']->title;
         }
+
+
     }
 
 }

@@ -309,13 +309,13 @@
                     <div class="box-body">
                         <ul class="products-list product-list-in-box newsfeed_notifications_list">
 
-                            @foreach($employer_notifications as $employer_notification)
+                            @foreach($newsfeed_notifications as $employer_notification)
 
                                 <li class="item">
-                                    @if( ($employer_notification->notification_type == 'newsfeed_created') || ($employer_notification->notification_type == 'newsfeed_updated') || ($employer_notification->notification_type == 'newsfeed_deleted') )
+                                    @if($employer_notification->notification_type == 'news_feed_created')
                                         <div style="margin-left: 25px;" class="product-info">
                                             <a href="#" class="product-title">
-                                                {{ unserialize($employer_notification->details)['newsfeed']->newsfeed }}
+                                                {{ unserialize($employer_notification->details)['newsfeed']['news'] }}
                                                 <span class="label label-warning pull-right">
                                                 {{ ucwords(str_replace('_', " ", $employer_notification->notification_type)) }}
                                             </span>
@@ -323,7 +323,7 @@
                                             <span class="product-description">
                                               {{ ucwords(str_replace('_', " ", $employer_notification->notification_type)) }}
                                             </span>
-                                            by {{ unserialize($employer_notification->details)['adminuser']->name }}
+                                            by {{ unserialize($employer_notification->details)['adminuser']['name'] }}
                                         </div>
                                     @endif
                                 </li>
@@ -365,7 +365,7 @@
 
             socket.on('employer.{{ auth()->user()->id }}:newsfeed_notifications', function(data){
                 console.log(data);
-                $('.newsfeed_notifications .newsfeed_notifications_list').append('<li class="item"><div class="product-info" style="margin-left: 25px;"><a class="product-title" href="#">'+ data.eventDetails.newsfeed +'<span class="label label-warning pull-right">'+ data.eventDetails.notification_type_text +'</span></a><span class="product-description">'+ data.eventDetails.notification_type_text +'</span>'+ data.eventDetails.created_by +'</div></li>');
+                $('.newsfeed_notifications .newsfeed_notifications_list').append('<li class="item"><div class="product-info" style="margin-left: 25px;"><a class="product-title" href="#">'+ data.eventDetails.news+'<span class="label label-warning pull-right">'+ data.eventDetails.notification_type_text +'</span></a><span class="product-description">'+ data.eventDetails.notification_type_text +'</span>'+ data.eventDetails.created_by +'</div></li>');
             });
 
             $("#employer-scrolling-info").carousel();

@@ -63,7 +63,7 @@
                             
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Content</label>
-                                <textarea class="form-control" name="content" cols="30" rows="5">{{ $cms->content }}</textarea>
+                                <textarea class="form-control textarea" name="content" cols="30" rows="5">{{ $cms->content }}</textarea>
                             </div>
                             
                         </div>

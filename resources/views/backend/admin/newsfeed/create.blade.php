@@ -27,7 +27,7 @@
                         <div class="box-body">
                             <div class="form-group">
                                 <label for="exampleInputPassword1">News Feeds</label>
-                                <textarea class="form-control" name="newsfeed" cols="30" rows="5"></textarea>
+                                <textarea class="form-control textarea" name="newsfeed" cols="30" rows="5"></textarea>
                             </div>
                         </div><!-- /.box-body -->
 

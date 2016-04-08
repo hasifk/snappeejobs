@@ -1,9 +1,13 @@
-<?php namespace App\Http\Controllers\Backend;
+<?php
+
+namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\Access\User\User;
 use App\Models\Job\Job;
 use App\Models\JobSeeker\JobSeeker;
+use App\Models\Company\Company;
+use App\Models\State\State;
 use App\Repositories\Backend\Dashboard\DashboardRepository;
 use App\Repositories\Backend\Job\EloquentSearchJobRepository;
 use App\Repositories\Backend\JobSeeker\EloquentSearchJobSeekerRepository;
@@ -16,12 +20,12 @@ use App\Http\Requests\Backend\AdminProfileEditRequest;
 use Storage;
 use DB;
 
-
 /**
  * Class DashboardController
  * @package App\Http\Controllers\Backend
  */
 class DashboardController extends Controller {
+
     /**
      * @var DashboardRepository
      */
@@ -32,9 +36,7 @@ class DashboardController extends Controller {
      * DashboardController constructor.
      * @param DashboardRepository $repository
      */
-    public function __construct(DashboardRepository $repository,EloquentSearchJobRepository $searchJobRepo,EloquentSearchJobSeekerRepository $searchJobSeekerRepo,
-                                EloquentJobRepository $jobRepository)
-    {
+    public function __construct(DashboardRepository $repository, EloquentSearchJobRepository $searchJobRepo, EloquentSearchJobSeekerRepository $searchJobSeekerRepo, EloquentJobRepository $jobRepository) {
 
         $this->repository = $repository;
         $this->jobRepository = $jobRepository;
@@ -42,60 +44,78 @@ class DashboardController extends Controller {
         $this->searchJobSeekerRepo = $searchJobSeekerRepo;
     }
 
-	/**
-	 * @return \Illuminate\View\View
-	 */
-    public function index()
-    {
+    public function company() {
+        $user = auth()->user()->id;
+        $company = Company::where('employer_id', $user)->first();
+        $state = $this->state($company->state_id);
+        $address = $state->name;
+
+        $geocode_stats = file_get_contents("http://maps.googleapis.com/maps/api/geocode/json?address=".$address."&sensor=false");
+
+        $output_deals = json_decode($geocode_stats);
+
+        $latLng = $output_deals->results[0]->geometry->location;
+
+        $lat = $latLng->lat;
+        $lng = $latLng->lng;
+        return $lat . "_" . $lng;
+    }
+
+    public function state($state) {
+        return State::find($state);
+    }
+    /**
+     * @return \Illuminate\View\View
+     */
+    public function index() {
 
         $view = [];
 
-        if ( access()->hasRole('Administrator') ) {
-            $view['employer_count']  = $this->repository->getEmployerCount();
-            $view['active_subscriptions']  = $this->repository->getActiveSubscriptionCount();
-            $view['blocked_users']  = $this->repository->getBlockedUsersCount();
-            $view['active_job_listings']  = $this->repository->getActiveJobListingCount();
-            $view['job_seeker_count']  = $this->repository->getJobSeekerCount();
+        if (access()->hasRole('Administrator')) {
+            $view['employer_count'] = $this->repository->getEmployerCount();
+            $view['active_subscriptions'] = $this->repository->getActiveSubscriptionCount();
+            $view['blocked_users'] = $this->repository->getBlockedUsersCount();
+            $view['active_job_listings'] = $this->repository->getActiveJobListingCount();
+            $view['job_seeker_count'] = $this->repository->getJobSeekerCount();
         }
 
-        if ( access()->hasRoles(['Employer', 'Employer Staff']) ) {
-            $view['total_jobs_posted']  = $this->repository->getTotalJobsPostedCount();
-            $view['total_job_application']  = $this->repository->getTotalJobsApplicationsCount();
-            $view['total_staff_members']  = $this->repository->getTotalStaffMembersCount();
-            $view['new_messages']  = $this->repository->getTotalNewMessagesCount();
-            $view['company_visitors']  = $this->repository->getTotalCmpVisitorsCount();
-            $view['job_visitors']  = $this->repository->getTotalJobVisitorsCount();
-            $view['active_job_listings1']  = $this->repository->getActiveJobListingCount1();
-            $view['thumbs_ups']  = $this->repository->getThumbsUpsCount();
+        if (access()->hasRoles(['Employer', 'Employer Staff'])) {
+            $view['total_jobs_posted'] = $this->repository->getTotalJobsPostedCount();
+            $view['total_job_application'] = $this->repository->getTotalJobsApplicationsCount();
+            $view['total_staff_members'] = $this->repository->getTotalStaffMembersCount();
+            $view['new_messages'] = $this->repository->getTotalNewMessagesCount();
+            $view['company_visitors'] = $this->repository->getTotalCmpVisitorsCount();
+            $view['job_visitors'] = $this->repository->getTotalJobVisitorsCount();
+            $view['active_job_listings1'] = $this->repository->getActiveJobListingCount1();
+            $view['thumbs_ups'] = $this->repository->getThumbsUpsCount();
             $view['employer_notifications'] = $this->repository->getEmployerNotifications();
             $view['newsfeed_notifications'] = $this->repository->getNewsfeedNotifications();
-            $view['cmp_interest_map_info']  = $this->repository->getCompanyInterestMapInfo();
-            $view['job_visitors_today']  = $this->repository->getTodaysJobVisitorsCount();
-            $view['job_interest_level']  = $this->repository->getJobInterestLevel();
-
+            $view['cmp_interest_map_info'] = $this->repository->getCompanyInterestMapInfo();
+            $view['job_visitors_today'] = $this->repository->getTodaysJobVisitorsCount();
+            $view['job_interest_level'] = $this->repository->getJobInterestLevel();
+            $view['latlong'] = $this->company();
         }
 
         return view('backend.dashboard', $view);
     }
 
-	public function profile()
-	{
+    public function profile() {
         $user = auth()->user();
         $countries = DB::table('countries')->select(['id', 'name'])->get();
-        if ( auth()->user()->country_id ) {
+        if (auth()->user()->country_id) {
             $states = DB::table('states')->where('country_id', auth()->user()->country_id)->select(['id', 'name'])->get();
         } else {
             $states = DB::table('states')->where('country_id', 222)->select(['id', 'name'])->get();
         }
         $data = [
-            'user'      => $user,
+            'user' => $user,
             'countries' => $countries,
-            'states'    => $states
+            'states' => $states
         ];
-		return view('backend.profile', $data);
-	}
-    
-    public function notificationsHistory(){
+        return view('backend.profile', $data);
+    }
+
+    public function notificationsHistory() {
 
         $data = [
             'notifications' => $this->repository->employerNotifications()
@@ -104,26 +124,25 @@ class DashboardController extends Controller {
         return view('backend.notification_history', $data);
     }
 
-    public function editProfile(AdminProfileEditRequest $request)
-    {
+    public function editProfile(AdminProfileEditRequest $request) {
 
         $avatar = $request->file('avatar');
 
         $update_array = [
-            'name'          => $request->get('name'),
-            'about_me'      => $request->get('about_me'),
-            'country_id'    => $request->get('country_id'),
-            'state_id'      => $request->get('state_id'),
+            'name' => $request->get('name'),
+            'about_me' => $request->get('about_me'),
+            'country_id' => $request->get('country_id'),
+            'state_id' => $request->get('state_id'),
         ];
 
-        if ( $avatar && $avatar->isValid() ) {
-            
-            $filePath = "users/" . auth()->user()->id."/avatar/";
-            Storage::put($filePath. $avatar->getClientOriginalName() , file_get_contents($avatar));
-            Storage::setVisibility($filePath. $avatar->getClientOriginalName(), 'public');
+        if ($avatar && $avatar->isValid()) {
 
-            if ( auth()->user()->avatar_filename ) {
-                Storage::delete(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension);
+            $filePath = "users/" . auth()->user()->id . "/avatar/";
+            Storage::put($filePath . $avatar->getClientOriginalName(), file_get_contents($avatar));
+            Storage::setVisibility($filePath . $avatar->getClientOriginalName(), 'public');
+
+            if (auth()->user()->avatar_filename) {
+                Storage::delete(auth()->user()->avatar_path . auth()->user()->avatar_filename . '.' . auth()->user()->avatar_extension);
             }
 
             $update_array = array_merge($update_array, [
@@ -133,40 +152,39 @@ class DashboardController extends Controller {
             ]);
         }
 
-        if ( $request->get('password') ) {
+        if ($request->get('password')) {
             $update_array = array_merge($update_array, ['password' => bcrypt($request->get('password'))]);
         }
 
         auth()->user()->update($update_array);
 
         return redirect()->route('backend.profile')->withFlashSuccess(trans("alerts.users.profile_updated"));
-
     }
 
-    public function unread_messages(EloquentMailRepository $mailRepository){
+    public function unread_messages(EloquentMailRepository $mailRepository) {
         $unread_messages = $mailRepository->getUnReadMessages();
         return response()->json($mailRepository->unReadMessages);
     }
 
-    public function job_applications(Request $request){
+    public function job_applications(Request $request) {
         $jobApplications = \DB::table('job_applications')
-            ->join('jobs', 'jobs.id', '=', 'job_applications.job_id')
-            ->join('users', 'job_applications.user_id', '=', 'users.id')
-            ->where('jobs.company_id', auth()->user()->companyId )
-            ->where(function($query){
-                $query->whereNull('job_applications.accepted_at' )
+                ->join('jobs', 'jobs.id', '=', 'job_applications.job_id')
+                ->join('users', 'job_applications.user_id', '=', 'users.id')
+                ->where('jobs.company_id', auth()->user()->companyId)
+                ->where(function($query) {
+                    $query->whereNull('job_applications.accepted_at')
                     ->whereNull('job_applications.declined_at');
-            })
-            ->select([
-                'job_applications.id',
-                'jobs.title',
-                'users.name',
-                \DB::raw('users.id AS user_id'),
-                'job_applications.created_at'
-            ])
-            ->get();
+                })
+                ->select([
+                    'job_applications.id',
+                    'jobs.title',
+                    'users.name',
+                    \DB::raw('users.id AS user_id'),
+                    'job_applications.created_at'
+                ])
+                ->get();
 
-        if ( $jobApplications ) {
+        if ($jobApplications) {
             foreach ($jobApplications as $key => $jobApplication) {
                 $jobApplications[$key]->{'image'} = User::find($jobApplication->user_id)->picture;
                 $jobApplications[$key]->{'was_created'} = Carbon::parse($jobApplication->created_at)->diffForHumans();
@@ -175,73 +193,71 @@ class DashboardController extends Controller {
 
         return response()->json($jobApplications);
     }
-/*************************************************************************************************************/
-    public function employersearch(Request $request)
-    {
-        if ( access()->hasRole('Employer') ) {
-            $query = $request->input('emp_search_key');
-            if(!empty($query)):
 
-                $jobsResult = $this->searchJobRepo->getJobsPaginated( $request,$query, config('jobs.default_per_page'));
+    /*     * ********************************************************************************************************** */
+
+    public function employersearch(Request $request) {
+        if (access()->hasRole('Employer')) {
+            $query = $request->input('emp_search_key');
+            if (!empty($query)):
+
+                $jobsResult = $this->searchJobRepo->getJobsPaginated($request, $query, config('jobs.default_per_page'));
 
                 $paginator = $jobsResult['paginator'];
-                $jobtitle= $jobsResult['jobtitle'];
+                $jobtitle = $jobsResult['jobtitle'];
 
 
-                $candidateResult = $this->searchJobSeekerRepo->getJobsSeekersPaginated( $request,$query, config('jobs.default_per_page'));
+                $candidateResult = $this->searchJobSeekerRepo->getJobsSeekersPaginated($request, $query, config('jobs.default_per_page'));
 
                 $paginator1 = $candidateResult['paginator'];
-                $candidate_info= $candidateResult['candidate_info'];
+                $candidate_info = $candidateResult['candidate_info'];
 
-                $staffinfo= DB::table('users')->where('name', 'LIKE', '%' . $query . '%')->paginate(10)
-                    ->where('employer_id', auth()->user()->employer_id);
+                $staffinfo = DB::table('users')->where('name', 'LIKE', '%' . $query . '%')->paginate(10)
+                        ->where('employer_id', auth()->user()->employer_id);
 
 
 
-                $company_id=auth()->user()->company_id;
-                $job_cat_info= DB::table('job_categories')
-                    ->join('category_preferences_jobs', 'category_preferences_jobs.job_category_id','=','job_categories.id')
-                    ->join('jobs', function ($join) use ($company_id) {
-                        $join->on('jobs.id', '=', 'category_preferences_jobs.job_id')
-                            ->where('jobs.company_id', '=', auth()->user()->company_id);
-                    })
-                    ->where('job_categories.name', 'LIKE', '%' . $query . '%')
-                    ->select([
-                        'jobs.title',
-                        'job_categories.name'
-                    ])->get();
+                $company_id = auth()->user()->company_id;
+                $job_cat_info = DB::table('job_categories')
+                                ->join('category_preferences_jobs', 'category_preferences_jobs.job_category_id', '=', 'job_categories.id')
+                                ->join('jobs', function ($join) use ($company_id) {
+                                    $join->on('jobs.id', '=', 'category_preferences_jobs.job_id')
+                                    ->where('jobs.company_id', '=', auth()->user()->company_id);
+                                })
+                                ->where('job_categories.name', 'LIKE', '%' . $query . '%')
+                                ->select([
+                                    'jobs.title',
+                                    'job_categories.name'
+                                ])->get();
                 $search_results = [
-                    'jobtitle'         =>  $jobtitle,
-                    'staffinfo'            =>$staffinfo,
-                    'job_cat_info'=> $job_cat_info,
-                    'paginator'         => $paginator,
-                    'candidate_info'  =>$candidate_info,
-                    'paginator1'         => $paginator1,
+                    'jobtitle' => $jobtitle,
+                    'staffinfo' => $staffinfo,
+                    'job_cat_info' => $job_cat_info,
+                    'paginator' => $paginator,
+                    'candidate_info' => $candidate_info,
+                    'paginator1' => $paginator1,
                 ];
                 $request->flash();
-                return view('backend.emp_search_results',$search_results);
+                return view('backend.emp_search_results', $search_results);
 
 
-                else:
-                    return back();
-                    endif;
+            else:
+                return back();
+            endif;
         }
     }
-    /************************************************************************************************************/
-    public function showstaffmembers(Request $request,$id)
-    {
-        if ( access()->hasRole('Employer') ) {
-            $staff_in_detail=User::find($id);
+
+    /*     * ********************************************************************************************************* */
+
+    public function showstaffmembers(Request $request, $id) {
+        if (access()->hasRole('Employer')) {
+            $staff_in_detail = User::find($id);
             $view = [
-                'staff_in_detail'              => $staff_in_detail
+                'staff_in_detail' => $staff_in_detail
             ];
-            return view('frontend.user.profile.employer_staff_show',$view);
-
+            return view('frontend.user.profile.employer_staff_show', $view);
         }
     }
-/************************************************************************************************************/
 
-
-
-
+    /*     * ********************************************************************************************************* */
 }

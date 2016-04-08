@@ -55,11 +55,13 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 *
 	 * @var array
 	 */
+        
 	protected $dates = ['dob', 'deleted_at', 'trial_ends_at', 'subscription_ends_at'];
 
 	/**
 	 * @return mixed
 	 */
+        
 	public function canChangeEmail() {
 		return config('access.users.change_email');
 	}

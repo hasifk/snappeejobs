@@ -25,10 +25,15 @@
                         <div class="box-body">
                             
                             <div class="form-group col-xs-12">
+                                
                                 <div class="row">
+                                    
                                 <label for="exampleInputPassword1">Heading</label>
+                                
                                 <input type="text" name="heading" class="form-control" placeholder="Heading">
+                                
                                 </div>
+                                
                             </div>
                             
                             <div class="form-group col-xs-6">
@@ -58,8 +63,10 @@
                             </div>
                             
                             <div class="form-group">
+                                
                                 <label for="exampleInputPassword1">Content</label>
-                                <textarea class="form-control" name="content" cols="30" rows="5"></textarea>
+                                <textarea class="form-control textarea" name="content" cols="30" rows="5"></textarea>
+                                
                             </div>
                             
                         </div>

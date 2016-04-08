@@ -25,7 +25,7 @@
         @foreach ($newsfeeds as $newsfeed)
             <tr>
                 <td>{{ $f++ }}</td>
-                <td>{{ $newsfeed->news }}</td>
+                <td><?php echo strip_tags($newsfeed->news); ?></td>
                 <td>{!! $newsfeed->action_buttons !!}</td>
             </tr>
         @endforeach

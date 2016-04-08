@@ -361,7 +361,7 @@ $location = GeoIP::getLocation(Request::ip());
 
         socket.on('employer.{{ auth()->user()->id }}:newsfeed_notifications', function (data) {
             console.log(data);
-            $('.newsfeed_notifications .newsfeed_notifications_list').append('<li class="item"><div class="product-info" style="margin-left: 25px;"><a class="product-title" href="#">' + data.eventDetails.news + '<span class="label label-warning pull-right">' + data.eventDetails.notification_type_text + '</span></a><span class="product-description">' + data.eventDetails.notification_type_text + '</span>' + data.eventDetails.created_by + '</div></li>');
+            $('.newsfeed_notifications .newsfeed_notifications_list').append('<li class="item"><div class="product-info" style="margin-left: 25px;"><a class="product-title" href="#">' + data.eventDetails.newsfeed + '<span class="label label-warning pull-right">' + data.eventDetails.notification_type_text + '</span></a><span class="product-description">' + data.eventDetails.notification_type_text + '</span>' + data.eventDetails.created_by + '</div></li>');
         });
 
         $("#employer-scrolling-info").carousel();

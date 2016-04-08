@@ -312,7 +312,7 @@
                             @if($employer_notification->notification_type == 'news_feed_created')
                             <div style="margin-left: 25px;" class="product-info">
                                 <a href="#" class="product-title">
-                                   <?php echo strip_tags (unserialize ($employer_notification->details)['newsfeed']['news']); ?>
+                                    {!!   unserialize ($employer_notification->details)['newsfeed']['news'] !!}
                                     <span class="label label-warning pull-right">
                                         {{ ucwords(str_replace('_', " ", $employer_notification->notification_type)) }}
                                     </span>

@@ -104,6 +104,7 @@ class ProjectController extends Controller
 
         $project_tasks = \DB::table('task_project')
             ->where('project_id', $id)
+            ->whereNull('task_project.deleted_at')
             ->select(['task_project.id', 'task_project.title'])
             ->get();
 
@@ -175,9 +176,15 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Requests\Backend\Employer\Project\DeleteProjectRequest $request, $id)
     {
-        //
+        $project = Project::find($id);
+
+        $this->projectRepository->deleteProject($project);
+
+        return redirect()
+            ->route('admin.projects.index')
+            ->withFlashSuccess('Successfully deleted the Project');
     }
     
     public function assignTasks($id){
@@ -238,6 +245,20 @@ class ProjectController extends Controller
         return redirect()
             ->route('admin.projects.showtask', $id)
             ->withFlashSuccess('Successfully updated the Task');
+
+    }
+
+    public function deleteTask(Requests\Backend\Employer\Task\DeleteTaskRequest $request, $id){
+
+        $task = Task::find($id);
+
+        $project_id = \DB::table('task_project')->where('id', $id)->value('project_id');
+
+        $this->projectRepository->deleteTask($task, $request);
+
+        return redirect()
+            ->route('admin.projects.show', $project_id)
+            ->withFlashSuccess('Successfully deleted the Task');
 
     }
     

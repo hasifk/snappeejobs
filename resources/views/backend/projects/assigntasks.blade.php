@@ -82,6 +82,15 @@
                         data-original-title="Edit this task"
                     ></i>
                 </a>
+                <a href="{{ route('admin.projects.deletetask', $task->id) }}" data-method="delete" class="btn btn-xs btn-danger">
+                    <i
+                            class="fa fa-trash"
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            title="Delete this task"
+                            data-original-title="Delete this task"
+                    ></i>
+                </a>
             </td>
         </tr>
         @endforeach

@@ -44,6 +44,7 @@
                             <a href="{{ route('admin.projects.showtask', $project_task->id) }}" class="btn btn-primary">View</a>
                             &nbsp;
                             <a href="{{ route('admin.projects.edittask', $project_task->id) }}" class="btn btn-primary">Edit</a>
+                            <a href="{{ route('admin.projects.deletetask', $project_task->id) }}" data-method="delete" class="btn btn-danger">Delete</a>
                         </li>
                         @endforeach
                     </ul>

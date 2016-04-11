@@ -4,11 +4,12 @@ namespace App\Models\Project;
 
 use App\Models\Project\Project\Traits\Attribute\ProjectAttribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Project extends Model
 {
 
-    use ProjectAttribute;
+    use ProjectAttribute, SoftDeletes;
 
     protected $table = 'projects';
     protected $guarded = ['id'];

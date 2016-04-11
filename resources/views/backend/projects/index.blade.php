@@ -1,6 +1,6 @@
 @extends ('backend.layouts.master')
 
-@section ('title', "Projects Management")
+@section ('title', "Project")
 
 @section('page-header')
     <h1>

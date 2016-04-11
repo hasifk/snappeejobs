@@ -1,6 +1,6 @@
 @extends ('backend.layouts.master')
 
-@section ('title', "Projects Details")
+@section ('title', "Project")
 
 @section('page-header')
     <h1>
@@ -24,7 +24,7 @@
     <div class="form-group">
         {!! Form::label('name', 'Title', ['class' => 'col-lg-2 control-label']) !!}
         <div class="col-lg-10">
-            {!! Form::text('title', ( old('title') ? old('title') : $project->title ), ['class' => 'form-control', 'placeholder' => 'Project Title']) !!}
+            {!! Form::text('title', ( old('title') ? old('title') : $project->title ), ['class' => 'form-control', 'placeholder' => 'Project']) !!}
         </div>
     </div>
 

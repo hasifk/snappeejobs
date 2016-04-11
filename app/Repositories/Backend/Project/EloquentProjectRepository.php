@@ -154,6 +154,12 @@ class EloquentProjectRepository
 
     }
 
+    public function deleteTask(Task $task, Request $request){
+        $task->delete();
+
+        return;
+    }
+
     private function updateProjectStub(Project $project, Request $request) {
         $project->update([
             'title'         => $request->get('title'),
@@ -174,6 +180,12 @@ class EloquentProjectRepository
         Event::fire(new ProjectUpdated($project, auth()->user() ));
         return $project;
 
+    }
+
+    public function deleteProject(Project $project){
+        $project->delete();
+
+        return;
     }
 
     public function getTasks($id)

@@ -20,6 +20,7 @@ $router->group([
         get('/edit-task/{id}', 'ProjectController@editTask')->name('admin.projects.edittask');
         get('/show-task/{id}', 'ProjectController@showTask')->name('admin.projects.showtask');
         post('/update-task/{id}', 'ProjectController@updateTask')->name('admin.projects.updatetask');
+        delete('/delete-task/{id}', 'ProjectController@deleteTask')->name('admin.projects.deletetask');
 
     });
 });

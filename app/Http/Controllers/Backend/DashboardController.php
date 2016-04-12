@@ -123,7 +123,16 @@ class DashboardController extends Controller {
 
         return view('backend.notification_history', $data);
     }
+/*****************************************************************************************************************/
+    public function newsfeedsHistory() {
 
+        $data = [
+            'notifications' => $this->repository->newsFeedsNotifications()
+        ];
+
+        return view('backend.newsfeed_notification', $data);
+    }
+/*****************************************************************************************************************/
     public function editProfile(AdminProfileEditRequest $request) {
 
         $avatar = $request->file('avatar');

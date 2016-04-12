@@ -12,6 +12,7 @@ get('get-states/{id}', function($id){
 });
 
 get('employeranalytics/notifications_history', 'DashboardController@notificationsHistory')->name('backend.notifications.history');
+get('employeranalytics/newsfeeds_history', 'DashboardController@newsfeedsHistory')->name('backend.newsfeeds.history');
 get('employeranalytics/interestedjobs', 'EmployerAnalyticsController@interestedjobsanalytics')->name('backend.employerintjobs');
 get('employeranalytics/notinterestedjobs', 'EmployerAnalyticsController@notinterestedjobsanalytics')->name('backend.employernotintjobs');
 get('staffmemebers/{id}', 'DashboardController@showstaffmembers')->name('staffmembers.show');

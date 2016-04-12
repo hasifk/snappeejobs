@@ -331,7 +331,7 @@
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer text-center">
-                    <a href="{{ route('backend.notifications.history') }}" class="uppercase">View All Notifications</a>
+                    <a href="{{ route('backend.newsfeeds.history') }}" class="uppercase">View All NewsFeed Notifications</a>
                 </div>
                 <!-- /.box-footer -->
             </div>

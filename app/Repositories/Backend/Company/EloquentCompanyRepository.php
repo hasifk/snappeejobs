@@ -94,9 +94,9 @@ class EloquentCompanyRepository
                 Event::fire(new CompanyCreated($company, $this->employerId ));
 
                 return $company;
-
+                
             }
-
+            
         } else {
 
             $company = $this->createCompanyStub($request);
@@ -140,7 +140,7 @@ class EloquentCompanyRepository
             }
 
         }
-
+        
         throw new GeneralException('There was a problem creating this user. Please try again.');
     }
 

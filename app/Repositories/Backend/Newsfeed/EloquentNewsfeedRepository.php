@@ -18,32 +18,27 @@ class EloquentNewsfeedRepository {
 
     public function save($request) {
         $userid = Auth::user()->id;
-       
-        if ($request->has('id'))
-        {
-            $obj = Newsfeed::find($request->id);
-            $obj->news = $request->newsfeed;
-            $obj->save();
 
-        }
-        else 
-        {
-        $obj = new Newsfeed;
-        $obj->user_id = $userid;
+        if ($request->has('id')) {
+            $obj = $this->find($request->id);
             $obj->news = $request->newsfeed;
             $obj->save();
-            Event::fire(new NewsFeedCreated($obj, auth()->user() ));
+        } else {
+            $obj = new Newsfeed;
+            $obj->user_id = $userid;
+            $obj->news = $request->newsfeed;
+            $obj->save();
+            Event::fire(new NewsFeedCreated($obj, auth()->user()));
             return 'true';
         }
-
     }
 
-    public function edit($id) {
+    public function find($id) {
         return Newsfeed::find($id);
     }
-    public function delete($id) {
-       Newsfeed::where('id', $id)->delete();
-    }
     
+    public function delete($id) {
+        Newsfeed::where('id', $id)->delete();
+    }
 
 }

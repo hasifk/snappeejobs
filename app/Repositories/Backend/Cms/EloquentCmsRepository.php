@@ -19,7 +19,7 @@ class EloquentCmsRepository {
         $userid = Auth::user()->id;
 
         if ($request->has('id'))
-            $obj = Cms::find($request->id);
+            $obj = $this->find($request->id);
         else {
             $obj = new Cms;
             $obj->user_id = $userid;
@@ -44,6 +44,7 @@ class EloquentCmsRepository {
         $obj->type = $request->type;
 
         $obj->save();
+        
     }
 
     public function find($id) {
@@ -51,7 +52,7 @@ class EloquentCmsRepository {
     }
 
     public function delete($id) {
-        $obj = Cms::find($id);
+        $obj = $this->find($id);
         if(!empty($obj->img)):
         Storage::delete($obj->img);
         endif;
@@ -59,13 +60,13 @@ class EloquentCmsRepository {
     }
 
     public function hide($id) {
-        $obj = Cms::find($id);
+        $obj = $this->find($id);
         $obj->published = 0;
         $obj->save();
     }
 
     public function publish($id) {
-        $obj = Cms::find($id);
+        $obj = $this->find($id);
         $obj->published = 1;
         $obj->save();
     }

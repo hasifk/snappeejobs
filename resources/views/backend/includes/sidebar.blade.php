@@ -307,12 +307,12 @@
                     <li class="{{ Active::pattern('admin/log-viewer') }}">
                       <a href="{!! url('admin/log-viewer') !!}">{{ trans('menus.log-viewer.dashboard') }}</a>
                     </li>
-                    <li class="{{ Active::pattern('admin/log-viewer/logs') }}">
-                      <a href="{!! url('admin/log-viewer/logs') !!}">{{ trans('menus.log-viewer.logs') }}</a>
+                    <li class="{{ Active::pattern('admin/logs/*') }}">
+                      <a href="{!! url(route('backend.admin.logs')) !!}">Log</a>
                     </li>
                   </ul>
                 </li>
-
+                
               </ul><!-- /.sidebar-menu -->
             </section>
             <!-- /.sidebar -->

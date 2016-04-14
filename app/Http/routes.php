@@ -51,10 +51,8 @@ $router->group(['namespace' => 'Backend'], function () use ($router)
                         require(__DIR__ . "/Routes/Backend/Newsfeed.php");
                         require(__DIR__ . "/Routes/Backend/Cms.php");
 			require(__DIR__ . "/Routes/Backend/Newsfeed.php");
+                        require(__DIR__ . "/Routes/Backend/Logs.php");
 			require(__DIR__ . "/Routes/Backend/Projects.php");
-
 		});
 	});
-
-
 });

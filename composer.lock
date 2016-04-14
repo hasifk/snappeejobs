@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "cffc3274b61cbaf6d4478439ba658bfd",
-    "content-hash": "dc0db68ca011cf5af65bddd4ce739d61",
+    "hash": "cdc9d4ff5b2caa2b4e7dae25ef1d092f",
+    "content-hash": "6c0566ecf1c249ccffc148d600465e44",
     "packages": [
         {
             "name": "arcanedev/log-viewer",
@@ -2856,6 +2856,57 @@
                 "shell"
             ],
             "time": "2016-03-09 05:03:14"
+        },
+        {
+            "name": "spatie/activitylog",
+            "version": "2.4.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/spatie/activitylog.git",
+                "reference": "b734982a3a238f0b5371a5f9230ffce25a1ef4ab"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/spatie/activitylog/zipball/b734982a3a238f0b5371a5f9230ffce25a1ef4ab",
+                "reference": "b734982a3a238f0b5371a5f9230ffce25a1ef4ab",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "5.*",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "0.9.*",
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/migrations"
+                ],
+                "psr-0": {
+                    "Spatie\\Activitylog\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Freek Van der Herten",
+                    "email": "freek@spatie.be"
+                }
+            ],
+            "description": "A very simple activity logger to monitor the users of your website or application",
+            "homepage": "https://github.com/spatie/activitylog",
+            "keywords": [
+                "activity",
+                "laravel",
+                "log",
+                "user"
+            ],
+            "time": "2016-03-23 19:16:40"
         },
         {
             "name": "stripe/stripe-php",

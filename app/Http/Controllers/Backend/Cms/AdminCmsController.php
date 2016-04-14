@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Backend\Cms;
 use App\Http\Requests\Backend\Admin\Cms\CmsRequests;
 use App\Models\Cms\Cms;
 use App\Repositories\Backend\Cms\EloquentCmsRepository;
+use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Activity;
 
 class AdminCmsController extends Controller {
 
@@ -19,9 +21,10 @@ class AdminCmsController extends Controller {
      * AdminCompanyController constructor.
      * @param EloquentCompanyRepository $companyRepository
      */
-    public function __construct(EloquentCmsRepository $cmsRepository) {
+    public function __construct(EloquentCmsRepository $cmsRepository, LogsActivitysRepository $userlogs) {
 
         $this->cmsRepository = $cmsRepository;
+        $this->userlogs = $userlogs;
     }
 
     /**
@@ -41,7 +44,20 @@ class AdminCmsController extends Controller {
     }
 
     public function SaveCms(CmsRequests $request) {
+        $array['type'] = $request->type;
+        $array['heading']='Heading of "'.substr($request->heading,0,40).'..."';
+        if ($request->has('id')):
+            $array['event'] = 'updated';
+
+            $name = $this->userlogs->getActivityDescriptionForEvent($array);
+        else:
+            $array['event'] = 'created';
+
+            $name = $this->userlogs->getActivityDescriptionForEvent($array);
+        endif;
+        Activity::log($name);
         $user = $this->cmsRepository->save($request);
+        
         return redirect()->route('backend.admin.cms_lists');
     }
 
@@ -60,20 +76,41 @@ class AdminCmsController extends Controller {
     }
 
     public function DeleteCms($id) {
+        $obj = $this->cmsRepository->find($id);
+        $array['type'] = $obj->type;
+        $array['event'] = 'deleted';
+        $array['heading']='Heading of "'.substr($obj->header,0,40).'..."';
+        
+        $name = $this->userlogs->getActivityDescriptionForEvent($array);
+        Activity::log($name);
+
         $this->cmsRepository->delete($id);
-        //Cms::where('id', $id)->delete();
         return redirect()->route('backend.admin.cms_lists');
     }
 
     public function HideCms($id) {
+        $obj = $this->cmsRepository->find($id);
+        $array['type'] = $obj->type;
+        $array['event'] = 'hide';
+         $array['heading']='Heading of "'.substr($obj->header,0,40).'..."';
+        $name = $this->userlogs->getActivityDescriptionForEvent($array);
+        Activity::log($name);
+
         $this->cmsRepository->hide($id);
         //Cms::where('id', $id)->delete();
         return redirect()->route('backend.admin.cms_lists');
     }
 
     public function PublishCms($id) {
+        $obj = $this->cmsRepository->find($id);
+        $array['type'] = $obj->type;
+        $array['event'] = 'published';
+        $array['heading']='Heading of "'.substr($obj->header,0,40).'..."';
+        $name = $this->userlogs->getActivityDescriptionForEvent($array);
+        Activity::log($name);
+
         $this->cmsRepository->publish($id);
-        //Cms::where('id', $id)->delete();
+        
         return redirect()->route('backend.admin.cms_lists');
     }
 
@@ -81,14 +118,14 @@ class AdminCmsController extends Controller {
         $view = [
             'cms' => $this->cmsRepository->article(),
         ];
-     return view('backend.admin.cms.index', $view);
+        return view('backend.admin.cms.index', $view);
     }
 
     public function blogCms() {
         $view = [
             'cms' => $this->cmsRepository->blog(),
         ];
-       return view('backend.admin.cms.index', $view);
+        return view('backend.admin.cms.index', $view);
     }
 
 }

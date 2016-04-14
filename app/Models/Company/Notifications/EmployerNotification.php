@@ -23,43 +23,12 @@ class EmployerNotification extends Model
         'task_created'                  => 'Task Created',
         'task_updated'                  => 'Task Updated',
         'task_deleted'                  => 'Task Deleted',
-        'news_feed_created'              => 'News Feed Created'
+        'news_feed_created'              => 'News Feed Created',
+        'news_feed_updated'              => 'News Feed Updated',
+
+
     ];
 
-    public function getActiontakerAttribute(){
-        $details = unserialize($this->attributes['details']);
 
-        if (
-            ($this->attributes['notification_type'] == 'job_created') ||
-            ($this->attributes['notification_type'] == 'job_updated') ||
-            ($this->attributes['notification_type'] == 'job_deleted')
-        ) {
-            return $details['user']->name;
-        }
-
-        if (
-            ($this->attributes['notification_type'] == 'news_feed_created')
-        ) {
-            return $details['adminuser']->name;
-        }
-    }
-
-    public function getActionAttribute(){
-        return $this->actionFullNames[$this->attributes['notification_type']];
-    }
-
-    public function getTitleAttribute(){
-        $details = unserialize($this->attributes['details']);
-
-        if (
-            ($this->attributes['notification_type'] == 'job_created') ||
-            ($this->attributes['notification_type'] == 'job_updated') ||
-            ($this->attributes['notification_type'] == 'job_deleted')
-        ) {
-            return $details['job']->title;
-        }
-
-
-    }
 
 }

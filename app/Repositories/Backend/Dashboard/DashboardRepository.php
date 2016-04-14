@@ -67,6 +67,14 @@ class DashboardRepository
         return $notifications;
     }
     /**************************************************************************************************************/
+    public function newsFeedsNotifications(){
+
+        $notifications = EmployerNotification::where('from_admin',1)->where('user_id', auth()->user()->id)
+            ->paginate(10);
+
+        return $notifications;
+    }
+    /**************************************************************************************************************/
     public function getNewsfeedNotifications()
     {
         $newsfeed_notifications = \DB::table('employer_notifications')

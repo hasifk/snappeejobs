@@ -5,7 +5,7 @@ namespace App\Http\Requests\Backend\Employer\Task;
 use App\Exceptions\Backend\Project\ProjectDoesNotBelongToUser;
 use App\Http\Requests\Request;
 
-class UpdateTaskRequest extends Request
+class ShowTaskViewRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +14,7 @@ class UpdateTaskRequest extends Request
      */
     public function authorize()
     {
-        return access()->can('edit-task');
+        return access()->can('show-task');
     }
 
     /**
@@ -37,8 +37,7 @@ class UpdateTaskRequest extends Request
         }
 
         return [
-            'title' => 'required',
-            'members' => 'required|array'
+            //
         ];
     }
 

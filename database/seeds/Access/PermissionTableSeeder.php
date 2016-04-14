@@ -637,13 +637,13 @@ class PermissionTableSeeder extends Seeder {
          */
 
 		/**
-		 * Projects and Tasks
+		 * Project and Tasks
 		 */
 
 		$permission_model = config('access.permission');
 		$showProject = new $permission_model;
 		$showProject->name = 'show-project';
-		$showProject->display_name = 'Show Projects';
+		$showProject->display_name = 'Show Project';
 		$showProject->system = true;
 		$showProject->group_id = 7;
 		$showProject->sort = 1;
@@ -729,7 +729,7 @@ class PermissionTableSeeder extends Seeder {
 		$deleteTask->save();
 
 		/**
-		 * Projects and Tasks
+		 * Project and Tasks
 		 */
 
 		if(env('DB_DRIVER') == 'mysql')

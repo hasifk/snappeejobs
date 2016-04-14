@@ -23,9 +23,12 @@ class EloquentNewsfeedRepository {
             $obj = $this->find($request->id);
             $obj->news = $request->newsfeed;
             $obj->save();
-        } else {
-            $obj = new Newsfeed;
-            $obj->user_id = $userid;
+        } 
+        else 
+        {
+        $obj = new Newsfeed;
+        $obj->user_id = $userid;
+            Event::fire(new NewsFeedUpdated($obj, auth()->user() ));
             $obj->news = $request->newsfeed;
             $obj->save();
             Event::fire(new NewsFeedCreated($obj, auth()->user()));

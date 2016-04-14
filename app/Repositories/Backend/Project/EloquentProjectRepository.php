@@ -3,6 +3,10 @@
 namespace App\Repositories\Backend\Project;
 
 
+use App\Events\Backend\Project\ProjectCreated;
+use App\Events\Backend\Project\ProjectUpdated;
+use App\Events\Backend\Tasks\TaskCreated;
+use App\Events\Backend\Tasks\TaskUpdated;
 use App\Models\Project\Project;
 use App\Models\Project\ProjectJobListing;
 use App\Models\Project\ProjectMember;
@@ -10,6 +14,7 @@ use App\Models\Task\Task;
 use App\Models\Task\TaskMember;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
+use Event;
 
 class EloquentProjectRepository
 {
@@ -65,7 +70,7 @@ class EloquentProjectRepository
 
         $this->flushAndCreateProjectMembers($project, $request);
         $this->flushAndCreateProjectJobListings($project, $request);
-
+        Event::fire(new ProjectCreated($project, auth()->user() ));
         return $project;
     }
 
@@ -125,9 +130,34 @@ class EloquentProjectRepository
                 'user_id'       => $member
             ]);
         }
+        Event::fire(new TaskCreated($task, auth()->user() ));
+        return $task;
+
+    }
+
+    public function updateTask(Task $task, Request $request){
+
+        $task->update([
+            'title' => $request->get('title')
+        ]);
+
+        TaskMember::where('task_id', $task->id)->delete();
+        Event::fire(new TaskUpdated($task, auth()->user() ));
+        foreach ($request->get('members') as $member) {
+            TaskMember::create([
+                'task_id'       => $task->id,
+                'user_id'       => $member
+            ]);
+        }
 
         return $task;
 
+    }
+
+    public function deleteTask(Task $task, Request $request){
+        $task->delete();
+
+        return;
     }
 
     private function updateProjectStub(Project $project, Request $request) {
@@ -147,9 +177,15 @@ class EloquentProjectRepository
 
         $this->flushAndCreateProjectMembers($project, $request);
         $this->flushAndCreateProjectJobListings($project, $request);
-
+        Event::fire(new ProjectUpdated($project, auth()->user() ));
         return $project;
 
+    }
+
+    public function deleteProject(Project $project){
+        $project->delete();
+
+        return;
     }
 
     public function getTasks($id)

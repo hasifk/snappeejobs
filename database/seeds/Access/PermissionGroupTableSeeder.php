@@ -79,7 +79,7 @@ class PermissionGroupTableSeeder extends Seeder {
 
         $group_model = config('access.group');
         $permission = new $group_model;
-        $permission->name = 'Projects & Tasks';
+        $permission->name = 'Project & Tasks';
         $permission->sort = 7;
         $permission->parent_id = $access->id;
         $permission->created_at = Carbon::now();

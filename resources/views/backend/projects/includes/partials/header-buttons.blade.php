@@ -7,7 +7,7 @@
         <ul class="dropdown-menu" role="menu">
             <li>
                 <a href="{{route('admin.projects.index')}}">
-                    All Project
+                    All Projects
                 </a>
             </li>
 

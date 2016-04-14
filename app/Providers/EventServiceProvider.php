@@ -53,7 +53,28 @@ class EventServiceProvider extends ServiceProvider {
 		],
 		'App\Events\Backend\NewsFeed\NewsFeedCreated' => [
 			'App\Listeners\Backend\NewsFeed\NewsFeedCreatedHandler'
-		]
+		],
+		'App\Events\Backend\NewsFeed\NewsFeedUpdated' => [
+			'App\Listeners\Backend\NewsFeed\NewsFeedUpdatedHandler'
+		],
+		'App\Events\Backend\Project\ProjectCreated' => [
+			'App\Listeners\Backend\Project\ProjectCreatedHandler'
+		],
+		'App\Events\Backend\Project\ProjectUpdated' => [
+			'App\Listeners\Backend\Project\ProjectUpdatedHandler'
+		],
+        'App\Events\Backend\Project\ProjectDeleted' => [
+            'App\Listeners\Backend\Project\ProjectDeletedHandler'
+        ],
+		'App\Events\Backend\Task\TaskCreated' => [
+			'App\Listeners\Backend\Task\TaskCreatedHandler'
+		],
+		'App\Events\Backend\Task\TaskUpdated' => [
+			'App\Listeners\Backend\Task\TaskUpdatedHandler'
+		],
+        'App\Events\Backend\Task\TaskDeleted' => [
+            'App\Listeners\Backend\Task\TaskDeletedHandler'
+        ],
 	];
 
 	/**

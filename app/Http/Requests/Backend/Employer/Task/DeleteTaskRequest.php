@@ -5,7 +5,7 @@ namespace App\Http\Requests\Backend\Employer\Task;
 use App\Exceptions\Backend\Project\ProjectDoesNotBelongToUser;
 use App\Http\Requests\Request;
 
-class UpdateTaskRequest extends Request
+class DeleteTaskRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +14,7 @@ class UpdateTaskRequest extends Request
      */
     public function authorize()
     {
-        return access()->can('edit-task');
+        return access()->can('delete-task');
     }
 
     /**
@@ -24,7 +24,6 @@ class UpdateTaskRequest extends Request
      */
     public function rules()
     {
-
         $task_id = $this->segment(3);
 
         $task_belongs_to_user = \DB::table('task_project')
@@ -37,8 +36,7 @@ class UpdateTaskRequest extends Request
         }
 
         return [
-            'title' => 'required',
-            'members' => 'required|array'
+            //
         ];
     }
 

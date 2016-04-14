@@ -1,12 +1,19 @@
 @extends ('backend.layouts.master')
 
-@section ('title', "Projects Details")
+@section ('title', "Project")
 
 @section('page-header')
     <h1>
         Projects Details - {{ $project->title }}
     </h1>
 @endsection
+
+@section ('breadcrumbs')
+    <li><a href="{!!route('admin.projects.index')!!}"><i class="fa fa-dashboard"></i> All Projects</a></li>
+    <li>{!! link_to_route('admin.projects.show', $project->title, $project->id) !!}</li>
+    <li>{!! link_to_route('admin.projects.edit', "Edit this project", $project->id) !!}</li>
+@stop
+
 
 @section('content')
 
@@ -17,7 +24,7 @@
     <div class="form-group">
         {!! Form::label('name', 'Title', ['class' => 'col-lg-2 control-label']) !!}
         <div class="col-lg-10">
-            {!! Form::text('title', ( old('title') ? old('title') : $project->title ), ['class' => 'form-control', 'placeholder' => 'Project Title']) !!}
+            {!! Form::text('title', ( old('title') ? old('title') : $project->title ), ['class' => 'form-control', 'placeholder' => 'Project']) !!}
         </div>
     </div>
 

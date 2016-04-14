@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Backend\Employer\Task;
+namespace App\Http\Requests\Backend\Employer\Project;
 
 use App\Exceptions\Backend\Project\ProjectDoesNotBelongToUser;
 use App\Http\Requests\Request;
 
-class UpdateTaskRequest extends Request
+class DeleteProjectRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +14,7 @@ class UpdateTaskRequest extends Request
      */
     public function authorize()
     {
-        return access()->can('edit-task');
+        return access()->can('delete-project');
     }
 
     /**
@@ -25,20 +25,16 @@ class UpdateTaskRequest extends Request
     public function rules()
     {
 
-        $task_id = $this->segment(3);
+        $id = $this->segment(3);
 
-        $task_belongs_to_user = \DB::table('task_project')
-            ->where('id', $task_id)
-            ->where('employer_id', auth()->user()->employer_id)
-            ->count();
+        $project_belongs_to_user = \DB::table('projects')->where('employer_id', auth()->user()->employer_id)->where('id', $id)->count();
 
-        if ( ! $task_belongs_to_user ) {
-            $this->throwException('This task does not belong to you.');
+        if ( ! $project_belongs_to_user ) {
+            $this->throwException('This project does not belong to your company.');
         }
 
         return [
-            'title' => 'required',
-            'members' => 'required|array'
+            //
         ];
     }
 
@@ -48,5 +44,4 @@ class UpdateTaskRequest extends Request
 
         throw $exception;
     }
-
 }

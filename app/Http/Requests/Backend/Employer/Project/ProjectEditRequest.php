@@ -33,6 +33,28 @@ class ProjectEditRequest extends Request
             $this->throwException('This project does not belong to your company.');
         }
 
+        // Check if there are any members removed , if so, check if any of those removed members belong to any tasks
+        // in the project
+
+        $members = \DB::table('members_project')->where('project_id', $id)->lists('user_id');
+        $new_members = $this->get('members');
+
+        $deleted_members = array_diff($members, $new_members);
+
+        if ( $deleted_members ) {
+            // Get the users who has tasks in this project
+            $user_ids = \DB::table('task_project')
+                ->join('staff_task', 'task_project.id', '=', 'staff_task.task_id')
+                ->where('task_project.project_id', $id)
+                ->distinct()
+                ->lists('staff_task.user_id');
+
+            if ( count(array_diff($user_ids, $deleted_members)) != count($user_ids) ) {
+                $this->throwException('you cannot delete some of the members, because they are assigned to some of the tasks in this project');
+            }
+
+        }
+
         return [
             //
         ];

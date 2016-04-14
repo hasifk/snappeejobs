@@ -21,7 +21,7 @@ class PermissionRoleSeeder extends Seeder
     public function insertEmployeeStaffRolePermission(){
         $permissions = ['view-backend', 'view-access-management', 'employer-jobs-view','mail-send-private-message',
             'mail-view-private-messages', 'mail-delete-private-messages','mail-send-group-messages', 'show-project', 'create-project',
-            'edit-project', 'delete-project',  'create-task', 'create-task', 'edit-task', 'delete-task'
+            'edit-project', 'delete-project',  'show-task', 'create-task', 'edit-task', 'delete-task'
         ];
 
         $employer_role_id = \DB::table('roles')->where('name', 'Employer Staff')->value('id');

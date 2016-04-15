@@ -39,7 +39,7 @@ class ProjectDeleted extends Event implements ShouldBroadcast
 
         $this->eventDetails->{'notification_type'} = 'project_deleted';
         $this->eventDetails->{'notification_type_text'} = 'Project Deleted';
-        $this->eventDetails->{'project'} = $project->title;
+        $this->eventDetails->{'project_title'} = $project->title;
         $this->eventDetails->{'created_by'} = $user->name;
     }
 

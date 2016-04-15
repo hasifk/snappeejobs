@@ -54,7 +54,7 @@ class ProjectCreated extends Event implements ShouldBroadcast
         $broadCastOn = [];
 
         foreach ($staffs as $staff) {
-            $broadCastOn[] = 'employer.'.$staff;
+            $broadCastOn[] = 'employer_project.'.$staff;
         }
 
         return $broadCastOn;

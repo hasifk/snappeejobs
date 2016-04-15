@@ -39,7 +39,7 @@ class ProjectUpdated extends Event implements ShouldBroadcast
 
         $this->eventDetails->{'notification_type'} = 'project_updated';
         $this->eventDetails->{'notification_type_text'} = 'Project Updated';
-        $this->eventDetails->{'project'} = $project->title;
+        $this->eventDetails->{'project_title'} = $project->title;
         $this->eventDetails->{'created_by'} = $user->name;
     }
 

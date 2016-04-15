@@ -45,7 +45,7 @@ class DashboardController extends Controller {
     }
 
     public function company() {
-        $user = auth()->user()->id;
+        $user = auth()->user()->employer_id;
         $company = Company::where('employer_id', $user)->first();
         $state = $this->state($company->state_id);
         $address = $state->name;

@@ -4,6 +4,7 @@ namespace App\Repositories\Backend\Project;
 
 
 use App\Events\Backend\Project\ProjectCreated;
+use App\Events\Backend\Project\ProjectDeleted;
 use App\Events\Backend\Project\ProjectUpdated;
 use App\Events\Backend\Tasks\TaskCreated;
 use App\Events\Backend\Tasks\TaskUpdated;
@@ -184,7 +185,7 @@ class EloquentProjectRepository
 
     public function deleteProject(Project $project){
         $project->delete();
-
+        Event::fire(new ProjectDeleted($project, auth()->user() ));
         return;
     }
 

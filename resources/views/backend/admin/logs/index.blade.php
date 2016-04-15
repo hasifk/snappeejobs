@@ -4,7 +4,7 @@
 
 @section('page-header')
     <h1>
-        {{ trans('strings.backend.newsfeed_management') }}
+        {{ trans('strings.backend.log_management') }}
     </h1>
 @endsection
 

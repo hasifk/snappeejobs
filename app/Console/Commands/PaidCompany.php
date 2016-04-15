@@ -12,7 +12,7 @@ class PaidCompany extends Command
      *
      * @var string
      */
-    protected $signature = 'command:paidCompany';
+    protected $signature = 'snappeepaidcompany';
 
     /**
      * The console command description.

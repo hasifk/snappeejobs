@@ -10,6 +10,7 @@ use App\Models\Company\Notifications\EmployerNotification;
 use App\Models\Job\Job;
 use App\Models\Access\User\User;
 use App\Models\JobSeeker\JobSeeker;
+use App\Models\State\State;
 use Carbon\Carbon;
 
 
@@ -163,5 +164,24 @@ class DashboardRepository
         return JobSeeker::count();
     }
     /**************************************************************************************************************/
+    public function getLatLong() {
+        $user = auth()->user()->employer_id;
+        $company = Company::where('employer_id', $user)->first();
+
+        $state =State::find($company->state_id);
+        $address = $state->name;
+
+        $geocode_stats = file_get_contents("http://maps.googleapis.com/maps/api/geocode/json?address=".$address."&sensor=false");
+
+        $output_deals = json_decode($geocode_stats);
+
+        $latLng = $output_deals->results[0]->geometry->location;
+
+        $lat = $latLng->lat;
+        $lng = $latLng->lng;
+        return $lat . "_" . $lng;
+    }
+    /**************************************************************************************************************/
+
 
 }

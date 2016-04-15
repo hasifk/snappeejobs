@@ -27,7 +27,7 @@ elixir(function(mix) {
                 './resources/assets/js/dropzone/dist/min/dropzone.min.js',
                 './resources/assets/js/bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
                 './resources/assets/js/sweetalert/dist/sweetalert.min.js',
-                './node_modules/socket.io/node_modules/socket.io-client/socket.io.js',
+                './node_modules/socket.io-client/socket.io.js',
                 'frontend/main.js',
                 'backend/main.js',
             ], 'public/js/frontend.js')
@@ -58,7 +58,7 @@ elixir(function(mix) {
                 'backend/plugin/toastr/toastr.min.js',
                 'bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.all.js',
                 'select2/dist/js/select2.js',
-                './node_modules/socket.io/node_modules/socket.io-client/socket.io.js',
+                './node_modules/socket.io-client/socket.io.js',
                 'Caret.js/dist/jquery.caret.js',
                 'owlcarousel/owl-carousel/owl.carousel.js',
                 'At.js/dist/js/jquery.atwho.js',

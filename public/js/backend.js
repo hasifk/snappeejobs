@@ -68,14 +68,14 @@ $(function(){
     });
 });
 /*!
- * Vue.js v1.0.21
+ * Vue.js v1.0.14
  * (c) 2016 Evan You
  * Released under the MIT License.
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  (global.Vue = factory());
+  global.Vue = factory();
 }(this, function () { 'use strict';
 
   function set(obj, key, val) {
@@ -152,7 +152,7 @@ $(function(){
    * @return {Boolean}
    */
 
-  var literalValueRE = /^\s?(true|false|-?[\d\.]+|'[^']*'|"[^"]*")\s?$/;
+  var literalValueRE = /^\s?(true|false|[\d\.]+|'[^']*'|"[^"]*")\s?$/;
 
   function isLiteral(exp) {
     return literalValueRE.test(exp);
@@ -279,7 +279,7 @@ $(function(){
    * @return {Function}
    */
 
-  function bind(fn, ctx) {
+  function bind$1(fn, ctx) {
     return function (a) {
       var l = arguments.length;
       return l ? l > 1 ? fn.apply(ctx, arguments) : fn.call(ctx, a) : fn.call(ctx);
@@ -358,7 +358,7 @@ $(function(){
   var isArray = Array.isArray;
 
   /**
-   * Define a property.
+   * Define a non-enumerable property
    *
    * @param {Object} obj
    * @param {String} key
@@ -462,13 +462,9 @@ $(function(){
   // Browser environment sniffing
   var inBrowser = typeof window !== 'undefined' && Object.prototype.toString.call(window) !== '[object Object]';
 
-  // detect devtools
-  var devtools = inBrowser && window.__VUE_DEVTOOLS_GLOBAL_HOOK__;
+  var isIE9 = inBrowser && navigator.userAgent.toLowerCase().indexOf('msie 9.0') > 0;
 
-  // UA sniffing for working around browser-specific quirks
-  var UA = inBrowser && window.navigator.userAgent.toLowerCase();
-  var isIE9 = UA && UA.indexOf('msie 9.0') > 0;
-  var isAndroid = UA && UA.indexOf('android') > 0;
+  var isAndroid = inBrowser && navigator.userAgent.toLowerCase().indexOf('android') > 0;
 
   var transitionProp = undefined;
   var transitionEndEvent = undefined;
@@ -507,7 +503,6 @@ $(function(){
         copies[i]();
       }
     }
-
     /* istanbul ignore if */
     if (typeof MutationObserver !== 'undefined') {
       var counter = 1;
@@ -521,11 +516,7 @@ $(function(){
         textNode.data = counter;
       };
     } else {
-      // webpack attempts to inject a shim for setImmediate
-      // if it is used as a global, so we have to work around that to
-      // avoid bundling unnecessary code.
-      var context = inBrowser ? window : typeof global !== 'undefined' ? global : {};
-      timerFunc = context.setImmediate || setTimeout;
+      timerFunc = setTimeout;
     }
     return function (cb, ctx) {
       var func = ctx ? function () {
@@ -559,29 +550,23 @@ $(function(){
    */
 
   p.put = function (key, value) {
-    var removed;
-    if (this.size === this.limit) {
-      removed = this.shift();
+    var entry = {
+      key: key,
+      value: value
+    };
+    this._keymap[key] = entry;
+    if (this.tail) {
+      this.tail.newer = entry;
+      entry.older = this.tail;
+    } else {
+      this.head = entry;
     }
-
-    var entry = this.get(key, true);
-    if (!entry) {
-      entry = {
-        key: key
-      };
-      this._keymap[key] = entry;
-      if (this.tail) {
-        this.tail.newer = entry;
-        entry.older = this.tail;
-      } else {
-        this.head = entry;
-      }
-      this.tail = entry;
+    this.tail = entry;
+    if (this.size === this.limit) {
+      return this.shift();
+    } else {
       this.size++;
     }
-    entry.value = value;
-
-    return removed;
   };
 
   /**
@@ -597,7 +582,6 @@ $(function(){
       this.head.older = undefined;
       entry.newer = entry.older = undefined;
       this._keymap[entry.key] = undefined;
-      this.size--;
     }
     return entry;
   };
@@ -717,11 +701,12 @@ $(function(){
    *   ]
    * }
    *
-   * @param {String} s
+   * @param {String} str
    * @return {Object}
    */
 
   function parseDirective(s) {
+
     var hit = cache$1.get(s);
     if (hit) {
       return hit;
@@ -785,7 +770,7 @@ $(function(){
     return dir;
   }
 
-var directive = Object.freeze({
+  var directive = Object.freeze({
     parseDirective: parseDirective
   });
 
@@ -809,7 +794,7 @@ var directive = Object.freeze({
     var close = escapeRegex(config.delimiters[1]);
     var unsafeOpen = escapeRegex(config.unsafeDelimiters[0]);
     var unsafeClose = escapeRegex(config.unsafeDelimiters[1]);
-    tagRE = new RegExp(unsafeOpen + '((?:.|\\n)+?)' + unsafeClose + '|' + open + '((?:.|\\n)+?)' + close, 'g');
+    tagRE = new RegExp(unsafeOpen + '(.+?)' + unsafeClose + '|' + open + '(.+?)' + close, 'g');
     htmlRE = new RegExp('^' + unsafeOpen + '.*' + unsafeClose + '$');
     // reset cache
     cache = new Cache(1000);
@@ -834,6 +819,7 @@ var directive = Object.freeze({
     if (hit) {
       return hit;
     }
+    text = text.replace(/\n/g, '');
     if (!tagRE.test(text)) {
       return null;
     }
@@ -919,9 +905,9 @@ var directive = Object.freeze({
    * @return {String}
    */
 
-  var filterRE = /[^|]\|[^|]/;
+  var filterRE$1 = /[^|]\|[^|]/;
   function inlineFilters(exp, single) {
-    if (!filterRE.test(exp)) {
+    if (!filterRE$1.test(exp)) {
       return single ? exp : '(' + exp + ')';
     } else {
       var dir = parseDirective(exp);
@@ -936,7 +922,7 @@ var directive = Object.freeze({
     }
   }
 
-var text = Object.freeze({
+  var text$1 = Object.freeze({
     compileRegex: compileRegex,
     parseText: parseText,
     tokensToExp: tokensToExp
@@ -978,11 +964,12 @@ var text = Object.freeze({
     warnExpressionErrors: true,
 
     /**
-     * Whether to allow devtools inspection.
-     * Disabled by default in production builds.
+     * Whether or not to handle fully object properties which
+     * are already backed by getters and seters. Depending on
+     * use case and environment, this might introduce non-neglible
+     * performance penalties.
      */
-
-    devtools: 'development' !== 'production',
+    convertAllProperties: false,
 
     /**
      * Internal flag to indicate the delimiters have been
@@ -1049,21 +1036,22 @@ var text = Object.freeze({
   });
 
   var warn = undefined;
-  var formatComponentName = undefined;
 
   if ('development' !== 'production') {
     (function () {
       var hasConsole = typeof console !== 'undefined';
-
-      warn = function (msg, vm) {
-        if (hasConsole && !config.silent) {
-          console.error('[Vue warn]: ' + msg + (vm ? formatComponentName(vm) : ''));
+      warn = function (msg, e) {
+        if (hasConsole && (!config.silent || config.debug)) {
+          console.warn('[Vue warn]: ' + msg);
+          /* istanbul ignore if */
+          if (config.debug) {
+            if (e) {
+              throw e;
+            } else {
+              console.warn(new Error('Warning Stack Trace').stack);
+            }
+          }
         }
-      };
-
-      formatComponentName = function (vm) {
-        var name = vm._isVue ? vm.$options.name : vm.name;
-        return name ? ' (found in component: <' + hyphenate(name) + '>)' : '';
       };
     })();
   }
@@ -1143,13 +1131,6 @@ var text = Object.freeze({
     var action = direction > 0 ? 'enter' : 'leave';
     transition[action](op, cb);
   }
-
-var transition = Object.freeze({
-    appendWithTransition: appendWithTransition,
-    beforeWithTransition: beforeWithTransition,
-    removeWithTransition: removeWithTransition,
-    applyTransition: applyTransition
-  });
 
   /**
    * Query an element selector if it's not an element already.
@@ -1301,11 +1282,10 @@ var transition = Object.freeze({
    * @param {Element} el
    * @param {String} event
    * @param {Function} cb
-   * @param {Boolean} [useCapture]
    */
 
-  function on(el, event, cb, useCapture) {
-    el.addEventListener(event, cb, useCapture);
+  function on$1(el, event, cb) {
+    el.addEventListener(event, cb);
   }
 
   /**
@@ -1321,22 +1301,6 @@ var transition = Object.freeze({
   }
 
   /**
-   * For IE9 compat: when both class and :class are present
-   * getAttribute('class') returns wrong value...
-   *
-   * @param {Element} el
-   * @return {String}
-   */
-
-  function getClass(el) {
-    var classname = el.className;
-    if (typeof classname === 'object') {
-      classname = classname.baseVal || '';
-    }
-    return classname;
-  }
-
-  /**
    * In IE9, setAttribute('class') will result in empty class
    * if the element also has the :class attribute; However in
    * PhantomJS, setting `className` does not work on SVG elements...
@@ -1348,7 +1312,7 @@ var transition = Object.freeze({
 
   function setClass(el, cls) {
     /* istanbul ignore if */
-    if (isIE9 && !/svg$/.test(el.namespaceURI)) {
+    if (isIE9 && !(el instanceof SVGElement)) {
       el.className = cls;
     } else {
       el.setAttribute('class', cls);
@@ -1366,7 +1330,7 @@ var transition = Object.freeze({
     if (el.classList) {
       el.classList.add(cls);
     } else {
-      var cur = ' ' + getClass(el) + ' ';
+      var cur = ' ' + (el.getAttribute('class') || '') + ' ';
       if (cur.indexOf(' ' + cls + ' ') < 0) {
         setClass(el, (cur + cls).trim());
       }
@@ -1384,7 +1348,7 @@ var transition = Object.freeze({
     if (el.classList) {
       el.classList.remove(cls);
     } else {
-      var cur = ' ' + getClass(el) + ' ';
+      var cur = ' ' + (el.getAttribute('class') || '') + ' ';
       var tar = ' ' + cls + ' ';
       while (cur.indexOf(tar) >= 0) {
         cur = cur.replace(tar, ' ');
@@ -1402,14 +1366,14 @@ var transition = Object.freeze({
    *
    * @param {Element} el
    * @param {Boolean} asFragment
-   * @return {Element|DocumentFragment}
+   * @return {Element}
    */
 
   function extractContent(el, asFragment) {
     var child;
     var rawContent;
     /* istanbul ignore if */
-    if (isTemplate(el) && isFragment(el.content)) {
+    if (isTemplate(el) && el.content instanceof DocumentFragment) {
       el = el.content;
     }
     if (el.hasChildNodes()) {
@@ -1425,26 +1389,20 @@ var transition = Object.freeze({
   }
 
   /**
-   * Trim possible empty head/tail text and comment
-   * nodes inside a parent.
+   * Trim possible empty head/tail textNodes inside a parent.
    *
    * @param {Node} node
    */
 
   function trimNode(node) {
-    var child;
-    /* eslint-disable no-sequences */
-    while ((child = node.firstChild, isTrimmable(child))) {
-      node.removeChild(child);
-    }
-    while ((child = node.lastChild, isTrimmable(child))) {
-      node.removeChild(child);
-    }
-    /* eslint-enable no-sequences */
+    trim(node, node.firstChild);
+    trim(node, node.lastChild);
   }
 
-  function isTrimmable(node) {
-    return node && (node.nodeType === 3 && !node.data.trim() || node.nodeType === 8);
+  function trim(parent, node) {
+    if (node && node.nodeType === 3 && !node.data.trim()) {
+      parent.removeChild(node);
+    }
   }
 
   /**
@@ -1479,7 +1437,7 @@ var transition = Object.freeze({
 
   function createAnchor(content, persist) {
     var anchor = config.debug ? document.createComment(content) : document.createTextNode(persist ? ' ' : '');
-    anchor.__v_anchor = true;
+    anchor.__vue_anchor = true;
     return anchor;
   }
 
@@ -1554,53 +1512,8 @@ var transition = Object.freeze({
     }
   }
 
-  /**
-   * Check if a node is a DocumentFragment.
-   *
-   * @param {Node} node
-   * @return {Boolean}
-   */
-
-  function isFragment(node) {
-    return node && node.nodeType === 11;
-  }
-
-  /**
-   * Get outerHTML of elements, taking care
-   * of SVG elements in IE as well.
-   *
-   * @param {Element} el
-   * @return {String}
-   */
-
-  function getOuterHTML(el) {
-    if (el.outerHTML) {
-      return el.outerHTML;
-    } else {
-      var container = document.createElement('div');
-      container.appendChild(el.cloneNode(true));
-      return container.innerHTML;
-    }
-  }
-
-  var commonTagRE = /^(div|p|span|img|a|b|i|br|ul|ol|li|h1|h2|h3|h4|h5|h6|code|pre|table|th|td|tr|form|label|input|select|option|nav|article|section|header|footer)$/i;
-  var reservedTagRE = /^(slot|partial|component)$/i;
-
-  var isUnknownElement = undefined;
-  if ('development' !== 'production') {
-    isUnknownElement = function (el, tag) {
-      if (tag.indexOf('-') > -1) {
-        // http://stackoverflow.com/a/28210364/1070244
-        return el.constructor === window.HTMLUnknownElement || el.constructor === window.HTMLElement;
-      } else {
-        return (/HTMLUnknownElement/.test(el.toString()) &&
-          // Chrome returns unknown for several HTML5 elements.
-          // https://code.google.com/p/chromium/issues/detail?id=540526
-          !/^(data|time|rtc|rb)$/.test(tag)
-        );
-      }
-    };
-  }
+  var commonTagRE = /^(div|p|span|img|a|b|i|br|ul|ol|li|h1|h2|h3|h4|h5|h6|code|pre|table|th|td|tr|form|label|input|select|option|nav|article|section|header|footer)$/;
+  var reservedTagRE = /^(slot|partial|component)$/;
 
   /**
    * Check if an element is a component, if yes return its
@@ -1622,11 +1535,11 @@ var transition = Object.freeze({
         if (is) {
           return is;
         } else if ('development' !== 'production') {
-          var expectedTag = options._componentNameMap && options._componentNameMap[tag];
-          if (expectedTag) {
-            warn('Unknown custom element: <' + tag + '> - ' + 'did you mean <' + expectedTag + '>? ' + 'HTML is case-insensitive, remember to use kebab-case in templates.');
-          } else if (isUnknownElement(el, tag)) {
-            warn('Unknown custom element: <' + tag + '> - did you ' + 'register the component correctly? For recursive components, ' + 'make sure to provide the "name" option.');
+          if (tag.indexOf('-') > -1 || /HTMLUnknownElement/.test(el.toString()) &&
+          // Chrome returns unknown for several HTML5 elements.
+          // https://code.google.com/p/chromium/issues/detail?id=540526
+          !/^(data|time|rtc|rb)$/.test(tag)) {
+            warn('Unknown custom element: <' + tag + '> - did you ' + 'register the component correctly?');
           }
         }
       }
@@ -1653,6 +1566,99 @@ var transition = Object.freeze({
         return { id: exp, dynamic: true };
       }
     }
+  }
+
+  /**
+   * Set a prop's initial value on a vm and its data object.
+   *
+   * @param {Vue} vm
+   * @param {Object} prop
+   * @param {*} value
+   */
+
+  function initProp(vm, prop, value) {
+    var key = prop.path;
+    value = coerceProp(prop, value);
+    vm[key] = vm._data[key] = assertProp(prop, value) ? value : undefined;
+  }
+
+  /**
+   * Assert whether a prop is valid.
+   *
+   * @param {Object} prop
+   * @param {*} value
+   */
+
+  function assertProp(prop, value) {
+    // if a prop is not provided and is not required,
+    // skip the check.
+    if (prop.raw === null && !prop.required) {
+      return true;
+    }
+    var options = prop.options;
+    var type = options.type;
+    var valid = true;
+    var expectedType;
+    if (type) {
+      if (type === String) {
+        expectedType = 'string';
+        valid = typeof value === expectedType;
+      } else if (type === Number) {
+        expectedType = 'number';
+        valid = typeof value === 'number';
+      } else if (type === Boolean) {
+        expectedType = 'boolean';
+        valid = typeof value === 'boolean';
+      } else if (type === Function) {
+        expectedType = 'function';
+        valid = typeof value === 'function';
+      } else if (type === Object) {
+        expectedType = 'object';
+        valid = isPlainObject(value);
+      } else if (type === Array) {
+        expectedType = 'array';
+        valid = isArray(value);
+      } else {
+        valid = value instanceof type;
+      }
+    }
+    if (!valid) {
+      'development' !== 'production' && warn('Invalid prop: type check failed for ' + prop.path + '="' + prop.raw + '".' + ' Expected ' + formatType(expectedType) + ', got ' + formatValue(value) + '.');
+      return false;
+    }
+    var validator = options.validator;
+    if (validator) {
+      if (!validator.call(null, value)) {
+        'development' !== 'production' && warn('Invalid prop: custom validator check failed for ' + prop.path + '="' + prop.raw + '"');
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Force parsing value with coerce option.
+   *
+   * @param {*} value
+   * @param {Object} options
+   * @return {*}
+   */
+
+  function coerceProp(prop, value) {
+    var coerce = prop.options.coerce;
+    if (!coerce) {
+      return value;
+    }
+    // coerce is a function
+    return coerce(value);
+  }
+
+  function formatType(val) {
+    return val ? val.charAt(0).toUpperCase() + val.slice(1) : 'custom type';
+  }
+
+  function formatValue(val) {
+    return Object.prototype.toString.call(val).slice(8, -1);
   }
 
   /**
@@ -1698,7 +1704,7 @@ var transition = Object.freeze({
         return parentVal;
       }
       if (typeof childVal !== 'function') {
-        'development' !== 'production' && warn('The "data" option should be a function ' + 'that returns a per-instance value in component ' + 'definitions.', vm);
+        'development' !== 'production' && warn('The "data" option should be a function ' + 'that returns a per-instance value in component ' + 'definitions.');
         return parentVal;
       }
       if (!parentVal) {
@@ -1732,7 +1738,7 @@ var transition = Object.freeze({
 
   strats.el = function (parentVal, childVal, vm) {
     if (!vm && childVal && typeof childVal !== 'function') {
-      'development' !== 'production' && warn('The "el" option should be a function ' + 'that returns a per-instance value in component ' + 'definitions.', vm);
+      'development' !== 'production' && warn('The "el" option should be a function ' + 'that returns a per-instance value in component ' + 'definitions.');
       return;
     }
     var ret = childVal || parentVal;
@@ -1744,8 +1750,17 @@ var transition = Object.freeze({
    * Hooks and param attributes are merged as arrays.
    */
 
-  strats.init = strats.created = strats.ready = strats.attached = strats.detached = strats.beforeCompile = strats.compiled = strats.beforeDestroy = strats.destroyed = strats.activate = function (parentVal, childVal) {
+  strats.init = strats.created = strats.ready = strats.attached = strats.detached = strats.beforeCompile = strats.compiled = strats.beforeDestroy = strats.destroyed = function (parentVal, childVal) {
     return childVal ? parentVal ? parentVal.concat(childVal) : isArray(childVal) ? childVal : [childVal] : parentVal;
+  };
+
+  /**
+   * 0.11 deprecation warning
+   */
+
+  strats.paramAttributes = function () {
+    /* istanbul ignore next */
+    'development' !== 'production' && warn('"paramAttributes" option has been deprecated in 0.12. ' + 'Use "props" instead.');
   };
 
   /**
@@ -1819,21 +1834,13 @@ var transition = Object.freeze({
   function guardComponents(options) {
     if (options.components) {
       var components = options.components = guardArrayAssets(options.components);
-      var ids = Object.keys(components);
       var def;
-      if ('development' !== 'production') {
-        var map = options._componentNameMap = {};
-      }
+      var ids = Object.keys(components);
       for (var i = 0, l = ids.length; i < l; i++) {
         var key = ids[i];
         if (commonTagRE.test(key) || reservedTagRE.test(key)) {
           'development' !== 'production' && warn('Do not use built-in or reserved HTML elements as component ' + 'id: ' + key);
           continue;
-        }
-        // record a all lowercase <-> kebab-case mapping for
-        // possible custom element case error warning
-        if ('development' !== 'production') {
-          map[key.replace(/-/g, '').toLowerCase()] = hyphenate(key);
         }
         def = components[key];
         if (isPlainObject(def)) {
@@ -1946,85 +1953,28 @@ var transition = Object.freeze({
    * @param {Object} options
    * @param {String} type
    * @param {String} id
-   * @param {Boolean} warnMissing
    * @return {Object|Function}
    */
 
-  function resolveAsset(options, type, id, warnMissing) {
-    /* istanbul ignore if */
-    if (typeof id !== 'string') {
-      return;
-    }
+  function resolveAsset(options, type, id) {
     var assets = options[type];
     var camelizedId;
-    var res = assets[id] ||
+    return assets[id] ||
     // camelCase ID
     assets[camelizedId = camelize(id)] ||
     // Pascal Case ID
     assets[camelizedId.charAt(0).toUpperCase() + camelizedId.slice(1)];
-    if ('development' !== 'production' && warnMissing && !res) {
-      warn('Failed to resolve ' + type.slice(0, -1) + ': ' + id, options);
-    }
-    return res;
   }
 
-  var uid$1 = 0;
-
   /**
-   * A dep is an observable that can have multiple
-   * directives subscribing to it.
-   *
-   * @constructor
-   */
-  function Dep() {
-    this.id = uid$1++;
-    this.subs = [];
-  }
-
-  // the current target watcher being evaluated.
-  // this is globally unique because there could be only one
-  // watcher being evaluated at any time.
-  Dep.target = null;
-
-  /**
-   * Add a directive subscriber.
-   *
-   * @param {Directive} sub
+   * Assert asset exists
    */
 
-  Dep.prototype.addSub = function (sub) {
-    this.subs.push(sub);
-  };
-
-  /**
-   * Remove a directive subscriber.
-   *
-   * @param {Directive} sub
-   */
-
-  Dep.prototype.removeSub = function (sub) {
-    this.subs.$remove(sub);
-  };
-
-  /**
-   * Add self as a dependency to the target watcher.
-   */
-
-  Dep.prototype.depend = function () {
-    Dep.target.addDep(this);
-  };
-
-  /**
-   * Notify all subscribers of a new value.
-   */
-
-  Dep.prototype.notify = function () {
-    // stablize the subscriber list first
-    var subs = toArray(this.subs);
-    for (var i = 0, l = subs.length; i < l; i++) {
-      subs[i].update();
+  function assertAsset(val, type, id) {
+    if (!val) {
+      'development' !== 'production' && warn('Failed to resolve ' + type + ': ' + id);
     }
-  };
+  }
 
   var arrayProto = Array.prototype;
   var arrayMethods = Object.create(arrayProto)
@@ -2082,9 +2032,10 @@ var transition = Object.freeze({
   });
 
   /**
-   * Convenience method to remove the element at given index or target element reference.
+   * Convenience method to remove the element at given index.
    *
-   * @param {*} item
+   * @param {Number} index
+   * @param {*} val
    */
 
   def(arrayProto, '$remove', function $remove(item) {
@@ -2096,25 +2047,65 @@ var transition = Object.freeze({
     }
   });
 
-  var arrayKeys = Object.getOwnPropertyNames(arrayMethods);
+  var uid$3 = 0;
 
   /**
-   * By default, when a reactive property is set, the new value is
-   * also converted to become reactive. However in certain cases, e.g.
-   * v-for scope alias and props, we don't want to force conversion
-   * because the value may be a nested value under a frozen data structure.
+   * A dep is an observable that can have multiple
+   * directives subscribing to it.
    *
-   * So whenever we want to set a reactive property without forcing
-   * conversion on the new value, we wrap that call inside this function.
+   * @constructor
+   */
+  function Dep() {
+    this.id = uid$3++;
+    this.subs = [];
+  }
+
+  // the current target watcher being evaluated.
+  // this is globally unique because there could be only one
+  // watcher being evaluated at any time.
+  Dep.target = null;
+
+  /**
+   * Add a directive subscriber.
+   *
+   * @param {Directive} sub
    */
 
-  var shouldConvert = true;
+  Dep.prototype.addSub = function (sub) {
+    this.subs.push(sub);
+  };
 
-  function withoutConversion(fn) {
-    shouldConvert = false;
-    fn();
-    shouldConvert = true;
-  }
+  /**
+   * Remove a directive subscriber.
+   *
+   * @param {Directive} sub
+   */
+
+  Dep.prototype.removeSub = function (sub) {
+    this.subs.$remove(sub);
+  };
+
+  /**
+   * Add self as a dependency to the target watcher.
+   */
+
+  Dep.prototype.depend = function () {
+    Dep.target.addDep(this);
+  };
+
+  /**
+   * Notify all subscribers of a new value.
+   */
+
+  Dep.prototype.notify = function () {
+    // stablize the subscriber list first
+    var subs = toArray(this.subs);
+    for (var i = 0, l = subs.length; i < l; i++) {
+      subs[i].update();
+    }
+  };
+
+  var arrayKeys = Object.getOwnPropertyNames(arrayMethods);
 
   /**
    * Observer class that are attached to each observed
@@ -2211,13 +2202,11 @@ var transition = Object.freeze({
    * the prototype chain using __proto__
    *
    * @param {Object|Array} target
-   * @param {Object} src
+   * @param {Object} proto
    */
 
   function protoAugment(target, src) {
-    /* eslint-disable no-proto */
     target.__proto__ = src;
-    /* eslint-enable no-proto */
   }
 
   /**
@@ -2253,7 +2242,7 @@ var transition = Object.freeze({
     var ob;
     if (hasOwn(value, '__ob__') && value.__ob__ instanceof Observer) {
       ob = value.__ob__;
-    } else if (shouldConvert && (isArray(value) || isPlainObject(value)) && Object.isExtensible(value) && !value._isVue) {
+    } else if ((isArray(value) || isPlainObject(value)) && Object.isExtensible(value) && !value._isVue) {
       ob = new Observer(value);
     }
     if (ob && vm) {
@@ -2273,14 +2262,16 @@ var transition = Object.freeze({
   function defineReactive(obj, key, val) {
     var dep = new Dep();
 
-    var property = Object.getOwnPropertyDescriptor(obj, key);
-    if (property && property.configurable === false) {
-      return;
-    }
-
     // cater for pre-defined getter/setters
-    var getter = property && property.get;
-    var setter = property && property.set;
+    var getter, setter;
+    if (config.convertAllProperties) {
+      var property = Object.getOwnPropertyDescriptor(obj, key);
+      if (property && property.configurable === false) {
+        return;
+      }
+      getter = property && property.get;
+      setter = property && property.set;
+    }
 
     var childOb = observe(val);
     Object.defineProperty(obj, key, {
@@ -2318,8 +2309,6 @@ var transition = Object.freeze({
     });
   }
 
-
-
   var util = Object.freeze({
   	defineReactive: defineReactive,
   	set: set,
@@ -2334,7 +2323,7 @@ var transition = Object.freeze({
   	camelize: camelize,
   	hyphenate: hyphenate,
   	classify: classify,
-  	bind: bind,
+  	bind: bind$1,
   	toArray: toArray,
   	extend: extend,
   	isObject: isObject,
@@ -2347,7 +2336,6 @@ var transition = Object.freeze({
   	isArray: isArray,
   	hasProto: hasProto,
   	inBrowser: inBrowser,
-  	devtools: devtools,
   	isIE9: isIE9,
   	isAndroid: isAndroid,
   	get transitionProp () { return transitionProp; },
@@ -2365,7 +2353,7 @@ var transition = Object.freeze({
   	remove: remove,
   	prepend: prepend,
   	replace: replace,
-  	on: on,
+  	on: on$1,
   	off: off,
   	setClass: setClass,
   	addClass: addClass,
@@ -2377,11 +2365,13 @@ var transition = Object.freeze({
   	findRef: findRef,
   	mapNodeRange: mapNodeRange,
   	removeNodeRange: removeNodeRange,
-  	isFragment: isFragment,
-  	getOuterHTML: getOuterHTML,
   	mergeOptions: mergeOptions,
   	resolveAsset: resolveAsset,
+  	assertAsset: assertAsset,
   	checkComponentAttr: checkComponentAttr,
+  	initProp: initProp,
+  	assertProp: assertProp,
+  	coerceProp: coerceProp,
   	commonTagRE: commonTagRE,
   	reservedTagRE: reservedTagRE,
   	get warn () { return warn; }
@@ -2390,6 +2380,7 @@ var transition = Object.freeze({
   var uid = 0;
 
   function initMixin (Vue) {
+
     /**
      * The main init sequence. This is called for every
      * instance, including ones that are created from extended
@@ -2402,6 +2393,7 @@ var transition = Object.freeze({
      */
 
     Vue.prototype._init = function (options) {
+
       options = options || {};
 
       this.$el = null;
@@ -2430,7 +2422,7 @@ var transition = Object.freeze({
       this._fragmentEnd = null; // @type {Text|Comment}
 
       // lifecycle state
-      this._isCompiled = this._isDestroyed = this._isReady = this._isAttached = this._isBeingDestroyed = this._vForRemoving = false;
+      this._isCompiled = this._isDestroyed = this._isReady = this._isAttached = this._isBeingDestroyed = false;
       this._unlinkFn = null;
 
       // context:
@@ -2469,11 +2461,6 @@ var transition = Object.freeze({
       // initialize data as empty object.
       // it will be filled up in _initScope().
       this._data = {};
-
-      // save raw constructor data before merge
-      // so that we know which properties are provided at
-      // instantiation.
-      this._runtimeData = options.data;
 
       // call init hook
       this._callHook('init');
@@ -2767,8 +2754,8 @@ var transition = Object.freeze({
 
   var warnNonExistent;
   if ('development' !== 'production') {
-    warnNonExistent = function (path, vm) {
-      warn('You are setting a non-existent path "' + path.raw + '" ' + 'on a vm instance. Consider pre-initializing the property ' + 'with the "data" option for more reliable reactivity ' + 'and better performance.', vm);
+    warnNonExistent = function (path) {
+      warn('You are setting a non-existent path "' + path.raw + '" ' + 'on a vm instance. Consider pre-initializing the property ' + 'with the "data" option for more reliable reactivity ' + 'and better performance.');
     };
   }
 
@@ -2800,7 +2787,7 @@ var transition = Object.freeze({
         if (!isObject(obj)) {
           obj = {};
           if ('development' !== 'production' && last._isVue) {
-            warnNonExistent(path, last);
+            warnNonExistent(path);
           }
           set(last, key, obj);
         }
@@ -2811,7 +2798,7 @@ var transition = Object.freeze({
           obj[key] = val;
         } else {
           if ('development' !== 'production' && obj._isVue) {
-            warnNonExistent(path, obj);
+            warnNonExistent(path);
           }
           set(obj, key, val);
         }
@@ -2820,7 +2807,7 @@ var transition = Object.freeze({
     return true;
   }
 
-var path = Object.freeze({
+  var path = Object.freeze({
     parsePath: parsePath,
     getPath: getPath,
     setPath: setPath
@@ -2832,12 +2819,12 @@ var path = Object.freeze({
   var allowedKeywordsRE = new RegExp('^(' + allowedKeywords.replace(/,/g, '\\b|') + '\\b)');
 
   // keywords that don't make sense inside expressions
-  var improperKeywords = 'break,case,class,catch,const,continue,debugger,default,' + 'delete,do,else,export,extends,finally,for,function,if,' + 'import,in,instanceof,let,return,super,switch,throw,try,' + 'var,while,with,yield,enum,await,implements,package,' + 'protected,static,interface,private,public';
+  var improperKeywords = 'break,case,class,catch,const,continue,debugger,default,' + 'delete,do,else,export,extends,finally,for,function,if,' + 'import,in,instanceof,let,return,super,switch,throw,try,' + 'var,while,with,yield,enum,await,implements,package,' + 'proctected,static,interface,private,public';
   var improperKeywordsRE = new RegExp('^(' + improperKeywords.replace(/,/g, '\\b|') + '\\b)');
 
   var wsRE = /\s/g;
   var newlineRE = /\n/g;
-  var saveRE = /[\{,]\s*[\w\$_]+\s*:|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*\$\{|\}(?:[^`\\]|\\.)*`|`(?:[^`\\]|\\.)*`)|new |typeof |void /g;
+  var saveRE = /[\{,]\s*[\w\$_]+\s*:|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")|new |typeof |void /g;
   var restoreRE = /"(\d+)"/g;
   var pathTestRE = /^[A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*|\['.*?'\]|\[".*?"\]|\[\d+\]|\[[A-Za-z_$][\w$]*\])*$/;
   var identRE = /[^\w$\.](?:[A-Za-z_$][\w$]*)/g;
@@ -2940,9 +2927,7 @@ var path = Object.freeze({
 
   function makeGetterFn(body) {
     try {
-      /* eslint-disable no-new-func */
       return new Function('scope', 'return ' + body + ';');
-      /* eslint-enable no-new-func */
     } catch (e) {
       'development' !== 'production' && warn('Invalid expression. ' + 'Generated function body: ' + body);
     }
@@ -3012,7 +2997,7 @@ var path = Object.freeze({
     exp.slice(0, 5) !== 'Math.';
   }
 
-var expression = Object.freeze({
+  var expression = Object.freeze({
     parseExpression: parseExpression,
     isSimplePath: isSimplePath
   });
@@ -3023,8 +3008,6 @@ var expression = Object.freeze({
   // before user watchers so that when user watchers are
   // triggered, the DOM would have already been in updated
   // state.
-
-  var queueIndex;
   var queue = [];
   var userQueue = [];
   var has = {};
@@ -3054,8 +3037,10 @@ var expression = Object.freeze({
     runBatcherQueue(userQueue);
     // dev tool hook
     /* istanbul ignore if */
-    if (devtools && config.devtools) {
-      devtools.emit('flush');
+    if ('development' !== 'production') {
+      if (inBrowser && window.__VUE_DEVTOOLS_GLOBAL_HOOK__) {
+        window.__VUE_DEVTOOLS_GLOBAL_HOOK__.emit('flush');
+      }
     }
     resetBatcherState();
   }
@@ -3069,8 +3054,8 @@ var expression = Object.freeze({
   function runBatcherQueue(queue) {
     // do not cache length because more watchers might be pushed
     // as we run existing watchers
-    for (queueIndex = 0; queueIndex < queue.length; queueIndex++) {
-      var watcher = queue[queueIndex];
+    for (var i = 0; i < queue.length; i++) {
+      var watcher = queue[i];
       var id = watcher.id;
       has[id] = null;
       watcher.run();
@@ -3078,8 +3063,8 @@ var expression = Object.freeze({
       if ('development' !== 'production' && has[id] != null) {
         circular[id] = (circular[id] || 0) + 1;
         if (circular[id] > config._maxUpdateCount) {
-          warn('You may have an infinite update loop for watcher ' + 'with expression "' + watcher.expression + '"', watcher.vm);
-          break;
+          queue.splice(has[id], 1);
+          warn('You may have an infinite update loop for watcher ' + 'with expression: ' + watcher.expression);
         }
       }
     }
@@ -3099,20 +3084,20 @@ var expression = Object.freeze({
   function pushWatcher(watcher) {
     var id = watcher.id;
     if (has[id] == null) {
+      // if an internal watcher is pushed, but the internal
+      // queue is already depleted, we run it immediately.
       if (internalQueueDepleted && !watcher.user) {
-        // an internal watcher triggered by a user watcher...
-        // let's run it immediately after current user watcher is done.
-        userQueue.splice(queueIndex + 1, 0, watcher);
-      } else {
-        // push watcher into appropriate queue
-        var q = watcher.user ? userQueue : queue;
-        has[id] = q.length;
-        q.push(watcher);
-        // queue the flush
-        if (!waiting) {
-          waiting = true;
-          nextTick(flushBatcherQueue);
-        }
+        watcher.run();
+        return;
+      }
+      // push watcher into appropriate queue
+      var q = watcher.user ? userQueue : queue;
+      has[id] = q.length;
+      q.push(watcher);
+      // queue the flush
+      if (!waiting) {
+        waiting = true;
+        nextTick(flushBatcherQueue);
       }
     }
   }
@@ -3125,7 +3110,7 @@ var expression = Object.freeze({
    * This is used for both the $watch() api and directives.
    *
    * @param {Vue} vm
-   * @param {String|Function} expOrFn
+   * @param {String} expression
    * @param {Function} cb
    * @param {Object} options
    *                 - {Array} filters
@@ -3146,15 +3131,13 @@ var expression = Object.freeze({
     var isFn = typeof expOrFn === 'function';
     this.vm = vm;
     vm._watchers.push(this);
-    this.expression = expOrFn;
+    this.expression = isFn ? expOrFn.toString() : expOrFn;
     this.cb = cb;
     this.id = ++uid$2; // uid for batching
     this.active = true;
     this.dirty = this.lazy; // for lazy watchers
-    this.deps = [];
-    this.newDeps = [];
-    this.depIds = Object.create(null);
-    this.newDepIds = null;
+    this.deps = Object.create(null);
+    this.newDeps = null;
     this.prevError = null; // for async error stacks
     // parse expression for getter/setter
     if (isFn) {
@@ -3172,6 +3155,23 @@ var expression = Object.freeze({
   }
 
   /**
+   * Add a dependency to this directive.
+   *
+   * @param {Dep} dep
+   */
+
+  Watcher.prototype.addDep = function (dep) {
+    var id = dep.id;
+    if (!this.newDeps[id]) {
+      this.newDeps[id] = dep;
+      if (!this.deps[id]) {
+        this.deps[id] = dep;
+        dep.addSub(this);
+      }
+    }
+  };
+
+  /**
    * Evaluate the getter, and re-collect dependencies.
    */
 
@@ -3183,7 +3183,7 @@ var expression = Object.freeze({
       value = this.getter.call(scope, scope);
     } catch (e) {
       if ('development' !== 'production' && config.warnExpressionErrors) {
-        warn('Error when evaluating expression ' + '"' + this.expression + '": ' + e.toString(), this.vm);
+        warn('Error when evaluating expression "' + this.expression + '". ' + (config.debug ? '' : 'Turn on debug mode to see stack trace.'), e);
       }
     }
     // "touch" every property so they are all tracked as
@@ -3219,14 +3219,14 @@ var expression = Object.freeze({
       this.setter.call(scope, scope, value);
     } catch (e) {
       if ('development' !== 'production' && config.warnExpressionErrors) {
-        warn('Error when evaluating setter ' + '"' + this.expression + '": ' + e.toString(), this.vm);
+        warn('Error when evaluating setter "' + this.expression + '"', e);
       }
     }
     // two-way sync for v-for alias
     var forContext = scope.$forContext;
     if (forContext && forContext.alias === this.expression) {
       if (forContext.filters) {
-        'development' !== 'production' && warn('It seems you are using two-way binding on ' + 'a v-for alias (' + this.expression + '), and the ' + 'v-for has filters. This will not work properly. ' + 'Either remove the filters or use an array of ' + 'objects and bind to object properties instead.', this.vm);
+        'development' !== 'production' && warn('It seems you are using two-way binding on ' + 'a v-for alias (' + this.expression + '), and the ' + 'v-for has filters. This will not work properly. ' + 'Either remove the filters or use an array of ' + 'objects and bind to object properties instead.');
         return;
       }
       forContext._withLock(function () {
@@ -3246,25 +3246,7 @@ var expression = Object.freeze({
 
   Watcher.prototype.beforeGet = function () {
     Dep.target = this;
-    this.newDepIds = Object.create(null);
-    this.newDeps.length = 0;
-  };
-
-  /**
-   * Add a dependency to this directive.
-   *
-   * @param {Dep} dep
-   */
-
-  Watcher.prototype.addDep = function (dep) {
-    var id = dep.id;
-    if (!this.newDepIds[id]) {
-      this.newDepIds[id] = true;
-      this.newDeps.push(dep);
-      if (!this.depIds[id]) {
-        dep.addSub(this);
-      }
-    }
+    this.newDeps = Object.create(null);
   };
 
   /**
@@ -3273,17 +3255,15 @@ var expression = Object.freeze({
 
   Watcher.prototype.afterGet = function () {
     Dep.target = null;
-    var i = this.deps.length;
+    var ids = Object.keys(this.deps);
+    var i = ids.length;
     while (i--) {
-      var dep = this.deps[i];
-      if (!this.newDepIds[dep.id]) {
-        dep.removeSub(this);
+      var id = ids[i];
+      if (!this.newDeps[id]) {
+        this.deps[id].removeSub(this);
       }
     }
-    this.depIds = this.newDepIds;
-    var tmp = this.deps;
     this.deps = this.newDeps;
-    this.newDeps = tmp;
   };
 
   /**
@@ -3371,9 +3351,10 @@ var expression = Object.freeze({
    */
 
   Watcher.prototype.depend = function () {
-    var i = this.deps.length;
+    var depIds = Object.keys(this.deps);
+    var i = depIds.length;
     while (i--) {
-      this.deps[i].depend();
+      this.deps[depIds[i]].depend();
     }
   };
 
@@ -3384,15 +3365,15 @@ var expression = Object.freeze({
   Watcher.prototype.teardown = function () {
     if (this.active) {
       // remove self from vm's watcher list
-      // this is a somewhat expensive operation so we skip it
-      // if the vm is being destroyed or is performing a v-for
-      // re-render (the watcher list is then filtered by v-for).
-      if (!this.vm._isBeingDestroyed && !this.vm._vForRemoving) {
+      // we can skip this if the vm if being destroyed
+      // which can improve teardown performance.
+      if (!this.vm._isBeingDestroyed) {
         this.vm._watchers.$remove(this);
       }
-      var i = this.deps.length;
+      var depIds = Object.keys(this.deps);
+      var i = depIds.length;
       while (i--) {
-        this.deps[i].removeSub(this);
+        this.deps[depIds[i]].removeSub(this);
       }
       this.active = false;
       this.vm = this.cb = this.value = null;
@@ -3419,14 +3400,817 @@ var expression = Object.freeze({
     }
   }
 
-  var text$1 = {
+  var cloak = {
+    bind: function bind() {
+      var el = this.el;
+      this.vm.$once('pre-hook:compiled', function () {
+        el.removeAttribute('v-cloak');
+      });
+    }
+  };
+
+  var ref = {
+    bind: function bind() {
+      'development' !== 'production' && warn('v-ref:' + this.arg + ' must be used on a child ' + 'component. Found on <' + this.el.tagName.toLowerCase() + '>.');
+    }
+  };
+
+  var ON = 700;
+  var MODEL = 800;
+  var BIND = 850;
+  var TRANSITION = 1100;
+  var EL = 1500;
+  var COMPONENT = 1500;
+  var PARTIAL = 1750;
+  var SLOT = 1750;
+  var FOR = 2000;
+  var IF = 2000;
+
+  var el = {
+
+    priority: EL,
 
     bind: function bind() {
-      this.attr = this.el.nodeType === 3 ? 'data' : 'textContent';
+      /* istanbul ignore if */
+      if (!this.arg) {
+        return;
+      }
+      var id = this.id = camelize(this.arg);
+      var refs = (this._scope || this.vm).$els;
+      if (hasOwn(refs, id)) {
+        refs[id] = this.el;
+      } else {
+        defineReactive(refs, id, this.el);
+      }
+    },
+
+    unbind: function unbind() {
+      var refs = (this._scope || this.vm).$els;
+      if (refs[this.id] === this.el) {
+        refs[this.id] = null;
+      }
+    }
+  };
+
+  var prefixes = ['-webkit-', '-moz-', '-ms-'];
+  var camelPrefixes = ['Webkit', 'Moz', 'ms'];
+  var importantRE = /!important;?$/;
+  var propCache = Object.create(null);
+
+  var testEl = null;
+
+  var style = {
+
+    deep: true,
+
+    update: function update(value) {
+      if (typeof value === 'string') {
+        this.el.style.cssText = value;
+      } else if (isArray(value)) {
+        this.handleObject(value.reduce(extend, {}));
+      } else {
+        this.handleObject(value || {});
+      }
+    },
+
+    handleObject: function handleObject(value) {
+      // cache object styles so that only changed props
+      // are actually updated.
+      var cache = this.cache || (this.cache = {});
+      var name, val;
+      for (name in cache) {
+        if (!(name in value)) {
+          this.handleSingle(name, null);
+          delete cache[name];
+        }
+      }
+      for (name in value) {
+        val = value[name];
+        if (val !== cache[name]) {
+          cache[name] = val;
+          this.handleSingle(name, val);
+        }
+      }
+    },
+
+    handleSingle: function handleSingle(prop, value) {
+      prop = normalize(prop);
+      if (!prop) return; // unsupported prop
+      // cast possible numbers/booleans into strings
+      if (value != null) value += '';
+      if (value) {
+        var isImportant = importantRE.test(value) ? 'important' : '';
+        if (isImportant) {
+          value = value.replace(importantRE, '').trim();
+        }
+        this.el.style.setProperty(prop, value, isImportant);
+      } else {
+        this.el.style.removeProperty(prop);
+      }
+    }
+
+  };
+
+  /**
+   * Normalize a CSS property name.
+   * - cache result
+   * - auto prefix
+   * - camelCase -> dash-case
+   *
+   * @param {String} prop
+   * @return {String}
+   */
+
+  function normalize(prop) {
+    if (propCache[prop]) {
+      return propCache[prop];
+    }
+    var res = prefix(prop);
+    propCache[prop] = propCache[res] = res;
+    return res;
+  }
+
+  /**
+   * Auto detect the appropriate prefix for a CSS property.
+   * https://gist.github.com/paulirish/523692
+   *
+   * @param {String} prop
+   * @return {String}
+   */
+
+  function prefix(prop) {
+    prop = hyphenate(prop);
+    var camel = camelize(prop);
+    var upper = camel.charAt(0).toUpperCase() + camel.slice(1);
+    if (!testEl) {
+      testEl = document.createElement('div');
+    }
+    if (camel in testEl.style) {
+      return prop;
+    }
+    var i = prefixes.length;
+    var prefixed;
+    while (i--) {
+      prefixed = camelPrefixes[i] + upper;
+      if (prefixed in testEl.style) {
+        return prefixes[i] + prop;
+      }
+    }
+  }
+
+  // xlink
+  var xlinkNS = 'http://www.w3.org/1999/xlink';
+  var xlinkRE = /^xlink:/;
+
+  // check for attributes that prohibit interpolations
+  var disallowedInterpAttrRE = /^v-|^:|^@|^(is|transition|transition-mode|debounce|track-by|stagger|enter-stagger|leave-stagger)$/;
+
+  // these attributes should also set their corresponding properties
+  // because they only affect the initial state of the element
+  var attrWithPropsRE = /^(value|checked|selected|muted)$/;
+
+  // these attributes should set a hidden property for
+  // binding v-model to object values
+  var modelProps = {
+    value: '_value',
+    'true-value': '_trueValue',
+    'false-value': '_falseValue'
+  };
+
+  var bind = {
+
+    priority: BIND,
+
+    bind: function bind() {
+      var attr = this.arg;
+      var tag = this.el.tagName;
+      // should be deep watch on object mode
+      if (!attr) {
+        this.deep = true;
+      }
+      // handle interpolation bindings
+      var descriptor = this.descriptor;
+      var tokens = descriptor.interp;
+      if (tokens) {
+        // handle interpolations with one-time tokens
+        if (descriptor.hasOneTime) {
+          this.expression = tokensToExp(tokens, this._scope || this.vm);
+        }
+
+        // only allow binding on native attributes
+        if (disallowedInterpAttrRE.test(attr) || attr === 'name' && (tag === 'PARTIAL' || tag === 'SLOT')) {
+          'development' !== 'production' && warn(attr + '="' + descriptor.raw + '": ' + 'attribute interpolation is not allowed in Vue.js ' + 'directives and special attributes.');
+          this.el.removeAttribute(attr);
+          this.invalid = true;
+        }
+
+        /* istanbul ignore if */
+        if ('development' !== 'production') {
+          var raw = attr + '="' + descriptor.raw + '": ';
+          // warn src
+          if (attr === 'src') {
+            warn(raw + 'interpolation in "src" attribute will cause ' + 'a 404 request. Use v-bind:src instead.');
+          }
+
+          // warn style
+          if (attr === 'style') {
+            warn(raw + 'interpolation in "style" attribute will cause ' + 'the attribute to be discarded in Internet Explorer. ' + 'Use v-bind:style instead.');
+          }
+        }
+      }
     },
 
     update: function update(value) {
-      this.el[this.attr] = _toString(value);
+      if (this.invalid) {
+        return;
+      }
+      var attr = this.arg;
+      if (this.arg) {
+        this.handleSingle(attr, value);
+      } else {
+        this.handleObject(value || {});
+      }
+    },
+
+    // share object handler with v-bind:class
+    handleObject: style.handleObject,
+
+    handleSingle: function handleSingle(attr, value) {
+      var el = this.el;
+      var interp = this.descriptor.interp;
+      if (!interp && attrWithPropsRE.test(attr) && attr in el) {
+        el[attr] = attr === 'value' ? value == null // IE9 will set input.value to "null" for null...
+        ? '' : value : value;
+      }
+      // set model props
+      var modelProp = modelProps[attr];
+      if (!interp && modelProp) {
+        el[modelProp] = value;
+        // update v-model if present
+        var model = el.__v_model;
+        if (model) {
+          model.listener();
+        }
+      }
+      // do not set value attribute for textarea
+      if (attr === 'value' && el.tagName === 'TEXTAREA') {
+        el.removeAttribute(attr);
+        return;
+      }
+      // update attribute
+      if (value != null && value !== false) {
+        if (attr === 'class') {
+          // handle edge case #1960:
+          // class interpolation should not overwrite Vue transition class
+          if (el.__v_trans) {
+            value += ' ' + el.__v_trans.id + '-transition';
+          }
+          setClass(el, value);
+        } else if (xlinkRE.test(attr)) {
+          el.setAttributeNS(xlinkNS, attr, value);
+        } else {
+          el.setAttribute(attr, value);
+        }
+      } else {
+        el.removeAttribute(attr);
+      }
+    }
+  };
+
+  // keyCode aliases
+  var keyCodes = {
+    esc: 27,
+    tab: 9,
+    enter: 13,
+    space: 32,
+    'delete': 46,
+    up: 38,
+    left: 37,
+    right: 39,
+    down: 40
+  };
+
+  function keyFilter(handler, keys) {
+    var codes = keys.map(function (key) {
+      var charCode = key.charCodeAt(0);
+      if (charCode > 47 && charCode < 58) {
+        return parseInt(key, 10);
+      }
+      if (key.length === 1) {
+        charCode = key.toUpperCase().charCodeAt(0);
+        if (charCode > 64 && charCode < 91) {
+          return charCode;
+        }
+      }
+      return keyCodes[key];
+    });
+    return function keyHandler(e) {
+      if (codes.indexOf(e.keyCode) > -1) {
+        return handler.call(this, e);
+      }
+    };
+  }
+
+  function stopFilter(handler) {
+    return function stopHandler(e) {
+      e.stopPropagation();
+      return handler.call(this, e);
+    };
+  }
+
+  function preventFilter(handler) {
+    return function preventHandler(e) {
+      e.preventDefault();
+      return handler.call(this, e);
+    };
+  }
+
+  var on = {
+
+    acceptStatement: true,
+    priority: ON,
+
+    bind: function bind() {
+      // deal with iframes
+      if (this.el.tagName === 'IFRAME' && this.arg !== 'load') {
+        var self = this;
+        this.iframeBind = function () {
+          on$1(self.el.contentWindow, self.arg, self.handler);
+        };
+        this.on('load', this.iframeBind);
+      }
+    },
+
+    update: function update(handler) {
+      // stub a noop for v-on with no value,
+      // e.g. @mousedown.prevent
+      if (!this.descriptor.raw) {
+        handler = function () {};
+      }
+
+      if (typeof handler !== 'function') {
+        'development' !== 'production' && warn('v-on:' + this.arg + '="' + this.expression + '" expects a function value, ' + 'got ' + handler);
+        return;
+      }
+
+      // apply modifiers
+      if (this.modifiers.stop) {
+        handler = stopFilter(handler);
+      }
+      if (this.modifiers.prevent) {
+        handler = preventFilter(handler);
+      }
+      // key filter
+      var keys = Object.keys(this.modifiers).filter(function (key) {
+        return key !== 'stop' && key !== 'prevent';
+      });
+      if (keys.length) {
+        handler = keyFilter(handler, keys);
+      }
+
+      this.reset();
+      this.handler = handler;
+
+      if (this.iframeBind) {
+        this.iframeBind();
+      } else {
+        on$1(this.el, this.arg, this.handler);
+      }
+    },
+
+    reset: function reset() {
+      var el = this.iframeBind ? this.el.contentWindow : this.el;
+      if (this.handler) {
+        off(el, this.arg, this.handler);
+      }
+    },
+
+    unbind: function unbind() {
+      this.reset();
+    }
+  };
+
+  var checkbox = {
+
+    bind: function bind() {
+      var self = this;
+      var el = this.el;
+
+      this.getValue = function () {
+        return el.hasOwnProperty('_value') ? el._value : self.params.number ? toNumber(el.value) : el.value;
+      };
+
+      function getBooleanValue() {
+        var val = el.checked;
+        if (val && el.hasOwnProperty('_trueValue')) {
+          return el._trueValue;
+        }
+        if (!val && el.hasOwnProperty('_falseValue')) {
+          return el._falseValue;
+        }
+        return val;
+      }
+
+      this.listener = function () {
+        var model = self._watcher.value;
+        if (isArray(model)) {
+          var val = self.getValue();
+          if (el.checked) {
+            if (indexOf(model, val) < 0) {
+              model.push(val);
+            }
+          } else {
+            model.$remove(val);
+          }
+        } else {
+          self.set(getBooleanValue());
+        }
+      };
+
+      this.on('change', this.listener);
+      if (el.hasAttribute('checked')) {
+        this.afterBind = this.listener;
+      }
+    },
+
+    update: function update(value) {
+      var el = this.el;
+      if (isArray(value)) {
+        el.checked = indexOf(value, this.getValue()) > -1;
+      } else {
+        if (el.hasOwnProperty('_trueValue')) {
+          el.checked = looseEqual(value, el._trueValue);
+        } else {
+          el.checked = !!value;
+        }
+      }
+    }
+  };
+
+  var select = {
+
+    bind: function bind() {
+      var self = this;
+      var el = this.el;
+
+      // method to force update DOM using latest value.
+      this.forceUpdate = function () {
+        if (self._watcher) {
+          self.update(self._watcher.get());
+        }
+      };
+
+      // check if this is a multiple select
+      var multiple = this.multiple = el.hasAttribute('multiple');
+
+      // attach listener
+      this.listener = function () {
+        var value = getValue(el, multiple);
+        value = self.params.number ? isArray(value) ? value.map(toNumber) : toNumber(value) : value;
+        self.set(value);
+      };
+      this.on('change', this.listener);
+
+      // if has initial value, set afterBind
+      var initValue = getValue(el, multiple, true);
+      if (multiple && initValue.length || !multiple && initValue !== null) {
+        this.afterBind = this.listener;
+      }
+
+      // All major browsers except Firefox resets
+      // selectedIndex with value -1 to 0 when the element
+      // is appended to a new parent, therefore we have to
+      // force a DOM update whenever that happens...
+      this.vm.$on('hook:attached', this.forceUpdate);
+    },
+
+    update: function update(value) {
+      var el = this.el;
+      el.selectedIndex = -1;
+      var multi = this.multiple && isArray(value);
+      var options = el.options;
+      var i = options.length;
+      var op, val;
+      while (i--) {
+        op = options[i];
+        val = op.hasOwnProperty('_value') ? op._value : op.value;
+        /* eslint-disable eqeqeq */
+        op.selected = multi ? indexOf$1(value, val) > -1 : looseEqual(value, val);
+        /* eslint-enable eqeqeq */
+      }
+    },
+
+    unbind: function unbind() {
+      /* istanbul ignore next */
+      this.vm.$off('hook:attached', this.forceUpdate);
+    }
+  };
+
+  /**
+   * Get select value
+   *
+   * @param {SelectElement} el
+   * @param {Boolean} multi
+   * @param {Boolean} init
+   * @return {Array|*}
+   */
+
+  function getValue(el, multi, init) {
+    var res = multi ? [] : null;
+    var op, val, selected;
+    for (var i = 0, l = el.options.length; i < l; i++) {
+      op = el.options[i];
+      selected = init ? op.hasAttribute('selected') : op.selected;
+      if (selected) {
+        val = op.hasOwnProperty('_value') ? op._value : op.value;
+        if (multi) {
+          res.push(val);
+        } else {
+          return val;
+        }
+      }
+    }
+    return res;
+  }
+
+  /**
+   * Native Array.indexOf uses strict equal, but in this
+   * case we need to match string/numbers with custom equal.
+   *
+   * @param {Array} arr
+   * @param {*} val
+   */
+
+  function indexOf$1(arr, val) {
+    var i = arr.length;
+    while (i--) {
+      if (looseEqual(arr[i], val)) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  var radio = {
+
+    bind: function bind() {
+      var self = this;
+      var el = this.el;
+
+      this.getValue = function () {
+        // value overwrite via v-bind:value
+        if (el.hasOwnProperty('_value')) {
+          return el._value;
+        }
+        var val = el.value;
+        if (self.params.number) {
+          val = toNumber(val);
+        }
+        return val;
+      };
+
+      this.listener = function () {
+        self.set(self.getValue());
+      };
+      this.on('change', this.listener);
+
+      if (el.hasAttribute('checked')) {
+        this.afterBind = this.listener;
+      }
+    },
+
+    update: function update(value) {
+      this.el.checked = looseEqual(value, this.getValue());
+    }
+  };
+
+  var text$2 = {
+
+    bind: function bind() {
+      var self = this;
+      var el = this.el;
+      var isRange = el.type === 'range';
+      var lazy = this.params.lazy;
+      var number = this.params.number;
+      var debounce = this.params.debounce;
+
+      // handle composition events.
+      //   http://blog.evanyou.me/2014/01/03/composition-event/
+      // skip this for Android because it handles composition
+      // events quite differently. Android doesn't trigger
+      // composition events for language input methods e.g.
+      // Chinese, but instead triggers them for spelling
+      // suggestions... (see Discussion/#162)
+      var composing = false;
+      if (!isAndroid && !isRange) {
+        this.on('compositionstart', function () {
+          composing = true;
+        });
+        this.on('compositionend', function () {
+          composing = false;
+          // in IE11 the "compositionend" event fires AFTER
+          // the "input" event, so the input handler is blocked
+          // at the end... have to call it here.
+          //
+          // #1327: in lazy mode this is unecessary.
+          if (!lazy) {
+            self.listener();
+          }
+        });
+      }
+
+      // prevent messing with the input when user is typing,
+      // and force update on blur.
+      this.focused = false;
+      if (!isRange && !lazy) {
+        this.on('focus', function () {
+          self.focused = true;
+        });
+        this.on('blur', function () {
+          self.focused = false;
+          // do not sync value after fragment removal (#2017)
+          if (!self._frag || self._frag.inserted) {
+            self.rawListener();
+          }
+        });
+      }
+
+      // Now attach the main listener
+      this.listener = this.rawListener = function () {
+        if (composing || !self._bound) {
+          return;
+        }
+        var val = number || isRange ? toNumber(el.value) : el.value;
+        self.set(val);
+        // force update on next tick to avoid lock & same value
+        // also only update when user is not typing
+        nextTick(function () {
+          if (self._bound && !self.focused) {
+            self.update(self._watcher.value);
+          }
+        });
+      };
+
+      // apply debounce
+      if (debounce) {
+        this.listener = _debounce(this.listener, debounce);
+      }
+
+      // Support jQuery events, since jQuery.trigger() doesn't
+      // trigger native events in some cases and some plugins
+      // rely on $.trigger()
+      //
+      // We want to make sure if a listener is attached using
+      // jQuery, it is also removed with jQuery, that's why
+      // we do the check for each directive instance and
+      // store that check result on itself. This also allows
+      // easier test coverage control by unsetting the global
+      // jQuery variable in tests.
+      this.hasjQuery = typeof jQuery === 'function';
+      if (this.hasjQuery) {
+        jQuery(el).on('change', this.listener);
+        if (!lazy) {
+          jQuery(el).on('input', this.listener);
+        }
+      } else {
+        this.on('change', this.listener);
+        if (!lazy) {
+          this.on('input', this.listener);
+        }
+      }
+
+      // IE9 doesn't fire input event on backspace/del/cut
+      if (!lazy && isIE9) {
+        this.on('cut', function () {
+          nextTick(self.listener);
+        });
+        this.on('keyup', function (e) {
+          if (e.keyCode === 46 || e.keyCode === 8) {
+            self.listener();
+          }
+        });
+      }
+
+      // set initial value if present
+      if (el.hasAttribute('value') || el.tagName === 'TEXTAREA' && el.value.trim()) {
+        this.afterBind = this.listener;
+      }
+    },
+
+    update: function update(value) {
+      this.el.value = _toString(value);
+    },
+
+    unbind: function unbind() {
+      var el = this.el;
+      if (this.hasjQuery) {
+        jQuery(el).off('change', this.listener);
+        jQuery(el).off('input', this.listener);
+      }
+    }
+  };
+
+  var handlers = {
+    text: text$2,
+    radio: radio,
+    select: select,
+    checkbox: checkbox
+  };
+
+  var model = {
+
+    priority: MODEL,
+    twoWay: true,
+    handlers: handlers,
+    params: ['lazy', 'number', 'debounce'],
+
+    /**
+     * Possible elements:
+     *   <select>
+     *   <textarea>
+     *   <input type="*">
+     *     - text
+     *     - checkbox
+     *     - radio
+     *     - number
+     */
+
+    bind: function bind() {
+      // friendly warning...
+      this.checkFilters();
+      if (this.hasRead && !this.hasWrite) {
+        'development' !== 'production' && warn('It seems you are using a read-only filter with ' + 'v-model. You might want to use a two-way filter ' + 'to ensure correct behavior.');
+      }
+      var el = this.el;
+      var tag = el.tagName;
+      var handler;
+      if (tag === 'INPUT') {
+        handler = handlers[el.type] || handlers.text;
+      } else if (tag === 'SELECT') {
+        handler = handlers.select;
+      } else if (tag === 'TEXTAREA') {
+        handler = handlers.text;
+      } else {
+        'development' !== 'production' && warn('v-model does not support element type: ' + tag);
+        return;
+      }
+      el.__v_model = this;
+      handler.bind.call(this);
+      this.update = handler.update;
+      this._unbind = handler.unbind;
+    },
+
+    /**
+     * Check read/write filter stats.
+     */
+
+    checkFilters: function checkFilters() {
+      var filters = this.filters;
+      if (!filters) return;
+      var i = filters.length;
+      while (i--) {
+        var filter = resolveAsset(this.vm.$options, 'filters', filters[i].name);
+        if (typeof filter === 'function' || filter.read) {
+          this.hasRead = true;
+        }
+        if (filter.write) {
+          this.hasWrite = true;
+        }
+      }
+    },
+
+    unbind: function unbind() {
+      this.el.__v_model = null;
+      this._unbind && this._unbind();
+    }
+  };
+
+  var show = {
+
+    bind: function bind() {
+      // check else block
+      var next = this.el.nextElementSibling;
+      if (next && getAttr(next, 'v-else') !== null) {
+        this.elseEl = next;
+      }
+    },
+
+    update: function update(value) {
+      this.apply(this.el, value);
+      if (this.elseEl) {
+        this.apply(this.elseEl, !value);
+      }
+    },
+
+    apply: function apply(el, value) {
+      if (inDoc(el)) {
+        applyTransition(el, value ? 1 : -1, toggle, this.vm);
+      } else {
+        toggle();
+      }
+      function toggle() {
+        el.style.display = value ? '' : 'none';
+      }
     }
   };
 
@@ -3457,10 +4241,10 @@ var expression = Object.freeze({
    */
 
   function isRealTemplate(node) {
-    return isTemplate(node) && isFragment(node.content);
+    return isTemplate(node) && node.content instanceof DocumentFragment;
   }
 
-  var tagRE$1 = /<([\w:-]+)/;
+  var tagRE$1 = /<([\w:]+)/;
   var entityRE = /&#?\w+?;/;
 
   /**
@@ -3475,8 +4259,7 @@ var expression = Object.freeze({
 
   function stringToFragment(templateString, raw) {
     // try a cache hit first
-    var cacheKey = raw ? templateString : templateString.trim();
-    var hit = templateCache.get(cacheKey);
+    var hit = templateCache.get(templateString);
     if (hit) {
       return hit;
     }
@@ -3489,6 +4272,7 @@ var expression = Object.freeze({
       // text only, return a single text node.
       frag.appendChild(document.createTextNode(templateString));
     } else {
+
       var tag = tagMatch && tagMatch[1];
       var wrap = map[tag] || map.efault;
       var depth = wrap[0];
@@ -3496,6 +4280,9 @@ var expression = Object.freeze({
       var suffix = wrap[2];
       var node = document.createElement('div');
 
+      if (!raw) {
+        templateString = templateString.trim();
+      }
       node.innerHTML = prefix + templateString + suffix;
       while (depth--) {
         node = node.lastChild;
@@ -3508,10 +4295,8 @@ var expression = Object.freeze({
         frag.appendChild(child);
       }
     }
-    if (!raw) {
-      trimNode(frag);
-    }
-    templateCache.put(cacheKey, frag);
+
+    templateCache.put(templateString, frag);
     return frag;
   }
 
@@ -3582,7 +4367,6 @@ var expression = Object.freeze({
    */
 
   function cloneNode(node) {
-    /* istanbul ignore if */
     if (!node.querySelectorAll) {
       return node.cloneNode();
     }
@@ -3645,7 +4429,7 @@ var expression = Object.freeze({
 
     // if the template is already a document fragment,
     // do nothing
-    if (isFragment(template)) {
+    if (template instanceof DocumentFragment) {
       trimNode(template);
       return shouldClone ? cloneNode(template) : template;
     }
@@ -3675,48 +4459,10 @@ var expression = Object.freeze({
     return frag && shouldClone ? cloneNode(frag) : frag;
   }
 
-var template = Object.freeze({
+  var template = Object.freeze({
     cloneNode: cloneNode,
     parseTemplate: parseTemplate
   });
-
-  var html = {
-
-    bind: function bind() {
-      // a comment node means this is a binding for
-      // {{{ inline unescaped html }}}
-      if (this.el.nodeType === 8) {
-        // hold nodes
-        this.nodes = [];
-        // replace the placeholder with proper anchor
-        this.anchor = createAnchor('v-html');
-        replace(this.el, this.anchor);
-      }
-    },
-
-    update: function update(value) {
-      value = _toString(value);
-      if (this.nodes) {
-        this.swap(value);
-      } else {
-        this.el.innerHTML = value;
-      }
-    },
-
-    swap: function swap(value) {
-      // remove old nodes
-      var i = this.nodes.length;
-      while (i--) {
-        remove(this.nodes[i]);
-      }
-      // convert new value to a fragment
-      // do not attempt to retrieve from id selector
-      var frag = parseTemplate(value, true, true);
-      // save a reference to these nodes so we can remove later
-      this.nodes = toArray(frag.childNodes);
-      before(frag, this.anchor);
-    }
-  };
 
   /**
    * Abstraction for a partially-compiled fragment.
@@ -3727,7 +4473,6 @@ var template = Object.freeze({
    * @param {DocumentFragment} frag
    * @param {Vue} [host]
    * @param {Object} [scope]
-   * @param {Fragment} [parentFrag]
    */
   function Fragment(linker, vm, frag, host, scope, parentFrag) {
     this.children = [];
@@ -3742,7 +4487,7 @@ var template = Object.freeze({
     this.unlink = linker(vm, frag, host, scope, this);
     var single = this.single = frag.childNodes.length === 1 &&
     // do not go single mode if the only node is an anchor
-    !frag.childNodes[0].__v_anchor;
+    !frag.childNodes[0].__vue_anchor;
     if (single) {
       this.node = frag.childNodes[0];
       this.before = singleBefore;
@@ -3756,7 +4501,7 @@ var template = Object.freeze({
       this.before = multiBefore;
       this.remove = multiRemove;
     }
-    this.node.__v_frag = this;
+    this.node.__vfrag__ = this;
   }
 
   /**
@@ -3882,7 +4627,6 @@ var template = Object.freeze({
     if (this.parentFrag) {
       this.parentFrag.childFrags.$remove(this);
     }
-    this.node.__v_frag = null;
     this.unlink();
   };
 
@@ -3893,7 +4637,7 @@ var template = Object.freeze({
    */
 
   function attach(child) {
-    if (!child._isAttached && inDoc(child.$el)) {
+    if (!child._isAttached) {
       child._callHook('attached');
     }
   }
@@ -3905,7 +4649,7 @@ var template = Object.freeze({
    */
 
   function detach(child) {
-    if (child._isAttached && !inDoc(child.$el)) {
+    if (child._isAttached) {
       child._callHook('detached');
     }
   }
@@ -3934,7 +4678,7 @@ var template = Object.freeze({
     var linker;
     var cid = vm.constructor.cid;
     if (cid > 0) {
-      var cacheId = cid + (isString ? el : getOuterHTML(el));
+      var cacheId = cid + (isString ? el : el.outerHTML);
       linker = linkerCache.get(cacheId);
       if (!linker) {
         linker = compile(template, vm.$options, true);
@@ -3959,29 +4703,78 @@ var template = Object.freeze({
     return new Fragment(this.linker, this.vm, frag, host, scope, parentFrag);
   };
 
-  var ON = 700;
-  var MODEL = 800;
-  var BIND = 850;
-  var TRANSITION = 1100;
-  var EL = 1500;
-  var COMPONENT = 1500;
-  var PARTIAL = 1750;
-  var IF = 2100;
-  var FOR = 2200;
-  var SLOT = 2300;
+  var vIf = {
 
-  var uid$3 = 0;
+    priority: IF,
+
+    bind: function bind() {
+      var el = this.el;
+      if (!el.__vue__) {
+        // check else block
+        var next = el.nextElementSibling;
+        if (next && getAttr(next, 'v-else') !== null) {
+          remove(next);
+          this.elseFactory = new FragmentFactory(this.vm, next);
+        }
+        // check main block
+        this.anchor = createAnchor('v-if');
+        replace(el, this.anchor);
+        this.factory = new FragmentFactory(this.vm, el);
+      } else {
+        'development' !== 'production' && warn('v-if="' + this.expression + '" cannot be ' + 'used on an instance root element.');
+        this.invalid = true;
+      }
+    },
+
+    update: function update(value) {
+      if (this.invalid) return;
+      if (value) {
+        if (!this.frag) {
+          this.insert();
+        }
+      } else {
+        this.remove();
+      }
+    },
+
+    insert: function insert() {
+      if (this.elseFrag) {
+        this.elseFrag.remove();
+        this.elseFrag = null;
+      }
+      this.frag = this.factory.create(this._host, this._scope, this._frag);
+      this.frag.before(this.anchor);
+    },
+
+    remove: function remove() {
+      if (this.frag) {
+        this.frag.remove();
+        this.frag = null;
+      }
+      if (this.elseFactory && !this.elseFrag) {
+        this.elseFrag = this.elseFactory.create(this._host, this._scope, this._frag);
+        this.elseFrag.before(this.anchor);
+      }
+    },
+
+    unbind: function unbind() {
+      if (this.frag) {
+        this.frag.destroy();
+      }
+    }
+  };
+
+  var uid$1 = 0;
 
   var vFor = {
 
     priority: FOR,
-    terminal: true,
 
     params: ['track-by', 'stagger', 'enter-stagger', 'leave-stagger'],
 
     bind: function bind() {
-      // support "item in/of items" syntax
-      var inMatch = this.expression.match(/(.*) (?:in|of) (.*)/);
+      // support "item in items" syntax
+      var inMatch = this.expression.match(/(.*) in (.*)/);
       if (inMatch) {
         var itMatch = inMatch[1].match(/\((.*),(.*)\)/);
         if (itMatch) {
@@ -3994,12 +4787,12 @@ var template = Object.freeze({
       }
 
       if (!this.alias) {
-        'development' !== 'production' && warn('Invalid v-for expression "' + this.descriptor.raw + '": ' + 'alias is required.', this.vm);
+        'development' !== 'production' && warn('Alias is required in v-for.');
         return;
       }
 
       // uid as a cache identifier
-      this.id = '__v-for__' + ++uid$3;
+      this.id = '__v-for__' + ++uid$1;
 
       // check if this is an option list,
       // so that we know if we need to update the <select>'s
@@ -4085,9 +4878,7 @@ var template = Object.freeze({
           // update data for track-by, object repeat &
           // primitive values.
           if (trackByKey || convertedFromObject || primitive) {
-            withoutConversion(function () {
-              frag.scope[alias] = value;
-            });
+            frag.scope[alias] = value;
           }
         } else {
           // new isntance
@@ -4110,22 +4901,12 @@ var template = Object.freeze({
       // from cache)
       var removalIndex = 0;
       var totalRemoved = oldFrags.length - frags.length;
-      // when removing a large number of fragments, watcher removal
-      // turns out to be a perf bottleneck, so we batch the watcher
-      // removals into a single filter call!
-      this.vm._vForRemoving = true;
       for (i = 0, l = oldFrags.length; i < l; i++) {
         frag = oldFrags[i];
         if (!frag.reused) {
           this.deleteCachedFrag(frag);
           this.remove(frag, removalIndex++, totalRemoved, inDocument);
         }
-      }
-      this.vm._vForRemoving = false;
-      if (removalIndex) {
-        this.vm._watchers = this.vm._watchers.filter(function (w) {
-          return w.active;
-        });
       }
 
       // Final pass, move/insert new fragments into the
@@ -4177,11 +4958,7 @@ var template = Object.freeze({
       // for two-way binding on alias
       scope.$forContext = this;
       // define scope properties
-      // important: define the scope alias without forced conversion
-      // so that frozen data structures remain non-reactive.
-      withoutConversion(function () {
-        defineReactive(scope, alias, value);
-      });
+      defineReactive(scope, alias, value);
       defineReactive(scope, '$index', index);
       if (key) {
         defineReactive(scope, '$key', key);
@@ -4255,7 +5032,7 @@ var template = Object.freeze({
         var anchor = frag.staggerAnchor;
         if (!anchor) {
           anchor = frag.staggerAnchor = createAnchor('stagger-anchor');
-          anchor.__v_frag = frag;
+          anchor.__vfrag__ = frag;
         }
         after(anchor, prevEl);
         var op = frag.staggerCb = cancellable(function () {
@@ -4310,14 +5087,6 @@ var template = Object.freeze({
      */
 
     move: function move(frag, prevEl) {
-      // fix a common issue with Sortable:
-      // if prevEl doesn't have nextSibling, this means it's
-      // been dragged after the end anchor. Just re-position
-      // the end anchor to the end of the container.
-      /* istanbul ignore if */
-      if (!prevEl.nextSibling) {
-        this.end.parentNode.appendChild(this.end);
-      }
       frag.before(prevEl.nextSibling, false);
     },
 
@@ -4336,7 +5105,7 @@ var template = Object.freeze({
       var primitive = !isObject(value);
       var id;
       if (key || trackByKey || primitive) {
-        id = trackByKey ? trackByKey === '$index' ? index : getPath(value, trackByKey) : key || value;
+        id = trackByKey ? trackByKey === '$index' ? index : value[trackByKey] : key || value;
         if (!cache[id]) {
           cache[id] = frag;
         } else if (trackByKey !== '$index') {
@@ -4371,7 +5140,7 @@ var template = Object.freeze({
       var primitive = !isObject(value);
       var frag;
       if (key || trackByKey || primitive) {
-        var id = trackByKey ? trackByKey === '$index' ? index : getPath(value, trackByKey) : key || value;
+        var id = trackByKey ? trackByKey === '$index' ? index : value[trackByKey] : key || value;
         frag = this.cache[id];
       } else {
         frag = value[this.id];
@@ -4398,7 +5167,7 @@ var template = Object.freeze({
       var key = hasOwn(scope, '$key') && scope.$key;
       var primitive = !isObject(value);
       if (trackByKey || key || primitive) {
-        var id = trackByKey ? trackByKey === '$index' ? index : getPath(value, trackByKey) : key || value;
+        var id = trackByKey ? trackByKey === '$index' ? index : value[trackByKey] : key || value;
         this.cache[id] = null;
       } else {
         value[this.id] = null;
@@ -4461,7 +5230,7 @@ var template = Object.freeze({
         }
         return res;
       } else {
-        if (typeof value === 'number' && !isNaN(value)) {
+        if (typeof value === 'number') {
           value = range(value);
         }
         return value || [];
@@ -4504,12 +5273,12 @@ var template = Object.freeze({
     var el = frag.node.previousSibling;
     /* istanbul ignore if */
     if (!el) return;
-    frag = el.__v_frag;
+    frag = el.__vfrag__;
     while ((!frag || frag.forId !== id || !frag.inserted) && el !== anchor) {
       el = el.previousSibling;
       /* istanbul ignore if */
       if (!el) return;
-      frag = el.__v_frag;
+      frag = el.__vfrag__;
     }
     return frag;
   }
@@ -4541,7 +5310,7 @@ var template = Object.freeze({
 
   function range(n) {
     var i = -1;
-    var ret = new Array(Math.floor(n));
+    var ret = new Array(n);
     while (++i < n) {
       ret[i] = i;
     }
@@ -4550,1807 +5319,72 @@ var template = Object.freeze({
 
   if ('development' !== 'production') {
     vFor.warnDuplicate = function (value) {
-      warn('Duplicate value found in v-for="' + this.descriptor.raw + '": ' + JSON.stringify(value) + '. Use track-by="$index" if ' + 'you are expecting duplicate values.', this.vm);
+      warn('Duplicate value found in v-for="' + this.descriptor.raw + '": ' + JSON.stringify(value) + '. Use track-by="$index" if ' + 'you are expecting duplicate values.');
     };
   }
 
-  var vIf = {
-
-    priority: IF,
-    terminal: true,
+  var html = {
 
     bind: function bind() {
-      var el = this.el;
-      if (!el.__vue__) {
-        // check else block
-        var next = el.nextElementSibling;
-        if (next && getAttr(next, 'v-else') !== null) {
-          remove(next);
-          this.elseEl = next;
-        }
-        // check main block
-        this.anchor = createAnchor('v-if');
-        replace(el, this.anchor);
+      // a comment node means this is a binding for
+      // {{{ inline unescaped html }}}
+      if (this.el.nodeType === 8) {
+        // hold nodes
+        this.nodes = [];
+        // replace the placeholder with proper anchor
+        this.anchor = createAnchor('v-html');
+        replace(this.el, this.anchor);
+      }
+    },
+
+    update: function update(value) {
+      value = _toString(value);
+      if (this.nodes) {
+        this.swap(value);
       } else {
-        'development' !== 'production' && warn('v-if="' + this.expression + '" cannot be ' + 'used on an instance root element.', this.vm);
-        this.invalid = true;
+        this.el.innerHTML = value;
       }
     },
 
-    update: function update(value) {
-      if (this.invalid) return;
-      if (value) {
-        if (!this.frag) {
-          this.insert();
-        }
-      } else {
-        this.remove();
-      }
-    },
-
-    insert: function insert() {
-      if (this.elseFrag) {
-        this.elseFrag.remove();
-        this.elseFrag = null;
-      }
-      // lazy init factory
-      if (!this.factory) {
-        this.factory = new FragmentFactory(this.vm, this.el);
-      }
-      this.frag = this.factory.create(this._host, this._scope, this._frag);
-      this.frag.before(this.anchor);
-    },
-
-    remove: function remove() {
-      if (this.frag) {
-        this.frag.remove();
-        this.frag = null;
-      }
-      if (this.elseEl && !this.elseFrag) {
-        if (!this.elseFactory) {
-          this.elseFactory = new FragmentFactory(this.elseEl._context || this.vm, this.elseEl);
-        }
-        this.elseFrag = this.elseFactory.create(this._host, this._scope, this._frag);
-        this.elseFrag.before(this.anchor);
-      }
-    },
-
-    unbind: function unbind() {
-      if (this.frag) {
-        this.frag.destroy();
-      }
-      if (this.elseFrag) {
-        this.elseFrag.destroy();
-      }
-    }
-  };
-
-  var show = {
-
-    bind: function bind() {
-      // check else block
-      var next = this.el.nextElementSibling;
-      if (next && getAttr(next, 'v-else') !== null) {
-        this.elseEl = next;
-      }
-    },
-
-    update: function update(value) {
-      this.apply(this.el, value);
-      if (this.elseEl) {
-        this.apply(this.elseEl, !value);
-      }
-    },
-
-    apply: function apply(el, value) {
-      if (inDoc(el)) {
-        applyTransition(el, value ? 1 : -1, toggle, this.vm);
-      } else {
-        toggle();
-      }
-      function toggle() {
-        el.style.display = value ? '' : 'none';
-      }
-    }
-  };
-
-  var text$2 = {
-
-    bind: function bind() {
-      var self = this;
-      var el = this.el;
-      var isRange = el.type === 'range';
-      var lazy = this.params.lazy;
-      var number = this.params.number;
-      var debounce = this.params.debounce;
-
-      // handle composition events.
-      //   http://blog.evanyou.me/2014/01/03/composition-event/
-      // skip this for Android because it handles composition
-      // events quite differently. Android doesn't trigger
-      // composition events for language input methods e.g.
-      // Chinese, but instead triggers them for spelling
-      // suggestions... (see Discussion/#162)
-      var composing = false;
-      if (!isAndroid && !isRange) {
-        this.on('compositionstart', function () {
-          composing = true;
-        });
-        this.on('compositionend', function () {
-          composing = false;
-          // in IE11 the "compositionend" event fires AFTER
-          // the "input" event, so the input handler is blocked
-          // at the end... have to call it here.
-          //
-          // #1327: in lazy mode this is unecessary.
-          if (!lazy) {
-            self.listener();
-          }
-        });
-      }
-
-      // prevent messing with the input when user is typing,
-      // and force update on blur.
-      this.focused = false;
-      if (!isRange && !lazy) {
-        this.on('focus', function () {
-          self.focused = true;
-        });
-        this.on('blur', function () {
-          self.focused = false;
-          // do not sync value after fragment removal (#2017)
-          if (!self._frag || self._frag.inserted) {
-            self.rawListener();
-          }
-        });
-      }
-
-      // Now attach the main listener
-      this.listener = this.rawListener = function () {
-        if (composing || !self._bound) {
-          return;
-        }
-        var val = number || isRange ? toNumber(el.value) : el.value;
-        self.set(val);
-        // force update on next tick to avoid lock & same value
-        // also only update when user is not typing
-        nextTick(function () {
-          if (self._bound && !self.focused) {
-            self.update(self._watcher.value);
-          }
-        });
-      };
-
-      // apply debounce
-      if (debounce) {
-        this.listener = _debounce(this.listener, debounce);
-      }
-
-      // Support jQuery events, since jQuery.trigger() doesn't
-      // trigger native events in some cases and some plugins
-      // rely on $.trigger()
-      //
-      // We want to make sure if a listener is attached using
-      // jQuery, it is also removed with jQuery, that's why
-      // we do the check for each directive instance and
-      // store that check result on itself. This also allows
-      // easier test coverage control by unsetting the global
-      // jQuery variable in tests.
-      this.hasjQuery = typeof jQuery === 'function';
-      if (this.hasjQuery) {
-        var method = jQuery.fn.on ? 'on' : 'bind';
-        jQuery(el)[method]('change', this.rawListener);
-        if (!lazy) {
-          jQuery(el)[method]('input', this.listener);
-        }
-      } else {
-        this.on('change', this.rawListener);
-        if (!lazy) {
-          this.on('input', this.listener);
-        }
-      }
-
-      // IE9 doesn't fire input event on backspace/del/cut
-      if (!lazy && isIE9) {
-        this.on('cut', function () {
-          nextTick(self.listener);
-        });
-        this.on('keyup', function (e) {
-          if (e.keyCode === 46 || e.keyCode === 8) {
-            self.listener();
-          }
-        });
-      }
-
-      // set initial value if present
-      if (el.hasAttribute('value') || el.tagName === 'TEXTAREA' && el.value.trim()) {
-        this.afterBind = this.listener;
-      }
-    },
-
-    update: function update(value) {
-      this.el.value = _toString(value);
-    },
-
-    unbind: function unbind() {
-      var el = this.el;
-      if (this.hasjQuery) {
-        var method = jQuery.fn.off ? 'off' : 'unbind';
-        jQuery(el)[method]('change', this.listener);
-        jQuery(el)[method]('input', this.listener);
-      }
-    }
-  };
-
-  var radio = {
-
-    bind: function bind() {
-      var self = this;
-      var el = this.el;
-
-      this.getValue = function () {
-        // value overwrite via v-bind:value
-        if (el.hasOwnProperty('_value')) {
-          return el._value;
-        }
-        var val = el.value;
-        if (self.params.number) {
-          val = toNumber(val);
-        }
-        return val;
-      };
-
-      this.listener = function () {
-        self.set(self.getValue());
-      };
-      this.on('change', this.listener);
-
-      if (el.hasAttribute('checked')) {
-        this.afterBind = this.listener;
-      }
-    },
-
-    update: function update(value) {
-      this.el.checked = looseEqual(value, this.getValue());
-    }
-  };
-
-  var select = {
-
-    bind: function bind() {
-      var self = this;
-      var el = this.el;
-
-      // method to force update DOM using latest value.
-      this.forceUpdate = function () {
-        if (self._watcher) {
-          self.update(self._watcher.get());
-        }
-      };
-
-      // check if this is a multiple select
-      var multiple = this.multiple = el.hasAttribute('multiple');
-
-      // attach listener
-      this.listener = function () {
-        var value = getValue(el, multiple);
-        value = self.params.number ? isArray(value) ? value.map(toNumber) : toNumber(value) : value;
-        self.set(value);
-      };
-      this.on('change', this.listener);
-
-      // if has initial value, set afterBind
-      var initValue = getValue(el, multiple, true);
-      if (multiple && initValue.length || !multiple && initValue !== null) {
-        this.afterBind = this.listener;
-      }
-
-      // All major browsers except Firefox resets
-      // selectedIndex with value -1 to 0 when the element
-      // is appended to a new parent, therefore we have to
-      // force a DOM update whenever that happens...
-      this.vm.$on('hook:attached', this.forceUpdate);
-    },
-
-    update: function update(value) {
-      var el = this.el;
-      el.selectedIndex = -1;
-      var multi = this.multiple && isArray(value);
-      var options = el.options;
-      var i = options.length;
-      var op, val;
+    swap: function swap(value) {
+      // remove old nodes
+      var i = this.nodes.length;
       while (i--) {
-        op = options[i];
-        val = op.hasOwnProperty('_value') ? op._value : op.value;
-        /* eslint-disable eqeqeq */
-        op.selected = multi ? indexOf$1(value, val) > -1 : looseEqual(value, val);
-        /* eslint-enable eqeqeq */
+        remove(this.nodes[i]);
       }
-    },
-
-    unbind: function unbind() {
-      /* istanbul ignore next */
-      this.vm.$off('hook:attached', this.forceUpdate);
+      // convert new value to a fragment
+      // do not attempt to retrieve from id selector
+      var frag = parseTemplate(value, true, true);
+      // save a reference to these nodes so we can remove later
+      this.nodes = toArray(frag.childNodes);
+      before(frag, this.anchor);
     }
   };
 
-  /**
-   * Get select value
-   *
-   * @param {SelectElement} el
-   * @param {Boolean} multi
-   * @param {Boolean} init
-   * @return {Array|*}
-   */
-
-  function getValue(el, multi, init) {
-    var res = multi ? [] : null;
-    var op, val, selected;
-    for (var i = 0, l = el.options.length; i < l; i++) {
-      op = el.options[i];
-      selected = init ? op.hasAttribute('selected') : op.selected;
-      if (selected) {
-        val = op.hasOwnProperty('_value') ? op._value : op.value;
-        if (multi) {
-          res.push(val);
-        } else {
-          return val;
-        }
-      }
-    }
-    return res;
-  }
-
-  /**
-   * Native Array.indexOf uses strict equal, but in this
-   * case we need to match string/numbers with custom equal.
-   *
-   * @param {Array} arr
-   * @param {*} val
-   */
-
-  function indexOf$1(arr, val) {
-    var i = arr.length;
-    while (i--) {
-      if (looseEqual(arr[i], val)) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
-  var checkbox = {
+  var text = {
 
     bind: function bind() {
-      var self = this;
-      var el = this.el;
-
-      this.getValue = function () {
-        return el.hasOwnProperty('_value') ? el._value : self.params.number ? toNumber(el.value) : el.value;
-      };
-
-      function getBooleanValue() {
-        var val = el.checked;
-        if (val && el.hasOwnProperty('_trueValue')) {
-          return el._trueValue;
-        }
-        if (!val && el.hasOwnProperty('_falseValue')) {
-          return el._falseValue;
-        }
-        return val;
-      }
-
-      this.listener = function () {
-        var model = self._watcher.value;
-        if (isArray(model)) {
-          var val = self.getValue();
-          if (el.checked) {
-            if (indexOf(model, val) < 0) {
-              model.push(val);
-            }
-          } else {
-            model.$remove(val);
-          }
-        } else {
-          self.set(getBooleanValue());
-        }
-      };
-
-      this.on('change', this.listener);
-      if (el.hasAttribute('checked')) {
-        this.afterBind = this.listener;
-      }
+      this.attr = this.el.nodeType === 3 ? 'data' : 'textContent';
     },
 
     update: function update(value) {
-      var el = this.el;
-      if (isArray(value)) {
-        el.checked = indexOf(value, this.getValue()) > -1;
-      } else {
-        if (el.hasOwnProperty('_trueValue')) {
-          el.checked = looseEqual(value, el._trueValue);
-        } else {
-          el.checked = !!value;
-        }
-      }
-    }
-  };
-
-  var handlers = {
-    text: text$2,
-    radio: radio,
-    select: select,
-    checkbox: checkbox
-  };
-
-  var model = {
-
-    priority: MODEL,
-    twoWay: true,
-    handlers: handlers,
-    params: ['lazy', 'number', 'debounce'],
-
-    /**
-     * Possible elements:
-     *   <select>
-     *   <textarea>
-     *   <input type="*">
-     *     - text
-     *     - checkbox
-     *     - radio
-     *     - number
-     */
-
-    bind: function bind() {
-      // friendly warning...
-      this.checkFilters();
-      if (this.hasRead && !this.hasWrite) {
-        'development' !== 'production' && warn('It seems you are using a read-only filter with ' + 'v-model="' + this.descriptor.raw + '". ' + 'You might want to use a two-way filter to ensure correct behavior.', this.vm);
-      }
-      var el = this.el;
-      var tag = el.tagName;
-      var handler;
-      if (tag === 'INPUT') {
-        handler = handlers[el.type] || handlers.text;
-      } else if (tag === 'SELECT') {
-        handler = handlers.select;
-      } else if (tag === 'TEXTAREA') {
-        handler = handlers.text;
-      } else {
-        'development' !== 'production' && warn('v-model does not support element type: ' + tag, this.vm);
-        return;
-      }
-      el.__v_model = this;
-      handler.bind.call(this);
-      this.update = handler.update;
-      this._unbind = handler.unbind;
-    },
-
-    /**
-     * Check read/write filter stats.
-     */
-
-    checkFilters: function checkFilters() {
-      var filters = this.filters;
-      if (!filters) return;
-      var i = filters.length;
-      while (i--) {
-        var filter = resolveAsset(this.vm.$options, 'filters', filters[i].name);
-        if (typeof filter === 'function' || filter.read) {
-          this.hasRead = true;
-        }
-        if (filter.write) {
-          this.hasWrite = true;
-        }
-      }
-    },
-
-    unbind: function unbind() {
-      this.el.__v_model = null;
-      this._unbind && this._unbind();
-    }
-  };
-
-  // keyCode aliases
-  var keyCodes = {
-    esc: 27,
-    tab: 9,
-    enter: 13,
-    space: 32,
-    'delete': [8, 46],
-    up: 38,
-    left: 37,
-    right: 39,
-    down: 40
-  };
-
-  function keyFilter(handler, keys) {
-    var codes = keys.map(function (key) {
-      var charCode = key.charCodeAt(0);
-      if (charCode > 47 && charCode < 58) {
-        return parseInt(key, 10);
-      }
-      if (key.length === 1) {
-        charCode = key.toUpperCase().charCodeAt(0);
-        if (charCode > 64 && charCode < 91) {
-          return charCode;
-        }
-      }
-      return keyCodes[key];
-    });
-    codes = [].concat.apply([], codes);
-    return function keyHandler(e) {
-      if (codes.indexOf(e.keyCode) > -1) {
-        return handler.call(this, e);
-      }
-    };
-  }
-
-  function stopFilter(handler) {
-    return function stopHandler(e) {
-      e.stopPropagation();
-      return handler.call(this, e);
-    };
-  }
-
-  function preventFilter(handler) {
-    return function preventHandler(e) {
-      e.preventDefault();
-      return handler.call(this, e);
-    };
-  }
-
-  function selfFilter(handler) {
-    return function selfHandler(e) {
-      if (e.target === e.currentTarget) {
-        return handler.call(this, e);
-      }
-    };
-  }
-
-  var on$1 = {
-
-    priority: ON,
-    acceptStatement: true,
-    keyCodes: keyCodes,
-
-    bind: function bind() {
-      // deal with iframes
-      if (this.el.tagName === 'IFRAME' && this.arg !== 'load') {
-        var self = this;
-        this.iframeBind = function () {
-          on(self.el.contentWindow, self.arg, self.handler, self.modifiers.capture);
-        };
-        this.on('load', this.iframeBind);
-      }
-    },
-
-    update: function update(handler) {
-      // stub a noop for v-on with no value,
-      // e.g. @mousedown.prevent
-      if (!this.descriptor.raw) {
-        handler = function () {};
-      }
-
-      if (typeof handler !== 'function') {
-        'development' !== 'production' && warn('v-on:' + this.arg + '="' + this.expression + '" expects a function value, ' + 'got ' + handler, this.vm);
-        return;
-      }
-
-      // apply modifiers
-      if (this.modifiers.stop) {
-        handler = stopFilter(handler);
-      }
-      if (this.modifiers.prevent) {
-        handler = preventFilter(handler);
-      }
-      if (this.modifiers.self) {
-        handler = selfFilter(handler);
-      }
-      // key filter
-      var keys = Object.keys(this.modifiers).filter(function (key) {
-        return key !== 'stop' && key !== 'prevent' && key !== 'self';
-      });
-      if (keys.length) {
-        handler = keyFilter(handler, keys);
-      }
-
-      this.reset();
-      this.handler = handler;
-
-      if (this.iframeBind) {
-        this.iframeBind();
-      } else {
-        on(this.el, this.arg, this.handler, this.modifiers.capture);
-      }
-    },
-
-    reset: function reset() {
-      var el = this.iframeBind ? this.el.contentWindow : this.el;
-      if (this.handler) {
-        off(el, this.arg, this.handler);
-      }
-    },
-
-    unbind: function unbind() {
-      this.reset();
-    }
-  };
-
-  var prefixes = ['-webkit-', '-moz-', '-ms-'];
-  var camelPrefixes = ['Webkit', 'Moz', 'ms'];
-  var importantRE = /!important;?$/;
-  var propCache = Object.create(null);
-
-  var testEl = null;
-
-  var style = {
-
-    deep: true,
-
-    update: function update(value) {
-      if (typeof value === 'string') {
-        this.el.style.cssText = value;
-      } else if (isArray(value)) {
-        this.handleObject(value.reduce(extend, {}));
-      } else {
-        this.handleObject(value || {});
-      }
-    },
-
-    handleObject: function handleObject(value) {
-      // cache object styles so that only changed props
-      // are actually updated.
-      var cache = this.cache || (this.cache = {});
-      var name, val;
-      for (name in cache) {
-        if (!(name in value)) {
-          this.handleSingle(name, null);
-          delete cache[name];
-        }
-      }
-      for (name in value) {
-        val = value[name];
-        if (val !== cache[name]) {
-          cache[name] = val;
-          this.handleSingle(name, val);
-        }
-      }
-    },
-
-    handleSingle: function handleSingle(prop, value) {
-      prop = normalize(prop);
-      if (!prop) return; // unsupported prop
-      // cast possible numbers/booleans into strings
-      if (value != null) value += '';
-      if (value) {
-        var isImportant = importantRE.test(value) ? 'important' : '';
-        if (isImportant) {
-          /* istanbul ignore if */
-          if ('development' !== 'production') {
-            warn('It\'s probably a bad idea to use !important with inline rules. ' + 'This feature will be deprecated in a future version of Vue.');
-          }
-          value = value.replace(importantRE, '').trim();
-          this.el.style.setProperty(prop.kebab, value, isImportant);
-        } else {
-          this.el.style[prop.camel] = value;
-        }
-      } else {
-        this.el.style[prop.camel] = '';
-      }
-    }
-
-  };
-
-  /**
-   * Normalize a CSS property name.
-   * - cache result
-   * - auto prefix
-   * - camelCase -> dash-case
-   *
-   * @param {String} prop
-   * @return {String}
-   */
-
-  function normalize(prop) {
-    if (propCache[prop]) {
-      return propCache[prop];
-    }
-    var res = prefix(prop);
-    propCache[prop] = propCache[res] = res;
-    return res;
-  }
-
-  /**
-   * Auto detect the appropriate prefix for a CSS property.
-   * https://gist.github.com/paulirish/523692
-   *
-   * @param {String} prop
-   * @return {String}
-   */
-
-  function prefix(prop) {
-    prop = hyphenate(prop);
-    var camel = camelize(prop);
-    var upper = camel.charAt(0).toUpperCase() + camel.slice(1);
-    if (!testEl) {
-      testEl = document.createElement('div');
-    }
-    var i = prefixes.length;
-    var prefixed;
-    while (i--) {
-      prefixed = camelPrefixes[i] + upper;
-      if (prefixed in testEl.style) {
-        return {
-          kebab: prefixes[i] + prop,
-          camel: prefixed
-        };
-      }
-    }
-    if (camel in testEl.style) {
-      return {
-        kebab: prop,
-        camel: camel
-      };
-    }
-  }
-
-  // xlink
-  var xlinkNS = 'http://www.w3.org/1999/xlink';
-  var xlinkRE = /^xlink:/;
-
-  // check for attributes that prohibit interpolations
-  var disallowedInterpAttrRE = /^v-|^:|^@|^(?:is|transition|transition-mode|debounce|track-by|stagger|enter-stagger|leave-stagger)$/;
-  // these attributes should also set their corresponding properties
-  // because they only affect the initial state of the element
-  var attrWithPropsRE = /^(?:value|checked|selected|muted)$/;
-  // these attributes expect enumrated values of "true" or "false"
-  // but are not boolean attributes
-  var enumeratedAttrRE = /^(?:draggable|contenteditable|spellcheck)$/;
-
-  // these attributes should set a hidden property for
-  // binding v-model to object values
-  var modelProps = {
-    value: '_value',
-    'true-value': '_trueValue',
-    'false-value': '_falseValue'
-  };
-
-  var bind$1 = {
-
-    priority: BIND,
-
-    bind: function bind() {
-      var attr = this.arg;
-      var tag = this.el.tagName;
-      // should be deep watch on object mode
-      if (!attr) {
-        this.deep = true;
-      }
-      // handle interpolation bindings
-      var descriptor = this.descriptor;
-      var tokens = descriptor.interp;
-      if (tokens) {
-        // handle interpolations with one-time tokens
-        if (descriptor.hasOneTime) {
-          this.expression = tokensToExp(tokens, this._scope || this.vm);
-        }
-
-        // only allow binding on native attributes
-        if (disallowedInterpAttrRE.test(attr) || attr === 'name' && (tag === 'PARTIAL' || tag === 'SLOT')) {
-          'development' !== 'production' && warn(attr + '="' + descriptor.raw + '": ' + 'attribute interpolation is not allowed in Vue.js ' + 'directives and special attributes.', this.vm);
-          this.el.removeAttribute(attr);
-          this.invalid = true;
-        }
-
-        /* istanbul ignore if */
-        if ('development' !== 'production') {
-          var raw = attr + '="' + descriptor.raw + '": ';
-          // warn src
-          if (attr === 'src') {
-            warn(raw + 'interpolation in "src" attribute will cause ' + 'a 404 request. Use v-bind:src instead.', this.vm);
-          }
-
-          // warn style
-          if (attr === 'style') {
-            warn(raw + 'interpolation in "style" attribute will cause ' + 'the attribute to be discarded in Internet Explorer. ' + 'Use v-bind:style instead.', this.vm);
-          }
-        }
-      }
-    },
-
-    update: function update(value) {
-      if (this.invalid) {
-        return;
-      }
-      var attr = this.arg;
-      if (this.arg) {
-        this.handleSingle(attr, value);
-      } else {
-        this.handleObject(value || {});
-      }
-    },
-
-    // share object handler with v-bind:class
-    handleObject: style.handleObject,
-
-    handleSingle: function handleSingle(attr, value) {
-      var el = this.el;
-      var interp = this.descriptor.interp;
-      if (this.modifiers.camel) {
-        attr = camelize(attr);
-      }
-      if (!interp && attrWithPropsRE.test(attr) && attr in el) {
-        el[attr] = attr === 'value' ? value == null // IE9 will set input.value to "null" for null...
-        ? '' : value : value;
-      }
-      // set model props
-      var modelProp = modelProps[attr];
-      if (!interp && modelProp) {
-        el[modelProp] = value;
-        // update v-model if present
-        var model = el.__v_model;
-        if (model) {
-          model.listener();
-        }
-      }
-      // do not set value attribute for textarea
-      if (attr === 'value' && el.tagName === 'TEXTAREA') {
-        el.removeAttribute(attr);
-        return;
-      }
-      // update attribute
-      if (enumeratedAttrRE.test(attr)) {
-        el.setAttribute(attr, value ? 'true' : 'false');
-      } else if (value != null && value !== false) {
-        if (attr === 'class') {
-          // handle edge case #1960:
-          // class interpolation should not overwrite Vue transition class
-          if (el.__v_trans) {
-            value += ' ' + el.__v_trans.id + '-transition';
-          }
-          setClass(el, value);
-        } else if (xlinkRE.test(attr)) {
-          el.setAttributeNS(xlinkNS, attr, value === true ? '' : value);
-        } else {
-          el.setAttribute(attr, value === true ? '' : value);
-        }
-      } else {
-        el.removeAttribute(attr);
-      }
-    }
-  };
-
-  var el = {
-
-    priority: EL,
-
-    bind: function bind() {
-      /* istanbul ignore if */
-      if (!this.arg) {
-        return;
-      }
-      var id = this.id = camelize(this.arg);
-      var refs = (this._scope || this.vm).$els;
-      if (hasOwn(refs, id)) {
-        refs[id] = this.el;
-      } else {
-        defineReactive(refs, id, this.el);
-      }
-    },
-
-    unbind: function unbind() {
-      var refs = (this._scope || this.vm).$els;
-      if (refs[this.id] === this.el) {
-        refs[this.id] = null;
-      }
-    }
-  };
-
-  var ref = {
-    bind: function bind() {
-      'development' !== 'production' && warn('v-ref:' + this.arg + ' must be used on a child ' + 'component. Found on <' + this.el.tagName.toLowerCase() + '>.', this.vm);
-    }
-  };
-
-  var cloak = {
-    bind: function bind() {
-      var el = this.el;
-      this.vm.$once('pre-hook:compiled', function () {
-        el.removeAttribute('v-cloak');
-      });
+      this.el[this.attr] = _toString(value);
     }
   };
 
   // must export plain object
-  var directives = {
-    text: text$1,
+  var publicDirectives = {
+    text: text,
     html: html,
     'for': vFor,
     'if': vIf,
     show: show,
     model: model,
-    on: on$1,
-    bind: bind$1,
+    on: on,
+    bind: bind,
     el: el,
     ref: ref,
     cloak: cloak
-  };
-
-  var vClass = {
-
-    deep: true,
-
-    update: function update(value) {
-      if (value && typeof value === 'string') {
-        this.handleObject(stringToObject(value));
-      } else if (isPlainObject(value)) {
-        this.handleObject(value);
-      } else if (isArray(value)) {
-        this.handleArray(value);
-      } else {
-        this.cleanup();
-      }
-    },
-
-    handleObject: function handleObject(value) {
-      this.cleanup(value);
-      this.prevKeys = Object.keys(value);
-      setObjectClasses(this.el, value);
-    },
-
-    handleArray: function handleArray(value) {
-      this.cleanup(value);
-      for (var i = 0, l = value.length; i < l; i++) {
-        var val = value[i];
-        if (val && isPlainObject(val)) {
-          setObjectClasses(this.el, val);
-        } else if (val && typeof val === 'string') {
-          addClass(this.el, val);
-        }
-      }
-      this.prevKeys = value.slice();
-    },
-
-    cleanup: function cleanup(value) {
-      if (!this.prevKeys) return;
-
-      var i = this.prevKeys.length;
-      while (i--) {
-        var key = this.prevKeys[i];
-        if (!key) continue;
-
-        var keys = isPlainObject(key) ? Object.keys(key) : [key];
-        for (var j = 0, l = keys.length; j < l; j++) {
-          toggleClasses(this.el, keys[j], removeClass);
-        }
-      }
-    }
-  };
-
-  function setObjectClasses(el, obj) {
-    var keys = Object.keys(obj);
-    for (var i = 0, l = keys.length; i < l; i++) {
-      var key = keys[i];
-      if (!obj[key]) continue;
-      toggleClasses(el, key, addClass);
-    }
-  }
-
-  function stringToObject(value) {
-    var res = {};
-    var keys = value.trim().split(/\s+/);
-    for (var i = 0, l = keys.length; i < l; i++) {
-      res[keys[i]] = true;
-    }
-    return res;
-  }
-
-  /**
-   * Add or remove a class/classes on an element
-   *
-   * @param {Element} el
-   * @param {String} key The class name. This may or may not
-   *                     contain a space character, in such a
-   *                     case we'll deal with multiple class
-   *                     names at once.
-   * @param {Function} fn
-   */
-
-  function toggleClasses(el, key, fn) {
-    key = key.trim();
-
-    if (key.indexOf(' ') === -1) {
-      fn(el, key);
-      return;
-    }
-
-    // The key contains one or more space characters.
-    // Since a class name doesn't accept such characters, we
-    // treat it as multiple classes.
-    var keys = key.split(/\s+/);
-    for (var i = 0, l = keys.length; i < l; i++) {
-      fn(el, keys[i]);
-    }
-  }
-
-  var component = {
-
-    priority: COMPONENT,
-
-    params: ['keep-alive', 'transition-mode', 'inline-template'],
-
-    /**
-     * Setup. Two possible usages:
-     *
-     * - static:
-     *   <comp> or <div v-component="comp">
-     *
-     * - dynamic:
-     *   <component :is="view">
-     */
-
-    bind: function bind() {
-      if (!this.el.__vue__) {
-        // keep-alive cache
-        this.keepAlive = this.params.keepAlive;
-        if (this.keepAlive) {
-          this.cache = {};
-        }
-        // check inline-template
-        if (this.params.inlineTemplate) {
-          // extract inline template as a DocumentFragment
-          this.inlineTemplate = extractContent(this.el, true);
-        }
-        // component resolution related state
-        this.pendingComponentCb = this.Component = null;
-        // transition related state
-        this.pendingRemovals = 0;
-        this.pendingRemovalCb = null;
-        // create a ref anchor
-        this.anchor = createAnchor('v-component');
-        replace(this.el, this.anchor);
-        // remove is attribute.
-        // this is removed during compilation, but because compilation is
-        // cached, when the component is used elsewhere this attribute
-        // will remain at link time.
-        this.el.removeAttribute('is');
-        // remove ref, same as above
-        if (this.descriptor.ref) {
-          this.el.removeAttribute('v-ref:' + hyphenate(this.descriptor.ref));
-        }
-        // if static, build right now.
-        if (this.literal) {
-          this.setComponent(this.expression);
-        }
-      } else {
-        'development' !== 'production' && warn('cannot mount component "' + this.expression + '" ' + 'on already mounted element: ' + this.el);
-      }
-    },
-
-    /**
-     * Public update, called by the watcher in the dynamic
-     * literal scenario, e.g. <component :is="view">
-     */
-
-    update: function update(value) {
-      if (!this.literal) {
-        this.setComponent(value);
-      }
-    },
-
-    /**
-     * Switch dynamic components. May resolve the component
-     * asynchronously, and perform transition based on
-     * specified transition mode. Accepts a few additional
-     * arguments specifically for vue-router.
-     *
-     * The callback is called when the full transition is
-     * finished.
-     *
-     * @param {String} value
-     * @param {Function} [cb]
-     */
-
-    setComponent: function setComponent(value, cb) {
-      this.invalidatePending();
-      if (!value) {
-        // just remove current
-        this.unbuild(true);
-        this.remove(this.childVM, cb);
-        this.childVM = null;
-      } else {
-        var self = this;
-        this.resolveComponent(value, function () {
-          self.mountComponent(cb);
-        });
-      }
-    },
-
-    /**
-     * Resolve the component constructor to use when creating
-     * the child vm.
-     *
-     * @param {String|Function} value
-     * @param {Function} cb
-     */
-
-    resolveComponent: function resolveComponent(value, cb) {
-      var self = this;
-      this.pendingComponentCb = cancellable(function (Component) {
-        self.ComponentName = Component.options.name || (typeof value === 'string' ? value : null);
-        self.Component = Component;
-        cb();
-      });
-      this.vm._resolveComponent(value, this.pendingComponentCb);
-    },
-
-    /**
-     * Create a new instance using the current constructor and
-     * replace the existing instance. This method doesn't care
-     * whether the new component and the old one are actually
-     * the same.
-     *
-     * @param {Function} [cb]
-     */
-
-    mountComponent: function mountComponent(cb) {
-      // actual mount
-      this.unbuild(true);
-      var self = this;
-      var activateHooks = this.Component.options.activate;
-      var cached = this.getCached();
-      var newComponent = this.build();
-      if (activateHooks && !cached) {
-        this.waitingFor = newComponent;
-        callActivateHooks(activateHooks, newComponent, function () {
-          if (self.waitingFor !== newComponent) {
-            return;
-          }
-          self.waitingFor = null;
-          self.transition(newComponent, cb);
-        });
-      } else {
-        // update ref for kept-alive component
-        if (cached) {
-          newComponent._updateRef();
-        }
-        this.transition(newComponent, cb);
-      }
-    },
-
-    /**
-     * When the component changes or unbinds before an async
-     * constructor is resolved, we need to invalidate its
-     * pending callback.
-     */
-
-    invalidatePending: function invalidatePending() {
-      if (this.pendingComponentCb) {
-        this.pendingComponentCb.cancel();
-        this.pendingComponentCb = null;
-      }
-    },
-
-    /**
-     * Instantiate/insert a new child vm.
-     * If keep alive and has cached instance, insert that
-     * instance; otherwise build a new one and cache it.
-     *
-     * @param {Object} [extraOptions]
-     * @return {Vue} - the created instance
-     */
-
-    build: function build(extraOptions) {
-      var cached = this.getCached();
-      if (cached) {
-        return cached;
-      }
-      if (this.Component) {
-        // default options
-        var options = {
-          name: this.ComponentName,
-          el: cloneNode(this.el),
-          template: this.inlineTemplate,
-          // make sure to add the child with correct parent
-          // if this is a transcluded component, its parent
-          // should be the transclusion host.
-          parent: this._host || this.vm,
-          // if no inline-template, then the compiled
-          // linker can be cached for better performance.
-          _linkerCachable: !this.inlineTemplate,
-          _ref: this.descriptor.ref,
-          _asComponent: true,
-          _isRouterView: this._isRouterView,
-          // if this is a transcluded component, context
-          // will be the common parent vm of this instance
-          // and its host.
-          _context: this.vm,
-          // if this is inside an inline v-for, the scope
-          // will be the intermediate scope created for this
-          // repeat fragment. this is used for linking props
-          // and container directives.
-          _scope: this._scope,
-          // pass in the owner fragment of this component.
-          // this is necessary so that the fragment can keep
-          // track of its contained components in order to
-          // call attach/detach hooks for them.
-          _frag: this._frag
-        };
-        // extra options
-        // in 1.0.0 this is used by vue-router only
-        /* istanbul ignore if */
-        if (extraOptions) {
-          extend(options, extraOptions);
-        }
-        var child = new this.Component(options);
-        if (this.keepAlive) {
-          this.cache[this.Component.cid] = child;
-        }
-        /* istanbul ignore if */
-        if ('development' !== 'production' && this.el.hasAttribute('transition') && child._isFragment) {
-          warn('Transitions will not work on a fragment instance. ' + 'Template: ' + child.$options.template, child);
-        }
-        return child;
-      }
-    },
-
-    /**
-     * Try to get a cached instance of the current component.
-     *
-     * @return {Vue|undefined}
-     */
-
-    getCached: function getCached() {
-      return this.keepAlive && this.cache[this.Component.cid];
-    },
-
-    /**
-     * Teardown the current child, but defers cleanup so
-     * that we can separate the destroy and removal steps.
-     *
-     * @param {Boolean} defer
-     */
-
-    unbuild: function unbuild(defer) {
-      if (this.waitingFor) {
-        if (!this.keepAlive) {
-          this.waitingFor.$destroy();
-        }
-        this.waitingFor = null;
-      }
-      var child = this.childVM;
-      if (!child || this.keepAlive) {
-        if (child) {
-          // remove ref
-          child._inactive = true;
-          child._updateRef(true);
-        }
-        return;
-      }
-      // the sole purpose of `deferCleanup` is so that we can
-      // "deactivate" the vm right now and perform DOM removal
-      // later.
-      child.$destroy(false, defer);
-    },
-
-    /**
-     * Remove current destroyed child and manually do
-     * the cleanup after removal.
-     *
-     * @param {Function} cb
-     */
-
-    remove: function remove(child, cb) {
-      var keepAlive = this.keepAlive;
-      if (child) {
-        // we may have a component switch when a previous
-        // component is still being transitioned out.
-        // we want to trigger only one lastest insertion cb
-        // when the existing transition finishes. (#1119)
-        this.pendingRemovals++;
-        this.pendingRemovalCb = cb;
-        var self = this;
-        child.$remove(function () {
-          self.pendingRemovals--;
-          if (!keepAlive) child._cleanup();
-          if (!self.pendingRemovals && self.pendingRemovalCb) {
-            self.pendingRemovalCb();
-            self.pendingRemovalCb = null;
-          }
-        });
-      } else if (cb) {
-        cb();
-      }
-    },
-
-    /**
-     * Actually swap the components, depending on the
-     * transition mode. Defaults to simultaneous.
-     *
-     * @param {Vue} target
-     * @param {Function} [cb]
-     */
-
-    transition: function transition(target, cb) {
-      var self = this;
-      var current = this.childVM;
-      // for devtool inspection
-      if (current) current._inactive = true;
-      target._inactive = false;
-      this.childVM = target;
-      switch (self.params.transitionMode) {
-        case 'in-out':
-          target.$before(self.anchor, function () {
-            self.remove(current, cb);
-          });
-          break;
-        case 'out-in':
-          self.remove(current, function () {
-            target.$before(self.anchor, cb);
-          });
-          break;
-        default:
-          self.remove(current);
-          target.$before(self.anchor, cb);
-      }
-    },
-
-    /**
-     * Unbind.
-     */
-
-    unbind: function unbind() {
-      this.invalidatePending();
-      // Do not defer cleanup when unbinding
-      this.unbuild();
-      // destroy all keep-alive cached instances
-      if (this.cache) {
-        for (var key in this.cache) {
-          this.cache[key].$destroy();
-        }
-        this.cache = null;
-      }
-    }
-  };
-
-  /**
-   * Call activate hooks in order (asynchronous)
-   *
-   * @param {Array} hooks
-   * @param {Vue} vm
-   * @param {Function} cb
-   */
-
-  function callActivateHooks(hooks, vm, cb) {
-    var total = hooks.length;
-    var called = 0;
-    hooks[0].call(vm, next);
-    function next() {
-      if (++called >= total) {
-        cb();
-      } else {
-        hooks[called].call(vm, next);
-      }
-    }
-  }
-
-  var propBindingModes = config._propBindingModes;
-  var empty = {};
-
-  // regexes
-  var identRE$1 = /^[$_a-zA-Z]+[\w$]*$/;
-  var settablePathRE = /^[A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*|\[[^\[\]]+\])*$/;
-
-  /**
-   * Compile props on a root element and return
-   * a props link function.
-   *
-   * @param {Element|DocumentFragment} el
-   * @param {Array} propOptions
-   * @param {Vue} vm
-   * @return {Function} propsLinkFn
-   */
-
-  function compileProps(el, propOptions, vm) {
-    var props = [];
-    var names = Object.keys(propOptions);
-    var i = names.length;
-    var options, name, attr, value, path, parsed, prop;
-    while (i--) {
-      name = names[i];
-      options = propOptions[name] || empty;
-
-      if ('development' !== 'production' && name === '$data') {
-        warn('Do not use $data as prop.', vm);
-        continue;
-      }
-
-      // props could contain dashes, which will be
-      // interpreted as minus calculations by the parser
-      // so we need to camelize the path here
-      path = camelize(name);
-      if (!identRE$1.test(path)) {
-        'development' !== 'production' && warn('Invalid prop key: "' + name + '". Prop keys ' + 'must be valid identifiers.', vm);
-        continue;
-      }
-
-      prop = {
-        name: name,
-        path: path,
-        options: options,
-        mode: propBindingModes.ONE_WAY,
-        raw: null
-      };
-
-      attr = hyphenate(name);
-      // first check dynamic version
-      if ((value = getBindAttr(el, attr)) === null) {
-        if ((value = getBindAttr(el, attr + '.sync')) !== null) {
-          prop.mode = propBindingModes.TWO_WAY;
-        } else if ((value = getBindAttr(el, attr + '.once')) !== null) {
-          prop.mode = propBindingModes.ONE_TIME;
-        }
-      }
-      if (value !== null) {
-        // has dynamic binding!
-        prop.raw = value;
-        parsed = parseDirective(value);
-        value = parsed.expression;
-        prop.filters = parsed.filters;
-        // check binding type
-        if (isLiteral(value) && !parsed.filters) {
-          // for expressions containing literal numbers and
-          // booleans, there's no need to setup a prop binding,
-          // so we can optimize them as a one-time set.
-          prop.optimizedLiteral = true;
-        } else {
-          prop.dynamic = true;
-          // check non-settable path for two-way bindings
-          if ('development' !== 'production' && prop.mode === propBindingModes.TWO_WAY && !settablePathRE.test(value)) {
-            prop.mode = propBindingModes.ONE_WAY;
-            warn('Cannot bind two-way prop with non-settable ' + 'parent path: ' + value, vm);
-          }
-        }
-        prop.parentPath = value;
-
-        // warn required two-way
-        if ('development' !== 'production' && options.twoWay && prop.mode !== propBindingModes.TWO_WAY) {
-          warn('Prop "' + name + '" expects a two-way binding type.', vm);
-        }
-      } else if ((value = getAttr(el, attr)) !== null) {
-        // has literal binding!
-        prop.raw = value;
-      } else if ('development' !== 'production') {
-        // check possible camelCase prop usage
-        var lowerCaseName = path.toLowerCase();
-        value = /[A-Z\-]/.test(name) && (el.getAttribute(lowerCaseName) || el.getAttribute(':' + lowerCaseName) || el.getAttribute('v-bind:' + lowerCaseName) || el.getAttribute(':' + lowerCaseName + '.once') || el.getAttribute('v-bind:' + lowerCaseName + '.once') || el.getAttribute(':' + lowerCaseName + '.sync') || el.getAttribute('v-bind:' + lowerCaseName + '.sync'));
-        if (value) {
-          warn('Possible usage error for prop `' + lowerCaseName + '` - ' + 'did you mean `' + attr + '`? HTML is case-insensitive, remember to use ' + 'kebab-case for props in templates.', vm);
-        } else if (options.required) {
-          // warn missing required
-          warn('Missing required prop: ' + name, vm);
-        }
-      }
-      // push prop
-      props.push(prop);
-    }
-    return makePropsLinkFn(props);
-  }
-
-  /**
-   * Build a function that applies props to a vm.
-   *
-   * @param {Array} props
-   * @return {Function} propsLinkFn
-   */
-
-  function makePropsLinkFn(props) {
-    return function propsLinkFn(vm, scope) {
-      // store resolved props info
-      vm._props = {};
-      var i = props.length;
-      var prop, path, options, value, raw;
-      while (i--) {
-        prop = props[i];
-        raw = prop.raw;
-        path = prop.path;
-        options = prop.options;
-        vm._props[path] = prop;
-        if (raw === null) {
-          // initialize absent prop
-          initProp(vm, prop, undefined);
-        } else if (prop.dynamic) {
-          // dynamic prop
-          if (prop.mode === propBindingModes.ONE_TIME) {
-            // one time binding
-            value = (scope || vm._context || vm).$get(prop.parentPath);
-            initProp(vm, prop, value);
-          } else {
-            if (vm._context) {
-              // dynamic binding
-              vm._bindDir({
-                name: 'prop',
-                def: propDef,
-                prop: prop
-              }, null, null, scope); // el, host, scope
-            } else {
-                // root instance
-                initProp(vm, prop, vm.$get(prop.parentPath));
-              }
-          }
-        } else if (prop.optimizedLiteral) {
-          // optimized literal, cast it and just set once
-          var stripped = stripQuotes(raw);
-          value = stripped === raw ? toBoolean(toNumber(raw)) : stripped;
-          initProp(vm, prop, value);
-        } else {
-          // string literal, but we need to cater for
-          // Boolean props with no value, or with same
-          // literal value (e.g. disabled="disabled")
-          // see https://github.com/vuejs/vue-loader/issues/182
-          value = options.type === Boolean && (raw === '' || raw === hyphenate(prop.name)) ? true : raw;
-          initProp(vm, prop, value);
-        }
-      }
-    };
-  }
-
-  /**
-   * Process a prop with a rawValue, applying necessary coersions,
-   * default values & assertions and call the given callback with
-   * processed value.
-   *
-   * @param {Vue} vm
-   * @param {Object} prop
-   * @param {*} rawValue
-   * @param {Function} fn
-   */
-
-  function processPropValue(vm, prop, rawValue, fn) {
-    var isSimple = prop.dynamic && isSimplePath(prop.parentPath);
-    var value = rawValue;
-    if (value === undefined) {
-      value = getPropDefaultValue(vm, prop);
-    }
-    value = coerceProp(prop, value);
-    var coerced = value !== rawValue;
-    if (!assertProp(prop, value, vm)) {
-      value = undefined;
-    }
-    if (isSimple && !coerced) {
-      withoutConversion(function () {
-        fn(value);
-      });
-    } else {
-      fn(value);
-    }
-  }
-
-  /**
-   * Set a prop's initial value on a vm and its data object.
-   *
-   * @param {Vue} vm
-   * @param {Object} prop
-   * @param {*} value
-   */
-
-  function initProp(vm, prop, value) {
-    processPropValue(vm, prop, value, function (value) {
-      defineReactive(vm, prop.path, value);
-    });
-  }
-
-  /**
-   * Update a prop's value on a vm.
-   *
-   * @param {Vue} vm
-   * @param {Object} prop
-   * @param {*} value
-   */
-
-  function updateProp(vm, prop, value) {
-    processPropValue(vm, prop, value, function (value) {
-      vm[prop.path] = value;
-    });
-  }
-
-  /**
-   * Get the default value of a prop.
-   *
-   * @param {Vue} vm
-   * @param {Object} prop
-   * @return {*}
-   */
-
-  function getPropDefaultValue(vm, prop) {
-    // no default, return undefined
-    var options = prop.options;
-    if (!hasOwn(options, 'default')) {
-      // absent boolean value defaults to false
-      return options.type === Boolean ? false : undefined;
-    }
-    var def = options['default'];
-    // warn against non-factory defaults for Object & Array
-    if (isObject(def)) {
-      'development' !== 'production' && warn('Invalid default value for prop "' + prop.name + '": ' + 'Props with type Object/Array must use a factory function ' + 'to return the default value.', vm);
-    }
-    // call factory function for non-Function types
-    return typeof def === 'function' && options.type !== Function ? def.call(vm) : def;
-  }
-
-  /**
-   * Assert whether a prop is valid.
-   *
-   * @param {Object} prop
-   * @param {*} value
-   * @param {Vue} vm
-   */
-
-  function assertProp(prop, value, vm) {
-    if (!prop.options.required && ( // non-required
-    prop.raw === null || // abscent
-    value == null) // null or undefined
-    ) {
-        return true;
-      }
-    var options = prop.options;
-    var type = options.type;
-    var valid = !type;
-    var expectedTypes = [];
-    if (type) {
-      if (!isArray(type)) {
-        type = [type];
-      }
-      for (var i = 0; i < type.length && !valid; i++) {
-        var assertedType = assertType(value, type[i]);
-        expectedTypes.push(assertedType.expectedType);
-        valid = assertedType.valid;
-      }
-    }
-    if (!valid) {
-      if ('development' !== 'production') {
-        warn('Invalid prop: type check failed for prop "' + prop.name + '".' + ' Expected ' + expectedTypes.map(formatType).join(', ') + ', got ' + formatValue(value) + '.', vm);
-      }
-      return false;
-    }
-    var validator = options.validator;
-    if (validator) {
-      if (!validator(value)) {
-        'development' !== 'production' && warn('Invalid prop: custom validator check failed for prop "' + prop.name + '".', vm);
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /**
-   * Force parsing value with coerce option.
-   *
-   * @param {*} value
-   * @param {Object} options
-   * @return {*}
-   */
-
-  function coerceProp(prop, value) {
-    var coerce = prop.options.coerce;
-    if (!coerce) {
-      return value;
-    }
-    // coerce is a function
-    return coerce(value);
-  }
-
-  /**
-   * Assert the type of a value
-   *
-   * @param {*} value
-   * @param {Function} type
-   * @return {Object}
-   */
-
-  function assertType(value, type) {
-    var valid;
-    var expectedType;
-    if (type === String) {
-      expectedType = 'string';
-      valid = typeof value === expectedType;
-    } else if (type === Number) {
-      expectedType = 'number';
-      valid = typeof value === expectedType;
-    } else if (type === Boolean) {
-      expectedType = 'boolean';
-      valid = typeof value === expectedType;
-    } else if (type === Function) {
-      expectedType = 'function';
-      valid = typeof value === expectedType;
-    } else if (type === Object) {
-      expectedType = 'object';
-      valid = isPlainObject(value);
-    } else if (type === Array) {
-      expectedType = 'array';
-      valid = isArray(value);
-    } else {
-      valid = value instanceof type;
-    }
-    return {
-      valid: valid,
-      expectedType: expectedType
-    };
-  }
-
-  /**
-   * Format type for output
-   *
-   * @param {String} type
-   * @return {String}
-   */
-
-  function formatType(type) {
-    return type ? type.charAt(0).toUpperCase() + type.slice(1) : 'custom type';
-  }
-
-  /**
-   * Format value
-   *
-   * @param {*} value
-   * @return {String}
-   */
-
-  function formatValue(val) {
-    return Object.prototype.toString.call(val).slice(8, -1);
-  }
-
-  var bindingModes = config._propBindingModes;
-
-  var propDef = {
-
-    bind: function bind() {
-      var child = this.vm;
-      var parent = child._context;
-      // passed in from compiler directly
-      var prop = this.descriptor.prop;
-      var childKey = prop.path;
-      var parentKey = prop.parentPath;
-      var twoWay = prop.mode === bindingModes.TWO_WAY;
-
-      var parentWatcher = this.parentWatcher = new Watcher(parent, parentKey, function (val) {
-        updateProp(child, prop, val);
-      }, {
-        twoWay: twoWay,
-        filters: prop.filters,
-        // important: props need to be observed on the
-        // v-for scope if present
-        scope: this._scope
-      });
-
-      // set the child initial value.
-      initProp(child, prop, parentWatcher.value);
-
-      // setup two-way binding
-      if (twoWay) {
-        // important: defer the child watcher creation until
-        // the created hook (after data observation)
-        var self = this;
-        child.$once('pre-hook:created', function () {
-          self.childWatcher = new Watcher(child, childKey, function (val) {
-            parentWatcher.set(val);
-          }, {
-            // ensure sync upward before parent sync down.
-            // this is necessary in cases e.g. the child
-            // mutates a prop array, then replaces it. (#1683)
-            sync: true
-          });
-        });
-      }
-    },
-
-    unbind: function unbind() {
-      this.parentWatcher.teardown();
-      if (this.childWatcher) {
-        this.childWatcher.teardown();
-      }
-    }
   };
 
   var queue$1 = [];
@@ -6394,32 +5428,6 @@ var template = Object.freeze({
   var animDurationProp = animationProp + 'Duration';
 
   /**
-   * If a just-entered element is applied the
-   * leave class while its enter transition hasn't started yet,
-   * and the transitioned property has the same value for both
-   * enter/leave, then the leave transition will be skipped and
-   * the transitionend event never fires. This function ensures
-   * its callback to be called after a transition has started
-   * by waiting for double raf.
-   *
-   * It falls back to setTimeout on devices that support CSS
-   * transitions but not raf (e.g. Android 4.2 browser) - since
-   * these environments are usually slow, we are giving it a
-   * relatively large timeout.
-   */
-
-  var raf = inBrowser && window.requestAnimationFrame;
-  var waitForTransitionStart = raf
-  /* istanbul ignore next */
-  ? function (fn) {
-    raf(function () {
-      raf(fn);
-    });
-  } : function (fn) {
-    setTimeout(fn, 50);
-  };
-
-  /**
    * A Transition object that encapsulates the state and logic
    * of the transition.
    *
@@ -6445,12 +5453,12 @@ var template = Object.freeze({
     /* istanbul ignore if */
     if ('development' !== 'production') {
       if (this.type && this.type !== TYPE_TRANSITION && this.type !== TYPE_ANIMATION) {
-        warn('invalid CSS transition type for transition="' + this.id + '": ' + this.type, vm);
+        warn('invalid CSS transition type for transition="' + this.id + '": ' + this.type);
       }
     }
     // bind
     var self = this;['enterNextTick', 'enterDone', 'leaveNextTick', 'leaveDone'].forEach(function (m) {
-      self[m] = bind(self[m], self);
+      self[m] = bind$1(self[m], self);
     });
   }
 
@@ -6503,13 +5511,20 @@ var template = Object.freeze({
    */
 
   p$1.enterNextTick = function () {
-    var _this = this;
 
-    // prevent transition skipping
+    // Important hack:
+    // in Chrome, if a just-entered element is applied the
+    // leave class while its interpolated property still has
+    // a very small value (within one frame), Chrome will
+    // skip the leave transition entirely and not firing the
+    // transtionend event. Therefore we need to protected
+    // against such cases using a one-frame timeout.
     this.justEntered = true;
-    waitForTransitionStart(function () {
-      _this.justEntered = false;
-    });
+    var self = this;
+    setTimeout(function () {
+      self.justEntered = false;
+    }, 17);
+
     var enterDone = this.enterDone;
     var type = this.getCssTransitionType(this.enterClass);
     if (!this.pendingJsCb) {
@@ -6739,7 +5754,7 @@ var template = Object.freeze({
         }
       }
     };
-    on(el, event, onEnd);
+    on$1(el, event, onEnd);
   };
 
   /**
@@ -6751,17 +5766,10 @@ var template = Object.freeze({
    */
 
   function isHidden(el) {
-    if (/svg$/.test(el.namespaceURI)) {
-      // SVG elements do not have offset(Width|Height)
-      // so we need to check the client rect
-      var rect = el.getBoundingClientRect();
-      return !(rect.width || rect.height);
-    } else {
-      return !(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
-    }
+    return !(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
   }
 
-  var transition$1 = {
+  var transition = {
 
     priority: TRANSITION,
 
@@ -6770,7 +5778,8 @@ var template = Object.freeze({
       // resolve on owner vm
       var hooks = resolveAsset(this.vm.$options, 'transitions', id);
       id = id || 'v';
-      el.__v_trans = new Transition(el, id, hooks, this.vm);
+      // apply on closest vm
+      el.__v_trans = new Transition(el, id, hooks, this.el.__vue__ || this.vm);
       if (oldId) {
         removeClass(el, oldId + '-transition');
       }
@@ -6778,24 +5787,657 @@ var template = Object.freeze({
     }
   };
 
+  var bindingModes = config._propBindingModes;
+
+  var propDef = {
+
+    bind: function bind() {
+
+      var child = this.vm;
+      var parent = child._context;
+      // passed in from compiler directly
+      var prop = this.descriptor.prop;
+      var childKey = prop.path;
+      var parentKey = prop.parentPath;
+      var twoWay = prop.mode === bindingModes.TWO_WAY;
+
+      var parentWatcher = this.parentWatcher = new Watcher(parent, parentKey, function (val) {
+        val = coerceProp(prop, val);
+        if (assertProp(prop, val)) {
+          child[childKey] = val;
+        }
+      }, {
+        twoWay: twoWay,
+        filters: prop.filters,
+        // important: props need to be observed on the
+        // v-for scope if present
+        scope: this._scope
+      });
+
+      // set the child initial value.
+      initProp(child, prop, parentWatcher.value);
+
+      // setup two-way binding
+      if (twoWay) {
+        // important: defer the child watcher creation until
+        // the created hook (after data observation)
+        var self = this;
+        child.$once('pre-hook:created', function () {
+          self.childWatcher = new Watcher(child, childKey, function (val) {
+            parentWatcher.set(val);
+          }, {
+            // ensure sync upward before parent sync down.
+            // this is necessary in cases e.g. the child
+            // mutates a prop array, then replaces it. (#1683)
+            sync: true
+          });
+        });
+      }
+    },
+
+    unbind: function unbind() {
+      this.parentWatcher.teardown();
+      if (this.childWatcher) {
+        this.childWatcher.teardown();
+      }
+    }
+  };
+
+  var component = {
+
+    priority: COMPONENT,
+
+    params: ['keep-alive', 'transition-mode', 'inline-template'],
+
+    /**
+     * Setup. Two possible usages:
+     *
+     * - static:
+     *   <comp> or <div v-component="comp">
+     *
+     * - dynamic:
+     *   <component :is="view">
+     */
+
+    bind: function bind() {
+      if (!this.el.__vue__) {
+        // keep-alive cache
+        this.keepAlive = this.params.keepAlive;
+        if (this.keepAlive) {
+          this.cache = {};
+        }
+        // check inline-template
+        if (this.params.inlineTemplate) {
+          // extract inline template as a DocumentFragment
+          this.inlineTemplate = extractContent(this.el, true);
+        }
+        // component resolution related state
+        this.pendingComponentCb = this.Component = null;
+        // transition related state
+        this.pendingRemovals = 0;
+        this.pendingRemovalCb = null;
+        // create a ref anchor
+        this.anchor = createAnchor('v-component');
+        replace(this.el, this.anchor);
+        // remove is attribute.
+        // this is removed during compilation, but because compilation is
+        // cached, when the component is used elsewhere this attribute
+        // will remain at link time.
+        this.el.removeAttribute('is');
+        // remove ref, same as above
+        if (this.descriptor.ref) {
+          this.el.removeAttribute('v-ref:' + hyphenate(this.descriptor.ref));
+        }
+        // if static, build right now.
+        if (this.literal) {
+          this.setComponent(this.expression);
+        }
+      } else {
+        'development' !== 'production' && warn('cannot mount component "' + this.expression + '" ' + 'on already mounted element: ' + this.el);
+      }
+    },
+
+    /**
+     * Public update, called by the watcher in the dynamic
+     * literal scenario, e.g. <component :is="view">
+     */
+
+    update: function update(value) {
+      if (!this.literal) {
+        this.setComponent(value);
+      }
+    },
+
+    /**
+     * Switch dynamic components. May resolve the component
+     * asynchronously, and perform transition based on
+     * specified transition mode. Accepts a few additional
+     * arguments specifically for vue-router.
+     *
+     * The callback is called when the full transition is
+     * finished.
+     *
+     * @param {String} value
+     * @param {Function} [cb]
+     */
+
+    setComponent: function setComponent(value, cb) {
+      this.invalidatePending();
+      if (!value) {
+        // just remove current
+        this.unbuild(true);
+        this.remove(this.childVM, cb);
+        this.childVM = null;
+      } else {
+        var self = this;
+        this.resolveComponent(value, function () {
+          self.mountComponent(cb);
+        });
+      }
+    },
+
+    /**
+     * Resolve the component constructor to use when creating
+     * the child vm.
+     */
+
+    resolveComponent: function resolveComponent(id, cb) {
+      var self = this;
+      this.pendingComponentCb = cancellable(function (Component) {
+        self.ComponentName = Component.options.name || id;
+        self.Component = Component;
+        cb();
+      });
+      this.vm._resolveComponent(id, this.pendingComponentCb);
+    },
+
+    /**
+     * Create a new instance using the current constructor and
+     * replace the existing instance. This method doesn't care
+     * whether the new component and the old one are actually
+     * the same.
+     *
+     * @param {Function} [cb]
+     */
+
+    mountComponent: function mountComponent(cb) {
+      // actual mount
+      this.unbuild(true);
+      var self = this;
+      var activateHook = this.Component.options.activate;
+      var cached = this.getCached();
+      var newComponent = this.build();
+      if (activateHook && !cached) {
+        this.waitingFor = newComponent;
+        activateHook.call(newComponent, function () {
+          if (self.waitingFor !== newComponent) {
+            return;
+          }
+          self.waitingFor = null;
+          self.transition(newComponent, cb);
+        });
+      } else {
+        // update ref for kept-alive component
+        if (cached) {
+          newComponent._updateRef();
+        }
+        this.transition(newComponent, cb);
+      }
+    },
+
+    /**
+     * When the component changes or unbinds before an async
+     * constructor is resolved, we need to invalidate its
+     * pending callback.
+     */
+
+    invalidatePending: function invalidatePending() {
+      if (this.pendingComponentCb) {
+        this.pendingComponentCb.cancel();
+        this.pendingComponentCb = null;
+      }
+    },
+
+    /**
+     * Instantiate/insert a new child vm.
+     * If keep alive and has cached instance, insert that
+     * instance; otherwise build a new one and cache it.
+     *
+     * @param {Object} [extraOptions]
+     * @return {Vue} - the created instance
+     */
+
+    build: function build(extraOptions) {
+      var cached = this.getCached();
+      if (cached) {
+        return cached;
+      }
+      if (this.Component) {
+        // default options
+        var options = {
+          name: this.ComponentName,
+          el: cloneNode(this.el),
+          template: this.inlineTemplate,
+          // make sure to add the child with correct parent
+          // if this is a transcluded component, its parent
+          // should be the transclusion host.
+          parent: this._host || this.vm,
+          // if no inline-template, then the compiled
+          // linker can be cached for better performance.
+          _linkerCachable: !this.inlineTemplate,
+          _ref: this.descriptor.ref,
+          _asComponent: true,
+          _isRouterView: this._isRouterView,
+          // if this is a transcluded component, context
+          // will be the common parent vm of this instance
+          // and its host.
+          _context: this.vm,
+          // if this is inside an inline v-for, the scope
+          // will be the intermediate scope created for this
+          // repeat fragment. this is used for linking props
+          // and container directives.
+          _scope: this._scope,
+          // pass in the owner fragment of this component.
+          // this is necessary so that the fragment can keep
+          // track of its contained components in order to
+          // call attach/detach hooks for them.
+          _frag: this._frag
+        };
+        // extra options
+        // in 1.0.0 this is used by vue-router only
+        /* istanbul ignore if */
+        if (extraOptions) {
+          extend(options, extraOptions);
+        }
+        var child = new this.Component(options);
+        if (this.keepAlive) {
+          this.cache[this.Component.cid] = child;
+        }
+        /* istanbul ignore if */
+        if ('development' !== 'production' && this.el.hasAttribute('transition') && child._isFragment) {
+          warn('Transitions will not work on a fragment instance. ' + 'Template: ' + child.$options.template);
+        }
+        return child;
+      }
+    },
+
+    /**
+     * Try to get a cached instance of the current component.
+     *
+     * @return {Vue|undefined}
+     */
+
+    getCached: function getCached() {
+      return this.keepAlive && this.cache[this.Component.cid];
+    },
+
+    /**
+     * Teardown the current child, but defers cleanup so
+     * that we can separate the destroy and removal steps.
+     *
+     * @param {Boolean} defer
+     */
+
+    unbuild: function unbuild(defer) {
+      if (this.waitingFor) {
+        this.waitingFor.$destroy();
+        this.waitingFor = null;
+      }
+      var child = this.childVM;
+      if (!child || this.keepAlive) {
+        if (child) {
+          // remove ref
+          child._updateRef(true);
+        }
+        return;
+      }
+      // the sole purpose of `deferCleanup` is so that we can
+      // "deactivate" the vm right now and perform DOM removal
+      // later.
+      child.$destroy(false, defer);
+    },
+
+    /**
+     * Remove current destroyed child and manually do
+     * the cleanup after removal.
+     *
+     * @param {Function} cb
+     */
+
+    remove: function remove(child, cb) {
+      var keepAlive = this.keepAlive;
+      if (child) {
+        // we may have a component switch when a previous
+        // component is still being transitioned out.
+        // we want to trigger only one lastest insertion cb
+        // when the existing transition finishes. (#1119)
+        this.pendingRemovals++;
+        this.pendingRemovalCb = cb;
+        var self = this;
+        child.$remove(function () {
+          self.pendingRemovals--;
+          if (!keepAlive) child._cleanup();
+          if (!self.pendingRemovals && self.pendingRemovalCb) {
+            self.pendingRemovalCb();
+            self.pendingRemovalCb = null;
+          }
+        });
+      } else if (cb) {
+        cb();
+      }
+    },
+
+    /**
+     * Actually swap the components, depending on the
+     * transition mode. Defaults to simultaneous.
+     *
+     * @param {Vue} target
+     * @param {Function} [cb]
+     */
+
+    transition: function transition(target, cb) {
+      var self = this;
+      var current = this.childVM;
+      // for devtool inspection
+      if ('development' !== 'production') {
+        if (current) current._inactive = true;
+        target._inactive = false;
+      }
+      this.childVM = target;
+      switch (self.params.transitionMode) {
+        case 'in-out':
+          target.$before(self.anchor, function () {
+            self.remove(current, cb);
+          });
+          break;
+        case 'out-in':
+          self.remove(current, function () {
+            target.$before(self.anchor, cb);
+          });
+          break;
+        default:
+          self.remove(current);
+          target.$before(self.anchor, cb);
+      }
+    },
+
+    /**
+     * Unbind.
+     */
+
+    unbind: function unbind() {
+      this.invalidatePending();
+      // Do not defer cleanup when unbinding
+      this.unbuild();
+      // destroy all keep-alive cached instances
+      if (this.cache) {
+        for (var key in this.cache) {
+          this.cache[key].$destroy();
+        }
+        this.cache = null;
+      }
+    }
+  };
+
+  var vClass = {
+
+    deep: true,
+
+    update: function update(value) {
+      if (value && typeof value === 'string') {
+        this.handleObject(stringToObject(value));
+      } else if (isPlainObject(value)) {
+        this.handleObject(value);
+      } else if (isArray(value)) {
+        this.handleArray(value);
+      } else {
+        this.cleanup();
+      }
+    },
+
+    handleObject: function handleObject(value) {
+      this.cleanup(value);
+      var keys = this.prevKeys = Object.keys(value);
+      for (var i = 0, l = keys.length; i < l; i++) {
+        var key = keys[i];
+        if (value[key]) {
+          addClass(this.el, key);
+        } else {
+          removeClass(this.el, key);
+        }
+      }
+    },
+
+    handleArray: function handleArray(value) {
+      this.cleanup(value);
+      for (var i = 0, l = value.length; i < l; i++) {
+        if (value[i]) {
+          addClass(this.el, value[i]);
+        }
+      }
+      this.prevKeys = value.slice();
+    },
+
+    cleanup: function cleanup(value) {
+      if (this.prevKeys) {
+        var i = this.prevKeys.length;
+        while (i--) {
+          var key = this.prevKeys[i];
+          if (key && (!value || !contains$1(value, key))) {
+            removeClass(this.el, key);
+          }
+        }
+      }
+    }
+  };
+
+  function stringToObject(value) {
+    var res = {};
+    var keys = value.trim().split(/\s+/);
+    var i = keys.length;
+    while (i--) {
+      res[keys[i]] = true;
+    }
+    return res;
+  }
+
+  function contains$1(value, key) {
+    return isArray(value) ? value.indexOf(key) > -1 : hasOwn(value, key);
+  }
+
   var internalDirectives = {
     style: style,
     'class': vClass,
     component: component,
     prop: propDef,
-    transition: transition$1
+    transition: transition
   };
+
+  var propBindingModes = config._propBindingModes;
+  var empty = {};
+
+  // regexes
+  var identRE$1 = /^[$_a-zA-Z]+[\w$]*$/;
+  var settablePathRE = /^[A-Za-z_$][\w$]*(\.[A-Za-z_$][\w$]*|\[[^\[\]]+\])*$/;
+
+  /**
+   * Compile props on a root element and return
+   * a props link function.
+   *
+   * @param {Element|DocumentFragment} el
+   * @param {Array} propOptions
+   * @return {Function} propsLinkFn
+   */
+
+  function compileProps(el, propOptions) {
+    var props = [];
+    var names = Object.keys(propOptions);
+    var i = names.length;
+    var options, name, attr, value, path, parsed, prop;
+    while (i--) {
+      name = names[i];
+      options = propOptions[name] || empty;
+
+      if ('development' !== 'production' && name === '$data') {
+        warn('Do not use $data as prop.');
+        continue;
+      }
+
+      // props could contain dashes, which will be
+      // interpreted as minus calculations by the parser
+      // so we need to camelize the path here
+      path = camelize(name);
+      if (!identRE$1.test(path)) {
+        'development' !== 'production' && warn('Invalid prop key: "' + name + '". Prop keys ' + 'must be valid identifiers.');
+        continue;
+      }
+
+      prop = {
+        name: name,
+        path: path,
+        options: options,
+        mode: propBindingModes.ONE_WAY,
+        raw: null
+      };
+
+      attr = hyphenate(name);
+      // first check dynamic version
+      if ((value = getBindAttr(el, attr)) === null) {
+        if ((value = getBindAttr(el, attr + '.sync')) !== null) {
+          prop.mode = propBindingModes.TWO_WAY;
+        } else if ((value = getBindAttr(el, attr + '.once')) !== null) {
+          prop.mode = propBindingModes.ONE_TIME;
+        }
+      }
+      if (value !== null) {
+        // has dynamic binding!
+        prop.raw = value;
+        parsed = parseDirective(value);
+        value = parsed.expression;
+        prop.filters = parsed.filters;
+        // check binding type
+        if (isLiteral(value) && !parsed.filters) {
+          // for expressions containing literal numbers and
+          // booleans, there's no need to setup a prop binding,
+          // so we can optimize them as a one-time set.
+          prop.optimizedLiteral = true;
+        } else {
+          prop.dynamic = true;
+          // check non-settable path for two-way bindings
+          if ('development' !== 'production' && prop.mode === propBindingModes.TWO_WAY && !settablePathRE.test(value)) {
+            prop.mode = propBindingModes.ONE_WAY;
+            warn('Cannot bind two-way prop with non-settable ' + 'parent path: ' + value);
+          }
+        }
+        prop.parentPath = value;
+
+        // warn required two-way
+        if ('development' !== 'production' && options.twoWay && prop.mode !== propBindingModes.TWO_WAY) {
+          warn('Prop "' + name + '" expects a two-way binding type.');
+        }
+      } else if ((value = getAttr(el, attr)) !== null) {
+        // has literal binding!
+        prop.raw = value;
+      } else if (options.required) {
+        // warn missing required
+        'development' !== 'production' && warn('Missing required prop: ' + name);
+      }
+      // push prop
+      props.push(prop);
+    }
+    return makePropsLinkFn(props);
+  }
+
+  /**
+   * Build a function that applies props to a vm.
+   *
+   * @param {Array} props
+   * @return {Function} propsLinkFn
+   */
+
+  function makePropsLinkFn(props) {
+    return function propsLinkFn(vm, scope) {
+      // store resolved props info
+      vm._props = {};
+      var i = props.length;
+      var prop, path, options, value, raw;
+      while (i--) {
+        prop = props[i];
+        raw = prop.raw;
+        path = prop.path;
+        options = prop.options;
+        vm._props[path] = prop;
+        if (raw === null) {
+          // initialize absent prop
+          initProp(vm, prop, getDefault(vm, options));
+        } else if (prop.dynamic) {
+          // dynamic prop
+          if (vm._context) {
+            if (prop.mode === propBindingModes.ONE_TIME) {
+              // one time binding
+              value = (scope || vm._context).$get(prop.parentPath);
+              initProp(vm, prop, value);
+            } else {
+              // dynamic binding
+              vm._bindDir({
+                name: 'prop',
+                def: propDef,
+                prop: prop
+              }, null, null, scope); // el, host, scope
+            }
+          } else {
+              'development' !== 'production' && warn('Cannot bind dynamic prop on a root instance' + ' with no parent: ' + prop.name + '="' + raw + '"');
+            }
+        } else if (prop.optimizedLiteral) {
+          // optimized literal, cast it and just set once
+          var stripped = stripQuotes(raw);
+          value = stripped === raw ? toBoolean(toNumber(raw)) : stripped;
+          initProp(vm, prop, value);
+        } else {
+          // string literal, but we need to cater for
+          // Boolean props with no value
+          value = options.type === Boolean && raw === '' ? true : raw;
+          initProp(vm, prop, value);
+        }
+      }
+    };
+  }
+
+  /**
+   * Get the default value of a prop.
+   *
+   * @param {Vue} vm
+   * @param {Object} options
+   * @return {*}
+   */
+
+  function getDefault(vm, options) {
+    // no default, return undefined
+    if (!hasOwn(options, 'default')) {
+      // absent boolean value defaults to false
+      return options.type === Boolean ? false : undefined;
+    }
+    var def = options['default'];
+    // warn against non-factory defaults for Object & Array
+    if (isObject(def)) {
+      'development' !== 'production' && warn('Object/Array as default prop values will be shared ' + 'across multiple instances. Use a factory function ' + 'to return the default value instead.');
+    }
+    // call factory function for non-Function types
+    return typeof def === 'function' && options.type !== Function ? def.call(vm) : def;
+  }
 
   // special binding prefixes
   var bindRE = /^v-bind:|^:/;
   var onRE = /^v-on:|^@/;
-  var dirAttrRE = /^v-([^:]+)(?:$|:(.*)$)/;
+  var argRE = /:(.*)$/;
   var modifierRE = /\.[^\.]+/g;
   var transitionRE = /^(v-bind:|:)?transition$/;
 
+  // terminal directives
+  var terminalDirectives = ['for', 'if'];
+
   // default directive priority
   var DEFAULT_PRIORITY = 1000;
-  var DEFAULT_TERMINAL_PRIORITY = 2000;
 
   /**
    * Compile a template and return a reusable composite link
@@ -6854,8 +6496,6 @@ var template = Object.freeze({
    */
 
   function linkAndCapture(linker, vm) {
-    /* istanbul ignore if */
-    if ('development' === 'production') {}
     var originalDirCount = vm._directives.length;
     linker();
     var dirs = vm._directives.slice(originalDirCount);
@@ -6918,7 +6558,7 @@ var template = Object.freeze({
     var i = dirs.length;
     while (i--) {
       dirs[i]._teardown();
-      if ('development' !== 'production' && !destroying) {
+      if (!destroying) {
         vm._directives.$remove(dirs[i]);
       }
     }
@@ -6935,7 +6575,7 @@ var template = Object.freeze({
    */
 
   function compileAndLinkProps(vm, el, props, scope) {
-    var propsLinkFn = compileProps(el, props, vm);
+    var propsLinkFn = compileProps(el, props);
     var propDirs = linkAndCapture(function () {
       propsLinkFn(vm, scope);
     }, vm);
@@ -6951,6 +6591,7 @@ var template = Object.freeze({
    *
    * If this is a fragment instance, we only need to compile 1.
    *
+   * @param {Vue} vm
    * @param {Element} el
    * @param {Object} options
    * @param {Object} contextOptions
@@ -7061,10 +6702,9 @@ var template = Object.freeze({
     }
     var linkFn;
     var hasAttrs = el.hasAttributes();
-    var attrs = hasAttrs && toArray(el.attributes);
     // check terminal directives (for & if)
     if (hasAttrs) {
-      linkFn = checkTerminalDirectives(el, attrs, options);
+      linkFn = checkTerminalDirectives(el, options);
     }
     // check element directives
     if (!linkFn) {
@@ -7076,7 +6716,7 @@ var template = Object.freeze({
     }
     // normal directives
     if (!linkFn && hasAttrs) {
-      linkFn = compileDirectives(attrs, options);
+      linkFn = compileDirectives(el.attributes, options);
     }
     return linkFn;
   }
@@ -7161,7 +6801,7 @@ var template = Object.freeze({
       var parsed = parseDirective(token.value);
       token.descriptor = {
         name: type,
-        def: directives[type],
+        def: publicDirectives[type],
         expression: parsed.expression,
         filters: parsed.filters
       };
@@ -7258,8 +6898,11 @@ var template = Object.freeze({
 
   function checkElementDirectives(el, options) {
     var tag = el.tagName.toLowerCase();
-    if (commonTagRE.test(tag)) {
-      return;
+    if (commonTagRE.test(tag)) return;
+    // special case: give named slot a higher priority
+    // than unnamed slots
+    if (tag === 'slot' && hasBindAttr(el, 'name')) {
+      tag = '_namedSlot';
     }
     var def = resolveAsset(options, 'elementDirectives', tag);
     if (def) {
@@ -7305,12 +6948,11 @@ var template = Object.freeze({
    * If it finds one, return a terminal link function.
    *
    * @param {Element} el
-   * @param {Array} attrs
    * @param {Object} options
    * @return {Function} terminalLinkFn
    */
 
-  function checkTerminalDirectives(el, attrs, options) {
+  function checkTerminalDirectives(el, options) {
     // skip v-pre
     if (getAttr(el, 'v-pre') !== null) {
       return skip;
@@ -7322,28 +6964,13 @@ var template = Object.freeze({
         return skip;
       }
     }
-
-    var attr, name, value, modifiers, matched, dirName, rawName, arg, def, termDef;
-    for (var i = 0, j = attrs.length; i < j; i++) {
-      attr = attrs[i];
-      modifiers = parseModifiers(attr.name);
-      name = attr.name.replace(modifierRE, '');
-      if (matched = name.match(dirAttrRE)) {
-        def = resolveAsset(options, 'directives', matched[1]);
-        if (def && def.terminal) {
-          if (!termDef || (def.priority || DEFAULT_TERMINAL_PRIORITY) > termDef.priority) {
-            termDef = def;
-            rawName = attr.name;
-            value = attr.value;
-            dirName = matched[1];
-            arg = matched[2];
-          }
-        }
+    var value, dirName;
+    for (var i = 0, l = terminalDirectives.length; i < l; i++) {
+      dirName = terminalDirectives[i];
+      value = el.getAttribute('v-' + dirName);
+      if (value != null) {
+        return makeTerminalNodeLinkFn(el, dirName, value, options);
       }
-    }
-
-    if (termDef) {
-      return makeTerminalNodeLinkFn(el, dirName, value, options, termDef, rawName, arg, modifiers);
     }
   }
 
@@ -7360,24 +6987,19 @@ var template = Object.freeze({
    * @param {String} dirName
    * @param {String} value
    * @param {Object} options
-   * @param {Object} def
-   * @param {String} [rawName]
-   * @param {String} [arg]
-   * @param {Object} [modifiers]
+   * @param {Object} [def]
    * @return {Function} terminalLinkFn
    */
 
-  function makeTerminalNodeLinkFn(el, dirName, value, options, def, rawName, arg, modifiers) {
+  function makeTerminalNodeLinkFn(el, dirName, value, options, def) {
     var parsed = parseDirective(value);
     var descriptor = {
       name: dirName,
-      arg: arg,
       expression: parsed.expression,
       filters: parsed.filters,
       raw: value,
-      attr: rawName,
-      modifiers: modifiers,
-      def: def
+      // either an element directive, or if/for
+      def: def || publicDirectives[dirName]
     };
     // check ref for v-for and router-view
     if (dirName === 'for' || dirName === 'router-view') {
@@ -7404,7 +7026,7 @@ var template = Object.freeze({
   function compileDirectives(attrs, options) {
     var i = attrs.length;
     var dirs = [];
-    var attr, name, value, rawName, rawValue, dirName, arg, modifiers, dirDef, tokens, matched;
+    var attr, name, value, rawName, rawValue, dirName, arg, modifiers, dirDef, tokens;
     while (i--) {
       attr = attrs[i];
       name = rawName = attr.name;
@@ -7420,13 +7042,13 @@ var template = Object.freeze({
       if (tokens) {
         value = tokensToExp(tokens);
         arg = name;
-        pushDir('bind', directives.bind, tokens);
+        pushDir('bind', publicDirectives.bind, tokens);
         // warn against mixing mustaches with v-bind
         if ('development' !== 'production') {
           if (name === 'class' && Array.prototype.some.call(attrs, function (attr) {
             return attr.name === ':class' || attr.name === 'v-bind:class';
           })) {
-            warn('class="' + rawValue + '": Do not mix mustache interpolation ' + 'and v-bind for "class" on the same element. Use one or the other.', options);
+            warn('class="' + rawValue + '": Do not mix mustache interpolation ' + 'and v-bind for "class" on the same element. Use one or the other.');
           }
         }
       } else
@@ -7440,7 +7062,7 @@ var template = Object.freeze({
           // event handlers
           if (onRE.test(name)) {
             arg = name.replace(onRE, '');
-            pushDir('on', directives.on);
+            pushDir('on', publicDirectives.on);
           } else
 
             // attribute bindings
@@ -7450,21 +7072,31 @@ var template = Object.freeze({
                 pushDir(dirName, internalDirectives[dirName]);
               } else {
                 arg = dirName;
-                pushDir('bind', directives.bind);
+                pushDir('bind', publicDirectives.bind);
               }
             } else
 
               // normal directives
-              if (matched = name.match(dirAttrRE)) {
-                dirName = matched[1];
-                arg = matched[2];
+              if (name.indexOf('v-') === 0) {
+                // check arg
+                arg = (arg = name.match(argRE)) && arg[1];
+                if (arg) {
+                  name = name.replace(argRE, '');
+                }
+                // extract directive name
+                dirName = name.slice(2);
 
                 // skip v-else (when used with v-show)
                 if (dirName === 'else') {
                   continue;
                 }
 
-                dirDef = resolveAsset(options, 'directives', dirName, true);
+                dirDef = resolveAsset(options, 'directives', dirName);
+
+                if ('development' !== 'production') {
+                  assertAsset(dirDef, 'directive', dirName);
+                }
+
                 if (dirDef) {
                   pushDir(dirName, dirDef);
                 }
@@ -7591,7 +7223,7 @@ var template = Object.freeze({
         el = transcludeTemplate(el, options);
       }
     }
-    if (isFragment(el)) {
+    if (el instanceof DocumentFragment) {
       // anchors for fragment instance
       // passing in `persist: true` to avoid them being
       // discarded by IE during template cloning
@@ -7684,81 +7316,23 @@ var template = Object.freeze({
       if (!to.hasAttribute(name) && !specialCharRE.test(name)) {
         to.setAttribute(name, value);
       } else if (name === 'class' && !parseText(value)) {
-        value.trim().split(/\s+/).forEach(function (cls) {
+        value.split(/\s+/).forEach(function (cls) {
           addClass(to, cls);
         });
       }
     }
   }
 
-  /**
-   * Scan and determine slot content distribution.
-   * We do this during transclusion instead at compile time so that
-   * the distribution is decoupled from the compilation order of
-   * the slots.
-   *
-   * @param {Element|DocumentFragment} template
-   * @param {Element} content
-   * @param {Vue} vm
-   */
-
-  function resolveSlots(vm, content) {
-    if (!content) {
-      return;
-    }
-    var contents = vm._slotContents = Object.create(null);
-    var el, name;
-    for (var i = 0, l = content.children.length; i < l; i++) {
-      el = content.children[i];
-      /* eslint-disable no-cond-assign */
-      if (name = el.getAttribute('slot')) {
-        (contents[name] || (contents[name] = [])).push(el);
-      }
-      /* eslint-enable no-cond-assign */
-      if ('development' !== 'production' && getBindAttr(el, 'slot')) {
-        warn('The "slot" attribute must be static.', vm.$parent);
-      }
-    }
-    for (name in contents) {
-      contents[name] = extractFragment(contents[name], content);
-    }
-    if (content.hasChildNodes()) {
-      contents['default'] = extractFragment(content.childNodes, content);
-    }
-  }
-
-  /**
-   * Extract qualified content nodes from a node list.
-   *
-   * @param {NodeList} nodes
-   * @return {DocumentFragment}
-   */
-
-  function extractFragment(nodes, parent) {
-    var frag = document.createDocumentFragment();
-    nodes = toArray(nodes);
-    for (var i = 0, l = nodes.length; i < l; i++) {
-      var node = nodes[i];
-      if (isTemplate(node) && !node.hasAttribute('v-if') && !node.hasAttribute('v-for')) {
-        parent.removeChild(node);
-        node = parseTemplate(node);
-      }
-      frag.appendChild(node);
-    }
-    return frag;
-  }
-
-
-
   var compiler = Object.freeze({
   	compile: compile,
   	compileAndLinkProps: compileAndLinkProps,
   	compileRoot: compileRoot,
-  	transclude: transclude,
-  	resolveSlots: resolveSlots
+  	terminalDirectives: terminalDirectives,
+  	transclude: transclude
   });
 
   function stateMixin (Vue) {
+
     /**
      * Accessor for `$data` property, since setting $data
      * requires observing the new object and updating
@@ -7801,7 +7375,7 @@ var template = Object.freeze({
       var el = options.el;
       var props = options.props;
       if (props && !el) {
-        'development' !== 'production' && warn('Props will not be compiled if no `el` option is ' + 'provided at instantiation.', this);
+        'development' !== 'production' && warn('Props will not be compiled if no `el` option is ' + 'provided at instantiation.');
       }
       // make sure to convert string selectors into element now
       el = options.el = query(el);
@@ -7815,29 +7389,28 @@ var template = Object.freeze({
      */
 
     Vue.prototype._initData = function () {
-      var dataFn = this.$options.data;
-      var data = this._data = dataFn ? dataFn() : {};
-      if (!isPlainObject(data)) {
-        data = {};
-        'development' !== 'production' && warn('data functions should return an object.', this);
+      var propsData = this._data;
+      var optionsDataFn = this.$options.data;
+      var optionsData = optionsDataFn && optionsDataFn();
+      if (optionsData) {
+        this._data = optionsData;
+        for (var prop in propsData) {
+          if ('development' !== 'production' && hasOwn(optionsData, prop)) {
+            warn('Data field "' + prop + '" is already defined ' + 'as a prop. Use prop default value instead.');
+          }
+          if (this._props[prop].raw !== null || !hasOwn(optionsData, prop)) {
+            set(optionsData, prop, propsData[prop]);
+          }
+        }
       }
-      var props = this._props;
-      var runtimeData = this._runtimeData ? typeof this._runtimeData === 'function' ? this._runtimeData() : this._runtimeData : null;
+      var data = this._data;
       // proxy data on instance
       var keys = Object.keys(data);
       var i, key;
       i = keys.length;
       while (i--) {
         key = keys[i];
-        // there are two scenarios where we can proxy a data key:
-        // 1. it's not already defined as a prop
-        // 2. it's provided via a instantiation option AND there are no
-        //    template prop present
-        if (!props || !hasOwn(props, key) || runtimeData && hasOwn(runtimeData, key) && props[key].raw === null) {
-          this._proxy(key);
-        } else if ('development' !== 'production') {
-          warn('Data field "' + key + '" is already defined ' + 'as a prop. Use prop default value instead.', this);
-        }
+        this._proxy(key);
       }
       // observe data
       observe(data, this);
@@ -7947,8 +7520,8 @@ var template = Object.freeze({
             def.get = makeComputedGetter(userDef, this);
             def.set = noop;
           } else {
-            def.get = userDef.get ? userDef.cache !== false ? makeComputedGetter(userDef.get, this) : bind(userDef.get, this) : noop;
-            def.set = userDef.set ? bind(userDef.set, this) : noop;
+            def.get = userDef.get ? userDef.cache !== false ? makeComputedGetter(userDef.get, this) : bind$1(userDef.get, this) : noop;
+            def.set = userDef.set ? bind$1(userDef.set, this) : noop;
           }
           Object.defineProperty(this, key, def);
         }
@@ -7980,7 +7553,7 @@ var template = Object.freeze({
       var methods = this.$options.methods;
       if (methods) {
         for (var key in methods) {
-          this[key] = bind(methods[key], this);
+          this[key] = bind$1(methods[key], this);
         }
       }
     };
@@ -8002,6 +7575,7 @@ var template = Object.freeze({
   var eventRE = /^v-on:|^@/;
 
   function eventsMixin (Vue) {
+
     /**
      * Setup the instance's option events & watchers.
      * If the value is a string, we pull it from the
@@ -8032,12 +7606,8 @@ var template = Object.freeze({
         if (eventRE.test(name)) {
           name = name.replace(eventRE, '');
           handler = (vm._scope || vm._context).$eval(attrs[i].value, true);
-          if (typeof handler === 'function') {
-            handler._fromParent = true;
-            vm.$on(name.replace(eventRE), handler);
-          } else if ('development' !== 'production') {
-            warn('v-on:' + name + '="' + attrs[i].value + '" ' + 'expects a function value, got ' + handler, vm);
-          }
+          handler._fromParent = true;
+          vm.$on(name.replace(eventRE), handler);
         }
       }
     }
@@ -8085,7 +7655,7 @@ var template = Object.freeze({
         if (method) {
           vm[action](key, method, options);
         } else {
-          'development' !== 'production' && warn('Unknown method: "' + handler + '" when ' + 'registering callback for ' + action + ': "' + key + '".', vm);
+          'development' !== 'production' && warn('Unknown method: "' + handler + '" when ' + 'registering callback for ' + action + ': "' + key + '".');
         }
       } else if (handler && type === 'object') {
         register(vm, action, key, handler.handler, handler);
@@ -8173,21 +7743,18 @@ var template = Object.freeze({
    * It registers a watcher with the expression and calls
    * the DOM update function when a change is triggered.
    *
+   * @param {String} name
+   * @param {Node} el
+   * @param {Vue} vm
    * @param {Object} descriptor
    *                 - {String} name
    *                 - {Object} def
    *                 - {String} expression
    *                 - {Array<Object>} [filters]
-   *                 - {Object} [modifiers]
    *                 - {Boolean} literal
    *                 - {String} attr
-   *                 - {String} arg
    *                 - {String} raw
-   *                 - {String} [ref]
-   *                 - {Array<Object>} [interp]
-   *                 - {Boolean} [hasOneTime]
-   * @param {Vue} vm
-   * @param {Node} el
+   * @param {Object} def - directive definition object
    * @param {Vue} [host] - transclusion host component
    * @param {Object} [scope] - v-for scope
    * @param {Fragment} [frag] - owner fragment
@@ -8223,6 +7790,8 @@ var template = Object.freeze({
    * Initialize the directive, mixin definition properties,
    * setup the watcher, call definition bind() and update()
    * if present.
+   *
+   * @param {Object} def
    */
 
   Directive.prototype._bind = function () {
@@ -8266,8 +7835,8 @@ var template = Object.freeze({
       } else {
         this._update = noop;
       }
-      var preProcess = this._preProcess ? bind(this._preProcess, this) : null;
-      var postProcess = this._postProcess ? bind(this._postProcess, this) : null;
+      var preProcess = this._preProcess ? bind$1(this._preProcess, this) : null;
+      var postProcess = this._postProcess ? bind$1(this._postProcess, this) : null;
       var watcher = this._watcher = new Watcher(this.vm, this.expression, this._update, // callback
       {
         filters: this.filters,
@@ -8303,7 +7872,7 @@ var template = Object.freeze({
     var i = params.length;
     var key, val, mappedKey;
     while (i--) {
-      key = hyphenate(params[i]);
+      key = params[i];
       mappedKey = camelize(key);
       val = getBindAttr(this.el, key);
       if (val != null) {
@@ -8419,11 +7988,10 @@ var template = Object.freeze({
    *
    * @param {String} event
    * @param {Function} handler
-   * @param {Boolean} [useCapture]
    */
 
-  Directive.prototype.on = function (event, handler, useCapture) {
-    on(this.el, event, handler, useCapture);(this._listeners || (this._listeners = [])).push([event, handler]);
+  Directive.prototype.on = function (event, handler) {
+    on$1(this.el, event, handler);(this._listeners || (this._listeners = [])).push([event, handler]);
   };
 
   /**
@@ -8462,6 +8030,7 @@ var template = Object.freeze({
   };
 
   function lifecycleMixin (Vue) {
+
     /**
      * Update v-ref for component.
      *
@@ -8492,6 +8061,7 @@ var template = Object.freeze({
      * Otherwise we need to call transclude/compile/link here.
      *
      * @param {Element} el
+     * @return {Element}
      */
 
     Vue.prototype._compile = function (el) {
@@ -8515,9 +8085,6 @@ var template = Object.freeze({
       // container attrs and props can be different every time.
       var contextOptions = this._context && this._context.$options;
       var rootLinker = compileRoot(el, options, contextOptions);
-
-      // resolve slot distribution
-      resolveSlots(this, options._content);
 
       // compile and link the rest
       var contentLinkFn;
@@ -8552,6 +8119,7 @@ var template = Object.freeze({
 
       this._isCompiled = true;
       this._callHook('compiled');
+      return el;
     };
 
     /**
@@ -8562,7 +8130,7 @@ var template = Object.freeze({
      */
 
     Vue.prototype._initElement = function (el) {
-      if (isFragment(el)) {
+      if (el instanceof DocumentFragment) {
         this._isFragment = true;
         this.$el = this._fragmentStart = el.firstChild;
         this._fragmentEnd = el.lastChild;
@@ -8581,8 +8149,10 @@ var template = Object.freeze({
     /**
      * Create and bind a directive to an element.
      *
-     * @param {Object} descriptor - parsed directive descriptor
+     * @param {String} name - directive name
      * @param {Node} node   - target node
+     * @param {Object} desc - parsed directive descriptor
+     * @param {Object} def  - directive definition object
      * @param {Vue} [host] - transclusion host component
      * @param {Object} [scope] - v-for scope
      * @param {Fragment} [frag] - owner fragment
@@ -8709,6 +8279,7 @@ var template = Object.freeze({
   }
 
   function miscMixin (Vue) {
+
     /**
      * Apply a list of filter (descriptors) to a value.
      * Using plain for loops here because this will be called in
@@ -8725,8 +8296,11 @@ var template = Object.freeze({
     Vue.prototype._applyFilters = function (value, oldValue, filters, write) {
       var filter, fn, args, arg, offset, i, l, j, k;
       for (i = 0, l = filters.length; i < l; i++) {
-        filter = filters[write ? l - i - 1 : i];
-        fn = resolveAsset(this.$options, 'filters', filter.name, true);
+        filter = filters[i];
+        fn = resolveAsset(this.$options, 'filters', filter.name);
+        if ('development' !== 'production') {
+          assertAsset(fn, 'filter', filter.name);
+        }
         if (!fn) continue;
         fn = write ? fn.write : fn.read || fn;
         if (typeof fn !== 'function') continue;
@@ -8750,16 +8324,14 @@ var template = Object.freeze({
      * resolves asynchronously and caches the resolved
      * constructor on the factory.
      *
-     * @param {String|Function} value
+     * @param {String} id
      * @param {Function} cb
      */
 
-    Vue.prototype._resolveComponent = function (value, cb) {
-      var factory;
-      if (typeof value === 'function') {
-        factory = value;
-      } else {
-        factory = resolveAsset(this.$options, 'components', value, true);
+    Vue.prototype._resolveComponent = function (id, cb) {
+      var factory = resolveAsset(this.$options, 'components', id);
+      if ('development' !== 'production') {
+        assertAsset(factory, 'component', id);
       }
       if (!factory) {
         return;
@@ -8775,7 +8347,7 @@ var template = Object.freeze({
         } else {
           factory.requested = true;
           var cbs = factory.pendingCallbacks = [cb];
-          factory.call(this, function resolve(res) {
+          factory(function resolve(res) {
             if (isPlainObject(res)) {
               res = Vue.extend(res);
             }
@@ -8786,7 +8358,7 @@ var template = Object.freeze({
               cbs[i](res);
             }
           }, function reject(reason) {
-            'development' !== 'production' && warn('Failed to resolve async component' + (typeof value === 'string' ? ': ' + value : '') + '. ' + (reason ? '\nReason: ' + reason : ''));
+            'development' !== 'production' && warn('Failed to resolve async component: ' + id + '. ' + (reason ? '\nReason: ' + reason : ''));
           });
         }
       } else {
@@ -8796,9 +8368,165 @@ var template = Object.freeze({
     };
   }
 
-  var filterRE$1 = /[^|]\|[^|]/;
+  function globalAPI (Vue) {
+
+    /**
+     * Expose useful internals
+     */
+
+    Vue.util = util;
+    Vue.config = config;
+    Vue.set = set;
+    Vue['delete'] = del;
+    Vue.nextTick = nextTick;
+
+    /**
+     * The following are exposed for advanced usage / plugins
+     */
+
+    Vue.compiler = compiler;
+    Vue.FragmentFactory = FragmentFactory;
+    Vue.internalDirectives = internalDirectives;
+    Vue.parsers = {
+      path: path,
+      text: text$1,
+      template: template,
+      directive: directive,
+      expression: expression
+    };
+
+    /**
+     * Each instance constructor, including Vue, has a unique
+     * cid. This enables us to create wrapped "child
+     * constructors" for prototypal inheritance and cache them.
+     */
+
+    Vue.cid = 0;
+    var cid = 1;
+
+    /**
+     * Class inheritance
+     *
+     * @param {Object} extendOptions
+     */
+
+    Vue.extend = function (extendOptions) {
+      extendOptions = extendOptions || {};
+      var Super = this;
+      var isFirstExtend = Super.cid === 0;
+      if (isFirstExtend && extendOptions._Ctor) {
+        return extendOptions._Ctor;
+      }
+      var name = extendOptions.name || Super.options.name;
+      if ('development' !== 'production') {
+        if (!/^[a-zA-Z][\w-]+$/.test(name)) {
+          warn('Invalid component name: ' + name);
+          name = null;
+        }
+      }
+      var Sub = createClass(name || 'VueComponent');
+      Sub.prototype = Object.create(Super.prototype);
+      Sub.prototype.constructor = Sub;
+      Sub.cid = cid++;
+      Sub.options = mergeOptions(Super.options, extendOptions);
+      Sub['super'] = Super;
+      // allow further extension
+      Sub.extend = Super.extend;
+      // create asset registers, so extended classes
+      // can have their private assets too.
+      config._assetTypes.forEach(function (type) {
+        Sub[type] = Super[type];
+      });
+      // enable recursive self-lookup
+      if (name) {
+        Sub.options.components[name] = Sub;
+      }
+      // cache constructor
+      if (isFirstExtend) {
+        extendOptions._Ctor = Sub;
+      }
+      return Sub;
+    };
+
+    /**
+     * A function that returns a sub-class constructor with the
+     * given name. This gives us much nicer output when
+     * logging instances in the console.
+     *
+     * @param {String} name
+     * @return {Function}
+     */
+
+    function createClass(name) {
+      return new Function('return function ' + classify(name) + ' (options) { this._init(options) }')();
+    }
+
+    /**
+     * Plugin system
+     *
+     * @param {Object} plugin
+     */
+
+    Vue.use = function (plugin) {
+      /* istanbul ignore if */
+      if (plugin.installed) {
+        return;
+      }
+      // additional parameters
+      var args = toArray(arguments, 1);
+      args.unshift(this);
+      if (typeof plugin.install === 'function') {
+        plugin.install.apply(plugin, args);
+      } else {
+        plugin.apply(null, args);
+      }
+      plugin.installed = true;
+      return this;
+    };
+
+    /**
+     * Apply a global mixin by merging it into the default
+     * options.
+     */
+
+    Vue.mixin = function (mixin) {
+      Vue.options = mergeOptions(Vue.options, mixin);
+    };
+
+    /**
+     * Create asset registration methods with the following
+     * signature:
+     *
+     * @param {String} id
+     * @param {*} definition
+     */
+
+    config._assetTypes.forEach(function (type) {
+      Vue[type] = function (id, definition) {
+        if (!definition) {
+          return this.options[type + 's'][id];
+        } else {
+          /* istanbul ignore if */
+          if ('development' !== 'production') {
+            if (type === 'component' && (commonTagRE.test(id) || reservedTagRE.test(id))) {
+              warn('Do not use built-in or reserved HTML elements as component ' + 'id: ' + id);
+            }
+          }
+          if (type === 'component' && isPlainObject(definition)) {
+            definition.name = id;
+            definition = Vue.extend(definition);
+          }
+          this.options[type + 's'][id] = definition;
+          return definition;
+        }
+      };
+    });
+  }
+
+  var filterRE = /[^|]\|[^|]/;
 
   function dataAPI (Vue) {
+
     /**
      * Get the value from an expression on this vm.
      *
@@ -8895,7 +8623,7 @@ var template = Object.freeze({
 
     Vue.prototype.$eval = function (text, asStatement) {
       // check for filters.
-      if (filterRE$1.test(text)) {
+      if (filterRE.test(text)) {
         var dir = parseDirective(text);
         // the filter regex check might give false positive
         // for pipes inside strings, so it's possible that
@@ -8946,14 +8674,8 @@ var template = Object.freeze({
       }
       // include computed fields
       if (!path) {
-        var key;
-        for (key in this.$options.computed) {
+        for (var key in this.$options.computed) {
           data[key] = clean(this[key]);
-        }
-        if (this._props) {
-          for (key in this._props) {
-            data[key] = clean(this[key]);
-          }
         }
       }
       console.log(data);
@@ -8973,6 +8695,7 @@ var template = Object.freeze({
   }
 
   function domAPI (Vue) {
+
     /**
      * Convenience on-instance nextTick. The callback is
      * auto-bound to the instance, and this avoids component
@@ -9158,6 +8881,7 @@ var template = Object.freeze({
   }
 
   function eventsAPI (Vue) {
+
     /**
      * Listen on the given `event` with `fn`.
      *
@@ -9349,6 +9073,7 @@ var template = Object.freeze({
   }
 
   function lifecycleAPI (Vue) {
+
     /**
      * Set instance target element and kick off the compilation
      * process. The passed in `el` can be a selector string, an
@@ -9361,7 +9086,7 @@ var template = Object.freeze({
 
     Vue.prototype.$mount = function (el) {
       if (this._isCompiled) {
-        'development' !== 'production' && warn('$mount() should be called only once.', this);
+        'development' !== 'production' && warn('$mount() should be called only once.');
         return;
       }
       el = query(el);
@@ -9392,9 +9117,6 @@ var template = Object.freeze({
     /**
      * Teardown the instance, simply delegate to the internal
      * _destroy.
-     *
-     * @param {Boolean} remove
-     * @param {Boolean} deferCleanup
      */
 
     Vue.prototype.$destroy = function (remove, deferCleanup) {
@@ -9407,8 +9129,6 @@ var template = Object.freeze({
      *
      * @param {Element|DocumentFragment} el
      * @param {Vue} [host]
-     * @param {Object} [scope]
-     * @param {Fragment} [frag]
      * @return {Function}
      */
 
@@ -9442,102 +9162,12 @@ var template = Object.freeze({
   lifecycleMixin(Vue);
   miscMixin(Vue);
 
-  // install instance APIs
+  // install APIs
+  globalAPI(Vue);
   dataAPI(Vue);
   domAPI(Vue);
   eventsAPI(Vue);
   lifecycleAPI(Vue);
-
-  var slot = {
-
-    priority: SLOT,
-    params: ['name'],
-
-    bind: function bind() {
-      // this was resolved during component transclusion
-      var name = this.params.name || 'default';
-      var content = this.vm._slotContents && this.vm._slotContents[name];
-      if (!content || !content.hasChildNodes()) {
-        this.fallback();
-      } else {
-        this.compile(content.cloneNode(true), this.vm._context, this.vm);
-      }
-    },
-
-    compile: function compile(content, context, host) {
-      if (content && context) {
-        if (this.el.hasChildNodes() && content.childNodes.length === 1 && content.childNodes[0].nodeType === 1 && content.childNodes[0].hasAttribute('v-if')) {
-          // if the inserted slot has v-if
-          // inject fallback content as the v-else
-          var elseBlock = document.createElement('template');
-          elseBlock.setAttribute('v-else', '');
-          elseBlock.innerHTML = this.el.innerHTML;
-          // the else block should be compiled in child scope
-          elseBlock._context = this.vm;
-          content.appendChild(elseBlock);
-        }
-        var scope = host ? host._scope : this._scope;
-        this.unlink = context.$compile(content, host, scope, this._frag);
-      }
-      if (content) {
-        replace(this.el, content);
-      } else {
-        remove(this.el);
-      }
-    },
-
-    fallback: function fallback() {
-      this.compile(extractContent(this.el, true), this.vm);
-    },
-
-    unbind: function unbind() {
-      if (this.unlink) {
-        this.unlink();
-      }
-    }
-  };
-
-  var partial = {
-
-    priority: PARTIAL,
-
-    params: ['name'],
-
-    // watch changes to name for dynamic partials
-    paramWatchers: {
-      name: function name(value) {
-        vIf.remove.call(this);
-        if (value) {
-          this.insert(value);
-        }
-      }
-    },
-
-    bind: function bind() {
-      this.anchor = createAnchor('v-partial');
-      replace(this.el, this.anchor);
-      this.insert(this.params.name);
-    },
-
-    insert: function insert(id) {
-      var partial = resolveAsset(this.vm.$options, 'partials', id, true);
-      if (partial) {
-        this.factory = new FragmentFactory(this.vm, partial);
-        vIf.insert.call(this);
-      }
-    },
-
-    unbind: function unbind() {
-      if (this.frag) {
-        this.frag.destroy();
-      }
-    }
-  };
-
-  var elementDirectives = {
-    slot: slot,
-    partial: partial
-  };
 
   var convertArray = vFor._postProcess;
 
@@ -9576,7 +9206,9 @@ var template = Object.freeze({
     // because why not
     var n = delimiter === 'in' ? 3 : 2;
     // extract and flatten keys
-    var keys = Array.prototype.concat.apply([], toArray(arguments, n));
+    var keys = toArray(arguments, n).reduce(function (prev, cur) {
+      return prev.concat(cur);
+    }, []);
     var res = [];
     var item, key, val, j;
     for (var i = 0, l = arr.length; i < l; i++) {
@@ -9601,58 +9233,26 @@ var template = Object.freeze({
   /**
    * Filter filter for arrays
    *
-   * @param {String|Array<String>|Function} ...sortKeys
-   * @param {Number} [order]
+   * @param {String} sortKey
+   * @param {String} reverse
    */
 
-  function orderBy(arr) {
-    var comparator = null;
-    var sortKeys = undefined;
+  function orderBy(arr, sortKey, reverse) {
     arr = convertArray(arr);
-
-    // determine order (last argument)
-    var args = toArray(arguments, 1);
-    var order = args[args.length - 1];
-    if (typeof order === 'number') {
-      order = order < 0 ? -1 : 1;
-      args = args.length > 1 ? args.slice(0, -1) : args;
-    } else {
-      order = 1;
-    }
-
-    // determine sortKeys & comparator
-    var firstArg = args[0];
-    if (!firstArg) {
+    if (!sortKey) {
       return arr;
-    } else if (typeof firstArg === 'function') {
-      // custom comparator
-      comparator = function (a, b) {
-        return firstArg(a, b) * order;
-      };
-    } else {
-      // string keys. flatten first
-      sortKeys = Array.prototype.concat.apply([], args);
-      comparator = function (a, b, i) {
-        i = i || 0;
-        return i >= sortKeys.length - 1 ? baseCompare(a, b, i) : baseCompare(a, b, i) || comparator(a, b, i + 1);
-      };
     }
-
-    function baseCompare(a, b, sortKeyIndex) {
-      var sortKey = sortKeys[sortKeyIndex];
-      if (sortKey) {
-        if (sortKey !== '$key') {
-          if (isObject(a) && '$value' in a) a = a.$value;
-          if (isObject(b) && '$value' in b) b = b.$value;
-        }
-        a = isObject(a) ? getPath(a, sortKey) : a;
-        b = isObject(b) ? getPath(b, sortKey) : b;
-      }
-      return a === b ? 0 : a > b ? order : -order;
-    }
-
+    var order = reverse && reverse < 0 ? -1 : 1;
     // sort on a copy to avoid mutating original array
-    return arr.slice().sort(comparator);
+    return arr.slice().sort(function (a, b) {
+      if (sortKey !== '$key') {
+        if (isObject(a) && '$value' in a) a = a.$value;
+        if (isObject(b) && '$value' in b) b = b.$value;
+      }
+      a = isObject(a) ? getPath(a, sortKey) : a;
+      b = isObject(b) ? getPath(b, sortKey) : b;
+      return a === b ? 0 : a > b ? order : -order;
+    });
   }
 
   /**
@@ -9754,7 +9354,7 @@ var template = Object.freeze({
       var head = i > 0 ? _int.slice(0, i) + (_int.length > 3 ? ',' : '') : '';
       var _float = stringified.slice(-3);
       var sign = value < 0 ? '-' : '';
-      return sign + _currency + head + _int.slice(i).replace(digitsRE, '$1,') + _float;
+      return _currency + sign + head + _int.slice(i).replace(digitsRE, '$1,') + _float;
     },
 
     /**
@@ -9792,199 +9392,194 @@ var template = Object.freeze({
     }
   };
 
-  function installGlobalAPI (Vue) {
-    /**
-     * Vue and every constructor that extends Vue has an
-     * associated options object, which can be accessed during
-     * compilation steps as `this.constructor.options`.
-     *
-     * These can be seen as the default options of every
-     * Vue instance.
-     */
+  var partial = {
 
-    Vue.options = {
-      directives: directives,
-      elementDirectives: elementDirectives,
-      filters: filters,
-      transitions: {},
-      components: {},
-      partials: {},
-      replace: true
-    };
+    priority: PARTIAL,
 
-    /**
-     * Expose useful internals
-     */
+    params: ['name'],
 
-    Vue.util = util;
-    Vue.config = config;
-    Vue.set = set;
-    Vue['delete'] = del;
-    Vue.nextTick = nextTick;
-
-    /**
-     * The following are exposed for advanced usage / plugins
-     */
-
-    Vue.compiler = compiler;
-    Vue.FragmentFactory = FragmentFactory;
-    Vue.internalDirectives = internalDirectives;
-    Vue.parsers = {
-      path: path,
-      text: text,
-      template: template,
-      directive: directive,
-      expression: expression
-    };
-
-    /**
-     * Each instance constructor, including Vue, has a unique
-     * cid. This enables us to create wrapped "child
-     * constructors" for prototypal inheritance and cache them.
-     */
-
-    Vue.cid = 0;
-    var cid = 1;
-
-    /**
-     * Class inheritance
-     *
-     * @param {Object} extendOptions
-     */
-
-    Vue.extend = function (extendOptions) {
-      extendOptions = extendOptions || {};
-      var Super = this;
-      var isFirstExtend = Super.cid === 0;
-      if (isFirstExtend && extendOptions._Ctor) {
-        return extendOptions._Ctor;
-      }
-      var name = extendOptions.name || Super.options.name;
-      if ('development' !== 'production') {
-        if (!/^[a-zA-Z][\w-]*$/.test(name)) {
-          warn('Invalid component name: "' + name + '". Component names ' + 'can only contain alphanumeric characaters and the hyphen.');
-          name = null;
+    // watch changes to name for dynamic partials
+    paramWatchers: {
+      name: function name(value) {
+        vIf.remove.call(this);
+        if (value) {
+          this.insert(value);
         }
       }
-      var Sub = createClass(name || 'VueComponent');
-      Sub.prototype = Object.create(Super.prototype);
-      Sub.prototype.constructor = Sub;
-      Sub.cid = cid++;
-      Sub.options = mergeOptions(Super.options, extendOptions);
-      Sub['super'] = Super;
-      // allow further extension
-      Sub.extend = Super.extend;
-      // create asset registers, so extended classes
-      // can have their private assets too.
-      config._assetTypes.forEach(function (type) {
-        Sub[type] = Super[type];
-      });
-      // enable recursive self-lookup
-      if (name) {
-        Sub.options.components[name] = Sub;
-      }
-      // cache constructor
-      if (isFirstExtend) {
-        extendOptions._Ctor = Sub;
-      }
-      return Sub;
-    };
+    },
 
-    /**
-     * A function that returns a sub-class constructor with the
-     * given name. This gives us much nicer output when
-     * logging instances in the console.
-     *
-     * @param {String} name
-     * @return {Function}
-     */
+    bind: function bind() {
+      this.anchor = createAnchor('v-partial');
+      replace(this.el, this.anchor);
+      this.insert(this.params.name);
+    },
 
-    function createClass(name) {
-      /* eslint-disable no-new-func */
-      return new Function('return function ' + classify(name) + ' (options) { this._init(options) }')();
-      /* eslint-enable no-new-func */
+    insert: function insert(id) {
+      var partial = resolveAsset(this.vm.$options, 'partials', id);
+      if ('development' !== 'production') {
+        assertAsset(partial, 'partial', id);
+      }
+      if (partial) {
+        this.factory = new FragmentFactory(this.vm, partial);
+        vIf.insert.call(this);
+      }
+    },
+
+    unbind: function unbind() {
+      if (this.frag) {
+        this.frag.destroy();
+      }
     }
+  };
 
-    /**
-     * Plugin system
-     *
-     * @param {Object} plugin
-     */
+  // This is the elementDirective that handles <content>
+  // transclusions. It relies on the raw content of an
+  // instance being stored as `$options._content` during
+  // the transclude phase.
 
-    Vue.use = function (plugin) {
-      /* istanbul ignore if */
-      if (plugin.installed) {
+  // We are exporting two versions, one for named and one
+  // for unnamed, because the unnamed slots must be compiled
+  // AFTER all named slots have selected their content. So
+  // we need to give them different priorities in the compilation
+  // process. (See #1965)
+
+  var slot = {
+
+    priority: SLOT,
+
+    bind: function bind() {
+      var host = this.vm;
+      var raw = host.$options._content;
+      if (!raw) {
+        this.fallback();
         return;
       }
-      // additional parameters
-      var args = toArray(arguments, 1);
-      args.unshift(this);
-      if (typeof plugin.install === 'function') {
-        plugin.install.apply(plugin, args);
+      var context = host._context;
+      var slotName = this.params && this.params.name;
+      if (!slotName) {
+        // Default slot
+        this.tryCompile(extractFragment(raw.childNodes, raw, true), context, host);
       } else {
-        plugin.apply(null, args);
-      }
-      plugin.installed = true;
-      return this;
-    };
-
-    /**
-     * Apply a global mixin by merging it into the default
-     * options.
-     */
-
-    Vue.mixin = function (mixin) {
-      Vue.options = mergeOptions(Vue.options, mixin);
-    };
-
-    /**
-     * Create asset registration methods with the following
-     * signature:
-     *
-     * @param {String} id
-     * @param {*} definition
-     */
-
-    config._assetTypes.forEach(function (type) {
-      Vue[type] = function (id, definition) {
-        if (!definition) {
-          return this.options[type + 's'][id];
+        // Named slot
+        var selector = '[slot="' + slotName + '"]';
+        var nodes = raw.querySelectorAll(selector);
+        if (nodes.length) {
+          this.tryCompile(extractFragment(nodes, raw), context, host);
         } else {
-          /* istanbul ignore if */
-          if ('development' !== 'production') {
-            if (type === 'component' && (commonTagRE.test(id) || reservedTagRE.test(id))) {
-              warn('Do not use built-in or reserved HTML elements as component ' + 'id: ' + id);
-            }
-          }
-          if (type === 'component' && isPlainObject(definition)) {
-            definition.name = id;
-            definition = Vue.extend(definition);
-          }
-          this.options[type + 's'][id] = definition;
-          return definition;
+          this.fallback();
         }
-      };
-    });
+      }
+    },
 
-    // expose internal transition API
-    extend(Vue.transition, transition);
-  }
+    tryCompile: function tryCompile(content, context, host) {
+      if (content.hasChildNodes()) {
+        this.compile(content, context, host);
+      } else {
+        this.fallback();
+      }
+    },
 
-  installGlobalAPI(Vue);
+    compile: function compile(content, context, host) {
+      if (content && context) {
+        var scope = host ? host._scope : this._scope;
+        this.unlink = context.$compile(content, host, scope, this._frag);
+      }
+      if (content) {
+        replace(this.el, content);
+      } else {
+        remove(this.el);
+      }
+    },
 
-  Vue.version = '1.0.21';
+    fallback: function fallback() {
+      this.compile(extractContent(this.el, true), this.vm);
+    },
 
-  // devtools global hook
-  /* istanbul ignore next */
-  setTimeout(function () {
-    if (config.devtools) {
-      if (devtools) {
-        devtools.emit('init', Vue);
-      } else if ('development' !== 'production' && inBrowser && /Chrome\/\d+/.test(window.navigator.userAgent)) {
-        console.log('Download the Vue Devtools for a better development experience:\n' + 'https://github.com/vuejs/vue-devtools');
+    unbind: function unbind() {
+      if (this.unlink) {
+        this.unlink();
       }
     }
-  }, 0);
+  };
+
+  var namedSlot = extend(extend({}, slot), {
+    priority: slot.priority + 1,
+    params: ['name']
+  });
+
+  /**
+   * Extract qualified content nodes from a node list.
+   *
+   * @param {NodeList} nodes
+   * @param {Element} parent
+   * @param {Boolean} main
+   * @return {DocumentFragment}
+   */
+
+  function extractFragment(nodes, parent, main) {
+    var frag = document.createDocumentFragment();
+    for (var i = 0, l = nodes.length; i < l; i++) {
+      var node = nodes[i];
+      // if this is the main outlet, we want to skip all
+      // previously selected nodes;
+      // otherwise, we want to mark the node as selected.
+      // clone the node so the original raw content remains
+      // intact. this ensures proper re-compilation in cases
+      // where the outlet is inside a conditional block
+      if (main && !node.__v_selected) {
+        append(node);
+      } else if (!main && node.parentNode === parent) {
+        node.__v_selected = true;
+        append(node);
+      }
+    }
+    return frag;
+
+    function append(node) {
+      if (isTemplate(node) && !node.hasAttribute('v-if') && !node.hasAttribute('v-for')) {
+        node = parseTemplate(node);
+      }
+      node = cloneNode(node);
+      frag.appendChild(node);
+    }
+  }
+
+  var elementDirectives = {
+    slot: slot,
+    _namedSlot: namedSlot, // same as slot but with higher priority
+    partial: partial
+  };
+
+  Vue.version = '1.0.14';
+
+  /**
+   * Vue and every constructor that extends Vue has an
+   * associated options object, which can be accessed during
+   * compilation steps as `this.constructor.options`.
+   *
+   * These can be seen as the default options of every
+   * Vue instance.
+   */
+
+  Vue.options = {
+    directives: publicDirectives,
+    elementDirectives: elementDirectives,
+    filters: filters,
+    transitions: {},
+    components: {},
+    partials: {},
+    replace: true
+  };
+
+  // devtools global hook
+  /* istanbul ignore if */
+  if ('development' !== 'production' && inBrowser) {
+    if (window.__VUE_DEVTOOLS_GLOBAL_HOOK__) {
+      window.__VUE_DEVTOOLS_GLOBAL_HOOK__.emit('init', Vue);
+    } else if (/Chrome\/\d+/.test(navigator.userAgent)) {
+      console.log('Download the Vue Devtools for a better development experience:\n' + 'https://github.com/vuejs/vue-devtools');
+    }
+  }
 
   return Vue;
 
@@ -25174,7 +24769,7 @@ bsWysihtml5($, wysihtml5);
 }));
 
 /*!
- * Select2 4.0.2
+ * Select2 4.0.1
  * https://select2.github.io
  *
  * Released under the MIT license
@@ -26317,7 +25912,11 @@ S2.define('select2/results',[
       this.$results.on('mousewheel', function (e) {
         var top = self.$results.scrollTop();
 
-        var bottom = self.$results.get(0).scrollHeight - top + e.deltaY;
+        var bottom = (
+          self.$results.get(0).scrollHeight -
+          self.$results.scrollTop() +
+          e.deltaY
+        );
 
         var isAtTop = e.deltaY > 0 && top - e.deltaY <= 0;
         var isAtBottom = e.deltaY < 0 && bottom <= self.$results.height();
@@ -28503,7 +28102,7 @@ S2.define('select2/data/array',[
         var $existingOption = $existing.filter(onlyItem(item));
 
         var existingData = this.item($existingOption);
-        var newData = $.extend(true, {}, item, existingData);
+        var newData = $.extend(true, {}, existingData, item);
 
         var $newOption = this.option(newData);
 
@@ -28611,9 +28210,7 @@ S2.define('select2/data/ajax',[
 
         callback(results);
       }, function () {
-        self.trigger('results:message', {
-          message: 'errorLoading'
-        });
+        // TODO: Handle AJAX errors
       });
 
       self._request = $request;
@@ -28643,12 +28240,6 @@ S2.define('select2/data/tags',[
 
     if (createTag !== undefined) {
       this.createTag = createTag;
-    }
-
-    var insertTag = options.get('insertTag');
-
-    if (insertTag !== undefined) {
-        this.insertTag = insertTag;
     }
 
     decorated.call(this, $element, options);
@@ -29350,6 +28941,7 @@ S2.define('select2/dropdown/attachBody',[
 
     var newDirection = null;
 
+    var position = this.$container.position();
     var offset = this.$container.offset();
 
     offset.bottom = offset.top + this.$container.outerHeight(false);
@@ -29378,19 +28970,13 @@ S2.define('select2/dropdown/attachBody',[
       top: container.bottom
     };
 
-    // Determine what the parent element is to use for calciulating the offset
-    var $offsetParent = this.$dropdownParent;
+    // Fix positioning with static parents
+    if (this.$dropdownParent[0].style.position !== 'static') {
+      var parentOffset = this.$dropdownParent.offset();
 
-    // For statically positoned elements, we need to get the element
-    // that is determining the offset
-    if ($offsetParent.css('position') === 'static') {
-      $offsetParent = $offsetParent.offsetParent();
+      css.top -= parentOffset.top;
+      css.left -= parentOffset.left;
     }
-
-    var parentOffset = $offsetParent.offset();
-
-    css.top -= parentOffset.top;
-    css.left -= parentOffset.left;
 
     if (!isCurrentlyAbove && !isCurrentlyBelow) {
       newDirection = 'below';
@@ -29658,7 +29244,7 @@ S2.define('select2/defaults',[
   }
 
   Defaults.prototype.apply = function (options) {
-    options = $.extend(true, {}, this.defaults, options);
+    options = $.extend({}, this.defaults, options);
 
     if (options.dataAdapter == null) {
       if (options.ajax != null) {
@@ -30222,7 +29808,6 @@ S2.define('select2/core',[
       id = Utils.generateChars(4);
     }
 
-    id = id.replace(/(:|\.|\[|\]|,)/g, '');
     id = 'select2-' + id;
 
     return id;
@@ -30753,6 +30338,7259 @@ S2.define('jquery.select2',[
   // Return the Select2 instance for anyone who is importing it.
   return select2;
 }));
+
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.io = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+
+module.exports =  _dereq_('./lib/');
+
+},{"./lib/":2}],2:[function(_dereq_,module,exports){
+
+module.exports = _dereq_('./socket');
+
+/**
+ * Exports parser
+ *
+ * @api public
+ *
+ */
+module.exports.parser = _dereq_('engine.io-parser');
+
+},{"./socket":3,"engine.io-parser":19}],3:[function(_dereq_,module,exports){
+(function (global){
+/**
+ * Module dependencies.
+ */
+
+var transports = _dereq_('./transports');
+var Emitter = _dereq_('component-emitter');
+var debug = _dereq_('debug')('engine.io-client:socket');
+var index = _dereq_('indexof');
+var parser = _dereq_('engine.io-parser');
+var parseuri = _dereq_('parseuri');
+var parsejson = _dereq_('parsejson');
+var parseqs = _dereq_('parseqs');
+
+/**
+ * Module exports.
+ */
+
+module.exports = Socket;
+
+/**
+ * Noop function.
+ *
+ * @api private
+ */
+
+function noop(){}
+
+/**
+ * Socket constructor.
+ *
+ * @param {String|Object} uri or options
+ * @param {Object} options
+ * @api public
+ */
+
+function Socket(uri, opts){
+  if (!(this instanceof Socket)) return new Socket(uri, opts);
+
+  opts = opts || {};
+
+  if (uri && 'object' == typeof uri) {
+    opts = uri;
+    uri = null;
+  }
+
+  if (uri) {
+    uri = parseuri(uri);
+    opts.hostname = uri.host;
+    opts.secure = uri.protocol == 'https' || uri.protocol == 'wss';
+    opts.port = uri.port;
+    if (uri.query) opts.query = uri.query;
+  } else if (opts.host) {
+    opts.hostname = parseuri(opts.host).host;
+  }
+
+  this.secure = null != opts.secure ? opts.secure :
+    (global.location && 'https:' == location.protocol);
+
+  if (opts.hostname && !opts.port) {
+    // if no port is specified manually, use the protocol default
+    opts.port = this.secure ? '443' : '80';
+  }
+
+  this.agent = opts.agent || false;
+  this.hostname = opts.hostname ||
+    (global.location ? location.hostname : 'localhost');
+  this.port = opts.port || (global.location && location.port ?
+       location.port :
+       (this.secure ? 443 : 80));
+  this.query = opts.query || {};
+  if ('string' == typeof this.query) this.query = parseqs.decode(this.query);
+  this.upgrade = false !== opts.upgrade;
+  this.path = (opts.path || '/engine.io').replace(/\/$/, '') + '/';
+  this.forceJSONP = !!opts.forceJSONP;
+  this.jsonp = false !== opts.jsonp;
+  this.forceBase64 = !!opts.forceBase64;
+  this.enablesXDR = !!opts.enablesXDR;
+  this.timestampParam = opts.timestampParam || 't';
+  this.timestampRequests = opts.timestampRequests;
+  this.transports = opts.transports || ['polling', 'websocket'];
+  this.readyState = '';
+  this.writeBuffer = [];
+  this.policyPort = opts.policyPort || 843;
+  this.rememberUpgrade = opts.rememberUpgrade || false;
+  this.binaryType = null;
+  this.onlyBinaryUpgrades = opts.onlyBinaryUpgrades;
+  this.perMessageDeflate = false !== opts.perMessageDeflate ? (opts.perMessageDeflate || {}) : false;
+
+  if (true === this.perMessageDeflate) this.perMessageDeflate = {};
+  if (this.perMessageDeflate && null == this.perMessageDeflate.threshold) {
+    this.perMessageDeflate.threshold = 1024;
+  }
+
+  // SSL options for Node.js client
+  this.pfx = opts.pfx || null;
+  this.key = opts.key || null;
+  this.passphrase = opts.passphrase || null;
+  this.cert = opts.cert || null;
+  this.ca = opts.ca || null;
+  this.ciphers = opts.ciphers || null;
+  this.rejectUnauthorized = opts.rejectUnauthorized === undefined ? null : opts.rejectUnauthorized;
+
+  // other options for Node.js client
+  var freeGlobal = typeof global == 'object' && global;
+  if (freeGlobal.global === freeGlobal) {
+    if (opts.extraHeaders && Object.keys(opts.extraHeaders).length > 0) {
+      this.extraHeaders = opts.extraHeaders;
+    }
+  }
+
+  this.open();
+}
+
+Socket.priorWebsocketSuccess = false;
+
+/**
+ * Mix in `Emitter`.
+ */
+
+Emitter(Socket.prototype);
+
+/**
+ * Protocol version.
+ *
+ * @api public
+ */
+
+Socket.protocol = parser.protocol; // this is an int
+
+/**
+ * Expose deps for legacy compatibility
+ * and standalone browser access.
+ */
+
+Socket.Socket = Socket;
+Socket.Transport = _dereq_('./transport');
+Socket.transports = _dereq_('./transports');
+Socket.parser = _dereq_('engine.io-parser');
+
+/**
+ * Creates transport of the given type.
+ *
+ * @param {String} transport name
+ * @return {Transport}
+ * @api private
+ */
+
+Socket.prototype.createTransport = function (name) {
+  debug('creating transport "%s"', name);
+  var query = clone(this.query);
+
+  // append engine.io protocol identifier
+  query.EIO = parser.protocol;
+
+  // transport name
+  query.transport = name;
+
+  // session id if we already have one
+  if (this.id) query.sid = this.id;
+
+  var transport = new transports[name]({
+    agent: this.agent,
+    hostname: this.hostname,
+    port: this.port,
+    secure: this.secure,
+    path: this.path,
+    query: query,
+    forceJSONP: this.forceJSONP,
+    jsonp: this.jsonp,
+    forceBase64: this.forceBase64,
+    enablesXDR: this.enablesXDR,
+    timestampRequests: this.timestampRequests,
+    timestampParam: this.timestampParam,
+    policyPort: this.policyPort,
+    socket: this,
+    pfx: this.pfx,
+    key: this.key,
+    passphrase: this.passphrase,
+    cert: this.cert,
+    ca: this.ca,
+    ciphers: this.ciphers,
+    rejectUnauthorized: this.rejectUnauthorized,
+    perMessageDeflate: this.perMessageDeflate,
+    extraHeaders: this.extraHeaders
+  });
+
+  return transport;
+};
+
+function clone (obj) {
+  var o = {};
+  for (var i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      o[i] = obj[i];
+    }
+  }
+  return o;
+}
+
+/**
+ * Initializes transport to use and starts probe.
+ *
+ * @api private
+ */
+Socket.prototype.open = function () {
+  var transport;
+  if (this.rememberUpgrade && Socket.priorWebsocketSuccess && this.transports.indexOf('websocket') != -1) {
+    transport = 'websocket';
+  } else if (0 === this.transports.length) {
+    // Emit error on next tick so it can be listened to
+    var self = this;
+    setTimeout(function() {
+      self.emit('error', 'No transports available');
+    }, 0);
+    return;
+  } else {
+    transport = this.transports[0];
+  }
+  this.readyState = 'opening';
+
+  // Retry with the next transport if the transport is disabled (jsonp: false)
+  try {
+    transport = this.createTransport(transport);
+  } catch (e) {
+    this.transports.shift();
+    this.open();
+    return;
+  }
+
+  transport.open();
+  this.setTransport(transport);
+};
+
+/**
+ * Sets the current transport. Disables the existing one (if any).
+ *
+ * @api private
+ */
+
+Socket.prototype.setTransport = function(transport){
+  debug('setting transport %s', transport.name);
+  var self = this;
+
+  if (this.transport) {
+    debug('clearing existing transport %s', this.transport.name);
+    this.transport.removeAllListeners();
+  }
+
+  // set up transport
+  this.transport = transport;
+
+  // set up transport listeners
+  transport
+  .on('drain', function(){
+    self.onDrain();
+  })
+  .on('packet', function(packet){
+    self.onPacket(packet);
+  })
+  .on('error', function(e){
+    self.onError(e);
+  })
+  .on('close', function(){
+    self.onClose('transport close');
+  });
+};
+
+/**
+ * Probes a transport.
+ *
+ * @param {String} transport name
+ * @api private
+ */
+
+Socket.prototype.probe = function (name) {
+  debug('probing transport "%s"', name);
+  var transport = this.createTransport(name, { probe: 1 })
+    , failed = false
+    , self = this;
+
+  Socket.priorWebsocketSuccess = false;
+
+  function onTransportOpen(){
+    if (self.onlyBinaryUpgrades) {
+      var upgradeLosesBinary = !this.supportsBinary && self.transport.supportsBinary;
+      failed = failed || upgradeLosesBinary;
+    }
+    if (failed) return;
+
+    debug('probe transport "%s" opened', name);
+    transport.send([{ type: 'ping', data: 'probe' }]);
+    transport.once('packet', function (msg) {
+      if (failed) return;
+      if ('pong' == msg.type && 'probe' == msg.data) {
+        debug('probe transport "%s" pong', name);
+        self.upgrading = true;
+        self.emit('upgrading', transport);
+        if (!transport) return;
+        Socket.priorWebsocketSuccess = 'websocket' == transport.name;
+
+        debug('pausing current transport "%s"', self.transport.name);
+        self.transport.pause(function () {
+          if (failed) return;
+          if ('closed' == self.readyState) return;
+          debug('changing transport and sending upgrade packet');
+
+          cleanup();
+
+          self.setTransport(transport);
+          transport.send([{ type: 'upgrade' }]);
+          self.emit('upgrade', transport);
+          transport = null;
+          self.upgrading = false;
+          self.flush();
+        });
+      } else {
+        debug('probe transport "%s" failed', name);
+        var err = new Error('probe error');
+        err.transport = transport.name;
+        self.emit('upgradeError', err);
+      }
+    });
+  }
+
+  function freezeTransport() {
+    if (failed) return;
+
+    // Any callback called by transport should be ignored since now
+    failed = true;
+
+    cleanup();
+
+    transport.close();
+    transport = null;
+  }
+
+  //Handle any error that happens while probing
+  function onerror(err) {
+    var error = new Error('probe error: ' + err);
+    error.transport = transport.name;
+
+    freezeTransport();
+
+    debug('probe transport "%s" failed because of error: %s', name, err);
+
+    self.emit('upgradeError', error);
+  }
+
+  function onTransportClose(){
+    onerror("transport closed");
+  }
+
+  //When the socket is closed while we're probing
+  function onclose(){
+    onerror("socket closed");
+  }
+
+  //When the socket is upgraded while we're probing
+  function onupgrade(to){
+    if (transport && to.name != transport.name) {
+      debug('"%s" works - aborting "%s"', to.name, transport.name);
+      freezeTransport();
+    }
+  }
+
+  //Remove all listeners on the transport and on self
+  function cleanup(){
+    transport.removeListener('open', onTransportOpen);
+    transport.removeListener('error', onerror);
+    transport.removeListener('close', onTransportClose);
+    self.removeListener('close', onclose);
+    self.removeListener('upgrading', onupgrade);
+  }
+
+  transport.once('open', onTransportOpen);
+  transport.once('error', onerror);
+  transport.once('close', onTransportClose);
+
+  this.once('close', onclose);
+  this.once('upgrading', onupgrade);
+
+  transport.open();
+
+};
+
+/**
+ * Called when connection is deemed open.
+ *
+ * @api public
+ */
+
+Socket.prototype.onOpen = function () {
+  debug('socket open');
+  this.readyState = 'open';
+  Socket.priorWebsocketSuccess = 'websocket' == this.transport.name;
+  this.emit('open');
+  this.flush();
+
+  // we check for `readyState` in case an `open`
+  // listener already closed the socket
+  if ('open' == this.readyState && this.upgrade && this.transport.pause) {
+    debug('starting upgrade probes');
+    for (var i = 0, l = this.upgrades.length; i < l; i++) {
+      this.probe(this.upgrades[i]);
+    }
+  }
+};
+
+/**
+ * Handles a packet.
+ *
+ * @api private
+ */
+
+Socket.prototype.onPacket = function (packet) {
+  if ('opening' == this.readyState || 'open' == this.readyState) {
+    debug('socket receive: type "%s", data "%s"', packet.type, packet.data);
+
+    this.emit('packet', packet);
+
+    // Socket is live - any packet counts
+    this.emit('heartbeat');
+
+    switch (packet.type) {
+      case 'open':
+        this.onHandshake(parsejson(packet.data));
+        break;
+
+      case 'pong':
+        this.setPing();
+        this.emit('pong');
+        break;
+
+      case 'error':
+        var err = new Error('server error');
+        err.code = packet.data;
+        this.onError(err);
+        break;
+
+      case 'message':
+        this.emit('data', packet.data);
+        this.emit('message', packet.data);
+        break;
+    }
+  } else {
+    debug('packet received with socket readyState "%s"', this.readyState);
+  }
+};
+
+/**
+ * Called upon handshake completion.
+ *
+ * @param {Object} handshake obj
+ * @api private
+ */
+
+Socket.prototype.onHandshake = function (data) {
+  this.emit('handshake', data);
+  this.id = data.sid;
+  this.transport.query.sid = data.sid;
+  this.upgrades = this.filterUpgrades(data.upgrades);
+  this.pingInterval = data.pingInterval;
+  this.pingTimeout = data.pingTimeout;
+  this.onOpen();
+  // In case open handler closes socket
+  if  ('closed' == this.readyState) return;
+  this.setPing();
+
+  // Prolong liveness of socket on heartbeat
+  this.removeListener('heartbeat', this.onHeartbeat);
+  this.on('heartbeat', this.onHeartbeat);
+};
+
+/**
+ * Resets ping timeout.
+ *
+ * @api private
+ */
+
+Socket.prototype.onHeartbeat = function (timeout) {
+  clearTimeout(this.pingTimeoutTimer);
+  var self = this;
+  self.pingTimeoutTimer = setTimeout(function () {
+    if ('closed' == self.readyState) return;
+    self.onClose('ping timeout');
+  }, timeout || (self.pingInterval + self.pingTimeout));
+};
+
+/**
+ * Pings server every `this.pingInterval` and expects response
+ * within `this.pingTimeout` or closes connection.
+ *
+ * @api private
+ */
+
+Socket.prototype.setPing = function () {
+  var self = this;
+  clearTimeout(self.pingIntervalTimer);
+  self.pingIntervalTimer = setTimeout(function () {
+    debug('writing ping packet - expecting pong within %sms', self.pingTimeout);
+    self.ping();
+    self.onHeartbeat(self.pingTimeout);
+  }, self.pingInterval);
+};
+
+/**
+* Sends a ping packet.
+*
+* @api private
+*/
+
+Socket.prototype.ping = function () {
+  var self = this;
+  this.sendPacket('ping', function(){
+    self.emit('ping');
+  });
+};
+
+/**
+ * Called on `drain` event
+ *
+ * @api private
+ */
+
+Socket.prototype.onDrain = function() {
+  this.writeBuffer.splice(0, this.prevBufferLen);
+
+  // setting prevBufferLen = 0 is very important
+  // for example, when upgrading, upgrade packet is sent over,
+  // and a nonzero prevBufferLen could cause problems on `drain`
+  this.prevBufferLen = 0;
+
+  if (0 === this.writeBuffer.length) {
+    this.emit('drain');
+  } else {
+    this.flush();
+  }
+};
+
+/**
+ * Flush write buffers.
+ *
+ * @api private
+ */
+
+Socket.prototype.flush = function () {
+  if ('closed' != this.readyState && this.transport.writable &&
+    !this.upgrading && this.writeBuffer.length) {
+    debug('flushing %d packets in socket', this.writeBuffer.length);
+    this.transport.send(this.writeBuffer);
+    // keep track of current length of writeBuffer
+    // splice writeBuffer and callbackBuffer on `drain`
+    this.prevBufferLen = this.writeBuffer.length;
+    this.emit('flush');
+  }
+};
+
+/**
+ * Sends a message.
+ *
+ * @param {String} message.
+ * @param {Function} callback function.
+ * @param {Object} options.
+ * @return {Socket} for chaining.
+ * @api public
+ */
+
+Socket.prototype.write =
+Socket.prototype.send = function (msg, options, fn) {
+  this.sendPacket('message', msg, options, fn);
+  return this;
+};
+
+/**
+ * Sends a packet.
+ *
+ * @param {String} packet type.
+ * @param {String} data.
+ * @param {Object} options.
+ * @param {Function} callback function.
+ * @api private
+ */
+
+Socket.prototype.sendPacket = function (type, data, options, fn) {
+  if('function' == typeof data) {
+    fn = data;
+    data = undefined;
+  }
+
+  if ('function' == typeof options) {
+    fn = options;
+    options = null;
+  }
+
+  if ('closing' == this.readyState || 'closed' == this.readyState) {
+    return;
+  }
+
+  options = options || {};
+  options.compress = false !== options.compress;
+
+  var packet = {
+    type: type,
+    data: data,
+    options: options
+  };
+  this.emit('packetCreate', packet);
+  this.writeBuffer.push(packet);
+  if (fn) this.once('flush', fn);
+  this.flush();
+};
+
+/**
+ * Closes the connection.
+ *
+ * @api private
+ */
+
+Socket.prototype.close = function () {
+  if ('opening' == this.readyState || 'open' == this.readyState) {
+    this.readyState = 'closing';
+
+    var self = this;
+
+    if (this.writeBuffer.length) {
+      this.once('drain', function() {
+        if (this.upgrading) {
+          waitForUpgrade();
+        } else {
+          close();
+        }
+      });
+    } else if (this.upgrading) {
+      waitForUpgrade();
+    } else {
+      close();
+    }
+  }
+
+  function close() {
+    self.onClose('forced close');
+    debug('socket closing - telling transport to close');
+    self.transport.close();
+  }
+
+  function cleanupAndClose() {
+    self.removeListener('upgrade', cleanupAndClose);
+    self.removeListener('upgradeError', cleanupAndClose);
+    close();
+  }
+
+  function waitForUpgrade() {
+    // wait for upgrade to finish since we can't send packets while pausing a transport
+    self.once('upgrade', cleanupAndClose);
+    self.once('upgradeError', cleanupAndClose);
+  }
+
+  return this;
+};
+
+/**
+ * Called upon transport error
+ *
+ * @api private
+ */
+
+Socket.prototype.onError = function (err) {
+  debug('socket error %j', err);
+  Socket.priorWebsocketSuccess = false;
+  this.emit('error', err);
+  this.onClose('transport error', err);
+};
+
+/**
+ * Called upon transport close.
+ *
+ * @api private
+ */
+
+Socket.prototype.onClose = function (reason, desc) {
+  if ('opening' == this.readyState || 'open' == this.readyState || 'closing' == this.readyState) {
+    debug('socket close with reason: "%s"', reason);
+    var self = this;
+
+    // clear timers
+    clearTimeout(this.pingIntervalTimer);
+    clearTimeout(this.pingTimeoutTimer);
+
+    // stop event from firing again for transport
+    this.transport.removeAllListeners('close');
+
+    // ensure transport won't stay open
+    this.transport.close();
+
+    // ignore further transport communication
+    this.transport.removeAllListeners();
+
+    // set ready state
+    this.readyState = 'closed';
+
+    // clear session id
+    this.id = null;
+
+    // emit close event
+    this.emit('close', reason, desc);
+
+    // clean buffers after, so users can still
+    // grab the buffers on `close` event
+    self.writeBuffer = [];
+    self.prevBufferLen = 0;
+  }
+};
+
+/**
+ * Filters upgrades, returning only those matching client transports.
+ *
+ * @param {Array} server upgrades
+ * @api private
+ *
+ */
+
+Socket.prototype.filterUpgrades = function (upgrades) {
+  var filteredUpgrades = [];
+  for (var i = 0, j = upgrades.length; i<j; i++) {
+    if (~index(this.transports, upgrades[i])) filteredUpgrades.push(upgrades[i]);
+  }
+  return filteredUpgrades;
+};
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {})
+},{"./transport":4,"./transports":5,"component-emitter":15,"debug":17,"engine.io-parser":19,"indexof":23,"parsejson":26,"parseqs":27,"parseuri":28}],4:[function(_dereq_,module,exports){
+/**
+ * Module dependencies.
+ */
+
+var parser = _dereq_('engine.io-parser');
+var Emitter = _dereq_('component-emitter');
+
+/**
+ * Module exports.
+ */
+
+module.exports = Transport;
+
+/**
+ * Transport abstract constructor.
+ *
+ * @param {Object} options.
+ * @api private
+ */
+
+function Transport (opts) {
+  this.path = opts.path;
+  this.hostname = opts.hostname;
+  this.port = opts.port;
+  this.secure = opts.secure;
+  this.query = opts.query;
+  this.timestampParam = opts.timestampParam;
+  this.timestampRequests = opts.timestampRequests;
+  this.readyState = '';
+  this.agent = opts.agent || false;
+  this.socket = opts.socket;
+  this.enablesXDR = opts.enablesXDR;
+
+  // SSL options for Node.js client
+  this.pfx = opts.pfx;
+  this.key = opts.key;
+  this.passphrase = opts.passphrase;
+  this.cert = opts.cert;
+  this.ca = opts.ca;
+  this.ciphers = opts.ciphers;
+  this.rejectUnauthorized = opts.rejectUnauthorized;
+
+  // other options for Node.js client
+  this.extraHeaders = opts.extraHeaders;
+}
+
+/**
+ * Mix in `Emitter`.
+ */
+
+Emitter(Transport.prototype);
+
+/**
+ * Emits an error.
+ *
+ * @param {String} str
+ * @return {Transport} for chaining
+ * @api public
+ */
+
+Transport.prototype.onError = function (msg, desc) {
+  var err = new Error(msg);
+  err.type = 'TransportError';
+  err.description = desc;
+  this.emit('error', err);
+  return this;
+};
+
+/**
+ * Opens the transport.
+ *
+ * @api public
+ */
+
+Transport.prototype.open = function () {
+  if ('closed' == this.readyState || '' == this.readyState) {
+    this.readyState = 'opening';
+    this.doOpen();
+  }
+
+  return this;
+};
+
+/**
+ * Closes the transport.
+ *
+ * @api private
+ */
+
+Transport.prototype.close = function () {
+  if ('opening' == this.readyState || 'open' == this.readyState) {
+    this.doClose();
+    this.onClose();
+  }
+
+  return this;
+};
+
+/**
+ * Sends multiple packets.
+ *
+ * @param {Array} packets
+ * @api private
+ */
+
+Transport.prototype.send = function(packets){
+  if ('open' == this.readyState) {
+    this.write(packets);
+  } else {
+    throw new Error('Transport not open');
+  }
+};
+
+/**
+ * Called upon open
+ *
+ * @api private
+ */
+
+Transport.prototype.onOpen = function () {
+  this.readyState = 'open';
+  this.writable = true;
+  this.emit('open');
+};
+
+/**
+ * Called with data.
+ *
+ * @param {String} data
+ * @api private
+ */
+
+Transport.prototype.onData = function(data){
+  var packet = parser.decodePacket(data, this.socket.binaryType);
+  this.onPacket(packet);
+};
+
+/**
+ * Called with a decoded packet.
+ */
+
+Transport.prototype.onPacket = function (packet) {
+  this.emit('packet', packet);
+};
+
+/**
+ * Called upon close.
+ *
+ * @api private
+ */
+
+Transport.prototype.onClose = function () {
+  this.readyState = 'closed';
+  this.emit('close');
+};
+
+},{"component-emitter":15,"engine.io-parser":19}],5:[function(_dereq_,module,exports){
+(function (global){
+/**
+ * Module dependencies
+ */
+
+var XMLHttpRequest = _dereq_('xmlhttprequest-ssl');
+var XHR = _dereq_('./polling-xhr');
+var JSONP = _dereq_('./polling-jsonp');
+var websocket = _dereq_('./websocket');
+
+/**
+ * Export transports.
+ */
+
+exports.polling = polling;
+exports.websocket = websocket;
+
+/**
+ * Polling transport polymorphic constructor.
+ * Decides on xhr vs jsonp based on feature detection.
+ *
+ * @api private
+ */
+
+function polling(opts){
+  var xhr;
+  var xd = false;
+  var xs = false;
+  var jsonp = false !== opts.jsonp;
+
+  if (global.location) {
+    var isSSL = 'https:' == location.protocol;
+    var port = location.port;
+
+    // some user agents have empty `location.port`
+    if (!port) {
+      port = isSSL ? 443 : 80;
+    }
+
+    xd = opts.hostname != location.hostname || port != opts.port;
+    xs = opts.secure != isSSL;
+  }
+
+  opts.xdomain = xd;
+  opts.xscheme = xs;
+  xhr = new XMLHttpRequest(opts);
+
+  if ('open' in xhr && !opts.forceJSONP) {
+    return new XHR(opts);
+  } else {
+    if (!jsonp) throw new Error('JSONP disabled');
+    return new JSONP(opts);
+  }
+}
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {})
+},{"./polling-jsonp":6,"./polling-xhr":7,"./websocket":9,"xmlhttprequest-ssl":10}],6:[function(_dereq_,module,exports){
+(function (global){
+
+/**
+ * Module requirements.
+ */
+
+var Polling = _dereq_('./polling');
+var inherit = _dereq_('component-inherit');
+
+/**
+ * Module exports.
+ */
+
+module.exports = JSONPPolling;
+
+/**
+ * Cached regular expressions.
+ */
+
+var rNewline = /\n/g;
+var rEscapedNewline = /\\n/g;
+
+/**
+ * Global JSONP callbacks.
+ */
+
+var callbacks;
+
+/**
+ * Callbacks count.
+ */
+
+var index = 0;
+
+/**
+ * Noop.
+ */
+
+function empty () { }
+
+/**
+ * JSONP Polling constructor.
+ *
+ * @param {Object} opts.
+ * @api public
+ */
+
+function JSONPPolling (opts) {
+  Polling.call(this, opts);
+
+  this.query = this.query || {};
+
+  // define global callbacks array if not present
+  // we do this here (lazily) to avoid unneeded global pollution
+  if (!callbacks) {
+    // we need to consider multiple engines in the same page
+    if (!global.___eio) global.___eio = [];
+    callbacks = global.___eio;
+  }
+
+  // callback identifier
+  this.index = callbacks.length;
+
+  // add callback to jsonp global
+  var self = this;
+  callbacks.push(function (msg) {
+    self.onData(msg);
+  });
+
+  // append to query string
+  this.query.j = this.index;
+
+  // prevent spurious errors from being emitted when the window is unloaded
+  if (global.document && global.addEventListener) {
+    global.addEventListener('beforeunload', function () {
+      if (self.script) self.script.onerror = empty;
+    }, false);
+  }
+}
+
+/**
+ * Inherits from Polling.
+ */
+
+inherit(JSONPPolling, Polling);
+
+/*
+ * JSONP only supports binary as base64 encoded strings
+ */
+
+JSONPPolling.prototype.supportsBinary = false;
+
+/**
+ * Closes the socket.
+ *
+ * @api private
+ */
+
+JSONPPolling.prototype.doClose = function () {
+  if (this.script) {
+    this.script.parentNode.removeChild(this.script);
+    this.script = null;
+  }
+
+  if (this.form) {
+    this.form.parentNode.removeChild(this.form);
+    this.form = null;
+    this.iframe = null;
+  }
+
+  Polling.prototype.doClose.call(this);
+};
+
+/**
+ * Starts a poll cycle.
+ *
+ * @api private
+ */
+
+JSONPPolling.prototype.doPoll = function () {
+  var self = this;
+  var script = document.createElement('script');
+
+  if (this.script) {
+    this.script.parentNode.removeChild(this.script);
+    this.script = null;
+  }
+
+  script.async = true;
+  script.src = this.uri();
+  script.onerror = function(e){
+    self.onError('jsonp poll error',e);
+  };
+
+  var insertAt = document.getElementsByTagName('script')[0];
+  if (insertAt) {
+    insertAt.parentNode.insertBefore(script, insertAt);
+  }
+  else {
+    (document.head || document.body).appendChild(script);
+  }
+  this.script = script;
+
+  var isUAgecko = 'undefined' != typeof navigator && /gecko/i.test(navigator.userAgent);
+  
+  if (isUAgecko) {
+    setTimeout(function () {
+      var iframe = document.createElement('iframe');
+      document.body.appendChild(iframe);
+      document.body.removeChild(iframe);
+    }, 100);
+  }
+};
+
+/**
+ * Writes with a hidden iframe.
+ *
+ * @param {String} data to send
+ * @param {Function} called upon flush.
+ * @api private
+ */
+
+JSONPPolling.prototype.doWrite = function (data, fn) {
+  var self = this;
+
+  if (!this.form) {
+    var form = document.createElement('form');
+    var area = document.createElement('textarea');
+    var id = this.iframeId = 'eio_iframe_' + this.index;
+    var iframe;
+
+    form.className = 'socketio';
+    form.style.position = 'absolute';
+    form.style.top = '-1000px';
+    form.style.left = '-1000px';
+    form.target = id;
+    form.method = 'POST';
+    form.setAttribute('accept-charset', 'utf-8');
+    area.name = 'd';
+    form.appendChild(area);
+    document.body.appendChild(form);
+
+    this.form = form;
+    this.area = area;
+  }
+
+  this.form.action = this.uri();
+
+  function complete () {
+    initIframe();
+    fn();
+  }
+
+  function initIframe () {
+    if (self.iframe) {
+      try {
+        self.form.removeChild(self.iframe);
+      } catch (e) {
+        self.onError('jsonp polling iframe removal error', e);
+      }
+    }
+
+    try {
+      // ie6 dynamic iframes with target="" support (thanks Chris Lambacher)
+      var html = '<iframe src="javascript:0" name="'+ self.iframeId +'">';
+      iframe = document.createElement(html);
+    } catch (e) {
+      iframe = document.createElement('iframe');
+      iframe.name = self.iframeId;
+      iframe.src = 'javascript:0';
+    }
+
+    iframe.id = self.iframeId;
+
+    self.form.appendChild(iframe);
+    self.iframe = iframe;
+  }
+
+  initIframe();
+
+  // escape \n to prevent it from being converted into \r\n by some UAs
+  // double escaping is required for escaped new lines because unescaping of new lines can be done safely on server-side
+  data = data.replace(rEscapedNewline, '\\\n');
+  this.area.value = data.replace(rNewline, '\\n');
+
+  try {
+    this.form.submit();
+  } catch(e) {}
+
+  if (this.iframe.attachEvent) {
+    this.iframe.onreadystatechange = function(){
+      if (self.iframe.readyState == 'complete') {
+        complete();
+      }
+    };
+  } else {
+    this.iframe.onload = complete;
+  }
+};
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {})
+},{"./polling":8,"component-inherit":16}],7:[function(_dereq_,module,exports){
+(function (global){
+/**
+ * Module requirements.
+ */
+
+var XMLHttpRequest = _dereq_('xmlhttprequest-ssl');
+var Polling = _dereq_('./polling');
+var Emitter = _dereq_('component-emitter');
+var inherit = _dereq_('component-inherit');
+var debug = _dereq_('debug')('engine.io-client:polling-xhr');
+
+/**
+ * Module exports.
+ */
+
+module.exports = XHR;
+module.exports.Request = Request;
+
+/**
+ * Empty function
+ */
+
+function empty(){}
+
+/**
+ * XHR Polling constructor.
+ *
+ * @param {Object} opts
+ * @api public
+ */
+
+function XHR(opts){
+  Polling.call(this, opts);
+
+  if (global.location) {
+    var isSSL = 'https:' == location.protocol;
+    var port = location.port;
+
+    // some user agents have empty `location.port`
+    if (!port) {
+      port = isSSL ? 443 : 80;
+    }
+
+    this.xd = opts.hostname != global.location.hostname ||
+      port != opts.port;
+    this.xs = opts.secure != isSSL;
+  } else {
+    this.extraHeaders = opts.extraHeaders;
+  }
+}
+
+/**
+ * Inherits from Polling.
+ */
+
+inherit(XHR, Polling);
+
+/**
+ * XHR supports binary
+ */
+
+XHR.prototype.supportsBinary = true;
+
+/**
+ * Creates a request.
+ *
+ * @param {String} method
+ * @api private
+ */
+
+XHR.prototype.request = function(opts){
+  opts = opts || {};
+  opts.uri = this.uri();
+  opts.xd = this.xd;
+  opts.xs = this.xs;
+  opts.agent = this.agent || false;
+  opts.supportsBinary = this.supportsBinary;
+  opts.enablesXDR = this.enablesXDR;
+
+  // SSL options for Node.js client
+  opts.pfx = this.pfx;
+  opts.key = this.key;
+  opts.passphrase = this.passphrase;
+  opts.cert = this.cert;
+  opts.ca = this.ca;
+  opts.ciphers = this.ciphers;
+  opts.rejectUnauthorized = this.rejectUnauthorized;
+
+  // other options for Node.js client
+  opts.extraHeaders = this.extraHeaders;
+
+  return new Request(opts);
+};
+
+/**
+ * Sends data.
+ *
+ * @param {String} data to send.
+ * @param {Function} called upon flush.
+ * @api private
+ */
+
+XHR.prototype.doWrite = function(data, fn){
+  var isBinary = typeof data !== 'string' && data !== undefined;
+  var req = this.request({ method: 'POST', data: data, isBinary: isBinary });
+  var self = this;
+  req.on('success', fn);
+  req.on('error', function(err){
+    self.onError('xhr post error', err);
+  });
+  this.sendXhr = req;
+};
+
+/**
+ * Starts a poll cycle.
+ *
+ * @api private
+ */
+
+XHR.prototype.doPoll = function(){
+  debug('xhr poll');
+  var req = this.request();
+  var self = this;
+  req.on('data', function(data){
+    self.onData(data);
+  });
+  req.on('error', function(err){
+    self.onError('xhr poll error', err);
+  });
+  this.pollXhr = req;
+};
+
+/**
+ * Request constructor
+ *
+ * @param {Object} options
+ * @api public
+ */
+
+function Request(opts){
+  this.method = opts.method || 'GET';
+  this.uri = opts.uri;
+  this.xd = !!opts.xd;
+  this.xs = !!opts.xs;
+  this.async = false !== opts.async;
+  this.data = undefined != opts.data ? opts.data : null;
+  this.agent = opts.agent;
+  this.isBinary = opts.isBinary;
+  this.supportsBinary = opts.supportsBinary;
+  this.enablesXDR = opts.enablesXDR;
+
+  // SSL options for Node.js client
+  this.pfx = opts.pfx;
+  this.key = opts.key;
+  this.passphrase = opts.passphrase;
+  this.cert = opts.cert;
+  this.ca = opts.ca;
+  this.ciphers = opts.ciphers;
+  this.rejectUnauthorized = opts.rejectUnauthorized;
+
+  // other options for Node.js client
+  this.extraHeaders = opts.extraHeaders;
+
+  this.create();
+}
+
+/**
+ * Mix in `Emitter`.
+ */
+
+Emitter(Request.prototype);
+
+/**
+ * Creates the XHR object and sends the request.
+ *
+ * @api private
+ */
+
+Request.prototype.create = function(){
+  var opts = { agent: this.agent, xdomain: this.xd, xscheme: this.xs, enablesXDR: this.enablesXDR };
+
+  // SSL options for Node.js client
+  opts.pfx = this.pfx;
+  opts.key = this.key;
+  opts.passphrase = this.passphrase;
+  opts.cert = this.cert;
+  opts.ca = this.ca;
+  opts.ciphers = this.ciphers;
+  opts.rejectUnauthorized = this.rejectUnauthorized;
+
+  var xhr = this.xhr = new XMLHttpRequest(opts);
+  var self = this;
+
+  try {
+    debug('xhr open %s: %s', this.method, this.uri);
+    xhr.open(this.method, this.uri, this.async);
+    try {
+      if (this.extraHeaders) {
+        xhr.setDisableHeaderCheck(true);
+        for (var i in this.extraHeaders) {
+          if (this.extraHeaders.hasOwnProperty(i)) {
+            xhr.setRequestHeader(i, this.extraHeaders[i]);
+          }
+        }
+      }
+    } catch (e) {}
+    if (this.supportsBinary) {
+      // This has to be done after open because Firefox is stupid
+      // http://stackoverflow.com/questions/13216903/get-binary-data-with-xmlhttprequest-in-a-firefox-extension
+      xhr.responseType = 'arraybuffer';
+    }
+
+    if ('POST' == this.method) {
+      try {
+        if (this.isBinary) {
+          xhr.setRequestHeader('Content-type', 'application/octet-stream');
+        } else {
+          xhr.setRequestHeader('Content-type', 'text/plain;charset=UTF-8');
+        }
+      } catch (e) {}
+    }
+
+    // ie6 check
+    if ('withCredentials' in xhr) {
+      xhr.withCredentials = true;
+    }
+
+    if (this.hasXDR()) {
+      xhr.onload = function(){
+        self.onLoad();
+      };
+      xhr.onerror = function(){
+        self.onError(xhr.responseText);
+      };
+    } else {
+      xhr.onreadystatechange = function(){
+        if (4 != xhr.readyState) return;
+        if (200 == xhr.status || 1223 == xhr.status) {
+          self.onLoad();
+        } else {
+          // make sure the `error` event handler that's user-set
+          // does not throw in the same tick and gets caught here
+          setTimeout(function(){
+            self.onError(xhr.status);
+          }, 0);
+        }
+      };
+    }
+
+    debug('xhr data %s', this.data);
+    xhr.send(this.data);
+  } catch (e) {
+    // Need to defer since .create() is called directly fhrom the constructor
+    // and thus the 'error' event can only be only bound *after* this exception
+    // occurs.  Therefore, also, we cannot throw here at all.
+    setTimeout(function() {
+      self.onError(e);
+    }, 0);
+    return;
+  }
+
+  if (global.document) {
+    this.index = Request.requestsCount++;
+    Request.requests[this.index] = this;
+  }
+};
+
+/**
+ * Called upon successful response.
+ *
+ * @api private
+ */
+
+Request.prototype.onSuccess = function(){
+  this.emit('success');
+  this.cleanup();
+};
+
+/**
+ * Called if we have data.
+ *
+ * @api private
+ */
+
+Request.prototype.onData = function(data){
+  this.emit('data', data);
+  this.onSuccess();
+};
+
+/**
+ * Called upon error.
+ *
+ * @api private
+ */
+
+Request.prototype.onError = function(err){
+  this.emit('error', err);
+  this.cleanup(true);
+};
+
+/**
+ * Cleans up house.
+ *
+ * @api private
+ */
+
+Request.prototype.cleanup = function(fromError){
+  if ('undefined' == typeof this.xhr || null === this.xhr) {
+    return;
+  }
+  // xmlhttprequest
+  if (this.hasXDR()) {
+    this.xhr.onload = this.xhr.onerror = empty;
+  } else {
+    this.xhr.onreadystatechange = empty;
+  }
+
+  if (fromError) {
+    try {
+      this.xhr.abort();
+    } catch(e) {}
+  }
+
+  if (global.document) {
+    delete Request.requests[this.index];
+  }
+
+  this.xhr = null;
+};
+
+/**
+ * Called upon load.
+ *
+ * @api private
+ */
+
+Request.prototype.onLoad = function(){
+  var data;
+  try {
+    var contentType;
+    try {
+      contentType = this.xhr.getResponseHeader('Content-Type').split(';')[0];
+    } catch (e) {}
+    if (contentType === 'application/octet-stream') {
+      data = this.xhr.response;
+    } else {
+      if (!this.supportsBinary) {
+        data = this.xhr.responseText;
+      } else {
+        try {
+          data = String.fromCharCode.apply(null, new Uint8Array(this.xhr.response));
+        } catch (e) {
+          var ui8Arr = new Uint8Array(this.xhr.response);
+          var dataArray = [];
+          for (var idx = 0, length = ui8Arr.length; idx < length; idx++) {
+            dataArray.push(ui8Arr[idx]);
+          }
+
+          data = String.fromCharCode.apply(null, dataArray);
+        }
+      }
+    }
+  } catch (e) {
+    this.onError(e);
+  }
+  if (null != data) {
+    this.onData(data);
+  }
+};
+
+/**
+ * Check if it has XDomainRequest.
+ *
+ * @api private
+ */
+
+Request.prototype.hasXDR = function(){
+  return 'undefined' !== typeof global.XDomainRequest && !this.xs && this.enablesXDR;
+};
+
+/**
+ * Aborts the request.
+ *
+ * @api public
+ */
+
+Request.prototype.abort = function(){
+  this.cleanup();
+};
+
+/**
+ * Aborts pending requests when unloading the window. This is needed to prevent
+ * memory leaks (e.g. when using IE) and to ensure that no spurious error is
+ * emitted.
+ */
+
+if (global.document) {
+  Request.requestsCount = 0;
+  Request.requests = {};
+  if (global.attachEvent) {
+    global.attachEvent('onunload', unloadHandler);
+  } else if (global.addEventListener) {
+    global.addEventListener('beforeunload', unloadHandler, false);
+  }
+}
+
+function unloadHandler() {
+  for (var i in Request.requests) {
+    if (Request.requests.hasOwnProperty(i)) {
+      Request.requests[i].abort();
+    }
+  }
+}
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {})
+},{"./polling":8,"component-emitter":15,"component-inherit":16,"debug":17,"xmlhttprequest-ssl":10}],8:[function(_dereq_,module,exports){
+/**
+ * Module dependencies.
+ */
+
+var Transport = _dereq_('../transport');
+var parseqs = _dereq_('parseqs');
+var parser = _dereq_('engine.io-parser');
+var inherit = _dereq_('component-inherit');
+var yeast = _dereq_('yeast');
+var debug = _dereq_('debug')('engine.io-client:polling');
+
+/**
+ * Module exports.
+ */
+
+module.exports = Polling;
+
+/**
+ * Is XHR2 supported?
+ */
+
+var hasXHR2 = (function() {
+  var XMLHttpRequest = _dereq_('xmlhttprequest-ssl');
+  var xhr = new XMLHttpRequest({ xdomain: false });
+  return null != xhr.responseType;
+})();
+
+/**
+ * Polling interface.
+ *
+ * @param {Object} opts
+ * @api private
+ */
+
+function Polling(opts){
+  var forceBase64 = (opts && opts.forceBase64);
+  if (!hasXHR2 || forceBase64) {
+    this.supportsBinary = false;
+  }
+  Transport.call(this, opts);
+}
+
+/**
+ * Inherits from Transport.
+ */
+
+inherit(Polling, Transport);
+
+/**
+ * Transport name.
+ */
+
+Polling.prototype.name = 'polling';
+
+/**
+ * Opens the socket (triggers polling). We write a PING message to determine
+ * when the transport is open.
+ *
+ * @api private
+ */
+
+Polling.prototype.doOpen = function(){
+  this.poll();
+};
+
+/**
+ * Pauses polling.
+ *
+ * @param {Function} callback upon buffers are flushed and transport is paused
+ * @api private
+ */
+
+Polling.prototype.pause = function(onPause){
+  var pending = 0;
+  var self = this;
+
+  this.readyState = 'pausing';
+
+  function pause(){
+    debug('paused');
+    self.readyState = 'paused';
+    onPause();
+  }
+
+  if (this.polling || !this.writable) {
+    var total = 0;
+
+    if (this.polling) {
+      debug('we are currently polling - waiting to pause');
+      total++;
+      this.once('pollComplete', function(){
+        debug('pre-pause polling complete');
+        --total || pause();
+      });
+    }
+
+    if (!this.writable) {
+      debug('we are currently writing - waiting to pause');
+      total++;
+      this.once('drain', function(){
+        debug('pre-pause writing complete');
+        --total || pause();
+      });
+    }
+  } else {
+    pause();
+  }
+};
+
+/**
+ * Starts polling cycle.
+ *
+ * @api public
+ */
+
+Polling.prototype.poll = function(){
+  debug('polling');
+  this.polling = true;
+  this.doPoll();
+  this.emit('poll');
+};
+
+/**
+ * Overloads onData to detect payloads.
+ *
+ * @api private
+ */
+
+Polling.prototype.onData = function(data){
+  var self = this;
+  debug('polling got data %s', data);
+  var callback = function(packet, index, total) {
+    // if its the first message we consider the transport open
+    if ('opening' == self.readyState) {
+      self.onOpen();
+    }
+
+    // if its a close packet, we close the ongoing requests
+    if ('close' == packet.type) {
+      self.onClose();
+      return false;
+    }
+
+    // otherwise bypass onData and handle the message
+    self.onPacket(packet);
+  };
+
+  // decode payload
+  parser.decodePayload(data, this.socket.binaryType, callback);
+
+  // if an event did not trigger closing
+  if ('closed' != this.readyState) {
+    // if we got data we're not polling
+    this.polling = false;
+    this.emit('pollComplete');
+
+    if ('open' == this.readyState) {
+      this.poll();
+    } else {
+      debug('ignoring poll - transport state "%s"', this.readyState);
+    }
+  }
+};
+
+/**
+ * For polling, send a close packet.
+ *
+ * @api private
+ */
+
+Polling.prototype.doClose = function(){
+  var self = this;
+
+  function close(){
+    debug('writing close packet');
+    self.write([{ type: 'close' }]);
+  }
+
+  if ('open' == this.readyState) {
+    debug('transport open - closing');
+    close();
+  } else {
+    // in case we're trying to close while
+    // handshaking is in progress (GH-164)
+    debug('transport not open - deferring close');
+    this.once('open', close);
+  }
+};
+
+/**
+ * Writes a packets payload.
+ *
+ * @param {Array} data packets
+ * @param {Function} drain callback
+ * @api private
+ */
+
+Polling.prototype.write = function(packets){
+  var self = this;
+  this.writable = false;
+  var callbackfn = function() {
+    self.writable = true;
+    self.emit('drain');
+  };
+
+  var self = this;
+  parser.encodePayload(packets, this.supportsBinary, function(data) {
+    self.doWrite(data, callbackfn);
+  });
+};
+
+/**
+ * Generates uri for connection.
+ *
+ * @api private
+ */
+
+Polling.prototype.uri = function(){
+  var query = this.query || {};
+  var schema = this.secure ? 'https' : 'http';
+  var port = '';
+
+  // cache busting is forced
+  if (false !== this.timestampRequests) {
+    query[this.timestampParam] = yeast();
+  }
+
+  if (!this.supportsBinary && !query.sid) {
+    query.b64 = 1;
+  }
+
+  query = parseqs.encode(query);
+
+  // avoid port if default for schema
+  if (this.port && (('https' == schema && this.port != 443) ||
+     ('http' == schema && this.port != 80))) {
+    port = ':' + this.port;
+  }
+
+  // prepend ? to query
+  if (query.length) {
+    query = '?' + query;
+  }
+
+  var ipv6 = this.hostname.indexOf(':') !== -1;
+  return schema + '://' + (ipv6 ? '[' + this.hostname + ']' : this.hostname) + port + this.path + query;
+};
+
+},{"../transport":4,"component-inherit":16,"debug":17,"engine.io-parser":19,"parseqs":27,"xmlhttprequest-ssl":10,"yeast":30}],9:[function(_dereq_,module,exports){
+(function (global){
+/**
+ * Module dependencies.
+ */
+
+var Transport = _dereq_('../transport');
+var parser = _dereq_('engine.io-parser');
+var parseqs = _dereq_('parseqs');
+var inherit = _dereq_('component-inherit');
+var yeast = _dereq_('yeast');
+var debug = _dereq_('debug')('engine.io-client:websocket');
+var BrowserWebSocket = global.WebSocket || global.MozWebSocket;
+
+/**
+ * Get either the `WebSocket` or `MozWebSocket` globals
+ * in the browser or try to resolve WebSocket-compatible
+ * interface exposed by `ws` for Node-like environment.
+ */
+
+var WebSocket = BrowserWebSocket;
+if (!WebSocket && typeof window === 'undefined') {
+  try {
+    WebSocket = _dereq_('ws');
+  } catch (e) { }
+}
+
+/**
+ * Module exports.
+ */
+
+module.exports = WS;
+
+/**
+ * WebSocket transport constructor.
+ *
+ * @api {Object} connection options
+ * @api public
+ */
+
+function WS(opts){
+  var forceBase64 = (opts && opts.forceBase64);
+  if (forceBase64) {
+    this.supportsBinary = false;
+  }
+  this.perMessageDeflate = opts.perMessageDeflate;
+  Transport.call(this, opts);
+}
+
+/**
+ * Inherits from Transport.
+ */
+
+inherit(WS, Transport);
+
+/**
+ * Transport name.
+ *
+ * @api public
+ */
+
+WS.prototype.name = 'websocket';
+
+/*
+ * WebSockets support binary
+ */
+
+WS.prototype.supportsBinary = true;
+
+/**
+ * Opens socket.
+ *
+ * @api private
+ */
+
+WS.prototype.doOpen = function(){
+  if (!this.check()) {
+    // let probe timeout
+    return;
+  }
+
+  var self = this;
+  var uri = this.uri();
+  var protocols = void(0);
+  var opts = {
+    agent: this.agent,
+    perMessageDeflate: this.perMessageDeflate
+  };
+
+  // SSL options for Node.js client
+  opts.pfx = this.pfx;
+  opts.key = this.key;
+  opts.passphrase = this.passphrase;
+  opts.cert = this.cert;
+  opts.ca = this.ca;
+  opts.ciphers = this.ciphers;
+  opts.rejectUnauthorized = this.rejectUnauthorized;
+  if (this.extraHeaders) {
+    opts.headers = this.extraHeaders;
+  }
+
+  this.ws = BrowserWebSocket ? new WebSocket(uri) : new WebSocket(uri, protocols, opts);
+
+  if (this.ws.binaryType === undefined) {
+    this.supportsBinary = false;
+  }
+
+  if (this.ws.supports && this.ws.supports.binary) {
+    this.supportsBinary = true;
+    this.ws.binaryType = 'buffer';
+  } else {
+    this.ws.binaryType = 'arraybuffer';
+  }
+
+  this.addEventListeners();
+};
+
+/**
+ * Adds event listeners to the socket
+ *
+ * @api private
+ */
+
+WS.prototype.addEventListeners = function(){
+  var self = this;
+
+  this.ws.onopen = function(){
+    self.onOpen();
+  };
+  this.ws.onclose = function(){
+    self.onClose();
+  };
+  this.ws.onmessage = function(ev){
+    self.onData(ev.data);
+  };
+  this.ws.onerror = function(e){
+    self.onError('websocket error', e);
+  };
+};
+
+/**
+ * Override `onData` to use a timer on iOS.
+ * See: https://gist.github.com/mloughran/2052006
+ *
+ * @api private
+ */
+
+if ('undefined' != typeof navigator
+  && /iPad|iPhone|iPod/i.test(navigator.userAgent)) {
+  WS.prototype.onData = function(data){
+    var self = this;
+    setTimeout(function(){
+      Transport.prototype.onData.call(self, data);
+    }, 0);
+  };
+}
+
+/**
+ * Writes data to socket.
+ *
+ * @param {Array} array of packets.
+ * @api private
+ */
+
+WS.prototype.write = function(packets){
+  var self = this;
+  this.writable = false;
+
+  // encodePacket efficient as it uses WS framing
+  // no need for encodePayload
+  var total = packets.length;
+  for (var i = 0, l = total; i < l; i++) {
+    (function(packet) {
+      parser.encodePacket(packet, self.supportsBinary, function(data) {
+        if (!BrowserWebSocket) {
+          // always create a new object (GH-437)
+          var opts = {};
+          if (packet.options) {
+            opts.compress = packet.options.compress;
+          }
+
+          if (self.perMessageDeflate) {
+            var len = 'string' == typeof data ? global.Buffer.byteLength(data) : data.length;
+            if (len < self.perMessageDeflate.threshold) {
+              opts.compress = false;
+            }
+          }
+        }
+
+        //Sometimes the websocket has already been closed but the browser didn't
+        //have a chance of informing us about it yet, in that case send will
+        //throw an error
+        try {
+          if (BrowserWebSocket) {
+            // TypeError is thrown when passing the second argument on Safari
+            self.ws.send(data);
+          } else {
+            self.ws.send(data, opts);
+          }
+        } catch (e){
+          debug('websocket closed before onclose event');
+        }
+
+        --total || done();
+      });
+    })(packets[i]);
+  }
+
+  function done(){
+    self.emit('flush');
+
+    // fake drain
+    // defer to next tick to allow Socket to clear writeBuffer
+    setTimeout(function(){
+      self.writable = true;
+      self.emit('drain');
+    }, 0);
+  }
+};
+
+/**
+ * Called upon close
+ *
+ * @api private
+ */
+
+WS.prototype.onClose = function(){
+  Transport.prototype.onClose.call(this);
+};
+
+/**
+ * Closes socket.
+ *
+ * @api private
+ */
+
+WS.prototype.doClose = function(){
+  if (typeof this.ws !== 'undefined') {
+    this.ws.close();
+  }
+};
+
+/**
+ * Generates uri for connection.
+ *
+ * @api private
+ */
+
+WS.prototype.uri = function(){
+  var query = this.query || {};
+  var schema = this.secure ? 'wss' : 'ws';
+  var port = '';
+
+  // avoid port if default for schema
+  if (this.port && (('wss' == schema && this.port != 443)
+    || ('ws' == schema && this.port != 80))) {
+    port = ':' + this.port;
+  }
+
+  // append timestamp to URI
+  if (this.timestampRequests) {
+    query[this.timestampParam] = yeast();
+  }
+
+  // communicate binary support capabilities
+  if (!this.supportsBinary) {
+    query.b64 = 1;
+  }
+
+  query = parseqs.encode(query);
+
+  // prepend ? to query
+  if (query.length) {
+    query = '?' + query;
+  }
+
+  var ipv6 = this.hostname.indexOf(':') !== -1;
+  return schema + '://' + (ipv6 ? '[' + this.hostname + ']' : this.hostname) + port + this.path + query;
+};
+
+/**
+ * Feature detection for WebSocket.
+ *
+ * @return {Boolean} whether this transport is available.
+ * @api public
+ */
+
+WS.prototype.check = function(){
+  return !!WebSocket && !('__initialize' in WebSocket && this.name === WS.prototype.name);
+};
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {})
+},{"../transport":4,"component-inherit":16,"debug":17,"engine.io-parser":19,"parseqs":27,"ws":undefined,"yeast":30}],10:[function(_dereq_,module,exports){
+// browser shim for xmlhttprequest module
+var hasCORS = _dereq_('has-cors');
+
+module.exports = function(opts) {
+  var xdomain = opts.xdomain;
+
+  // scheme must be same when usign XDomainRequest
+  // http://blogs.msdn.com/b/ieinternals/archive/2010/05/13/xdomainrequest-restrictions-limitations-and-workarounds.aspx
+  var xscheme = opts.xscheme;
+
+  // XDomainRequest has a flow of not sending cookie, therefore it should be disabled as a default.
+  // https://github.com/Automattic/engine.io-client/pull/217
+  var enablesXDR = opts.enablesXDR;
+
+  // XMLHttpRequest can be disabled on IE
+  try {
+    if ('undefined' != typeof XMLHttpRequest && (!xdomain || hasCORS)) {
+      return new XMLHttpRequest();
+    }
+  } catch (e) { }
+
+  // Use XDomainRequest for IE8 if enablesXDR is true
+  // because loading bar keeps flashing when using jsonp-polling
+  // https://github.com/yujiosaka/socke.io-ie8-loading-example
+  try {
+    if ('undefined' != typeof XDomainRequest && !xscheme && enablesXDR) {
+      return new XDomainRequest();
+    }
+  } catch (e) { }
+
+  if (!xdomain) {
+    try {
+      return new ActiveXObject('Microsoft.XMLHTTP');
+    } catch(e) { }
+  }
+}
+
+},{"has-cors":22}],11:[function(_dereq_,module,exports){
+module.exports = after
+
+function after(count, callback, err_cb) {
+    var bail = false
+    err_cb = err_cb || noop
+    proxy.count = count
+
+    return (count === 0) ? callback() : proxy
+
+    function proxy(err, result) {
+        if (proxy.count <= 0) {
+            throw new Error('after called too many times')
+        }
+        --proxy.count
+
+        // after first error, rest are passed to err_cb
+        if (err) {
+            bail = true
+            callback(err)
+            // future error callbacks will go to error handler
+            callback = err_cb
+        } else if (proxy.count === 0 && !bail) {
+            callback(null, result)
+        }
+    }
+}
+
+function noop() {}
+
+},{}],12:[function(_dereq_,module,exports){
+/**
+ * An abstraction for slicing an arraybuffer even when
+ * ArrayBuffer.prototype.slice is not supported
+ *
+ * @api public
+ */
+
+module.exports = function(arraybuffer, start, end) {
+  var bytes = arraybuffer.byteLength;
+  start = start || 0;
+  end = end || bytes;
+
+  if (arraybuffer.slice) { return arraybuffer.slice(start, end); }
+
+  if (start < 0) { start += bytes; }
+  if (end < 0) { end += bytes; }
+  if (end > bytes) { end = bytes; }
+
+  if (start >= bytes || start >= end || bytes === 0) {
+    return new ArrayBuffer(0);
+  }
+
+  var abv = new Uint8Array(arraybuffer);
+  var result = new Uint8Array(end - start);
+  for (var i = start, ii = 0; i < end; i++, ii++) {
+    result[ii] = abv[i];
+  }
+  return result.buffer;
+};
+
+},{}],13:[function(_dereq_,module,exports){
+/*
+ * base64-arraybuffer
+ * https://github.com/niklasvh/base64-arraybuffer
+ *
+ * Copyright (c) 2012 Niklas von Hertzen
+ * Licensed under the MIT license.
+ */
+(function(chars){
+  "use strict";
+
+  exports.encode = function(arraybuffer) {
+    var bytes = new Uint8Array(arraybuffer),
+    i, len = bytes.length, base64 = "";
+
+    for (i = 0; i < len; i+=3) {
+      base64 += chars[bytes[i] >> 2];
+      base64 += chars[((bytes[i] & 3) << 4) | (bytes[i + 1] >> 4)];
+      base64 += chars[((bytes[i + 1] & 15) << 2) | (bytes[i + 2] >> 6)];
+      base64 += chars[bytes[i + 2] & 63];
+    }
+
+    if ((len % 3) === 2) {
+      base64 = base64.substring(0, base64.length - 1) + "=";
+    } else if (len % 3 === 1) {
+      base64 = base64.substring(0, base64.length - 2) + "==";
+    }
+
+    return base64;
+  };
+
+  exports.decode =  function(base64) {
+    var bufferLength = base64.length * 0.75,
+    len = base64.length, i, p = 0,
+    encoded1, encoded2, encoded3, encoded4;
+
+    if (base64[base64.length - 1] === "=") {
+      bufferLength--;
+      if (base64[base64.length - 2] === "=") {
+        bufferLength--;
+      }
+    }
+
+    var arraybuffer = new ArrayBuffer(bufferLength),
+    bytes = new Uint8Array(arraybuffer);
+
+    for (i = 0; i < len; i+=4) {
+      encoded1 = chars.indexOf(base64[i]);
+      encoded2 = chars.indexOf(base64[i+1]);
+      encoded3 = chars.indexOf(base64[i+2]);
+      encoded4 = chars.indexOf(base64[i+3]);
+
+      bytes[p++] = (encoded1 << 2) | (encoded2 >> 4);
+      bytes[p++] = ((encoded2 & 15) << 4) | (encoded3 >> 2);
+      bytes[p++] = ((encoded3 & 3) << 6) | (encoded4 & 63);
+    }
+
+    return arraybuffer;
+  };
+})("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
+
+},{}],14:[function(_dereq_,module,exports){
+(function (global){
+/**
+ * Create a blob builder even when vendor prefixes exist
+ */
+
+var BlobBuilder = global.BlobBuilder
+  || global.WebKitBlobBuilder
+  || global.MSBlobBuilder
+  || global.MozBlobBuilder;
+
+/**
+ * Check if Blob constructor is supported
+ */
+
+var blobSupported = (function() {
+  try {
+    var a = new Blob(['hi']);
+    return a.size === 2;
+  } catch(e) {
+    return false;
+  }
+})();
+
+/**
+ * Check if Blob constructor supports ArrayBufferViews
+ * Fails in Safari 6, so we need to map to ArrayBuffers there.
+ */
+
+var blobSupportsArrayBufferView = blobSupported && (function() {
+  try {
+    var b = new Blob([new Uint8Array([1,2])]);
+    return b.size === 2;
+  } catch(e) {
+    return false;
+  }
+})();
+
+/**
+ * Check if BlobBuilder is supported
+ */
+
+var blobBuilderSupported = BlobBuilder
+  && BlobBuilder.prototype.append
+  && BlobBuilder.prototype.getBlob;
+
+/**
+ * Helper function that maps ArrayBufferViews to ArrayBuffers
+ * Used by BlobBuilder constructor and old browsers that didn't
+ * support it in the Blob constructor.
+ */
+
+function mapArrayBufferViews(ary) {
+  for (var i = 0; i < ary.length; i++) {
+    var chunk = ary[i];
+    if (chunk.buffer instanceof ArrayBuffer) {
+      var buf = chunk.buffer;
+
+      // if this is a subarray, make a copy so we only
+      // include the subarray region from the underlying buffer
+      if (chunk.byteLength !== buf.byteLength) {
+        var copy = new Uint8Array(chunk.byteLength);
+        copy.set(new Uint8Array(buf, chunk.byteOffset, chunk.byteLength));
+        buf = copy.buffer;
+      }
+
+      ary[i] = buf;
+    }
+  }
+}
+
+function BlobBuilderConstructor(ary, options) {
+  options = options || {};
+
+  var bb = new BlobBuilder();
+  mapArrayBufferViews(ary);
+
+  for (var i = 0; i < ary.length; i++) {
+    bb.append(ary[i]);
+  }
+
+  return (options.type) ? bb.getBlob(options.type) : bb.getBlob();
+};
+
+function BlobConstructor(ary, options) {
+  mapArrayBufferViews(ary);
+  return new Blob(ary, options || {});
+};
+
+module.exports = (function() {
+  if (blobSupported) {
+    return blobSupportsArrayBufferView ? global.Blob : BlobConstructor;
+  } else if (blobBuilderSupported) {
+    return BlobBuilderConstructor;
+  } else {
+    return undefined;
+  }
+})();
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {})
+},{}],15:[function(_dereq_,module,exports){
+
+/**
+ * Expose `Emitter`.
+ */
+
+module.exports = Emitter;
+
+/**
+ * Initialize a new `Emitter`.
+ *
+ * @api public
+ */
+
+function Emitter(obj) {
+  if (obj) return mixin(obj);
+};
+
+/**
+ * Mixin the emitter properties.
+ *
+ * @param {Object} obj
+ * @return {Object}
+ * @api private
+ */
+
+function mixin(obj) {
+  for (var key in Emitter.prototype) {
+    obj[key] = Emitter.prototype[key];
+  }
+  return obj;
+}
+
+/**
+ * Listen on the given `event` with `fn`.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.on =
+Emitter.prototype.addEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+  (this._callbacks[event] = this._callbacks[event] || [])
+    .push(fn);
+  return this;
+};
+
+/**
+ * Adds an `event` listener that will be invoked a single
+ * time then automatically removed.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.once = function(event, fn){
+  var self = this;
+  this._callbacks = this._callbacks || {};
+
+  function on() {
+    self.off(event, on);
+    fn.apply(this, arguments);
+  }
+
+  on.fn = fn;
+  this.on(event, on);
+  return this;
+};
+
+/**
+ * Remove the given callback for `event` or all
+ * registered callbacks.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.off =
+Emitter.prototype.removeListener =
+Emitter.prototype.removeAllListeners =
+Emitter.prototype.removeEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+
+  // all
+  if (0 == arguments.length) {
+    this._callbacks = {};
+    return this;
+  }
+
+  // specific event
+  var callbacks = this._callbacks[event];
+  if (!callbacks) return this;
+
+  // remove all handlers
+  if (1 == arguments.length) {
+    delete this._callbacks[event];
+    return this;
+  }
+
+  // remove specific handler
+  var cb;
+  for (var i = 0; i < callbacks.length; i++) {
+    cb = callbacks[i];
+    if (cb === fn || cb.fn === fn) {
+      callbacks.splice(i, 1);
+      break;
+    }
+  }
+  return this;
+};
+
+/**
+ * Emit `event` with the given args.
+ *
+ * @param {String} event
+ * @param {Mixed} ...
+ * @return {Emitter}
+ */
+
+Emitter.prototype.emit = function(event){
+  this._callbacks = this._callbacks || {};
+  var args = [].slice.call(arguments, 1)
+    , callbacks = this._callbacks[event];
+
+  if (callbacks) {
+    callbacks = callbacks.slice(0);
+    for (var i = 0, len = callbacks.length; i < len; ++i) {
+      callbacks[i].apply(this, args);
+    }
+  }
+
+  return this;
+};
+
+/**
+ * Return array of callbacks for `event`.
+ *
+ * @param {String} event
+ * @return {Array}
+ * @api public
+ */
+
+Emitter.prototype.listeners = function(event){
+  this._callbacks = this._callbacks || {};
+  return this._callbacks[event] || [];
+};
+
+/**
+ * Check if this emitter has `event` handlers.
+ *
+ * @param {String} event
+ * @return {Boolean}
+ * @api public
+ */
+
+Emitter.prototype.hasListeners = function(event){
+  return !! this.listeners(event).length;
+};
+
+},{}],16:[function(_dereq_,module,exports){
+
+module.exports = function(a, b){
+  var fn = function(){};
+  fn.prototype = b.prototype;
+  a.prototype = new fn;
+  a.prototype.constructor = a;
+};
+},{}],17:[function(_dereq_,module,exports){
+
+/**
+ * This is the web browser implementation of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = _dereq_('./debug');
+exports.log = log;
+exports.formatArgs = formatArgs;
+exports.save = save;
+exports.load = load;
+exports.useColors = useColors;
+exports.storage = 'undefined' != typeof chrome
+               && 'undefined' != typeof chrome.storage
+                  ? chrome.storage.local
+                  : localstorage();
+
+/**
+ * Colors.
+ */
+
+exports.colors = [
+  'lightseagreen',
+  'forestgreen',
+  'goldenrod',
+  'dodgerblue',
+  'darkorchid',
+  'crimson'
+];
+
+/**
+ * Currently only WebKit-based Web Inspectors, Firefox >= v31,
+ * and the Firebug extension (any Firefox version) are known
+ * to support "%c" CSS customizations.
+ *
+ * TODO: add a `localStorage` variable to explicitly enable/disable colors
+ */
+
+function useColors() {
+  // is webkit? http://stackoverflow.com/a/16459606/376773
+  return ('WebkitAppearance' in document.documentElement.style) ||
+    // is firebug? http://stackoverflow.com/a/398120/376773
+    (window.console && (console.firebug || (console.exception && console.table))) ||
+    // is firefox >= v31?
+    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+    (navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31);
+}
+
+/**
+ * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+ */
+
+exports.formatters.j = function(v) {
+  return JSON.stringify(v);
+};
+
+
+/**
+ * Colorize log arguments if enabled.
+ *
+ * @api public
+ */
+
+function formatArgs() {
+  var args = arguments;
+  var useColors = this.useColors;
+
+  args[0] = (useColors ? '%c' : '')
+    + this.namespace
+    + (useColors ? ' %c' : ' ')
+    + args[0]
+    + (useColors ? '%c ' : ' ')
+    + '+' + exports.humanize(this.diff);
+
+  if (!useColors) return args;
+
+  var c = 'color: ' + this.color;
+  args = [args[0], c, 'color: inherit'].concat(Array.prototype.slice.call(args, 1));
+
+  // the final "%c" is somewhat tricky, because there could be other
+  // arguments passed either before or after the %c, so we need to
+  // figure out the correct index to insert the CSS into
+  var index = 0;
+  var lastC = 0;
+  args[0].replace(/%[a-z%]/g, function(match) {
+    if ('%%' === match) return;
+    index++;
+    if ('%c' === match) {
+      // we only are interested in the *last* %c
+      // (the user may have provided their own)
+      lastC = index;
+    }
+  });
+
+  args.splice(lastC, 0, c);
+  return args;
+}
+
+/**
+ * Invokes `console.log()` when available.
+ * No-op when `console.log` is not a "function".
+ *
+ * @api public
+ */
+
+function log() {
+  // this hackery is required for IE8/9, where
+  // the `console.log` function doesn't have 'apply'
+  return 'object' === typeof console
+    && console.log
+    && Function.prototype.apply.call(console.log, console, arguments);
+}
+
+/**
+ * Save `namespaces`.
+ *
+ * @param {String} namespaces
+ * @api private
+ */
+
+function save(namespaces) {
+  try {
+    if (null == namespaces) {
+      exports.storage.removeItem('debug');
+    } else {
+      exports.storage.debug = namespaces;
+    }
+  } catch(e) {}
+}
+
+/**
+ * Load `namespaces`.
+ *
+ * @return {String} returns the previously persisted debug modes
+ * @api private
+ */
+
+function load() {
+  var r;
+  try {
+    r = exports.storage.debug;
+  } catch(e) {}
+  return r;
+}
+
+/**
+ * Enable namespaces listed in `localStorage.debug` initially.
+ */
+
+exports.enable(load());
+
+/**
+ * Localstorage attempts to return the localstorage.
+ *
+ * This is necessary because safari throws
+ * when a user disables cookies/localstorage
+ * and you attempt to access it.
+ *
+ * @return {LocalStorage}
+ * @api private
+ */
+
+function localstorage(){
+  try {
+    return window.localStorage;
+  } catch (e) {}
+}
+
+},{"./debug":18}],18:[function(_dereq_,module,exports){
+
+/**
+ * This is the common logic for both the Node.js and web browser
+ * implementations of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = debug;
+exports.coerce = coerce;
+exports.disable = disable;
+exports.enable = enable;
+exports.enabled = enabled;
+exports.humanize = _dereq_('ms');
+
+/**
+ * The currently active debug mode names, and names to skip.
+ */
+
+exports.names = [];
+exports.skips = [];
+
+/**
+ * Map of special "%n" handling functions, for the debug "format" argument.
+ *
+ * Valid key names are a single, lowercased letter, i.e. "n".
+ */
+
+exports.formatters = {};
+
+/**
+ * Previously assigned color.
+ */
+
+var prevColor = 0;
+
+/**
+ * Previous log timestamp.
+ */
+
+var prevTime;
+
+/**
+ * Select a color.
+ *
+ * @return {Number}
+ * @api private
+ */
+
+function selectColor() {
+  return exports.colors[prevColor++ % exports.colors.length];
+}
+
+/**
+ * Create a debugger with the given `namespace`.
+ *
+ * @param {String} namespace
+ * @return {Function}
+ * @api public
+ */
+
+function debug(namespace) {
+
+  // define the `disabled` version
+  function disabled() {
+  }
+  disabled.enabled = false;
+
+  // define the `enabled` version
+  function enabled() {
+
+    var self = enabled;
+
+    // set `diff` timestamp
+    var curr = +new Date();
+    var ms = curr - (prevTime || curr);
+    self.diff = ms;
+    self.prev = prevTime;
+    self.curr = curr;
+    prevTime = curr;
+
+    // add the `color` if not set
+    if (null == self.useColors) self.useColors = exports.useColors();
+    if (null == self.color && self.useColors) self.color = selectColor();
+
+    var args = Array.prototype.slice.call(arguments);
+
+    args[0] = exports.coerce(args[0]);
+
+    if ('string' !== typeof args[0]) {
+      // anything else let's inspect with %o
+      args = ['%o'].concat(args);
+    }
+
+    // apply any `formatters` transformations
+    var index = 0;
+    args[0] = args[0].replace(/%([a-z%])/g, function(match, format) {
+      // if we encounter an escaped % then don't increase the array index
+      if (match === '%%') return match;
+      index++;
+      var formatter = exports.formatters[format];
+      if ('function' === typeof formatter) {
+        var val = args[index];
+        match = formatter.call(self, val);
+
+        // now we need to remove `args[index]` since it's inlined in the `format`
+        args.splice(index, 1);
+        index--;
+      }
+      return match;
+    });
+
+    if ('function' === typeof exports.formatArgs) {
+      args = exports.formatArgs.apply(self, args);
+    }
+    var logFn = enabled.log || exports.log || console.log.bind(console);
+    logFn.apply(self, args);
+  }
+  enabled.enabled = true;
+
+  var fn = exports.enabled(namespace) ? enabled : disabled;
+
+  fn.namespace = namespace;
+
+  return fn;
+}
+
+/**
+ * Enables a debug mode by namespaces. This can include modes
+ * separated by a colon and wildcards.
+ *
+ * @param {String} namespaces
+ * @api public
+ */
+
+function enable(namespaces) {
+  exports.save(namespaces);
+
+  var split = (namespaces || '').split(/[\s,]+/);
+  var len = split.length;
+
+  for (var i = 0; i < len; i++) {
+    if (!split[i]) continue; // ignore empty strings
+    namespaces = split[i].replace(/\*/g, '.*?');
+    if (namespaces[0] === '-') {
+      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+    } else {
+      exports.names.push(new RegExp('^' + namespaces + '$'));
+    }
+  }
+}
+
+/**
+ * Disable debug output.
+ *
+ * @api public
+ */
+
+function disable() {
+  exports.enable('');
+}
+
+/**
+ * Returns true if the given mode name is enabled, false otherwise.
+ *
+ * @param {String} name
+ * @return {Boolean}
+ * @api public
+ */
+
+function enabled(name) {
+  var i, len;
+  for (i = 0, len = exports.skips.length; i < len; i++) {
+    if (exports.skips[i].test(name)) {
+      return false;
+    }
+  }
+  for (i = 0, len = exports.names.length; i < len; i++) {
+    if (exports.names[i].test(name)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Coerce `val`.
+ *
+ * @param {Mixed} val
+ * @return {Mixed}
+ * @api private
+ */
+
+function coerce(val) {
+  if (val instanceof Error) return val.stack || val.message;
+  return val;
+}
+
+},{"ms":25}],19:[function(_dereq_,module,exports){
+(function (global){
+/**
+ * Module dependencies.
+ */
+
+var keys = _dereq_('./keys');
+var hasBinary = _dereq_('has-binary');
+var sliceBuffer = _dereq_('arraybuffer.slice');
+var base64encoder = _dereq_('base64-arraybuffer');
+var after = _dereq_('after');
+var utf8 = _dereq_('utf8');
+
+/**
+ * Check if we are running an android browser. That requires us to use
+ * ArrayBuffer with polling transports...
+ *
+ * http://ghinda.net/jpeg-blob-ajax-android/
+ */
+
+var isAndroid = navigator.userAgent.match(/Android/i);
+
+/**
+ * Check if we are running in PhantomJS.
+ * Uploading a Blob with PhantomJS does not work correctly, as reported here:
+ * https://github.com/ariya/phantomjs/issues/11395
+ * @type boolean
+ */
+var isPhantomJS = /PhantomJS/i.test(navigator.userAgent);
+
+/**
+ * When true, avoids using Blobs to encode payloads.
+ * @type boolean
+ */
+var dontSendBlobs = isAndroid || isPhantomJS;
+
+/**
+ * Current protocol version.
+ */
+
+exports.protocol = 3;
+
+/**
+ * Packet types.
+ */
+
+var packets = exports.packets = {
+    open:     0    // non-ws
+  , close:    1    // non-ws
+  , ping:     2
+  , pong:     3
+  , message:  4
+  , upgrade:  5
+  , noop:     6
+};
+
+var packetslist = keys(packets);
+
+/**
+ * Premade error packet.
+ */
+
+var err = { type: 'error', data: 'parser error' };
+
+/**
+ * Create a blob api even for blob builder when vendor prefixes exist
+ */
+
+var Blob = _dereq_('blob');
+
+/**
+ * Encodes a packet.
+ *
+ *     <packet type id> [ <data> ]
+ *
+ * Example:
+ *
+ *     5hello world
+ *     3
+ *     4
+ *
+ * Binary is encoded in an identical principle
+ *
+ * @api private
+ */
+
+exports.encodePacket = function (packet, supportsBinary, utf8encode, callback) {
+  if ('function' == typeof supportsBinary) {
+    callback = supportsBinary;
+    supportsBinary = false;
+  }
+
+  if ('function' == typeof utf8encode) {
+    callback = utf8encode;
+    utf8encode = null;
+  }
+
+  var data = (packet.data === undefined)
+    ? undefined
+    : packet.data.buffer || packet.data;
+
+  if (global.ArrayBuffer && data instanceof ArrayBuffer) {
+    return encodeArrayBuffer(packet, supportsBinary, callback);
+  } else if (Blob && data instanceof global.Blob) {
+    return encodeBlob(packet, supportsBinary, callback);
+  }
+
+  // might be an object with { base64: true, data: dataAsBase64String }
+  if (data && data.base64) {
+    return encodeBase64Object(packet, callback);
+  }
+
+  // Sending data as a utf-8 string
+  var encoded = packets[packet.type];
+
+  // data fragment is optional
+  if (undefined !== packet.data) {
+    encoded += utf8encode ? utf8.encode(String(packet.data)) : String(packet.data);
+  }
+
+  return callback('' + encoded);
+
+};
+
+function encodeBase64Object(packet, callback) {
+  // packet data is an object { base64: true, data: dataAsBase64String }
+  var message = 'b' + exports.packets[packet.type] + packet.data.data;
+  return callback(message);
+}
+
+/**
+ * Encode packet helpers for binary types
+ */
+
+function encodeArrayBuffer(packet, supportsBinary, callback) {
+  if (!supportsBinary) {
+    return exports.encodeBase64Packet(packet, callback);
+  }
+
+  var data = packet.data;
+  var contentArray = new Uint8Array(data);
+  var resultBuffer = new Uint8Array(1 + data.byteLength);
+
+  resultBuffer[0] = packets[packet.type];
+  for (var i = 0; i < contentArray.length; i++) {
+    resultBuffer[i+1] = contentArray[i];
+  }
+
+  return callback(resultBuffer.buffer);
+}
+
+function encodeBlobAsArrayBuffer(packet, supportsBinary, callback) {
+  if (!supportsBinary) {
+    return exports.encodeBase64Packet(packet, callback);
+  }
+
+  var fr = new FileReader();
+  fr.onload = function() {
+    packet.data = fr.result;
+    exports.encodePacket(packet, supportsBinary, true, callback);
+  };
+  return fr.readAsArrayBuffer(packet.data);
+}
+
+function encodeBlob(packet, supportsBinary, callback) {
+  if (!supportsBinary) {
+    return exports.encodeBase64Packet(packet, callback);
+  }
+
+  if (dontSendBlobs) {
+    return encodeBlobAsArrayBuffer(packet, supportsBinary, callback);
+  }
+
+  var length = new Uint8Array(1);
+  length[0] = packets[packet.type];
+  var blob = new Blob([length.buffer, packet.data]);
+
+  return callback(blob);
+}
+
+/**
+ * Encodes a packet with binary data in a base64 string
+ *
+ * @param {Object} packet, has `type` and `data`
+ * @return {String} base64 encoded message
+ */
+
+exports.encodeBase64Packet = function(packet, callback) {
+  var message = 'b' + exports.packets[packet.type];
+  if (Blob && packet.data instanceof global.Blob) {
+    var fr = new FileReader();
+    fr.onload = function() {
+      var b64 = fr.result.split(',')[1];
+      callback(message + b64);
+    };
+    return fr.readAsDataURL(packet.data);
+  }
+
+  var b64data;
+  try {
+    b64data = String.fromCharCode.apply(null, new Uint8Array(packet.data));
+  } catch (e) {
+    // iPhone Safari doesn't let you apply with typed arrays
+    var typed = new Uint8Array(packet.data);
+    var basic = new Array(typed.length);
+    for (var i = 0; i < typed.length; i++) {
+      basic[i] = typed[i];
+    }
+    b64data = String.fromCharCode.apply(null, basic);
+  }
+  message += global.btoa(b64data);
+  return callback(message);
+};
+
+/**
+ * Decodes a packet. Changes format to Blob if requested.
+ *
+ * @return {Object} with `type` and `data` (if any)
+ * @api private
+ */
+
+exports.decodePacket = function (data, binaryType, utf8decode) {
+  // String data
+  if (typeof data == 'string' || data === undefined) {
+    if (data.charAt(0) == 'b') {
+      return exports.decodeBase64Packet(data.substr(1), binaryType);
+    }
+
+    if (utf8decode) {
+      try {
+        data = utf8.decode(data);
+      } catch (e) {
+        return err;
+      }
+    }
+    var type = data.charAt(0);
+
+    if (Number(type) != type || !packetslist[type]) {
+      return err;
+    }
+
+    if (data.length > 1) {
+      return { type: packetslist[type], data: data.substring(1) };
+    } else {
+      return { type: packetslist[type] };
+    }
+  }
+
+  var asArray = new Uint8Array(data);
+  var type = asArray[0];
+  var rest = sliceBuffer(data, 1);
+  if (Blob && binaryType === 'blob') {
+    rest = new Blob([rest]);
+  }
+  return { type: packetslist[type], data: rest };
+};
+
+/**
+ * Decodes a packet encoded in a base64 string
+ *
+ * @param {String} base64 encoded message
+ * @return {Object} with `type` and `data` (if any)
+ */
+
+exports.decodeBase64Packet = function(msg, binaryType) {
+  var type = packetslist[msg.charAt(0)];
+  if (!global.ArrayBuffer) {
+    return { type: type, data: { base64: true, data: msg.substr(1) } };
+  }
+
+  var data = base64encoder.decode(msg.substr(1));
+
+  if (binaryType === 'blob' && Blob) {
+    data = new Blob([data]);
+  }
+
+  return { type: type, data: data };
+};
+
+/**
+ * Encodes multiple messages (payload).
+ *
+ *     <length>:data
+ *
+ * Example:
+ *
+ *     11:hello world2:hi
+ *
+ * If any contents are binary, they will be encoded as base64 strings. Base64
+ * encoded strings are marked with a b before the length specifier
+ *
+ * @param {Array} packets
+ * @api private
+ */
+
+exports.encodePayload = function (packets, supportsBinary, callback) {
+  if (typeof supportsBinary == 'function') {
+    callback = supportsBinary;
+    supportsBinary = null;
+  }
+
+  var isBinary = hasBinary(packets);
+
+  if (supportsBinary && isBinary) {
+    if (Blob && !dontSendBlobs) {
+      return exports.encodePayloadAsBlob(packets, callback);
+    }
+
+    return exports.encodePayloadAsArrayBuffer(packets, callback);
+  }
+
+  if (!packets.length) {
+    return callback('0:');
+  }
+
+  function setLengthHeader(message) {
+    return message.length + ':' + message;
+  }
+
+  function encodeOne(packet, doneCallback) {
+    exports.encodePacket(packet, !isBinary ? false : supportsBinary, true, function(message) {
+      doneCallback(null, setLengthHeader(message));
+    });
+  }
+
+  map(packets, encodeOne, function(err, results) {
+    return callback(results.join(''));
+  });
+};
+
+/**
+ * Async array map using after
+ */
+
+function map(ary, each, done) {
+  var result = new Array(ary.length);
+  var next = after(ary.length, done);
+
+  var eachWithIndex = function(i, el, cb) {
+    each(el, function(error, msg) {
+      result[i] = msg;
+      cb(error, result);
+    });
+  };
+
+  for (var i = 0; i < ary.length; i++) {
+    eachWithIndex(i, ary[i], next);
+  }
+}
+
+/*
+ * Decodes data when a payload is maybe expected. Possible binary contents are
+ * decoded from their base64 representation
+ *
+ * @param {String} data, callback method
+ * @api public
+ */
+
+exports.decodePayload = function (data, binaryType, callback) {
+  if (typeof data != 'string') {
+    return exports.decodePayloadAsBinary(data, binaryType, callback);
+  }
+
+  if (typeof binaryType === 'function') {
+    callback = binaryType;
+    binaryType = null;
+  }
+
+  var packet;
+  if (data == '') {
+    // parser error - ignoring payload
+    return callback(err, 0, 1);
+  }
+
+  var length = ''
+    , n, msg;
+
+  for (var i = 0, l = data.length; i < l; i++) {
+    var chr = data.charAt(i);
+
+    if (':' != chr) {
+      length += chr;
+    } else {
+      if ('' == length || (length != (n = Number(length)))) {
+        // parser error - ignoring payload
+        return callback(err, 0, 1);
+      }
+
+      msg = data.substr(i + 1, n);
+
+      if (length != msg.length) {
+        // parser error - ignoring payload
+        return callback(err, 0, 1);
+      }
+
+      if (msg.length) {
+        packet = exports.decodePacket(msg, binaryType, true);
+
+        if (err.type == packet.type && err.data == packet.data) {
+          // parser error in individual packet - ignoring payload
+          return callback(err, 0, 1);
+        }
+
+        var ret = callback(packet, i + n, l);
+        if (false === ret) return;
+      }
+
+      // advance cursor
+      i += n;
+      length = '';
+    }
+  }
+
+  if (length != '') {
+    // parser error - ignoring payload
+    return callback(err, 0, 1);
+  }
+
+};
+
+/**
+ * Encodes multiple messages (payload) as binary.
+ *
+ * <1 = binary, 0 = string><number from 0-9><number from 0-9>[...]<number
+ * 255><data>
+ *
+ * Example:
+ * 1 3 255 1 2 3, if the binary contents are interpreted as 8 bit integers
+ *
+ * @param {Array} packets
+ * @return {ArrayBuffer} encoded payload
+ * @api private
+ */
+
+exports.encodePayloadAsArrayBuffer = function(packets, callback) {
+  if (!packets.length) {
+    return callback(new ArrayBuffer(0));
+  }
+
+  function encodeOne(packet, doneCallback) {
+    exports.encodePacket(packet, true, true, function(data) {
+      return doneCallback(null, data);
+    });
+  }
+
+  map(packets, encodeOne, function(err, encodedPackets) {
+    var totalLength = encodedPackets.reduce(function(acc, p) {
+      var len;
+      if (typeof p === 'string'){
+        len = p.length;
+      } else {
+        len = p.byteLength;
+      }
+      return acc + len.toString().length + len + 2; // string/binary identifier + separator = 2
+    }, 0);
+
+    var resultArray = new Uint8Array(totalLength);
+
+    var bufferIndex = 0;
+    encodedPackets.forEach(function(p) {
+      var isString = typeof p === 'string';
+      var ab = p;
+      if (isString) {
+        var view = new Uint8Array(p.length);
+        for (var i = 0; i < p.length; i++) {
+          view[i] = p.charCodeAt(i);
+        }
+        ab = view.buffer;
+      }
+
+      if (isString) { // not true binary
+        resultArray[bufferIndex++] = 0;
+      } else { // true binary
+        resultArray[bufferIndex++] = 1;
+      }
+
+      var lenStr = ab.byteLength.toString();
+      for (var i = 0; i < lenStr.length; i++) {
+        resultArray[bufferIndex++] = parseInt(lenStr[i]);
+      }
+      resultArray[bufferIndex++] = 255;
+
+      var view = new Uint8Array(ab);
+      for (var i = 0; i < view.length; i++) {
+        resultArray[bufferIndex++] = view[i];
+      }
+    });
+
+    return callback(resultArray.buffer);
+  });
+};
+
+/**
+ * Encode as Blob
+ */
+
+exports.encodePayloadAsBlob = function(packets, callback) {
+  function encodeOne(packet, doneCallback) {
+    exports.encodePacket(packet, true, true, function(encoded) {
+      var binaryIdentifier = new Uint8Array(1);
+      binaryIdentifier[0] = 1;
+      if (typeof encoded === 'string') {
+        var view = new Uint8Array(encoded.length);
+        for (var i = 0; i < encoded.length; i++) {
+          view[i] = encoded.charCodeAt(i);
+        }
+        encoded = view.buffer;
+        binaryIdentifier[0] = 0;
+      }
+
+      var len = (encoded instanceof ArrayBuffer)
+        ? encoded.byteLength
+        : encoded.size;
+
+      var lenStr = len.toString();
+      var lengthAry = new Uint8Array(lenStr.length + 1);
+      for (var i = 0; i < lenStr.length; i++) {
+        lengthAry[i] = parseInt(lenStr[i]);
+      }
+      lengthAry[lenStr.length] = 255;
+
+      if (Blob) {
+        var blob = new Blob([binaryIdentifier.buffer, lengthAry.buffer, encoded]);
+        doneCallback(null, blob);
+      }
+    });
+  }
+
+  map(packets, encodeOne, function(err, results) {
+    return callback(new Blob(results));
+  });
+};
+
+/*
+ * Decodes data when a payload is maybe expected. Strings are decoded by
+ * interpreting each byte as a key code for entries marked to start with 0. See
+ * description of encodePayloadAsBinary
+ *
+ * @param {ArrayBuffer} data, callback method
+ * @api public
+ */
+
+exports.decodePayloadAsBinary = function (data, binaryType, callback) {
+  if (typeof binaryType === 'function') {
+    callback = binaryType;
+    binaryType = null;
+  }
+
+  var bufferTail = data;
+  var buffers = [];
+
+  var numberTooLong = false;
+  while (bufferTail.byteLength > 0) {
+    var tailArray = new Uint8Array(bufferTail);
+    var isString = tailArray[0] === 0;
+    var msgLength = '';
+
+    for (var i = 1; ; i++) {
+      if (tailArray[i] == 255) break;
+
+      if (msgLength.length > 310) {
+        numberTooLong = true;
+        break;
+      }
+
+      msgLength += tailArray[i];
+    }
+
+    if(numberTooLong) return callback(err, 0, 1);
+
+    bufferTail = sliceBuffer(bufferTail, 2 + msgLength.length);
+    msgLength = parseInt(msgLength);
+
+    var msg = sliceBuffer(bufferTail, 0, msgLength);
+    if (isString) {
+      try {
+        msg = String.fromCharCode.apply(null, new Uint8Array(msg));
+      } catch (e) {
+        // iPhone Safari doesn't let you apply to typed arrays
+        var typed = new Uint8Array(msg);
+        msg = '';
+        for (var i = 0; i < typed.length; i++) {
+          msg += String.fromCharCode(typed[i]);
+        }
+      }
+    }
+
+    buffers.push(msg);
+    bufferTail = sliceBuffer(bufferTail, msgLength);
+  }
+
+  var total = buffers.length;
+  buffers.forEach(function(buffer, i) {
+    callback(exports.decodePacket(buffer, binaryType, true), i, total);
+  });
+};
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {})
+},{"./keys":20,"after":11,"arraybuffer.slice":12,"base64-arraybuffer":13,"blob":14,"has-binary":21,"utf8":29}],20:[function(_dereq_,module,exports){
+
+/**
+ * Gets the keys for an object.
+ *
+ * @return {Array} keys
+ * @api private
+ */
+
+module.exports = Object.keys || function keys (obj){
+  var arr = [];
+  var has = Object.prototype.hasOwnProperty;
+
+  for (var i in obj) {
+    if (has.call(obj, i)) {
+      arr.push(i);
+    }
+  }
+  return arr;
+};
+
+},{}],21:[function(_dereq_,module,exports){
+(function (global){
+
+/*
+ * Module requirements.
+ */
+
+var isArray = _dereq_('isarray');
+
+/**
+ * Module exports.
+ */
+
+module.exports = hasBinary;
+
+/**
+ * Checks for binary data.
+ *
+ * Right now only Buffer and ArrayBuffer are supported..
+ *
+ * @param {Object} anything
+ * @api public
+ */
+
+function hasBinary(data) {
+
+  function _hasBinary(obj) {
+    if (!obj) return false;
+
+    if ( (global.Buffer && global.Buffer.isBuffer(obj)) ||
+         (global.ArrayBuffer && obj instanceof ArrayBuffer) ||
+         (global.Blob && obj instanceof Blob) ||
+         (global.File && obj instanceof File)
+        ) {
+      return true;
+    }
+
+    if (isArray(obj)) {
+      for (var i = 0; i < obj.length; i++) {
+          if (_hasBinary(obj[i])) {
+              return true;
+          }
+      }
+    } else if (obj && 'object' == typeof obj) {
+      if (obj.toJSON) {
+        obj = obj.toJSON();
+      }
+
+      for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key) && _hasBinary(obj[key])) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  return _hasBinary(data);
+}
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {})
+},{"isarray":24}],22:[function(_dereq_,module,exports){
+
+/**
+ * Module exports.
+ *
+ * Logic borrowed from Modernizr:
+ *
+ *   - https://github.com/Modernizr/Modernizr/blob/master/feature-detects/cors.js
+ */
+
+try {
+  module.exports = typeof XMLHttpRequest !== 'undefined' &&
+    'withCredentials' in new XMLHttpRequest();
+} catch (err) {
+  // if XMLHttp support is disabled in IE then it will throw
+  // when trying to create
+  module.exports = false;
+}
+
+},{}],23:[function(_dereq_,module,exports){
+
+var indexOf = [].indexOf;
+
+module.exports = function(arr, obj){
+  if (indexOf) return arr.indexOf(obj);
+  for (var i = 0; i < arr.length; ++i) {
+    if (arr[i] === obj) return i;
+  }
+  return -1;
+};
+},{}],24:[function(_dereq_,module,exports){
+module.exports = Array.isArray || function (arr) {
+  return Object.prototype.toString.call(arr) == '[object Array]';
+};
+
+},{}],25:[function(_dereq_,module,exports){
+/**
+ * Helpers.
+ */
+
+var s = 1000;
+var m = s * 60;
+var h = m * 60;
+var d = h * 24;
+var y = d * 365.25;
+
+/**
+ * Parse or format the given `val`.
+ *
+ * Options:
+ *
+ *  - `long` verbose formatting [false]
+ *
+ * @param {String|Number} val
+ * @param {Object} options
+ * @return {String|Number}
+ * @api public
+ */
+
+module.exports = function(val, options){
+  options = options || {};
+  if ('string' == typeof val) return parse(val);
+  return options.long
+    ? long(val)
+    : short(val);
+};
+
+/**
+ * Parse the given `str` and return milliseconds.
+ *
+ * @param {String} str
+ * @return {Number}
+ * @api private
+ */
+
+function parse(str) {
+  str = '' + str;
+  if (str.length > 10000) return;
+  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str);
+  if (!match) return;
+  var n = parseFloat(match[1]);
+  var type = (match[2] || 'ms').toLowerCase();
+  switch (type) {
+    case 'years':
+    case 'year':
+    case 'yrs':
+    case 'yr':
+    case 'y':
+      return n * y;
+    case 'days':
+    case 'day':
+    case 'd':
+      return n * d;
+    case 'hours':
+    case 'hour':
+    case 'hrs':
+    case 'hr':
+    case 'h':
+      return n * h;
+    case 'minutes':
+    case 'minute':
+    case 'mins':
+    case 'min':
+    case 'm':
+      return n * m;
+    case 'seconds':
+    case 'second':
+    case 'secs':
+    case 'sec':
+    case 's':
+      return n * s;
+    case 'milliseconds':
+    case 'millisecond':
+    case 'msecs':
+    case 'msec':
+    case 'ms':
+      return n;
+  }
+}
+
+/**
+ * Short format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function short(ms) {
+  if (ms >= d) return Math.round(ms / d) + 'd';
+  if (ms >= h) return Math.round(ms / h) + 'h';
+  if (ms >= m) return Math.round(ms / m) + 'm';
+  if (ms >= s) return Math.round(ms / s) + 's';
+  return ms + 'ms';
+}
+
+/**
+ * Long format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function long(ms) {
+  return plural(ms, d, 'day')
+    || plural(ms, h, 'hour')
+    || plural(ms, m, 'minute')
+    || plural(ms, s, 'second')
+    || ms + ' ms';
+}
+
+/**
+ * Pluralization helper.
+ */
+
+function plural(ms, n, name) {
+  if (ms < n) return;
+  if (ms < n * 1.5) return Math.floor(ms / n) + ' ' + name;
+  return Math.ceil(ms / n) + ' ' + name + 's';
+}
+
+},{}],26:[function(_dereq_,module,exports){
+(function (global){
+/**
+ * JSON parse.
+ *
+ * @see Based on jQuery#parseJSON (MIT) and JSON2
+ * @api private
+ */
+
+var rvalidchars = /^[\],:{}\s]*$/;
+var rvalidescape = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g;
+var rvalidtokens = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g;
+var rvalidbraces = /(?:^|:|,)(?:\s*\[)+/g;
+var rtrimLeft = /^\s+/;
+var rtrimRight = /\s+$/;
+
+module.exports = function parsejson(data) {
+  if ('string' != typeof data || !data) {
+    return null;
+  }
+
+  data = data.replace(rtrimLeft, '').replace(rtrimRight, '');
+
+  // Attempt to parse using the native JSON parser first
+  if (global.JSON && JSON.parse) {
+    return JSON.parse(data);
+  }
+
+  if (rvalidchars.test(data.replace(rvalidescape, '@')
+      .replace(rvalidtokens, ']')
+      .replace(rvalidbraces, ''))) {
+    return (new Function('return ' + data))();
+  }
+};
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {})
+},{}],27:[function(_dereq_,module,exports){
+/**
+ * Compiles a querystring
+ * Returns string representation of the object
+ *
+ * @param {Object}
+ * @api private
+ */
+
+exports.encode = function (obj) {
+  var str = '';
+
+  for (var i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      if (str.length) str += '&';
+      str += encodeURIComponent(i) + '=' + encodeURIComponent(obj[i]);
+    }
+  }
+
+  return str;
+};
+
+/**
+ * Parses a simple querystring into an object
+ *
+ * @param {String} qs
+ * @api private
+ */
+
+exports.decode = function(qs){
+  var qry = {};
+  var pairs = qs.split('&');
+  for (var i = 0, l = pairs.length; i < l; i++) {
+    var pair = pairs[i].split('=');
+    qry[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+  }
+  return qry;
+};
+
+},{}],28:[function(_dereq_,module,exports){
+/**
+ * Parses an URI
+ *
+ * @author Steven Levithan <stevenlevithan.com> (MIT license)
+ * @api private
+ */
+
+var re = /^(?:(?![^:@]+:[^:@\/]*@)(http|https|ws|wss):\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?((?:[a-f0-9]{0,4}:){2,7}[a-f0-9]{0,4}|[^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/;
+
+var parts = [
+    'source', 'protocol', 'authority', 'userInfo', 'user', 'password', 'host', 'port', 'relative', 'path', 'directory', 'file', 'query', 'anchor'
+];
+
+module.exports = function parseuri(str) {
+    var src = str,
+        b = str.indexOf('['),
+        e = str.indexOf(']');
+
+    if (b != -1 && e != -1) {
+        str = str.substring(0, b) + str.substring(b, e).replace(/:/g, ';') + str.substring(e, str.length);
+    }
+
+    var m = re.exec(str || ''),
+        uri = {},
+        i = 14;
+
+    while (i--) {
+        uri[parts[i]] = m[i] || '';
+    }
+
+    if (b != -1 && e != -1) {
+        uri.source = src;
+        uri.host = uri.host.substring(1, uri.host.length - 1).replace(/;/g, ':');
+        uri.authority = uri.authority.replace('[', '').replace(']', '').replace(/;/g, ':');
+        uri.ipv6uri = true;
+    }
+
+    return uri;
+};
+
+},{}],29:[function(_dereq_,module,exports){
+(function (global){
+/*! https://mths.be/utf8js v2.0.0 by @mathias */
+;(function(root) {
+
+	// Detect free variables `exports`
+	var freeExports = typeof exports == 'object' && exports;
+
+	// Detect free variable `module`
+	var freeModule = typeof module == 'object' && module &&
+		module.exports == freeExports && module;
+
+	// Detect free variable `global`, from Node.js or Browserified code,
+	// and use it as `root`
+	var freeGlobal = typeof global == 'object' && global;
+	if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
+		root = freeGlobal;
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	var stringFromCharCode = String.fromCharCode;
+
+	// Taken from https://mths.be/punycode
+	function ucs2decode(string) {
+		var output = [];
+		var counter = 0;
+		var length = string.length;
+		var value;
+		var extra;
+		while (counter < length) {
+			value = string.charCodeAt(counter++);
+			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
+				// high surrogate, and there is a next character
+				extra = string.charCodeAt(counter++);
+				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
+					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
+				} else {
+					// unmatched surrogate; only append this code unit, in case the next
+					// code unit is the high surrogate of a surrogate pair
+					output.push(value);
+					counter--;
+				}
+			} else {
+				output.push(value);
+			}
+		}
+		return output;
+	}
+
+	// Taken from https://mths.be/punycode
+	function ucs2encode(array) {
+		var length = array.length;
+		var index = -1;
+		var value;
+		var output = '';
+		while (++index < length) {
+			value = array[index];
+			if (value > 0xFFFF) {
+				value -= 0x10000;
+				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
+				value = 0xDC00 | value & 0x3FF;
+			}
+			output += stringFromCharCode(value);
+		}
+		return output;
+	}
+
+	function checkScalarValue(codePoint) {
+		if (codePoint >= 0xD800 && codePoint <= 0xDFFF) {
+			throw Error(
+				'Lone surrogate U+' + codePoint.toString(16).toUpperCase() +
+				' is not a scalar value'
+			);
+		}
+	}
+	/*--------------------------------------------------------------------------*/
+
+	function createByte(codePoint, shift) {
+		return stringFromCharCode(((codePoint >> shift) & 0x3F) | 0x80);
+	}
+
+	function encodeCodePoint(codePoint) {
+		if ((codePoint & 0xFFFFFF80) == 0) { // 1-byte sequence
+			return stringFromCharCode(codePoint);
+		}
+		var symbol = '';
+		if ((codePoint & 0xFFFFF800) == 0) { // 2-byte sequence
+			symbol = stringFromCharCode(((codePoint >> 6) & 0x1F) | 0xC0);
+		}
+		else if ((codePoint & 0xFFFF0000) == 0) { // 3-byte sequence
+			checkScalarValue(codePoint);
+			symbol = stringFromCharCode(((codePoint >> 12) & 0x0F) | 0xE0);
+			symbol += createByte(codePoint, 6);
+		}
+		else if ((codePoint & 0xFFE00000) == 0) { // 4-byte sequence
+			symbol = stringFromCharCode(((codePoint >> 18) & 0x07) | 0xF0);
+			symbol += createByte(codePoint, 12);
+			symbol += createByte(codePoint, 6);
+		}
+		symbol += stringFromCharCode((codePoint & 0x3F) | 0x80);
+		return symbol;
+	}
+
+	function utf8encode(string) {
+		var codePoints = ucs2decode(string);
+		var length = codePoints.length;
+		var index = -1;
+		var codePoint;
+		var byteString = '';
+		while (++index < length) {
+			codePoint = codePoints[index];
+			byteString += encodeCodePoint(codePoint);
+		}
+		return byteString;
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	function readContinuationByte() {
+		if (byteIndex >= byteCount) {
+			throw Error('Invalid byte index');
+		}
+
+		var continuationByte = byteArray[byteIndex] & 0xFF;
+		byteIndex++;
+
+		if ((continuationByte & 0xC0) == 0x80) {
+			return continuationByte & 0x3F;
+		}
+
+		// If we end up here, it’s not a continuation byte
+		throw Error('Invalid continuation byte');
+	}
+
+	function decodeSymbol() {
+		var byte1;
+		var byte2;
+		var byte3;
+		var byte4;
+		var codePoint;
+
+		if (byteIndex > byteCount) {
+			throw Error('Invalid byte index');
+		}
+
+		if (byteIndex == byteCount) {
+			return false;
+		}
+
+		// Read first byte
+		byte1 = byteArray[byteIndex] & 0xFF;
+		byteIndex++;
+
+		// 1-byte sequence (no continuation bytes)
+		if ((byte1 & 0x80) == 0) {
+			return byte1;
+		}
+
+		// 2-byte sequence
+		if ((byte1 & 0xE0) == 0xC0) {
+			var byte2 = readContinuationByte();
+			codePoint = ((byte1 & 0x1F) << 6) | byte2;
+			if (codePoint >= 0x80) {
+				return codePoint;
+			} else {
+				throw Error('Invalid continuation byte');
+			}
+		}
+
+		// 3-byte sequence (may include unpaired surrogates)
+		if ((byte1 & 0xF0) == 0xE0) {
+			byte2 = readContinuationByte();
+			byte3 = readContinuationByte();
+			codePoint = ((byte1 & 0x0F) << 12) | (byte2 << 6) | byte3;
+			if (codePoint >= 0x0800) {
+				checkScalarValue(codePoint);
+				return codePoint;
+			} else {
+				throw Error('Invalid continuation byte');
+			}
+		}
+
+		// 4-byte sequence
+		if ((byte1 & 0xF8) == 0xF0) {
+			byte2 = readContinuationByte();
+			byte3 = readContinuationByte();
+			byte4 = readContinuationByte();
+			codePoint = ((byte1 & 0x0F) << 0x12) | (byte2 << 0x0C) |
+				(byte3 << 0x06) | byte4;
+			if (codePoint >= 0x010000 && codePoint <= 0x10FFFF) {
+				return codePoint;
+			}
+		}
+
+		throw Error('Invalid UTF-8 detected');
+	}
+
+	var byteArray;
+	var byteCount;
+	var byteIndex;
+	function utf8decode(byteString) {
+		byteArray = ucs2decode(byteString);
+		byteCount = byteArray.length;
+		byteIndex = 0;
+		var codePoints = [];
+		var tmp;
+		while ((tmp = decodeSymbol()) !== false) {
+			codePoints.push(tmp);
+		}
+		return ucs2encode(codePoints);
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	var utf8 = {
+		'version': '2.0.0',
+		'encode': utf8encode,
+		'decode': utf8decode
+	};
+
+	// Some AMD build optimizers, like r.js, check for specific condition patterns
+	// like the following:
+	if (
+		typeof define == 'function' &&
+		typeof define.amd == 'object' &&
+		define.amd
+	) {
+		define(function() {
+			return utf8;
+		});
+	}	else if (freeExports && !freeExports.nodeType) {
+		if (freeModule) { // in Node.js or RingoJS v0.8.0+
+			freeModule.exports = utf8;
+		} else { // in Narwhal or RingoJS v0.7.0-
+			var object = {};
+			var hasOwnProperty = object.hasOwnProperty;
+			for (var key in utf8) {
+				hasOwnProperty.call(utf8, key) && (freeExports[key] = utf8[key]);
+			}
+		}
+	} else { // in Rhino or a web browser
+		root.utf8 = utf8;
+	}
+
+}(this));
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {})
+},{}],30:[function(_dereq_,module,exports){
+'use strict';
+
+var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
+  , length = 64
+  , map = {}
+  , seed = 0
+  , i = 0
+  , prev;
+
+/**
+ * Return a string representing the specified number.
+ *
+ * @param {Number} num The number to convert.
+ * @returns {String} The string representation of the number.
+ * @api public
+ */
+function encode(num) {
+  var encoded = '';
+
+  do {
+    encoded = alphabet[num % length] + encoded;
+    num = Math.floor(num / length);
+  } while (num > 0);
+
+  return encoded;
+}
+
+/**
+ * Return the integer value specified by the given string.
+ *
+ * @param {String} str The string to convert.
+ * @returns {Number} The integer value represented by the string.
+ * @api public
+ */
+function decode(str) {
+  var decoded = 0;
+
+  for (i = 0; i < str.length; i++) {
+    decoded = decoded * length + map[str.charAt(i)];
+  }
+
+  return decoded;
+}
+
+/**
+ * Yeast: A tiny growing id generator.
+ *
+ * @returns {String} A unique id.
+ * @api public
+ */
+function yeast() {
+  var now = encode(+new Date());
+
+  if (now !== prev) return seed = 0, prev = now;
+  return now +'.'+ encode(seed++);
+}
+
+//
+// Map each character to its index.
+//
+for (; i < length; i++) map[alphabet[i]] = i;
+
+//
+// Expose the `yeast`, `encode` and `decode` functions.
+//
+yeast.encode = encode;
+yeast.decode = decode;
+module.exports = yeast;
+
+},{}],31:[function(_dereq_,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var url = _dereq_('./url');
+var parser = _dereq_('socket.io-parser');
+var Manager = _dereq_('./manager');
+var debug = _dereq_('debug')('socket.io-client');
+
+/**
+ * Module exports.
+ */
+
+module.exports = exports = lookup;
+
+/**
+ * Managers cache.
+ */
+
+var cache = exports.managers = {};
+
+/**
+ * Looks up an existing `Manager` for multiplexing.
+ * If the user summons:
+ *
+ *   `io('http://localhost/a');`
+ *   `io('http://localhost/b');`
+ *
+ * We reuse the existing instance based on same scheme/port/host,
+ * and we initialize sockets for each namespace.
+ *
+ * @api public
+ */
+
+function lookup(uri, opts) {
+  if (typeof uri == 'object') {
+    opts = uri;
+    uri = undefined;
+  }
+
+  opts = opts || {};
+
+  var parsed = url(uri);
+  var source = parsed.source;
+  var id = parsed.id;
+  var path = parsed.path;
+  var sameNamespace = cache[id] && path in cache[id].nsps;
+  var newConnection = opts.forceNew || opts['force new connection'] ||
+                      false === opts.multiplex || sameNamespace;
+
+  var io;
+
+  if (newConnection) {
+    debug('ignoring socket cache for %s', source);
+    io = Manager(source, opts);
+  } else {
+    if (!cache[id]) {
+      debug('new io instance for %s', source);
+      cache[id] = Manager(source, opts);
+    }
+    io = cache[id];
+  }
+
+  return io.socket(parsed.path);
+}
+
+/**
+ * Protocol version.
+ *
+ * @api public
+ */
+
+exports.protocol = parser.protocol;
+
+/**
+ * `connect`.
+ *
+ * @param {String} uri
+ * @api public
+ */
+
+exports.connect = lookup;
+
+/**
+ * Expose constructors for standalone build.
+ *
+ * @api public
+ */
+
+exports.Manager = _dereq_('./manager');
+exports.Socket = _dereq_('./socket');
+
+},{"./manager":32,"./socket":34,"./url":35,"debug":39,"socket.io-parser":47}],32:[function(_dereq_,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var eio = _dereq_('engine.io-client');
+var Socket = _dereq_('./socket');
+var Emitter = _dereq_('component-emitter');
+var parser = _dereq_('socket.io-parser');
+var on = _dereq_('./on');
+var bind = _dereq_('component-bind');
+var debug = _dereq_('debug')('socket.io-client:manager');
+var indexOf = _dereq_('indexof');
+var Backoff = _dereq_('backo2');
+
+/**
+ * IE6+ hasOwnProperty
+ */
+
+var has = Object.prototype.hasOwnProperty;
+
+/**
+ * Module exports
+ */
+
+module.exports = Manager;
+
+/**
+ * `Manager` constructor.
+ *
+ * @param {String} engine instance or engine uri/opts
+ * @param {Object} options
+ * @api public
+ */
+
+function Manager(uri, opts){
+  if (!(this instanceof Manager)) return new Manager(uri, opts);
+  if (uri && ('object' == typeof uri)) {
+    opts = uri;
+    uri = undefined;
+  }
+  opts = opts || {};
+
+  opts.path = opts.path || '/socket.io';
+  this.nsps = {};
+  this.subs = [];
+  this.opts = opts;
+  this.reconnection(opts.reconnection !== false);
+  this.reconnectionAttempts(opts.reconnectionAttempts || Infinity);
+  this.reconnectionDelay(opts.reconnectionDelay || 1000);
+  this.reconnectionDelayMax(opts.reconnectionDelayMax || 5000);
+  this.randomizationFactor(opts.randomizationFactor || 0.5);
+  this.backoff = new Backoff({
+    min: this.reconnectionDelay(),
+    max: this.reconnectionDelayMax(),
+    jitter: this.randomizationFactor()
+  });
+  this.timeout(null == opts.timeout ? 20000 : opts.timeout);
+  this.readyState = 'closed';
+  this.uri = uri;
+  this.connecting = [];
+  this.lastPing = null;
+  this.encoding = false;
+  this.packetBuffer = [];
+  this.encoder = new parser.Encoder();
+  this.decoder = new parser.Decoder();
+  this.autoConnect = opts.autoConnect !== false;
+  if (this.autoConnect) this.open();
+}
+
+/**
+ * Propagate given event to sockets and emit on `this`
+ *
+ * @api private
+ */
+
+Manager.prototype.emitAll = function() {
+  this.emit.apply(this, arguments);
+  for (var nsp in this.nsps) {
+    if (has.call(this.nsps, nsp)) {
+      this.nsps[nsp].emit.apply(this.nsps[nsp], arguments);
+    }
+  }
+};
+
+/**
+ * Update `socket.id` of all sockets
+ *
+ * @api private
+ */
+
+Manager.prototype.updateSocketIds = function(){
+  for (var nsp in this.nsps) {
+    if (has.call(this.nsps, nsp)) {
+      this.nsps[nsp].id = this.engine.id;
+    }
+  }
+};
+
+/**
+ * Mix in `Emitter`.
+ */
+
+Emitter(Manager.prototype);
+
+/**
+ * Sets the `reconnection` config.
+ *
+ * @param {Boolean} true/false if it should automatically reconnect
+ * @return {Manager} self or value
+ * @api public
+ */
+
+Manager.prototype.reconnection = function(v){
+  if (!arguments.length) return this._reconnection;
+  this._reconnection = !!v;
+  return this;
+};
+
+/**
+ * Sets the reconnection attempts config.
+ *
+ * @param {Number} max reconnection attempts before giving up
+ * @return {Manager} self or value
+ * @api public
+ */
+
+Manager.prototype.reconnectionAttempts = function(v){
+  if (!arguments.length) return this._reconnectionAttempts;
+  this._reconnectionAttempts = v;
+  return this;
+};
+
+/**
+ * Sets the delay between reconnections.
+ *
+ * @param {Number} delay
+ * @return {Manager} self or value
+ * @api public
+ */
+
+Manager.prototype.reconnectionDelay = function(v){
+  if (!arguments.length) return this._reconnectionDelay;
+  this._reconnectionDelay = v;
+  this.backoff && this.backoff.setMin(v);
+  return this;
+};
+
+Manager.prototype.randomizationFactor = function(v){
+  if (!arguments.length) return this._randomizationFactor;
+  this._randomizationFactor = v;
+  this.backoff && this.backoff.setJitter(v);
+  return this;
+};
+
+/**
+ * Sets the maximum delay between reconnections.
+ *
+ * @param {Number} delay
+ * @return {Manager} self or value
+ * @api public
+ */
+
+Manager.prototype.reconnectionDelayMax = function(v){
+  if (!arguments.length) return this._reconnectionDelayMax;
+  this._reconnectionDelayMax = v;
+  this.backoff && this.backoff.setMax(v);
+  return this;
+};
+
+/**
+ * Sets the connection timeout. `false` to disable
+ *
+ * @return {Manager} self or value
+ * @api public
+ */
+
+Manager.prototype.timeout = function(v){
+  if (!arguments.length) return this._timeout;
+  this._timeout = v;
+  return this;
+};
+
+/**
+ * Starts trying to reconnect if reconnection is enabled and we have not
+ * started reconnecting yet
+ *
+ * @api private
+ */
+
+Manager.prototype.maybeReconnectOnOpen = function() {
+  // Only try to reconnect if it's the first time we're connecting
+  if (!this.reconnecting && this._reconnection && this.backoff.attempts === 0) {
+    // keeps reconnection from firing twice for the same reconnection loop
+    this.reconnect();
+  }
+};
+
+
+/**
+ * Sets the current transport `socket`.
+ *
+ * @param {Function} optional, callback
+ * @return {Manager} self
+ * @api public
+ */
+
+Manager.prototype.open =
+Manager.prototype.connect = function(fn){
+  debug('readyState %s', this.readyState);
+  if (~this.readyState.indexOf('open')) return this;
+
+  debug('opening %s', this.uri);
+  this.engine = eio(this.uri, this.opts);
+  var socket = this.engine;
+  var self = this;
+  this.readyState = 'opening';
+  this.skipReconnect = false;
+
+  // emit `open`
+  var openSub = on(socket, 'open', function() {
+    self.onopen();
+    fn && fn();
+  });
+
+  // emit `connect_error`
+  var errorSub = on(socket, 'error', function(data){
+    debug('connect_error');
+    self.cleanup();
+    self.readyState = 'closed';
+    self.emitAll('connect_error', data);
+    if (fn) {
+      var err = new Error('Connection error');
+      err.data = data;
+      fn(err);
+    } else {
+      // Only do this if there is no fn to handle the error
+      self.maybeReconnectOnOpen();
+    }
+  });
+
+  // emit `connect_timeout`
+  if (false !== this._timeout) {
+    var timeout = this._timeout;
+    debug('connect attempt will timeout after %d', timeout);
+
+    // set timer
+    var timer = setTimeout(function(){
+      debug('connect attempt timed out after %d', timeout);
+      openSub.destroy();
+      socket.close();
+      socket.emit('error', 'timeout');
+      self.emitAll('connect_timeout', timeout);
+    }, timeout);
+
+    this.subs.push({
+      destroy: function(){
+        clearTimeout(timer);
+      }
+    });
+  }
+
+  this.subs.push(openSub);
+  this.subs.push(errorSub);
+
+  return this;
+};
+
+/**
+ * Called upon transport open.
+ *
+ * @api private
+ */
+
+Manager.prototype.onopen = function(){
+  debug('open');
+
+  // clear old subs
+  this.cleanup();
+
+  // mark as open
+  this.readyState = 'open';
+  this.emit('open');
+
+  // add new subs
+  var socket = this.engine;
+  this.subs.push(on(socket, 'data', bind(this, 'ondata')));
+  this.subs.push(on(socket, 'ping', bind(this, 'onping')));
+  this.subs.push(on(socket, 'pong', bind(this, 'onpong')));
+  this.subs.push(on(socket, 'error', bind(this, 'onerror')));
+  this.subs.push(on(socket, 'close', bind(this, 'onclose')));
+  this.subs.push(on(this.decoder, 'decoded', bind(this, 'ondecoded')));
+};
+
+/**
+ * Called upon a ping.
+ *
+ * @api private
+ */
+
+Manager.prototype.onping = function(){
+  this.lastPing = new Date;
+  this.emitAll('ping');
+};
+
+/**
+ * Called upon a packet.
+ *
+ * @api private
+ */
+
+Manager.prototype.onpong = function(){
+  this.emitAll('pong', new Date - this.lastPing);
+};
+
+/**
+ * Called with data.
+ *
+ * @api private
+ */
+
+Manager.prototype.ondata = function(data){
+  this.decoder.add(data);
+};
+
+/**
+ * Called when parser fully decodes a packet.
+ *
+ * @api private
+ */
+
+Manager.prototype.ondecoded = function(packet) {
+  this.emit('packet', packet);
+};
+
+/**
+ * Called upon socket error.
+ *
+ * @api private
+ */
+
+Manager.prototype.onerror = function(err){
+  debug('error', err);
+  this.emitAll('error', err);
+};
+
+/**
+ * Creates a new socket for the given `nsp`.
+ *
+ * @return {Socket}
+ * @api public
+ */
+
+Manager.prototype.socket = function(nsp){
+  var socket = this.nsps[nsp];
+  if (!socket) {
+    socket = new Socket(this, nsp);
+    this.nsps[nsp] = socket;
+    var self = this;
+    socket.on('connecting', onConnecting);
+    socket.on('connect', function(){
+      socket.id = self.engine.id;
+    });
+
+    if (this.autoConnect) {
+      // manually call here since connecting evnet is fired before listening
+      onConnecting();
+    }
+  }
+
+  function onConnecting() {
+    if (!~indexOf(self.connecting, socket)) {
+      self.connecting.push(socket);
+    }
+  }
+
+  return socket;
+};
+
+/**
+ * Called upon a socket close.
+ *
+ * @param {Socket} socket
+ */
+
+Manager.prototype.destroy = function(socket){
+  var index = indexOf(this.connecting, socket);
+  if (~index) this.connecting.splice(index, 1);
+  if (this.connecting.length) return;
+
+  this.close();
+};
+
+/**
+ * Writes a packet.
+ *
+ * @param {Object} packet
+ * @api private
+ */
+
+Manager.prototype.packet = function(packet){
+  debug('writing packet %j', packet);
+  var self = this;
+
+  if (!self.encoding) {
+    // encode, then write to engine with result
+    self.encoding = true;
+    this.encoder.encode(packet, function(encodedPackets) {
+      for (var i = 0; i < encodedPackets.length; i++) {
+        self.engine.write(encodedPackets[i], packet.options);
+      }
+      self.encoding = false;
+      self.processPacketQueue();
+    });
+  } else { // add packet to the queue
+    self.packetBuffer.push(packet);
+  }
+};
+
+/**
+ * If packet buffer is non-empty, begins encoding the
+ * next packet in line.
+ *
+ * @api private
+ */
+
+Manager.prototype.processPacketQueue = function() {
+  if (this.packetBuffer.length > 0 && !this.encoding) {
+    var pack = this.packetBuffer.shift();
+    this.packet(pack);
+  }
+};
+
+/**
+ * Clean up transport subscriptions and packet buffer.
+ *
+ * @api private
+ */
+
+Manager.prototype.cleanup = function(){
+  debug('cleanup');
+
+  var sub;
+  while (sub = this.subs.shift()) sub.destroy();
+
+  this.packetBuffer = [];
+  this.encoding = false;
+  this.lastPing = null;
+
+  this.decoder.destroy();
+};
+
+/**
+ * Close the current socket.
+ *
+ * @api private
+ */
+
+Manager.prototype.close =
+Manager.prototype.disconnect = function(){
+  debug('disconnect');
+  this.skipReconnect = true;
+  this.reconnecting = false;
+  if ('opening' == this.readyState) {
+    // `onclose` will not fire because
+    // an open event never happened
+    this.cleanup();
+  }
+  this.backoff.reset();
+  this.readyState = 'closed';
+  if (this.engine) this.engine.close();
+};
+
+/**
+ * Called upon engine close.
+ *
+ * @api private
+ */
+
+Manager.prototype.onclose = function(reason){
+  debug('onclose');
+
+  this.cleanup();
+  this.backoff.reset();
+  this.readyState = 'closed';
+  this.emit('close', reason);
+
+  if (this._reconnection && !this.skipReconnect) {
+    this.reconnect();
+  }
+};
+
+/**
+ * Attempt a reconnection.
+ *
+ * @api private
+ */
+
+Manager.prototype.reconnect = function(){
+  if (this.reconnecting || this.skipReconnect) return this;
+
+  var self = this;
+
+  if (this.backoff.attempts >= this._reconnectionAttempts) {
+    debug('reconnect failed');
+    this.backoff.reset();
+    this.emitAll('reconnect_failed');
+    this.reconnecting = false;
+  } else {
+    var delay = this.backoff.duration();
+    debug('will wait %dms before reconnect attempt', delay);
+
+    this.reconnecting = true;
+    var timer = setTimeout(function(){
+      if (self.skipReconnect) return;
+
+      debug('attempting reconnect');
+      self.emitAll('reconnect_attempt', self.backoff.attempts);
+      self.emitAll('reconnecting', self.backoff.attempts);
+
+      // check again for the case socket closed in above events
+      if (self.skipReconnect) return;
+
+      self.open(function(err){
+        if (err) {
+          debug('reconnect attempt error');
+          self.reconnecting = false;
+          self.reconnect();
+          self.emitAll('reconnect_error', err.data);
+        } else {
+          debug('reconnect success');
+          self.onreconnect();
+        }
+      });
+    }, delay);
+
+    this.subs.push({
+      destroy: function(){
+        clearTimeout(timer);
+      }
+    });
+  }
+};
+
+/**
+ * Called upon successful reconnect.
+ *
+ * @api private
+ */
+
+Manager.prototype.onreconnect = function(){
+  var attempt = this.backoff.attempts;
+  this.reconnecting = false;
+  this.backoff.reset();
+  this.updateSocketIds();
+  this.emitAll('reconnect', attempt);
+};
+
+},{"./on":33,"./socket":34,"backo2":36,"component-bind":37,"component-emitter":38,"debug":39,"engine.io-client":1,"indexof":42,"socket.io-parser":47}],33:[function(_dereq_,module,exports){
+
+/**
+ * Module exports.
+ */
+
+module.exports = on;
+
+/**
+ * Helper for subscriptions.
+ *
+ * @param {Object|EventEmitter} obj with `Emitter` mixin or `EventEmitter`
+ * @param {String} event name
+ * @param {Function} callback
+ * @api public
+ */
+
+function on(obj, ev, fn) {
+  obj.on(ev, fn);
+  return {
+    destroy: function(){
+      obj.removeListener(ev, fn);
+    }
+  };
+}
+
+},{}],34:[function(_dereq_,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var parser = _dereq_('socket.io-parser');
+var Emitter = _dereq_('component-emitter');
+var toArray = _dereq_('to-array');
+var on = _dereq_('./on');
+var bind = _dereq_('component-bind');
+var debug = _dereq_('debug')('socket.io-client:socket');
+var hasBin = _dereq_('has-binary');
+
+/**
+ * Module exports.
+ */
+
+module.exports = exports = Socket;
+
+/**
+ * Internal events (blacklisted).
+ * These events can't be emitted by the user.
+ *
+ * @api private
+ */
+
+var events = {
+  connect: 1,
+  connect_error: 1,
+  connect_timeout: 1,
+  connecting: 1,
+  disconnect: 1,
+  error: 1,
+  reconnect: 1,
+  reconnect_attempt: 1,
+  reconnect_failed: 1,
+  reconnect_error: 1,
+  reconnecting: 1,
+  ping: 1,
+  pong: 1
+};
+
+/**
+ * Shortcut to `Emitter#emit`.
+ */
+
+var emit = Emitter.prototype.emit;
+
+/**
+ * `Socket` constructor.
+ *
+ * @api public
+ */
+
+function Socket(io, nsp){
+  this.io = io;
+  this.nsp = nsp;
+  this.json = this; // compat
+  this.ids = 0;
+  this.acks = {};
+  this.receiveBuffer = [];
+  this.sendBuffer = [];
+  this.connected = false;
+  this.disconnected = true;
+  if (this.io.autoConnect) this.open();
+}
+
+/**
+ * Mix in `Emitter`.
+ */
+
+Emitter(Socket.prototype);
+
+/**
+ * Subscribe to open, close and packet events
+ *
+ * @api private
+ */
+
+Socket.prototype.subEvents = function() {
+  if (this.subs) return;
+
+  var io = this.io;
+  this.subs = [
+    on(io, 'open', bind(this, 'onopen')),
+    on(io, 'packet', bind(this, 'onpacket')),
+    on(io, 'close', bind(this, 'onclose'))
+  ];
+};
+
+/**
+ * "Opens" the socket.
+ *
+ * @api public
+ */
+
+Socket.prototype.open =
+Socket.prototype.connect = function(){
+  if (this.connected) return this;
+
+  this.subEvents();
+  this.io.open(); // ensure open
+  if ('open' == this.io.readyState) this.onopen();
+  this.emit('connecting');
+  return this;
+};
+
+/**
+ * Sends a `message` event.
+ *
+ * @return {Socket} self
+ * @api public
+ */
+
+Socket.prototype.send = function(){
+  var args = toArray(arguments);
+  args.unshift('message');
+  this.emit.apply(this, args);
+  return this;
+};
+
+/**
+ * Override `emit`.
+ * If the event is in `events`, it's emitted normally.
+ *
+ * @param {String} event name
+ * @return {Socket} self
+ * @api public
+ */
+
+Socket.prototype.emit = function(ev){
+  if (events.hasOwnProperty(ev)) {
+    emit.apply(this, arguments);
+    return this;
+  }
+
+  var args = toArray(arguments);
+  var parserType = parser.EVENT; // default
+  if (hasBin(args)) { parserType = parser.BINARY_EVENT; } // binary
+  var packet = { type: parserType, data: args };
+
+  packet.options = {};
+  packet.options.compress = !this.flags || false !== this.flags.compress;
+
+  // event ack callback
+  if ('function' == typeof args[args.length - 1]) {
+    debug('emitting packet with ack id %d', this.ids);
+    this.acks[this.ids] = args.pop();
+    packet.id = this.ids++;
+  }
+
+  if (this.connected) {
+    this.packet(packet);
+  } else {
+    this.sendBuffer.push(packet);
+  }
+
+  delete this.flags;
+
+  return this;
+};
+
+/**
+ * Sends a packet.
+ *
+ * @param {Object} packet
+ * @api private
+ */
+
+Socket.prototype.packet = function(packet){
+  packet.nsp = this.nsp;
+  this.io.packet(packet);
+};
+
+/**
+ * Called upon engine `open`.
+ *
+ * @api private
+ */
+
+Socket.prototype.onopen = function(){
+  debug('transport is open - connecting');
+
+  // write connect packet if necessary
+  if ('/' != this.nsp) {
+    this.packet({ type: parser.CONNECT });
+  }
+};
+
+/**
+ * Called upon engine `close`.
+ *
+ * @param {String} reason
+ * @api private
+ */
+
+Socket.prototype.onclose = function(reason){
+  debug('close (%s)', reason);
+  this.connected = false;
+  this.disconnected = true;
+  delete this.id;
+  this.emit('disconnect', reason);
+};
+
+/**
+ * Called with socket packet.
+ *
+ * @param {Object} packet
+ * @api private
+ */
+
+Socket.prototype.onpacket = function(packet){
+  if (packet.nsp != this.nsp) return;
+
+  switch (packet.type) {
+    case parser.CONNECT:
+      this.onconnect();
+      break;
+
+    case parser.EVENT:
+      this.onevent(packet);
+      break;
+
+    case parser.BINARY_EVENT:
+      this.onevent(packet);
+      break;
+
+    case parser.ACK:
+      this.onack(packet);
+      break;
+
+    case parser.BINARY_ACK:
+      this.onack(packet);
+      break;
+
+    case parser.DISCONNECT:
+      this.ondisconnect();
+      break;
+
+    case parser.ERROR:
+      this.emit('error', packet.data);
+      break;
+  }
+};
+
+/**
+ * Called upon a server event.
+ *
+ * @param {Object} packet
+ * @api private
+ */
+
+Socket.prototype.onevent = function(packet){
+  var args = packet.data || [];
+  debug('emitting event %j', args);
+
+  if (null != packet.id) {
+    debug('attaching ack callback to event');
+    args.push(this.ack(packet.id));
+  }
+
+  if (this.connected) {
+    emit.apply(this, args);
+  } else {
+    this.receiveBuffer.push(args);
+  }
+};
+
+/**
+ * Produces an ack callback to emit with an event.
+ *
+ * @api private
+ */
+
+Socket.prototype.ack = function(id){
+  var self = this;
+  var sent = false;
+  return function(){
+    // prevent double callbacks
+    if (sent) return;
+    sent = true;
+    var args = toArray(arguments);
+    debug('sending ack %j', args);
+
+    var type = hasBin(args) ? parser.BINARY_ACK : parser.ACK;
+    self.packet({
+      type: type,
+      id: id,
+      data: args
+    });
+  };
+};
+
+/**
+ * Called upon a server acknowlegement.
+ *
+ * @param {Object} packet
+ * @api private
+ */
+
+Socket.prototype.onack = function(packet){
+  var ack = this.acks[packet.id];
+  if ('function' == typeof ack) {
+    debug('calling ack %s with %j', packet.id, packet.data);
+    ack.apply(this, packet.data);
+    delete this.acks[packet.id];
+  } else {
+    debug('bad ack %s', packet.id);
+  }
+};
+
+/**
+ * Called upon server connect.
+ *
+ * @api private
+ */
+
+Socket.prototype.onconnect = function(){
+  this.connected = true;
+  this.disconnected = false;
+  this.emit('connect');
+  this.emitBuffered();
+};
+
+/**
+ * Emit buffered events (received and emitted).
+ *
+ * @api private
+ */
+
+Socket.prototype.emitBuffered = function(){
+  var i;
+  for (i = 0; i < this.receiveBuffer.length; i++) {
+    emit.apply(this, this.receiveBuffer[i]);
+  }
+  this.receiveBuffer = [];
+
+  for (i = 0; i < this.sendBuffer.length; i++) {
+    this.packet(this.sendBuffer[i]);
+  }
+  this.sendBuffer = [];
+};
+
+/**
+ * Called upon server disconnect.
+ *
+ * @api private
+ */
+
+Socket.prototype.ondisconnect = function(){
+  debug('server disconnect (%s)', this.nsp);
+  this.destroy();
+  this.onclose('io server disconnect');
+};
+
+/**
+ * Called upon forced client/server side disconnections,
+ * this method ensures the manager stops tracking us and
+ * that reconnections don't get triggered for this.
+ *
+ * @api private.
+ */
+
+Socket.prototype.destroy = function(){
+  if (this.subs) {
+    // clean subscriptions to avoid reconnections
+    for (var i = 0; i < this.subs.length; i++) {
+      this.subs[i].destroy();
+    }
+    this.subs = null;
+  }
+
+  this.io.destroy(this);
+};
+
+/**
+ * Disconnects the socket manually.
+ *
+ * @return {Socket} self
+ * @api public
+ */
+
+Socket.prototype.close =
+Socket.prototype.disconnect = function(){
+  if (this.connected) {
+    debug('performing disconnect (%s)', this.nsp);
+    this.packet({ type: parser.DISCONNECT });
+  }
+
+  // remove socket from pool
+  this.destroy();
+
+  if (this.connected) {
+    // fire events
+    this.onclose('io client disconnect');
+  }
+  return this;
+};
+
+/**
+ * Sets the compress flag.
+ *
+ * @param {Boolean} if `true`, compresses the sending data
+ * @return {Socket} self
+ * @api public
+ */
+
+Socket.prototype.compress = function(compress){
+  this.flags = this.flags || {};
+  this.flags.compress = compress;
+  return this;
+};
+
+},{"./on":33,"component-bind":37,"component-emitter":38,"debug":39,"has-binary":41,"socket.io-parser":47,"to-array":51}],35:[function(_dereq_,module,exports){
+(function (global){
+
+/**
+ * Module dependencies.
+ */
+
+var parseuri = _dereq_('parseuri');
+var debug = _dereq_('debug')('socket.io-client:url');
+
+/**
+ * Module exports.
+ */
+
+module.exports = url;
+
+/**
+ * URL parser.
+ *
+ * @param {String} url
+ * @param {Object} An object meant to mimic window.location.
+ *                 Defaults to window.location.
+ * @api public
+ */
+
+function url(uri, loc){
+  var obj = uri;
+
+  // default to window.location
+  var loc = loc || global.location;
+  if (null == uri) uri = loc.protocol + '//' + loc.host;
+
+  // relative path support
+  if ('string' == typeof uri) {
+    if ('/' == uri.charAt(0)) {
+      if ('/' == uri.charAt(1)) {
+        uri = loc.protocol + uri;
+      } else {
+        uri = loc.host + uri;
+      }
+    }
+
+    if (!/^(https?|wss?):\/\//.test(uri)) {
+      debug('protocol-less url %s', uri);
+      if ('undefined' != typeof loc) {
+        uri = loc.protocol + '//' + uri;
+      } else {
+        uri = 'https://' + uri;
+      }
+    }
+
+    // parse
+    debug('parse %s', uri);
+    obj = parseuri(uri);
+  }
+
+  // make sure we treat `localhost:80` and `localhost` equally
+  if (!obj.port) {
+    if (/^(http|ws)$/.test(obj.protocol)) {
+      obj.port = '80';
+    }
+    else if (/^(http|ws)s$/.test(obj.protocol)) {
+      obj.port = '443';
+    }
+  }
+
+  obj.path = obj.path || '/';
+
+  var ipv6 = obj.host.indexOf(':') !== -1;
+  var host = ipv6 ? '[' + obj.host + ']' : obj.host;
+
+  // define unique id
+  obj.id = obj.protocol + '://' + host + ':' + obj.port;
+  // define href
+  obj.href = obj.protocol + '://' + host + (loc && loc.port == obj.port ? '' : (':' + obj.port));
+
+  return obj;
+}
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {})
+},{"debug":39,"parseuri":45}],36:[function(_dereq_,module,exports){
+
+/**
+ * Expose `Backoff`.
+ */
+
+module.exports = Backoff;
+
+/**
+ * Initialize backoff timer with `opts`.
+ *
+ * - `min` initial timeout in milliseconds [100]
+ * - `max` max timeout [10000]
+ * - `jitter` [0]
+ * - `factor` [2]
+ *
+ * @param {Object} opts
+ * @api public
+ */
+
+function Backoff(opts) {
+  opts = opts || {};
+  this.ms = opts.min || 100;
+  this.max = opts.max || 10000;
+  this.factor = opts.factor || 2;
+  this.jitter = opts.jitter > 0 && opts.jitter <= 1 ? opts.jitter : 0;
+  this.attempts = 0;
+}
+
+/**
+ * Return the backoff duration.
+ *
+ * @return {Number}
+ * @api public
+ */
+
+Backoff.prototype.duration = function(){
+  var ms = this.ms * Math.pow(this.factor, this.attempts++);
+  if (this.jitter) {
+    var rand =  Math.random();
+    var deviation = Math.floor(rand * this.jitter * ms);
+    ms = (Math.floor(rand * 10) & 1) == 0  ? ms - deviation : ms + deviation;
+  }
+  return Math.min(ms, this.max) | 0;
+};
+
+/**
+ * Reset the number of attempts.
+ *
+ * @api public
+ */
+
+Backoff.prototype.reset = function(){
+  this.attempts = 0;
+};
+
+/**
+ * Set the minimum duration
+ *
+ * @api public
+ */
+
+Backoff.prototype.setMin = function(min){
+  this.ms = min;
+};
+
+/**
+ * Set the maximum duration
+ *
+ * @api public
+ */
+
+Backoff.prototype.setMax = function(max){
+  this.max = max;
+};
+
+/**
+ * Set the jitter
+ *
+ * @api public
+ */
+
+Backoff.prototype.setJitter = function(jitter){
+  this.jitter = jitter;
+};
+
+
+},{}],37:[function(_dereq_,module,exports){
+/**
+ * Slice reference.
+ */
+
+var slice = [].slice;
+
+/**
+ * Bind `obj` to `fn`.
+ *
+ * @param {Object} obj
+ * @param {Function|String} fn or string
+ * @return {Function}
+ * @api public
+ */
+
+module.exports = function(obj, fn){
+  if ('string' == typeof fn) fn = obj[fn];
+  if ('function' != typeof fn) throw new Error('bind() requires a function');
+  var args = slice.call(arguments, 2);
+  return function(){
+    return fn.apply(obj, args.concat(slice.call(arguments)));
+  }
+};
+
+},{}],38:[function(_dereq_,module,exports){
+
+/**
+ * Expose `Emitter`.
+ */
+
+module.exports = Emitter;
+
+/**
+ * Initialize a new `Emitter`.
+ *
+ * @api public
+ */
+
+function Emitter(obj) {
+  if (obj) return mixin(obj);
+};
+
+/**
+ * Mixin the emitter properties.
+ *
+ * @param {Object} obj
+ * @return {Object}
+ * @api private
+ */
+
+function mixin(obj) {
+  for (var key in Emitter.prototype) {
+    obj[key] = Emitter.prototype[key];
+  }
+  return obj;
+}
+
+/**
+ * Listen on the given `event` with `fn`.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.on =
+Emitter.prototype.addEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
+    .push(fn);
+  return this;
+};
+
+/**
+ * Adds an `event` listener that will be invoked a single
+ * time then automatically removed.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.once = function(event, fn){
+  function on() {
+    this.off(event, on);
+    fn.apply(this, arguments);
+  }
+
+  on.fn = fn;
+  this.on(event, on);
+  return this;
+};
+
+/**
+ * Remove the given callback for `event` or all
+ * registered callbacks.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.off =
+Emitter.prototype.removeListener =
+Emitter.prototype.removeAllListeners =
+Emitter.prototype.removeEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+
+  // all
+  if (0 == arguments.length) {
+    this._callbacks = {};
+    return this;
+  }
+
+  // specific event
+  var callbacks = this._callbacks['$' + event];
+  if (!callbacks) return this;
+
+  // remove all handlers
+  if (1 == arguments.length) {
+    delete this._callbacks['$' + event];
+    return this;
+  }
+
+  // remove specific handler
+  var cb;
+  for (var i = 0; i < callbacks.length; i++) {
+    cb = callbacks[i];
+    if (cb === fn || cb.fn === fn) {
+      callbacks.splice(i, 1);
+      break;
+    }
+  }
+  return this;
+};
+
+/**
+ * Emit `event` with the given args.
+ *
+ * @param {String} event
+ * @param {Mixed} ...
+ * @return {Emitter}
+ */
+
+Emitter.prototype.emit = function(event){
+  this._callbacks = this._callbacks || {};
+  var args = [].slice.call(arguments, 1)
+    , callbacks = this._callbacks['$' + event];
+
+  if (callbacks) {
+    callbacks = callbacks.slice(0);
+    for (var i = 0, len = callbacks.length; i < len; ++i) {
+      callbacks[i].apply(this, args);
+    }
+  }
+
+  return this;
+};
+
+/**
+ * Return array of callbacks for `event`.
+ *
+ * @param {String} event
+ * @return {Array}
+ * @api public
+ */
+
+Emitter.prototype.listeners = function(event){
+  this._callbacks = this._callbacks || {};
+  return this._callbacks['$' + event] || [];
+};
+
+/**
+ * Check if this emitter has `event` handlers.
+ *
+ * @param {String} event
+ * @return {Boolean}
+ * @api public
+ */
+
+Emitter.prototype.hasListeners = function(event){
+  return !! this.listeners(event).length;
+};
+
+},{}],39:[function(_dereq_,module,exports){
+arguments[4][17][0].apply(exports,arguments)
+},{"./debug":40,"dup":17}],40:[function(_dereq_,module,exports){
+arguments[4][18][0].apply(exports,arguments)
+},{"dup":18,"ms":44}],41:[function(_dereq_,module,exports){
+(function (global){
+
+/*
+ * Module requirements.
+ */
+
+var isArray = _dereq_('isarray');
+
+/**
+ * Module exports.
+ */
+
+module.exports = hasBinary;
+
+/**
+ * Checks for binary data.
+ *
+ * Right now only Buffer and ArrayBuffer are supported..
+ *
+ * @param {Object} anything
+ * @api public
+ */
+
+function hasBinary(data) {
+
+  function _hasBinary(obj) {
+    if (!obj) return false;
+
+    if ( (global.Buffer && global.Buffer.isBuffer && global.Buffer.isBuffer(obj)) ||
+         (global.ArrayBuffer && obj instanceof ArrayBuffer) ||
+         (global.Blob && obj instanceof Blob) ||
+         (global.File && obj instanceof File)
+        ) {
+      return true;
+    }
+
+    if (isArray(obj)) {
+      for (var i = 0; i < obj.length; i++) {
+          if (_hasBinary(obj[i])) {
+              return true;
+          }
+      }
+    } else if (obj && 'object' == typeof obj) {
+      // see: https://github.com/Automattic/has-binary/pull/4
+      if (obj.toJSON && 'function' == typeof obj.toJSON) {
+        obj = obj.toJSON();
+      }
+
+      for (var key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key) && _hasBinary(obj[key])) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  return _hasBinary(data);
+}
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {})
+},{"isarray":43}],42:[function(_dereq_,module,exports){
+arguments[4][23][0].apply(exports,arguments)
+},{"dup":23}],43:[function(_dereq_,module,exports){
+arguments[4][24][0].apply(exports,arguments)
+},{"dup":24}],44:[function(_dereq_,module,exports){
+arguments[4][25][0].apply(exports,arguments)
+},{"dup":25}],45:[function(_dereq_,module,exports){
+arguments[4][28][0].apply(exports,arguments)
+},{"dup":28}],46:[function(_dereq_,module,exports){
+(function (global){
+/*global Blob,File*/
+
+/**
+ * Module requirements
+ */
+
+var isArray = _dereq_('isarray');
+var isBuf = _dereq_('./is-buffer');
+
+/**
+ * Replaces every Buffer | ArrayBuffer in packet with a numbered placeholder.
+ * Anything with blobs or files should be fed through removeBlobs before coming
+ * here.
+ *
+ * @param {Object} packet - socket.io event packet
+ * @return {Object} with deconstructed packet and list of buffers
+ * @api public
+ */
+
+exports.deconstructPacket = function(packet){
+  var buffers = [];
+  var packetData = packet.data;
+
+  function _deconstructPacket(data) {
+    if (!data) return data;
+
+    if (isBuf(data)) {
+      var placeholder = { _placeholder: true, num: buffers.length };
+      buffers.push(data);
+      return placeholder;
+    } else if (isArray(data)) {
+      var newData = new Array(data.length);
+      for (var i = 0; i < data.length; i++) {
+        newData[i] = _deconstructPacket(data[i]);
+      }
+      return newData;
+    } else if ('object' == typeof data && !(data instanceof Date)) {
+      var newData = {};
+      for (var key in data) {
+        newData[key] = _deconstructPacket(data[key]);
+      }
+      return newData;
+    }
+    return data;
+  }
+
+  var pack = packet;
+  pack.data = _deconstructPacket(packetData);
+  pack.attachments = buffers.length; // number of binary 'attachments'
+  return {packet: pack, buffers: buffers};
+};
+
+/**
+ * Reconstructs a binary packet from its placeholder packet and buffers
+ *
+ * @param {Object} packet - event packet with placeholders
+ * @param {Array} buffers - binary buffers to put in placeholder positions
+ * @return {Object} reconstructed packet
+ * @api public
+ */
+
+exports.reconstructPacket = function(packet, buffers) {
+  var curPlaceHolder = 0;
+
+  function _reconstructPacket(data) {
+    if (data && data._placeholder) {
+      var buf = buffers[data.num]; // appropriate buffer (should be natural order anyway)
+      return buf;
+    } else if (isArray(data)) {
+      for (var i = 0; i < data.length; i++) {
+        data[i] = _reconstructPacket(data[i]);
+      }
+      return data;
+    } else if (data && 'object' == typeof data) {
+      for (var key in data) {
+        data[key] = _reconstructPacket(data[key]);
+      }
+      return data;
+    }
+    return data;
+  }
+
+  packet.data = _reconstructPacket(packet.data);
+  packet.attachments = undefined; // no longer useful
+  return packet;
+};
+
+/**
+ * Asynchronously removes Blobs or Files from data via
+ * FileReader's readAsArrayBuffer method. Used before encoding
+ * data as msgpack. Calls callback with the blobless data.
+ *
+ * @param {Object} data
+ * @param {Function} callback
+ * @api private
+ */
+
+exports.removeBlobs = function(data, callback) {
+  function _removeBlobs(obj, curKey, containingObject) {
+    if (!obj) return obj;
+
+    // convert any blob
+    if ((global.Blob && obj instanceof Blob) ||
+        (global.File && obj instanceof File)) {
+      pendingBlobs++;
+
+      // async filereader
+      var fileReader = new FileReader();
+      fileReader.onload = function() { // this.result == arraybuffer
+        if (containingObject) {
+          containingObject[curKey] = this.result;
+        }
+        else {
+          bloblessData = this.result;
+        }
+
+        // if nothing pending its callback time
+        if(! --pendingBlobs) {
+          callback(bloblessData);
+        }
+      };
+
+      fileReader.readAsArrayBuffer(obj); // blob -> arraybuffer
+    } else if (isArray(obj)) { // handle array
+      for (var i = 0; i < obj.length; i++) {
+        _removeBlobs(obj[i], i, obj);
+      }
+    } else if (obj && 'object' == typeof obj && !isBuf(obj)) { // and object
+      for (var key in obj) {
+        _removeBlobs(obj[key], key, obj);
+      }
+    }
+  }
+
+  var pendingBlobs = 0;
+  var bloblessData = data;
+  _removeBlobs(bloblessData);
+  if (!pendingBlobs) {
+    callback(bloblessData);
+  }
+};
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {})
+},{"./is-buffer":48,"isarray":43}],47:[function(_dereq_,module,exports){
+
+/**
+ * Module dependencies.
+ */
+
+var debug = _dereq_('debug')('socket.io-parser');
+var json = _dereq_('json3');
+var isArray = _dereq_('isarray');
+var Emitter = _dereq_('component-emitter');
+var binary = _dereq_('./binary');
+var isBuf = _dereq_('./is-buffer');
+
+/**
+ * Protocol version.
+ *
+ * @api public
+ */
+
+exports.protocol = 4;
+
+/**
+ * Packet types.
+ *
+ * @api public
+ */
+
+exports.types = [
+  'CONNECT',
+  'DISCONNECT',
+  'EVENT',
+  'BINARY_EVENT',
+  'ACK',
+  'BINARY_ACK',
+  'ERROR'
+];
+
+/**
+ * Packet type `connect`.
+ *
+ * @api public
+ */
+
+exports.CONNECT = 0;
+
+/**
+ * Packet type `disconnect`.
+ *
+ * @api public
+ */
+
+exports.DISCONNECT = 1;
+
+/**
+ * Packet type `event`.
+ *
+ * @api public
+ */
+
+exports.EVENT = 2;
+
+/**
+ * Packet type `ack`.
+ *
+ * @api public
+ */
+
+exports.ACK = 3;
+
+/**
+ * Packet type `error`.
+ *
+ * @api public
+ */
+
+exports.ERROR = 4;
+
+/**
+ * Packet type 'binary event'
+ *
+ * @api public
+ */
+
+exports.BINARY_EVENT = 5;
+
+/**
+ * Packet type `binary ack`. For acks with binary arguments.
+ *
+ * @api public
+ */
+
+exports.BINARY_ACK = 6;
+
+/**
+ * Encoder constructor.
+ *
+ * @api public
+ */
+
+exports.Encoder = Encoder;
+
+/**
+ * Decoder constructor.
+ *
+ * @api public
+ */
+
+exports.Decoder = Decoder;
+
+/**
+ * A socket.io Encoder instance
+ *
+ * @api public
+ */
+
+function Encoder() {}
+
+/**
+ * Encode a packet as a single string if non-binary, or as a
+ * buffer sequence, depending on packet type.
+ *
+ * @param {Object} obj - packet object
+ * @param {Function} callback - function to handle encodings (likely engine.write)
+ * @return Calls callback with Array of encodings
+ * @api public
+ */
+
+Encoder.prototype.encode = function(obj, callback){
+  debug('encoding packet %j', obj);
+
+  if (exports.BINARY_EVENT == obj.type || exports.BINARY_ACK == obj.type) {
+    encodeAsBinary(obj, callback);
+  }
+  else {
+    var encoding = encodeAsString(obj);
+    callback([encoding]);
+  }
+};
+
+/**
+ * Encode packet as string.
+ *
+ * @param {Object} packet
+ * @return {String} encoded
+ * @api private
+ */
+
+function encodeAsString(obj) {
+  var str = '';
+  var nsp = false;
+
+  // first is type
+  str += obj.type;
+
+  // attachments if we have them
+  if (exports.BINARY_EVENT == obj.type || exports.BINARY_ACK == obj.type) {
+    str += obj.attachments;
+    str += '-';
+  }
+
+  // if we have a namespace other than `/`
+  // we append it followed by a comma `,`
+  if (obj.nsp && '/' != obj.nsp) {
+    nsp = true;
+    str += obj.nsp;
+  }
+
+  // immediately followed by the id
+  if (null != obj.id) {
+    if (nsp) {
+      str += ',';
+      nsp = false;
+    }
+    str += obj.id;
+  }
+
+  // json data
+  if (null != obj.data) {
+    if (nsp) str += ',';
+    str += json.stringify(obj.data);
+  }
+
+  debug('encoded %j as %s', obj, str);
+  return str;
+}
+
+/**
+ * Encode packet as 'buffer sequence' by removing blobs, and
+ * deconstructing packet into object with placeholders and
+ * a list of buffers.
+ *
+ * @param {Object} packet
+ * @return {Buffer} encoded
+ * @api private
+ */
+
+function encodeAsBinary(obj, callback) {
+
+  function writeEncoding(bloblessData) {
+    var deconstruction = binary.deconstructPacket(bloblessData);
+    var pack = encodeAsString(deconstruction.packet);
+    var buffers = deconstruction.buffers;
+
+    buffers.unshift(pack); // add packet info to beginning of data list
+    callback(buffers); // write all the buffers
+  }
+
+  binary.removeBlobs(obj, writeEncoding);
+}
+
+/**
+ * A socket.io Decoder instance
+ *
+ * @return {Object} decoder
+ * @api public
+ */
+
+function Decoder() {
+  this.reconstructor = null;
+}
+
+/**
+ * Mix in `Emitter` with Decoder.
+ */
+
+Emitter(Decoder.prototype);
+
+/**
+ * Decodes an ecoded packet string into packet JSON.
+ *
+ * @param {String} obj - encoded packet
+ * @return {Object} packet
+ * @api public
+ */
+
+Decoder.prototype.add = function(obj) {
+  var packet;
+  if ('string' == typeof obj) {
+    packet = decodeString(obj);
+    if (exports.BINARY_EVENT == packet.type || exports.BINARY_ACK == packet.type) { // binary packet's json
+      this.reconstructor = new BinaryReconstructor(packet);
+
+      // no attachments, labeled binary but no binary data to follow
+      if (this.reconstructor.reconPack.attachments === 0) {
+        this.emit('decoded', packet);
+      }
+    } else { // non-binary full packet
+      this.emit('decoded', packet);
+    }
+  }
+  else if (isBuf(obj) || obj.base64) { // raw binary data
+    if (!this.reconstructor) {
+      throw new Error('got binary data when not reconstructing a packet');
+    } else {
+      packet = this.reconstructor.takeBinaryData(obj);
+      if (packet) { // received final buffer
+        this.reconstructor = null;
+        this.emit('decoded', packet);
+      }
+    }
+  }
+  else {
+    throw new Error('Unknown type: ' + obj);
+  }
+};
+
+/**
+ * Decode a packet String (JSON data)
+ *
+ * @param {String} str
+ * @return {Object} packet
+ * @api private
+ */
+
+function decodeString(str) {
+  var p = {};
+  var i = 0;
+
+  // look up type
+  p.type = Number(str.charAt(0));
+  if (null == exports.types[p.type]) return error();
+
+  // look up attachments if type binary
+  if (exports.BINARY_EVENT == p.type || exports.BINARY_ACK == p.type) {
+    var buf = '';
+    while (str.charAt(++i) != '-') {
+      buf += str.charAt(i);
+      if (i == str.length) break;
+    }
+    if (buf != Number(buf) || str.charAt(i) != '-') {
+      throw new Error('Illegal attachments');
+    }
+    p.attachments = Number(buf);
+  }
+
+  // look up namespace (if any)
+  if ('/' == str.charAt(i + 1)) {
+    p.nsp = '';
+    while (++i) {
+      var c = str.charAt(i);
+      if (',' == c) break;
+      p.nsp += c;
+      if (i == str.length) break;
+    }
+  } else {
+    p.nsp = '/';
+  }
+
+  // look up id
+  var next = str.charAt(i + 1);
+  if ('' !== next && Number(next) == next) {
+    p.id = '';
+    while (++i) {
+      var c = str.charAt(i);
+      if (null == c || Number(c) != c) {
+        --i;
+        break;
+      }
+      p.id += str.charAt(i);
+      if (i == str.length) break;
+    }
+    p.id = Number(p.id);
+  }
+
+  // look up json data
+  if (str.charAt(++i)) {
+    try {
+      p.data = json.parse(str.substr(i));
+    } catch(e){
+      return error();
+    }
+  }
+
+  debug('decoded %s as %j', str, p);
+  return p;
+}
+
+/**
+ * Deallocates a parser's resources
+ *
+ * @api public
+ */
+
+Decoder.prototype.destroy = function() {
+  if (this.reconstructor) {
+    this.reconstructor.finishedReconstruction();
+  }
+};
+
+/**
+ * A manager of a binary event's 'buffer sequence'. Should
+ * be constructed whenever a packet of type BINARY_EVENT is
+ * decoded.
+ *
+ * @param {Object} packet
+ * @return {BinaryReconstructor} initialized reconstructor
+ * @api private
+ */
+
+function BinaryReconstructor(packet) {
+  this.reconPack = packet;
+  this.buffers = [];
+}
+
+/**
+ * Method to be called when binary data received from connection
+ * after a BINARY_EVENT packet.
+ *
+ * @param {Buffer | ArrayBuffer} binData - the raw binary data received
+ * @return {null | Object} returns null if more binary data is expected or
+ *   a reconstructed packet object if all buffers have been received.
+ * @api private
+ */
+
+BinaryReconstructor.prototype.takeBinaryData = function(binData) {
+  this.buffers.push(binData);
+  if (this.buffers.length == this.reconPack.attachments) { // done with buffer list
+    var packet = binary.reconstructPacket(this.reconPack, this.buffers);
+    this.finishedReconstruction();
+    return packet;
+  }
+  return null;
+};
+
+/**
+ * Cleans up binary packet reconstruction variables.
+ *
+ * @api private
+ */
+
+BinaryReconstructor.prototype.finishedReconstruction = function() {
+  this.reconPack = null;
+  this.buffers = [];
+};
+
+function error(data){
+  return {
+    type: exports.ERROR,
+    data: 'parser error'
+  };
+}
+
+},{"./binary":46,"./is-buffer":48,"component-emitter":49,"debug":39,"isarray":43,"json3":50}],48:[function(_dereq_,module,exports){
+(function (global){
+
+module.exports = isBuf;
+
+/**
+ * Returns true if obj is a buffer or an arraybuffer.
+ *
+ * @api private
+ */
+
+function isBuf(obj) {
+  return (global.Buffer && global.Buffer.isBuffer(obj)) ||
+         (global.ArrayBuffer && obj instanceof ArrayBuffer);
+}
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {})
+},{}],49:[function(_dereq_,module,exports){
+arguments[4][15][0].apply(exports,arguments)
+},{"dup":15}],50:[function(_dereq_,module,exports){
+(function (global){
+/*! JSON v3.3.2 | http://bestiejs.github.io/json3 | Copyright 2012-2014, Kit Cambridge | http://kit.mit-license.org */
+;(function () {
+  // Detect the `define` function exposed by asynchronous module loaders. The
+  // strict `define` check is necessary for compatibility with `r.js`.
+  var isLoader = typeof define === "function" && define.amd;
+
+  // A set of types used to distinguish objects from primitives.
+  var objectTypes = {
+    "function": true,
+    "object": true
+  };
+
+  // Detect the `exports` object exposed by CommonJS implementations.
+  var freeExports = objectTypes[typeof exports] && exports && !exports.nodeType && exports;
+
+  // Use the `global` object exposed by Node (including Browserify via
+  // `insert-module-globals`), Narwhal, and Ringo as the default context,
+  // and the `window` object in browsers. Rhino exports a `global` function
+  // instead.
+  var root = objectTypes[typeof window] && window || this,
+      freeGlobal = freeExports && objectTypes[typeof module] && module && !module.nodeType && typeof global == "object" && global;
+
+  if (freeGlobal && (freeGlobal["global"] === freeGlobal || freeGlobal["window"] === freeGlobal || freeGlobal["self"] === freeGlobal)) {
+    root = freeGlobal;
+  }
+
+  // Public: Initializes JSON 3 using the given `context` object, attaching the
+  // `stringify` and `parse` functions to the specified `exports` object.
+  function runInContext(context, exports) {
+    context || (context = root["Object"]());
+    exports || (exports = root["Object"]());
+
+    // Native constructor aliases.
+    var Number = context["Number"] || root["Number"],
+        String = context["String"] || root["String"],
+        Object = context["Object"] || root["Object"],
+        Date = context["Date"] || root["Date"],
+        SyntaxError = context["SyntaxError"] || root["SyntaxError"],
+        TypeError = context["TypeError"] || root["TypeError"],
+        Math = context["Math"] || root["Math"],
+        nativeJSON = context["JSON"] || root["JSON"];
+
+    // Delegate to the native `stringify` and `parse` implementations.
+    if (typeof nativeJSON == "object" && nativeJSON) {
+      exports.stringify = nativeJSON.stringify;
+      exports.parse = nativeJSON.parse;
+    }
+
+    // Convenience aliases.
+    var objectProto = Object.prototype,
+        getClass = objectProto.toString,
+        isProperty, forEach, undef;
+
+    // Test the `Date#getUTC*` methods. Based on work by @Yaffle.
+    var isExtended = new Date(-3509827334573292);
+    try {
+      // The `getUTCFullYear`, `Month`, and `Date` methods return nonsensical
+      // results for certain dates in Opera >= 10.53.
+      isExtended = isExtended.getUTCFullYear() == -109252 && isExtended.getUTCMonth() === 0 && isExtended.getUTCDate() === 1 &&
+        // Safari < 2.0.2 stores the internal millisecond time value correctly,
+        // but clips the values returned by the date methods to the range of
+        // signed 32-bit integers ([-2 ** 31, 2 ** 31 - 1]).
+        isExtended.getUTCHours() == 10 && isExtended.getUTCMinutes() == 37 && isExtended.getUTCSeconds() == 6 && isExtended.getUTCMilliseconds() == 708;
+    } catch (exception) {}
+
+    // Internal: Determines whether the native `JSON.stringify` and `parse`
+    // implementations are spec-compliant. Based on work by Ken Snyder.
+    function has(name) {
+      if (has[name] !== undef) {
+        // Return cached feature test result.
+        return has[name];
+      }
+      var isSupported;
+      if (name == "bug-string-char-index") {
+        // IE <= 7 doesn't support accessing string characters using square
+        // bracket notation. IE 8 only supports this for primitives.
+        isSupported = "a"[0] != "a";
+      } else if (name == "json") {
+        // Indicates whether both `JSON.stringify` and `JSON.parse` are
+        // supported.
+        isSupported = has("json-stringify") && has("json-parse");
+      } else {
+        var value, serialized = '{"a":[1,true,false,null,"\\u0000\\b\\n\\f\\r\\t"]}';
+        // Test `JSON.stringify`.
+        if (name == "json-stringify") {
+          var stringify = exports.stringify, stringifySupported = typeof stringify == "function" && isExtended;
+          if (stringifySupported) {
+            // A test function object with a custom `toJSON` method.
+            (value = function () {
+              return 1;
+            }).toJSON = value;
+            try {
+              stringifySupported =
+                // Firefox 3.1b1 and b2 serialize string, number, and boolean
+                // primitives as object literals.
+                stringify(0) === "0" &&
+                // FF 3.1b1, b2, and JSON 2 serialize wrapped primitives as object
+                // literals.
+                stringify(new Number()) === "0" &&
+                stringify(new String()) == '""' &&
+                // FF 3.1b1, 2 throw an error if the value is `null`, `undefined`, or
+                // does not define a canonical JSON representation (this applies to
+                // objects with `toJSON` properties as well, *unless* they are nested
+                // within an object or array).
+                stringify(getClass) === undef &&
+                // IE 8 serializes `undefined` as `"undefined"`. Safari <= 5.1.7 and
+                // FF 3.1b3 pass this test.
+                stringify(undef) === undef &&
+                // Safari <= 5.1.7 and FF 3.1b3 throw `Error`s and `TypeError`s,
+                // respectively, if the value is omitted entirely.
+                stringify() === undef &&
+                // FF 3.1b1, 2 throw an error if the given value is not a number,
+                // string, array, object, Boolean, or `null` literal. This applies to
+                // objects with custom `toJSON` methods as well, unless they are nested
+                // inside object or array literals. YUI 3.0.0b1 ignores custom `toJSON`
+                // methods entirely.
+                stringify(value) === "1" &&
+                stringify([value]) == "[1]" &&
+                // Prototype <= 1.6.1 serializes `[undefined]` as `"[]"` instead of
+                // `"[null]"`.
+                stringify([undef]) == "[null]" &&
+                // YUI 3.0.0b1 fails to serialize `null` literals.
+                stringify(null) == "null" &&
+                // FF 3.1b1, 2 halts serialization if an array contains a function:
+                // `[1, true, getClass, 1]` serializes as "[1,true,],". FF 3.1b3
+                // elides non-JSON values from objects and arrays, unless they
+                // define custom `toJSON` methods.
+                stringify([undef, getClass, null]) == "[null,null,null]" &&
+                // Simple serialization test. FF 3.1b1 uses Unicode escape sequences
+                // where character escape codes are expected (e.g., `\b` => `\u0008`).
+                stringify({ "a": [value, true, false, null, "\x00\b\n\f\r\t"] }) == serialized &&
+                // FF 3.1b1 and b2 ignore the `filter` and `width` arguments.
+                stringify(null, value) === "1" &&
+                stringify([1, 2], null, 1) == "[\n 1,\n 2\n]" &&
+                // JSON 2, Prototype <= 1.7, and older WebKit builds incorrectly
+                // serialize extended years.
+                stringify(new Date(-8.64e15)) == '"-271821-04-20T00:00:00.000Z"' &&
+                // The milliseconds are optional in ES 5, but required in 5.1.
+                stringify(new Date(8.64e15)) == '"+275760-09-13T00:00:00.000Z"' &&
+                // Firefox <= 11.0 incorrectly serializes years prior to 0 as negative
+                // four-digit years instead of six-digit years. Credits: @Yaffle.
+                stringify(new Date(-621987552e5)) == '"-000001-01-01T00:00:00.000Z"' &&
+                // Safari <= 5.1.5 and Opera >= 10.53 incorrectly serialize millisecond
+                // values less than 1000. Credits: @Yaffle.
+                stringify(new Date(-1)) == '"1969-12-31T23:59:59.999Z"';
+            } catch (exception) {
+              stringifySupported = false;
+            }
+          }
+          isSupported = stringifySupported;
+        }
+        // Test `JSON.parse`.
+        if (name == "json-parse") {
+          var parse = exports.parse;
+          if (typeof parse == "function") {
+            try {
+              // FF 3.1b1, b2 will throw an exception if a bare literal is provided.
+              // Conforming implementations should also coerce the initial argument to
+              // a string prior to parsing.
+              if (parse("0") === 0 && !parse(false)) {
+                // Simple parsing test.
+                value = parse(serialized);
+                var parseSupported = value["a"].length == 5 && value["a"][0] === 1;
+                if (parseSupported) {
+                  try {
+                    // Safari <= 5.1.2 and FF 3.1b1 allow unescaped tabs in strings.
+                    parseSupported = !parse('"\t"');
+                  } catch (exception) {}
+                  if (parseSupported) {
+                    try {
+                      // FF 4.0 and 4.0.1 allow leading `+` signs and leading
+                      // decimal points. FF 4.0, 4.0.1, and IE 9-10 also allow
+                      // certain octal literals.
+                      parseSupported = parse("01") !== 1;
+                    } catch (exception) {}
+                  }
+                  if (parseSupported) {
+                    try {
+                      // FF 4.0, 4.0.1, and Rhino 1.7R3-R4 allow trailing decimal
+                      // points. These environments, along with FF 3.1b1 and 2,
+                      // also allow trailing commas in JSON objects and arrays.
+                      parseSupported = parse("1.") !== 1;
+                    } catch (exception) {}
+                  }
+                }
+              }
+            } catch (exception) {
+              parseSupported = false;
+            }
+          }
+          isSupported = parseSupported;
+        }
+      }
+      return has[name] = !!isSupported;
+    }
+
+    if (!has("json")) {
+      // Common `[[Class]]` name aliases.
+      var functionClass = "[object Function]",
+          dateClass = "[object Date]",
+          numberClass = "[object Number]",
+          stringClass = "[object String]",
+          arrayClass = "[object Array]",
+          booleanClass = "[object Boolean]";
+
+      // Detect incomplete support for accessing string characters by index.
+      var charIndexBuggy = has("bug-string-char-index");
+
+      // Define additional utility methods if the `Date` methods are buggy.
+      if (!isExtended) {
+        var floor = Math.floor;
+        // A mapping between the months of the year and the number of days between
+        // January 1st and the first of the respective month.
+        var Months = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+        // Internal: Calculates the number of days between the Unix epoch and the
+        // first day of the given month.
+        var getDay = function (year, month) {
+          return Months[month] + 365 * (year - 1970) + floor((year - 1969 + (month = +(month > 1))) / 4) - floor((year - 1901 + month) / 100) + floor((year - 1601 + month) / 400);
+        };
+      }
+
+      // Internal: Determines if a property is a direct property of the given
+      // object. Delegates to the native `Object#hasOwnProperty` method.
+      if (!(isProperty = objectProto.hasOwnProperty)) {
+        isProperty = function (property) {
+          var members = {}, constructor;
+          if ((members.__proto__ = null, members.__proto__ = {
+            // The *proto* property cannot be set multiple times in recent
+            // versions of Firefox and SeaMonkey.
+            "toString": 1
+          }, members).toString != getClass) {
+            // Safari <= 2.0.3 doesn't implement `Object#hasOwnProperty`, but
+            // supports the mutable *proto* property.
+            isProperty = function (property) {
+              // Capture and break the object's prototype chain (see section 8.6.2
+              // of the ES 5.1 spec). The parenthesized expression prevents an
+              // unsafe transformation by the Closure Compiler.
+              var original = this.__proto__, result = property in (this.__proto__ = null, this);
+              // Restore the original prototype chain.
+              this.__proto__ = original;
+              return result;
+            };
+          } else {
+            // Capture a reference to the top-level `Object` constructor.
+            constructor = members.constructor;
+            // Use the `constructor` property to simulate `Object#hasOwnProperty` in
+            // other environments.
+            isProperty = function (property) {
+              var parent = (this.constructor || constructor).prototype;
+              return property in this && !(property in parent && this[property] === parent[property]);
+            };
+          }
+          members = null;
+          return isProperty.call(this, property);
+        };
+      }
+
+      // Internal: Normalizes the `for...in` iteration algorithm across
+      // environments. Each enumerated key is yielded to a `callback` function.
+      forEach = function (object, callback) {
+        var size = 0, Properties, members, property;
+
+        // Tests for bugs in the current environment's `for...in` algorithm. The
+        // `valueOf` property inherits the non-enumerable flag from
+        // `Object.prototype` in older versions of IE, Netscape, and Mozilla.
+        (Properties = function () {
+          this.valueOf = 0;
+        }).prototype.valueOf = 0;
+
+        // Iterate over a new instance of the `Properties` class.
+        members = new Properties();
+        for (property in members) {
+          // Ignore all properties inherited from `Object.prototype`.
+          if (isProperty.call(members, property)) {
+            size++;
+          }
+        }
+        Properties = members = null;
+
+        // Normalize the iteration algorithm.
+        if (!size) {
+          // A list of non-enumerable properties inherited from `Object.prototype`.
+          members = ["valueOf", "toString", "toLocaleString", "propertyIsEnumerable", "isPrototypeOf", "hasOwnProperty", "constructor"];
+          // IE <= 8, Mozilla 1.0, and Netscape 6.2 ignore shadowed non-enumerable
+          // properties.
+          forEach = function (object, callback) {
+            var isFunction = getClass.call(object) == functionClass, property, length;
+            var hasProperty = !isFunction && typeof object.constructor != "function" && objectTypes[typeof object.hasOwnProperty] && object.hasOwnProperty || isProperty;
+            for (property in object) {
+              // Gecko <= 1.0 enumerates the `prototype` property of functions under
+              // certain conditions; IE does not.
+              if (!(isFunction && property == "prototype") && hasProperty.call(object, property)) {
+                callback(property);
+              }
+            }
+            // Manually invoke the callback for each non-enumerable property.
+            for (length = members.length; property = members[--length]; hasProperty.call(object, property) && callback(property));
+          };
+        } else if (size == 2) {
+          // Safari <= 2.0.4 enumerates shadowed properties twice.
+          forEach = function (object, callback) {
+            // Create a set of iterated properties.
+            var members = {}, isFunction = getClass.call(object) == functionClass, property;
+            for (property in object) {
+              // Store each property name to prevent double enumeration. The
+              // `prototype` property of functions is not enumerated due to cross-
+              // environment inconsistencies.
+              if (!(isFunction && property == "prototype") && !isProperty.call(members, property) && (members[property] = 1) && isProperty.call(object, property)) {
+                callback(property);
+              }
+            }
+          };
+        } else {
+          // No bugs detected; use the standard `for...in` algorithm.
+          forEach = function (object, callback) {
+            var isFunction = getClass.call(object) == functionClass, property, isConstructor;
+            for (property in object) {
+              if (!(isFunction && property == "prototype") && isProperty.call(object, property) && !(isConstructor = property === "constructor")) {
+                callback(property);
+              }
+            }
+            // Manually invoke the callback for the `constructor` property due to
+            // cross-environment inconsistencies.
+            if (isConstructor || isProperty.call(object, (property = "constructor"))) {
+              callback(property);
+            }
+          };
+        }
+        return forEach(object, callback);
+      };
+
+      // Public: Serializes a JavaScript `value` as a JSON string. The optional
+      // `filter` argument may specify either a function that alters how object and
+      // array members are serialized, or an array of strings and numbers that
+      // indicates which properties should be serialized. The optional `width`
+      // argument may be either a string or number that specifies the indentation
+      // level of the output.
+      if (!has("json-stringify")) {
+        // Internal: A map of control characters and their escaped equivalents.
+        var Escapes = {
+          92: "\\\\",
+          34: '\\"',
+          8: "\\b",
+          12: "\\f",
+          10: "\\n",
+          13: "\\r",
+          9: "\\t"
+        };
+
+        // Internal: Converts `value` into a zero-padded string such that its
+        // length is at least equal to `width`. The `width` must be <= 6.
+        var leadingZeroes = "000000";
+        var toPaddedString = function (width, value) {
+          // The `|| 0` expression is necessary to work around a bug in
+          // Opera <= 7.54u2 where `0 == -0`, but `String(-0) !== "0"`.
+          return (leadingZeroes + (value || 0)).slice(-width);
+        };
+
+        // Internal: Double-quotes a string `value`, replacing all ASCII control
+        // characters (characters with code unit values between 0 and 31) with
+        // their escaped equivalents. This is an implementation of the
+        // `Quote(value)` operation defined in ES 5.1 section 15.12.3.
+        var unicodePrefix = "\\u00";
+        var quote = function (value) {
+          var result = '"', index = 0, length = value.length, useCharIndex = !charIndexBuggy || length > 10;
+          var symbols = useCharIndex && (charIndexBuggy ? value.split("") : value);
+          for (; index < length; index++) {
+            var charCode = value.charCodeAt(index);
+            // If the character is a control character, append its Unicode or
+            // shorthand escape sequence; otherwise, append the character as-is.
+            switch (charCode) {
+              case 8: case 9: case 10: case 12: case 13: case 34: case 92:
+                result += Escapes[charCode];
+                break;
+              default:
+                if (charCode < 32) {
+                  result += unicodePrefix + toPaddedString(2, charCode.toString(16));
+                  break;
+                }
+                result += useCharIndex ? symbols[index] : value.charAt(index);
+            }
+          }
+          return result + '"';
+        };
+
+        // Internal: Recursively serializes an object. Implements the
+        // `Str(key, holder)`, `JO(value)`, and `JA(value)` operations.
+        var serialize = function (property, object, callback, properties, whitespace, indentation, stack) {
+          var value, className, year, month, date, time, hours, minutes, seconds, milliseconds, results, element, index, length, prefix, result;
+          try {
+            // Necessary for host object support.
+            value = object[property];
+          } catch (exception) {}
+          if (typeof value == "object" && value) {
+            className = getClass.call(value);
+            if (className == dateClass && !isProperty.call(value, "toJSON")) {
+              if (value > -1 / 0 && value < 1 / 0) {
+                // Dates are serialized according to the `Date#toJSON` method
+                // specified in ES 5.1 section 15.9.5.44. See section 15.9.1.15
+                // for the ISO 8601 date time string format.
+                if (getDay) {
+                  // Manually compute the year, month, date, hours, minutes,
+                  // seconds, and milliseconds if the `getUTC*` methods are
+                  // buggy. Adapted from @Yaffle's `date-shim` project.
+                  date = floor(value / 864e5);
+                  for (year = floor(date / 365.2425) + 1970 - 1; getDay(year + 1, 0) <= date; year++);
+                  for (month = floor((date - getDay(year, 0)) / 30.42); getDay(year, month + 1) <= date; month++);
+                  date = 1 + date - getDay(year, month);
+                  // The `time` value specifies the time within the day (see ES
+                  // 5.1 section 15.9.1.2). The formula `(A % B + B) % B` is used
+                  // to compute `A modulo B`, as the `%` operator does not
+                  // correspond to the `modulo` operation for negative numbers.
+                  time = (value % 864e5 + 864e5) % 864e5;
+                  // The hours, minutes, seconds, and milliseconds are obtained by
+                  // decomposing the time within the day. See section 15.9.1.10.
+                  hours = floor(time / 36e5) % 24;
+                  minutes = floor(time / 6e4) % 60;
+                  seconds = floor(time / 1e3) % 60;
+                  milliseconds = time % 1e3;
+                } else {
+                  year = value.getUTCFullYear();
+                  month = value.getUTCMonth();
+                  date = value.getUTCDate();
+                  hours = value.getUTCHours();
+                  minutes = value.getUTCMinutes();
+                  seconds = value.getUTCSeconds();
+                  milliseconds = value.getUTCMilliseconds();
+                }
+                // Serialize extended years correctly.
+                value = (year <= 0 || year >= 1e4 ? (year < 0 ? "-" : "+") + toPaddedString(6, year < 0 ? -year : year) : toPaddedString(4, year)) +
+                  "-" + toPaddedString(2, month + 1) + "-" + toPaddedString(2, date) +
+                  // Months, dates, hours, minutes, and seconds should have two
+                  // digits; milliseconds should have three.
+                  "T" + toPaddedString(2, hours) + ":" + toPaddedString(2, minutes) + ":" + toPaddedString(2, seconds) +
+                  // Milliseconds are optional in ES 5.0, but required in 5.1.
+                  "." + toPaddedString(3, milliseconds) + "Z";
+              } else {
+                value = null;
+              }
+            } else if (typeof value.toJSON == "function" && ((className != numberClass && className != stringClass && className != arrayClass) || isProperty.call(value, "toJSON"))) {
+              // Prototype <= 1.6.1 adds non-standard `toJSON` methods to the
+              // `Number`, `String`, `Date`, and `Array` prototypes. JSON 3
+              // ignores all `toJSON` methods on these objects unless they are
+              // defined directly on an instance.
+              value = value.toJSON(property);
+            }
+          }
+          if (callback) {
+            // If a replacement function was provided, call it to obtain the value
+            // for serialization.
+            value = callback.call(object, property, value);
+          }
+          if (value === null) {
+            return "null";
+          }
+          className = getClass.call(value);
+          if (className == booleanClass) {
+            // Booleans are represented literally.
+            return "" + value;
+          } else if (className == numberClass) {
+            // JSON numbers must be finite. `Infinity` and `NaN` are serialized as
+            // `"null"`.
+            return value > -1 / 0 && value < 1 / 0 ? "" + value : "null";
+          } else if (className == stringClass) {
+            // Strings are double-quoted and escaped.
+            return quote("" + value);
+          }
+          // Recursively serialize objects and arrays.
+          if (typeof value == "object") {
+            // Check for cyclic structures. This is a linear search; performance
+            // is inversely proportional to the number of unique nested objects.
+            for (length = stack.length; length--;) {
+              if (stack[length] === value) {
+                // Cyclic structures cannot be serialized by `JSON.stringify`.
+                throw TypeError();
+              }
+            }
+            // Add the object to the stack of traversed objects.
+            stack.push(value);
+            results = [];
+            // Save the current indentation level and indent one additional level.
+            prefix = indentation;
+            indentation += whitespace;
+            if (className == arrayClass) {
+              // Recursively serialize array elements.
+              for (index = 0, length = value.length; index < length; index++) {
+                element = serialize(index, value, callback, properties, whitespace, indentation, stack);
+                results.push(element === undef ? "null" : element);
+              }
+              result = results.length ? (whitespace ? "[\n" + indentation + results.join(",\n" + indentation) + "\n" + prefix + "]" : ("[" + results.join(",") + "]")) : "[]";
+            } else {
+              // Recursively serialize object members. Members are selected from
+              // either a user-specified list of property names, or the object
+              // itself.
+              forEach(properties || value, function (property) {
+                var element = serialize(property, value, callback, properties, whitespace, indentation, stack);
+                if (element !== undef) {
+                  // According to ES 5.1 section 15.12.3: "If `gap` {whitespace}
+                  // is not the empty string, let `member` {quote(property) + ":"}
+                  // be the concatenation of `member` and the `space` character."
+                  // The "`space` character" refers to the literal space
+                  // character, not the `space` {width} argument provided to
+                  // `JSON.stringify`.
+                  results.push(quote(property) + ":" + (whitespace ? " " : "") + element);
+                }
+              });
+              result = results.length ? (whitespace ? "{\n" + indentation + results.join(",\n" + indentation) + "\n" + prefix + "}" : ("{" + results.join(",") + "}")) : "{}";
+            }
+            // Remove the object from the traversed object stack.
+            stack.pop();
+            return result;
+          }
+        };
+
+        // Public: `JSON.stringify`. See ES 5.1 section 15.12.3.
+        exports.stringify = function (source, filter, width) {
+          var whitespace, callback, properties, className;
+          if (objectTypes[typeof filter] && filter) {
+            if ((className = getClass.call(filter)) == functionClass) {
+              callback = filter;
+            } else if (className == arrayClass) {
+              // Convert the property names array into a makeshift set.
+              properties = {};
+              for (var index = 0, length = filter.length, value; index < length; value = filter[index++], ((className = getClass.call(value)), className == stringClass || className == numberClass) && (properties[value] = 1));
+            }
+          }
+          if (width) {
+            if ((className = getClass.call(width)) == numberClass) {
+              // Convert the `width` to an integer and create a string containing
+              // `width` number of space characters.
+              if ((width -= width % 1) > 0) {
+                for (whitespace = "", width > 10 && (width = 10); whitespace.length < width; whitespace += " ");
+              }
+            } else if (className == stringClass) {
+              whitespace = width.length <= 10 ? width : width.slice(0, 10);
+            }
+          }
+          // Opera <= 7.54u2 discards the values associated with empty string keys
+          // (`""`) only if they are used directly within an object member list
+          // (e.g., `!("" in { "": 1})`).
+          return serialize("", (value = {}, value[""] = source, value), callback, properties, whitespace, "", []);
+        };
+      }
+
+      // Public: Parses a JSON source string.
+      if (!has("json-parse")) {
+        var fromCharCode = String.fromCharCode;
+
+        // Internal: A map of escaped control characters and their unescaped
+        // equivalents.
+        var Unescapes = {
+          92: "\\",
+          34: '"',
+          47: "/",
+          98: "\b",
+          116: "\t",
+          110: "\n",
+          102: "\f",
+          114: "\r"
+        };
+
+        // Internal: Stores the parser state.
+        var Index, Source;
+
+        // Internal: Resets the parser state and throws a `SyntaxError`.
+        var abort = function () {
+          Index = Source = null;
+          throw SyntaxError();
+        };
+
+        // Internal: Returns the next token, or `"$"` if the parser has reached
+        // the end of the source string. A token may be a string, number, `null`
+        // literal, or Boolean literal.
+        var lex = function () {
+          var source = Source, length = source.length, value, begin, position, isSigned, charCode;
+          while (Index < length) {
+            charCode = source.charCodeAt(Index);
+            switch (charCode) {
+              case 9: case 10: case 13: case 32:
+                // Skip whitespace tokens, including tabs, carriage returns, line
+                // feeds, and space characters.
+                Index++;
+                break;
+              case 123: case 125: case 91: case 93: case 58: case 44:
+                // Parse a punctuator token (`{`, `}`, `[`, `]`, `:`, or `,`) at
+                // the current position.
+                value = charIndexBuggy ? source.charAt(Index) : source[Index];
+                Index++;
+                return value;
+              case 34:
+                // `"` delimits a JSON string; advance to the next character and
+                // begin parsing the string. String tokens are prefixed with the
+                // sentinel `@` character to distinguish them from punctuators and
+                // end-of-string tokens.
+                for (value = "@", Index++; Index < length;) {
+                  charCode = source.charCodeAt(Index);
+                  if (charCode < 32) {
+                    // Unescaped ASCII control characters (those with a code unit
+                    // less than the space character) are not permitted.
+                    abort();
+                  } else if (charCode == 92) {
+                    // A reverse solidus (`\`) marks the beginning of an escaped
+                    // control character (including `"`, `\`, and `/`) or Unicode
+                    // escape sequence.
+                    charCode = source.charCodeAt(++Index);
+                    switch (charCode) {
+                      case 92: case 34: case 47: case 98: case 116: case 110: case 102: case 114:
+                        // Revive escaped control characters.
+                        value += Unescapes[charCode];
+                        Index++;
+                        break;
+                      case 117:
+                        // `\u` marks the beginning of a Unicode escape sequence.
+                        // Advance to the first character and validate the
+                        // four-digit code point.
+                        begin = ++Index;
+                        for (position = Index + 4; Index < position; Index++) {
+                          charCode = source.charCodeAt(Index);
+                          // A valid sequence comprises four hexdigits (case-
+                          // insensitive) that form a single hexadecimal value.
+                          if (!(charCode >= 48 && charCode <= 57 || charCode >= 97 && charCode <= 102 || charCode >= 65 && charCode <= 70)) {
+                            // Invalid Unicode escape sequence.
+                            abort();
+                          }
+                        }
+                        // Revive the escaped character.
+                        value += fromCharCode("0x" + source.slice(begin, Index));
+                        break;
+                      default:
+                        // Invalid escape sequence.
+                        abort();
+                    }
+                  } else {
+                    if (charCode == 34) {
+                      // An unescaped double-quote character marks the end of the
+                      // string.
+                      break;
+                    }
+                    charCode = source.charCodeAt(Index);
+                    begin = Index;
+                    // Optimize for the common case where a string is valid.
+                    while (charCode >= 32 && charCode != 92 && charCode != 34) {
+                      charCode = source.charCodeAt(++Index);
+                    }
+                    // Append the string as-is.
+                    value += source.slice(begin, Index);
+                  }
+                }
+                if (source.charCodeAt(Index) == 34) {
+                  // Advance to the next character and return the revived string.
+                  Index++;
+                  return value;
+                }
+                // Unterminated string.
+                abort();
+              default:
+                // Parse numbers and literals.
+                begin = Index;
+                // Advance past the negative sign, if one is specified.
+                if (charCode == 45) {
+                  isSigned = true;
+                  charCode = source.charCodeAt(++Index);
+                }
+                // Parse an integer or floating-point value.
+                if (charCode >= 48 && charCode <= 57) {
+                  // Leading zeroes are interpreted as octal literals.
+                  if (charCode == 48 && ((charCode = source.charCodeAt(Index + 1)), charCode >= 48 && charCode <= 57)) {
+                    // Illegal octal literal.
+                    abort();
+                  }
+                  isSigned = false;
+                  // Parse the integer component.
+                  for (; Index < length && ((charCode = source.charCodeAt(Index)), charCode >= 48 && charCode <= 57); Index++);
+                  // Floats cannot contain a leading decimal point; however, this
+                  // case is already accounted for by the parser.
+                  if (source.charCodeAt(Index) == 46) {
+                    position = ++Index;
+                    // Parse the decimal component.
+                    for (; position < length && ((charCode = source.charCodeAt(position)), charCode >= 48 && charCode <= 57); position++);
+                    if (position == Index) {
+                      // Illegal trailing decimal.
+                      abort();
+                    }
+                    Index = position;
+                  }
+                  // Parse exponents. The `e` denoting the exponent is
+                  // case-insensitive.
+                  charCode = source.charCodeAt(Index);
+                  if (charCode == 101 || charCode == 69) {
+                    charCode = source.charCodeAt(++Index);
+                    // Skip past the sign following the exponent, if one is
+                    // specified.
+                    if (charCode == 43 || charCode == 45) {
+                      Index++;
+                    }
+                    // Parse the exponential component.
+                    for (position = Index; position < length && ((charCode = source.charCodeAt(position)), charCode >= 48 && charCode <= 57); position++);
+                    if (position == Index) {
+                      // Illegal empty exponent.
+                      abort();
+                    }
+                    Index = position;
+                  }
+                  // Coerce the parsed value to a JavaScript number.
+                  return +source.slice(begin, Index);
+                }
+                // A negative sign may only precede numbers.
+                if (isSigned) {
+                  abort();
+                }
+                // `true`, `false`, and `null` literals.
+                if (source.slice(Index, Index + 4) == "true") {
+                  Index += 4;
+                  return true;
+                } else if (source.slice(Index, Index + 5) == "false") {
+                  Index += 5;
+                  return false;
+                } else if (source.slice(Index, Index + 4) == "null") {
+                  Index += 4;
+                  return null;
+                }
+                // Unrecognized token.
+                abort();
+            }
+          }
+          // Return the sentinel `$` character if the parser has reached the end
+          // of the source string.
+          return "$";
+        };
+
+        // Internal: Parses a JSON `value` token.
+        var get = function (value) {
+          var results, hasMembers;
+          if (value == "$") {
+            // Unexpected end of input.
+            abort();
+          }
+          if (typeof value == "string") {
+            if ((charIndexBuggy ? value.charAt(0) : value[0]) == "@") {
+              // Remove the sentinel `@` character.
+              return value.slice(1);
+            }
+            // Parse object and array literals.
+            if (value == "[") {
+              // Parses a JSON array, returning a new JavaScript array.
+              results = [];
+              for (;; hasMembers || (hasMembers = true)) {
+                value = lex();
+                // A closing square bracket marks the end of the array literal.
+                if (value == "]") {
+                  break;
+                }
+                // If the array literal contains elements, the current token
+                // should be a comma separating the previous element from the
+                // next.
+                if (hasMembers) {
+                  if (value == ",") {
+                    value = lex();
+                    if (value == "]") {
+                      // Unexpected trailing `,` in array literal.
+                      abort();
+                    }
+                  } else {
+                    // A `,` must separate each array element.
+                    abort();
+                  }
+                }
+                // Elisions and leading commas are not permitted.
+                if (value == ",") {
+                  abort();
+                }
+                results.push(get(value));
+              }
+              return results;
+            } else if (value == "{") {
+              // Parses a JSON object, returning a new JavaScript object.
+              results = {};
+              for (;; hasMembers || (hasMembers = true)) {
+                value = lex();
+                // A closing curly brace marks the end of the object literal.
+                if (value == "}") {
+                  break;
+                }
+                // If the object literal contains members, the current token
+                // should be a comma separator.
+                if (hasMembers) {
+                  if (value == ",") {
+                    value = lex();
+                    if (value == "}") {
+                      // Unexpected trailing `,` in object literal.
+                      abort();
+                    }
+                  } else {
+                    // A `,` must separate each object member.
+                    abort();
+                  }
+                }
+                // Leading commas are not permitted, object property names must be
+                // double-quoted strings, and a `:` must separate each property
+                // name and value.
+                if (value == "," || typeof value != "string" || (charIndexBuggy ? value.charAt(0) : value[0]) != "@" || lex() != ":") {
+                  abort();
+                }
+                results[value.slice(1)] = get(lex());
+              }
+              return results;
+            }
+            // Unexpected token encountered.
+            abort();
+          }
+          return value;
+        };
+
+        // Internal: Updates a traversed object member.
+        var update = function (source, property, callback) {
+          var element = walk(source, property, callback);
+          if (element === undef) {
+            delete source[property];
+          } else {
+            source[property] = element;
+          }
+        };
+
+        // Internal: Recursively traverses a parsed JSON object, invoking the
+        // `callback` function for each value. This is an implementation of the
+        // `Walk(holder, name)` operation defined in ES 5.1 section 15.12.2.
+        var walk = function (source, property, callback) {
+          var value = source[property], length;
+          if (typeof value == "object" && value) {
+            // `forEach` can't be used to traverse an array in Opera <= 8.54
+            // because its `Object#hasOwnProperty` implementation returns `false`
+            // for array indices (e.g., `![1, 2, 3].hasOwnProperty("0")`).
+            if (getClass.call(value) == arrayClass) {
+              for (length = value.length; length--;) {
+                update(value, length, callback);
+              }
+            } else {
+              forEach(value, function (property) {
+                update(value, property, callback);
+              });
+            }
+          }
+          return callback.call(source, property, value);
+        };
+
+        // Public: `JSON.parse`. See ES 5.1 section 15.12.2.
+        exports.parse = function (source, callback) {
+          var result, value;
+          Index = 0;
+          Source = "" + source;
+          result = get(lex());
+          // If a JSON string contains multiple tokens, it is invalid.
+          if (lex() != "$") {
+            abort();
+          }
+          // Reset the parser state.
+          Index = Source = null;
+          return callback && getClass.call(callback) == functionClass ? walk((value = {}, value[""] = result, value), "", callback) : result;
+        };
+      }
+    }
+
+    exports["runInContext"] = runInContext;
+    return exports;
+  }
+
+  if (freeExports && !isLoader) {
+    // Export for CommonJS environments.
+    runInContext(root, freeExports);
+  } else {
+    // Export for web browsers and JavaScript engines.
+    var nativeJSON = root.JSON,
+        previousJSON = root["JSON3"],
+        isRestored = false;
+
+    var JSON3 = runInContext(root, (root["JSON3"] = {
+      // Public: Restores the original value of the global `JSON` object and
+      // returns a reference to the `JSON3` object.
+      "noConflict": function () {
+        if (!isRestored) {
+          isRestored = true;
+          root.JSON = nativeJSON;
+          root["JSON3"] = previousJSON;
+          nativeJSON = previousJSON = null;
+        }
+        return JSON3;
+      }
+    }));
+
+    root.JSON = {
+      "parse": JSON3.parse,
+      "stringify": JSON3.stringify
+    };
+  }
+
+  // Export for asynchronous module loaders.
+  if (isLoader) {
+    define(function () {
+      return JSON3;
+    });
+  }
+}).call(this);
+
+}).call(this,typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {})
+},{}],51:[function(_dereq_,module,exports){
+module.exports = toArray
+
+function toArray(list, index) {
+    var array = []
+
+    index = index || 0
+
+    for (var i = index || 0; i < list.length; i++) {
+        array[i - index] = list[i]
+    }
+
+    return array
+}
+
+},{}]},{},[31])(31)
+});
 
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {

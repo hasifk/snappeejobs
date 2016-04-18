@@ -18,7 +18,6 @@ class EloquentNewsfeedRepository {
 
     public function save($request) {
         $userid = Auth::user()->id;
-
         if ($request->has('id')) {
             $obj = $this->find($request->id);
             $obj->news = $request->newsfeed;
@@ -36,11 +35,9 @@ class EloquentNewsfeedRepository {
             return 'true';
         }
     }
-
     public function find($id) {
         return Newsfeed::find($id);
     }
-    
     public function delete($id) {
         Newsfeed::where('id', $id)->delete();
     }

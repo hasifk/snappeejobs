@@ -33,6 +33,7 @@ trait CompanyRelationship
     public function jobs(){
         return $this->hasMany('App\Models\Job\Job', 'company_id');
     }
+   
 
     public function country(){
         return $this->belongsTo(Country::class);
@@ -41,4 +42,5 @@ trait CompanyRelationship
     public function state(){
         return $this->belongsTo(State::class);
     }
+     
 }

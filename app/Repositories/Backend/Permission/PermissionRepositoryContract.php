@@ -54,4 +54,12 @@ interface PermissionRepositoryContract {
 	 * @return mixed
 	 */
 	public function destroy($id);
+        
+        /**
+	 * @param $id
+	 * @return mixed
+	 */
+        
+	public function permission();
+        
 }

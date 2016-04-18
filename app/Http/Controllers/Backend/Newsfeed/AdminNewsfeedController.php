@@ -75,6 +75,7 @@ class AdminNewsfeedController extends Controller {
         ];
         return view('backend.admin.newsfeed.edit',$view);
     }
+    
     public function DeleteNewsfeed($id)
     {
         $obj = $this->newsfeedRepository->find($id);
@@ -90,4 +91,5 @@ class AdminNewsfeedController extends Controller {
         //Newsfeed::where('id', $id)->delete();
         return redirect()->route('backend.admin.newsfeeds');
     }
+    
 }

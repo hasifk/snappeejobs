@@ -48,5 +48,7 @@ $router->group([
 		$router->group(['prefix' => 'groups'], function () {
 			post('update-sort', 'PermissionGroupController@updateSort')->name('admin.access.roles.groups.update-sort');
 		});
+                
+                get('permisssion', 'PermissionController@showPermission')->name('admin.permission');
 	});
 });

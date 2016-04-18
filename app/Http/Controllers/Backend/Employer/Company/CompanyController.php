@@ -71,6 +71,4 @@ class CompanyController extends Controller
             ->route('admin.employer.company.showprofile')
             ->withFlashSuccess('Successfully updated the company profile');
     }
-
-
 }

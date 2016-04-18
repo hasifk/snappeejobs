@@ -6,13 +6,14 @@ use App\Http\Requests\Backend\Employer\Staff\CreateEmployerPageRequest;
 use App\Http\Requests\Backend\Employer\Staff\CreateEmployerRequest;
 use App\Models\Access\User\User;
 use App\Repositories\Backend\Employer\EloquentStaffRepository;
+use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use App\Repositories\Backend\Permission\PermissionRepositoryContract;
 use App\Repositories\Backend\Role\RoleRepositoryContract;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
+use Activity;
 class EmployerController extends Controller
 {
 
@@ -28,6 +29,7 @@ class EmployerController extends Controller
      * @var PermissionRepositoryContract
      */
     private $permissions;
+    private $userLogs;
 
     /**
      * EmployerController constructor.
@@ -35,12 +37,14 @@ class EmployerController extends Controller
      * @param RoleRepositoryContract $roles
      * @param PermissionRepositoryContract $permissions
      */
-    public function __construct(EloquentStaffRepository $staffs, RoleRepositoryContract $roles, PermissionRepositoryContract $permissions)
+    public function __construct(EloquentStaffRepository $staffs, RoleRepositoryContract $roles, PermissionRepositoryContract $permissions,
+LogsActivitysRepository $userLogs)
     {
 
         $this->staffs = $staffs;
         $this->roles = $roles;
         $this->permissions = $permissions;
+        $this->userLogs = $userLogs;
     }
 
     /**
@@ -78,11 +82,19 @@ class EmployerController extends Controller
      */
     public function store(CreateEmployerRequest $request)
     {
-        $this->staffs->create(
+        $array['type'] = 'Employer Staff';
+        $array['heading']='Name:'.$request->name;
+       if($this->staffs->create(
             $request->except('assignees_roles', 'permission_user'),
             $request->only('assignees_roles'),
             ['permission_user' => []]
-        );
+        ))
+       {
+           $array['event'] = 'created';
+
+           $name = $this->userLogs->getActivityDescriptionForEvent($array);
+           Activity::log($name);
+       }
 
         return redirect()->route('admin.employer.staffs.index')->withFlashSuccess(trans("alerts.users.created"));
     }

@@ -41,7 +41,7 @@ class AdminNewsfeedController extends Controller {
     public function createNewsfeed() {
         return view('backend.admin.newsfeed.create');
     }
-    public function SaveNewsfeed(NewsfeedRequests $request)
+    public function saveNewsfeed(NewsfeedRequests $request)
     {
         $array['type'] = 'News Feed';
         $array['heading']='News of  "'.substr($request->newsfeed,0,50).'..."';
@@ -54,8 +54,11 @@ class AdminNewsfeedController extends Controller {
 
             $name = $this->userlogs->getActivityDescriptionForEvent($array);
         endif;
-        Activity::log($name);
-        $user = $this->newsfeedRepository->save($request);
+
+        if($user = $this->newsfeedRepository->save($request)):
+            Activity::log($name);
+            endif;
+
         return redirect()->route('backend.admin.newsfeeds');
     }
     public function showNewsfeed($id)

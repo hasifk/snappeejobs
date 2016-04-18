@@ -23,6 +23,7 @@ return [
         'emp_search_results' => 'Search Results',
         'dashboard_cmp_interest_map' => 'Company Interest Map',
         'newsfeed_management' => 'News Feed Management',
+        'log_management' => 'Log for all events',
     ],
     'based_on' => [
         'permission' => 'Permission Based - ',

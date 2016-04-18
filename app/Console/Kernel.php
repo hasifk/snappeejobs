@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel {
 	protected $commands = [
 		'App\Console\Commands\Inspire',
 		'App\Console\Commands\MigrateClear',
+		'App\Console\Commands\PaidCompany',
 	];
 
 	/**
@@ -25,8 +26,6 @@ class Kernel extends ConsoleKernel {
 	protected function schedule(Schedule $schedule)
 	{
 		$schedule->command('inspire')->hourly();
-        $schedule->call(function () {
-            DB::table('companies')->where('paid_expiry','<',Carbon::now())->update(['paid' => 0]);
-        })->everyMinute();
+        $schedule->command('snappeepaidcompany')->hourly();
 	}
 }

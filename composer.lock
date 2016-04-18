@@ -977,16 +977,16 @@
         },
         {
             "name": "fortawesome/font-awesome",
-            "version": "v4.5.0",
+            "version": "v4.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FortAwesome/Font-Awesome.git",
-                "reference": "fddd2c240452e6c8990c4ef75e0265b455aa7968"
+                "reference": "6535013c330e801ecf0b23c437865a7fb344486d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/fddd2c240452e6c8990c4ef75e0265b455aa7968",
-                "reference": "fddd2c240452e6c8990c4ef75e0265b455aa7968",
+                "url": "https://api.github.com/repos/FortAwesome/Font-Awesome/zipball/6535013c330e801ecf0b23c437865a7fb344486d",
+                "reference": "6535013c330e801ecf0b23c437865a7fb344486d",
                 "shasum": ""
             },
             "require-dev": {
@@ -1021,7 +1021,7 @@
                 "font",
                 "icon"
             ],
-            "time": "2015-11-30 17:28:02"
+            "time": "2016-04-12 14:51:54"
         },
         {
             "name": "geoip2/geoip2",
@@ -1283,16 +1283,16 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "1.2.3",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "2e89629ff057ebb49492ba08e6995d3a6a80021b"
+                "reference": "31382fef2889136415751badebbd1cb022a4ed72"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/2e89629ff057ebb49492ba08e6995d3a6a80021b",
-                "reference": "2e89629ff057ebb49492ba08e6995d3a6a80021b",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/31382fef2889136415751badebbd1cb022a4ed72",
+                "reference": "31382fef2889136415751badebbd1cb022a4ed72",
                 "shasum": ""
             },
             "require": {
@@ -1337,7 +1337,7 @@
                 "stream",
                 "uri"
             ],
-            "time": "2016-02-18 21:54:00"
+            "time": "2016-04-13 19:56:01"
         },
         {
             "name": "hieu-le/active",
@@ -1700,16 +1700,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.1.31",
+            "version": "v5.1.34",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "d899fbda59bf3ffcde11a9b443c01043b76f40b3"
+                "reference": "0e73cba565b0ef5b158da62f641dc6770b806102"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/d899fbda59bf3ffcde11a9b443c01043b76f40b3",
-                "reference": "d899fbda59bf3ffcde11a9b443c01043b76f40b3",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/0e73cba565b0ef5b158da62f641dc6770b806102",
+                "reference": "0e73cba565b0ef5b158da62f641dc6770b806102",
                 "shasum": ""
             },
             "require": {
@@ -1723,7 +1723,7 @@
                 "monolog/monolog": "~1.11",
                 "mtdowling/cron-expression": "~1.0",
                 "nesbot/carbon": "~1.19",
-                "paragonie/random_compat": "~1.1",
+                "paragonie/random_compat": "~1.4",
                 "php": ">=5.5.9",
                 "psy/psysh": "0.7.*",
                 "swiftmailer/swiftmailer": "~5.1",
@@ -1824,7 +1824,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2016-02-24 15:13:21"
+            "time": "2016-04-07 14:12:37"
         },
         {
             "name": "laravel/socialite",
@@ -2278,16 +2278,16 @@
         },
         {
             "name": "monolog/monolog",
-            "version": "1.18.1",
+            "version": "1.19.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "a5f2734e8c16f3aa21b3da09715d10e15b4d2d45"
+                "reference": "5f56ed5212dc509c8dc8caeba2715732abb32dbf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/a5f2734e8c16f3aa21b3da09715d10e15b4d2d45",
-                "reference": "a5f2734e8c16f3aa21b3da09715d10e15b4d2d45",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/5f56ed5212dc509c8dc8caeba2715732abb32dbf",
+                "reference": "5f56ed5212dc509c8dc8caeba2715732abb32dbf",
                 "shasum": ""
             },
             "require": {
@@ -2302,13 +2302,13 @@
                 "doctrine/couchdb": "~1.0@dev",
                 "graylog2/gelf-php": "~1.0",
                 "jakub-onderka/php-parallel-lint": "0.9",
+                "php-amqplib/php-amqplib": "~2.4",
                 "php-console/php-console": "^3.1.3",
                 "phpunit/phpunit": "~4.5",
                 "phpunit/phpunit-mock-objects": "2.3.0",
                 "raven/raven": "^0.13",
                 "ruflin/elastica": ">=0.90 <3.0",
-                "swiftmailer/swiftmailer": "~5.3",
-                "videlalvaro/php-amqplib": "~2.4"
+                "swiftmailer/swiftmailer": "~5.3"
             },
             "suggest": {
                 "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
@@ -2317,11 +2317,11 @@
                 "ext-mongo": "Allow sending log messages to a MongoDB server",
                 "graylog2/gelf-php": "Allow sending log messages to a GrayLog2 server",
                 "mongodb/mongodb": "Allow sending log messages to a MongoDB server via PHP Driver",
+                "php-amqplib/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib",
                 "php-console/php-console": "Allow sending log messages to Google Chrome",
                 "raven/raven": "Allow sending log messages to a Sentry server",
                 "rollbar/rollbar": "Allow sending log messages to Rollbar",
-                "ruflin/elastica": "Allow sending log messages to an Elastic Search server",
-                "videlalvaro/php-amqplib": "Allow sending log messages to an AMQP server using php-amqplib"
+                "ruflin/elastica": "Allow sending log messages to an Elastic Search server"
             },
             "type": "library",
             "extra": {
@@ -2352,7 +2352,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2016-03-13 16:08:35"
+            "time": "2016-04-12 18:29:35"
         },
         {
             "name": "mtdowling/cron-expression",
@@ -3999,16 +3999,16 @@
         },
         {
             "name": "thujohn/twitter",
-            "version": "2.1.3",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thujohn/twitter.git",
-                "reference": "7a921187081aa2250abb1c5bea3c4c3103b8b4f9"
+                "reference": "137dfa006ad06b956d579ff3ce0ffa5d03506188"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thujohn/twitter/zipball/7a921187081aa2250abb1c5bea3c4c3103b8b4f9",
-                "reference": "7a921187081aa2250abb1c5bea3c4c3103b8b4f9",
+                "url": "https://api.github.com/repos/thujohn/twitter/zipball/137dfa006ad06b956d579ff3ce0ffa5d03506188",
+                "reference": "137dfa006ad06b956d579ff3ce0ffa5d03506188",
                 "shasum": ""
             },
             "require": {
@@ -4039,7 +4039,7 @@
                 "laravel5",
                 "twitter"
             ],
-            "time": "2015-09-28 21:01:35"
+            "time": "2016-04-08 11:43:15"
         },
         {
             "name": "torann/geoip",
@@ -4775,16 +4775,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "3.3.0",
+            "version": "3.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "fe33716763b604ade4cb442c0794f5bd5ad73004"
+                "reference": "2431befdd451fac43fbcde94d1a92fb3b8b68f86"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/fe33716763b604ade4cb442c0794f5bd5ad73004",
-                "reference": "fe33716763b604ade4cb442c0794f5bd5ad73004",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/2431befdd451fac43fbcde94d1a92fb3b8b68f86",
+                "reference": "2431befdd451fac43fbcde94d1a92fb3b8b68f86",
                 "shasum": ""
             },
             "require": {
@@ -4802,7 +4802,7 @@
             },
             "suggest": {
                 "ext-dom": "*",
-                "ext-xdebug": ">=2.2.1",
+                "ext-xdebug": ">=2.4.0",
                 "ext-xmlwriter": "*"
             },
             "type": "library",
@@ -4834,7 +4834,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2016-03-03 08:49:08"
+            "time": "2016-04-08 08:14:53"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -5016,16 +5016,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "5.3.0",
+            "version": "5.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "dd3001822b2df8f5add266020e3d2fd3c5db3ae9"
+                "reference": "2c6da3536035617bae3fe3db37283c9e0eb63ab3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/dd3001822b2df8f5add266020e3d2fd3c5db3ae9",
-                "reference": "dd3001822b2df8f5add266020e3d2fd3c5db3ae9",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2c6da3536035617bae3fe3db37283c9e0eb63ab3",
+                "reference": "2c6da3536035617bae3fe3db37283c9e0eb63ab3",
                 "shasum": ""
             },
             "require": {
@@ -5040,7 +5040,7 @@
                 "phpunit/php-code-coverage": "^3.3.0",
                 "phpunit/php-file-iterator": "~1.4",
                 "phpunit/php-text-template": "~1.2",
-                "phpunit/php-timer": ">=1.0.6",
+                "phpunit/php-timer": "^1.0.6",
                 "phpunit/phpunit-mock-objects": "^3.1",
                 "sebastian/comparator": "~1.1",
                 "sebastian/diff": "~1.2",
@@ -5087,7 +5087,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2016-03-31 21:35:50"
+            "time": "2016-04-12 16:20:08"
         },
         {
             "name": "phpunit/phpunit-mock-objects",

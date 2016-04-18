@@ -184,6 +184,35 @@ class DashboardController extends Controller {
         return response()->json($jobApplications);
     }
 
+    public function task_assigned(Request $request) {
+
+        $tasks_assigned = \DB::table('staff_task')
+            ->join('task_project', 'task_project.id', '=', 'staff_task.task_id')
+            ->join('projects', 'projects.id', '=', 'task_project.project_id')
+            ->join('users', 'projects.created_by', '=', 'users.id')
+            ->where('staff_task.user_id', auth()->user()->id)
+            ->select([
+                \DB::raw('task_project.title AS task_title'),
+                \DB::raw('projects.title AS project_title'),
+                'staff_task.task_id',
+                'staff_task.created_at',
+                'users.name',
+                \DB::raw('users.id AS user_id'),
+            ])
+            ->get();
+
+        if ($tasks_assigned) {
+            foreach ($tasks_assigned as $key => $task) {
+                $tasks_assigned[$key]->{'image'} = User::find($task->user_id)->picture;
+                $tasks_assigned[$key]->{'was_created'} = Carbon::parse($task->created_at)->diffForHumans();
+            }
+        }
+
+        return response()->json($tasks_assigned);
+
+
+    }
+
     /*     * ********************************************************************************************************** */
 
     public function employersearch(Request $request) {

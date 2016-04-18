@@ -180,10 +180,50 @@
                         @foreach($employer_notifications as $employer_notification)
 
                         <li class="item">
-                            @if( ($employer_notification->notification_type == 'job_created') || ($employer_notification->notification_type == 'job_updated') || ($employer_notification->notification_type == 'job_deleted') )
+                            @if(
+                                ($employer_notification->notification_type == 'job_created') ||
+                                ($employer_notification->notification_type == 'job_updated') ||
+                                ($employer_notification->notification_type == 'job_deleted')
+                            )
                             <div style="margin-left: 25px;" class="product-info">
                                 <a href="#" class="product-title">
                                     {{ unserialize($employer_notification->details)['job']['title'] }}
+                                    <span class="label label-warning pull-right">
+                                        {{ ucwords(str_replace('_', " ", $employer_notification->notification_type)) }}
+                                    </span>
+                                </a>
+                                <span class="product-description">
+                                    {{ ucwords(str_replace('_', " ", $employer_notification->notification_type)) }}
+                                </span>
+                                by {{ unserialize($employer_notification->details)['user']['name'] }}
+                            </div>
+                            @endif
+                            @if(
+                                ($employer_notification->notification_type == 'project_created') ||
+                                ($employer_notification->notification_type == 'project_updated') ||
+                                ($employer_notification->notification_type == 'project_deleted')
+                            )
+                            <div style="margin-left: 25px;" class="product-info">
+                                <a href="#" class="product-title">
+                                    {{ unserialize($employer_notification->details)['project']['title'] }}
+                                    <span class="label label-warning pull-right">
+                                        {{ ucwords(str_replace('_', " ", $employer_notification->notification_type)) }}
+                                    </span>
+                                </a>
+                                <span class="product-description">
+                                    {{ ucwords(str_replace('_', " ", $employer_notification->notification_type)) }}
+                                </span>
+                                by {{ unserialize($employer_notification->details)['user']['name'] }}
+                            </div>
+                            @endif
+                            @if(
+                                ($employer_notification->notification_type == 'task_created') ||
+                                ($employer_notification->notification_type == 'task_updated') ||
+                                ($employer_notification->notification_type == 'task_deleted')
+                            )
+                            <div style="margin-left: 25px;" class="product-info">
+                                <a href="#" class="product-title">
+                                    {{ unserialize($employer_notification->details)['task']['title'] }}
                                     <span class="label label-warning pull-right">
                                         {{ ucwords(str_replace('_', " ", $employer_notification->notification_type)) }}
                                     </span>
@@ -361,6 +401,10 @@ $location = GeoIP::getLocation(Request::ip());
 
         socket.on('employer_project.{{ auth()->user()->id }}:project_notifications', function (data) {
             $('.employer-notitications .employer-notitications-list').append('<li class="item"><div class="product-info" style="margin-left: 25px;"><a class="product-title" href="#">' + data.eventDetails.project_title + '<span class="label label-warning pull-right">' + data.eventDetails.notification_type_text + '</span></a><span class="product-description">' + data.eventDetails.notification_type_text + '</span>' + data.eventDetails.created_by + '</div></li>');
+        });
+
+        socket.on('employer_task.{{ auth()->user()->id }}:task_notifications', function (data) {
+            $('.employer-notitications .employer-notitications-list').append('<li class="item"><div class="product-info" style="margin-left: 25px;"><a class="product-title" href="#">' + data.eventDetails.task_title + '<span class="label label-warning pull-right">' + data.eventDetails.notification_type_text + '</span></a><span class="product-description">' + data.eventDetails.notification_type_text + '</span>' + data.eventDetails.created_by + '</div></li>');
         });
 
         socket.on('employer.{{ auth()->user()->id }}:newsfeed_notifications', function (data) {

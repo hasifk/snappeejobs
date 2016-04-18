@@ -62,6 +62,7 @@
                 data: {
                     unread_messages: [],
                     job_applications: [],
+                    tasks_assigned: [],
                     job_applications_order: -1
                 },
 
@@ -77,9 +78,16 @@
                         that.job_applications = data;
                     });
 
+                    $.post('{{ route('backend.notification.task_assigned') }}', { _token : $('meta[name="_token"]').attr('content') }, function(data){
+                        that.tasks_assigned = data;
+                    });
+
                     // Listening to the socket
                     socket.on('user.{{ auth()->user()->id }}:jobapplication-received', function(data){
                         that.job_applications.push(data.jobApplication);
+                    });
+                    socket.on('new_task.{{ auth()->user()->id }}:task-assigned', function(data){
+                        that.tasks_assigned.push(data.eventDetails);
                     });
 
                 }

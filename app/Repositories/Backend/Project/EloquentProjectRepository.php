@@ -6,7 +6,9 @@ namespace App\Repositories\Backend\Project;
 use App\Events\Backend\Project\ProjectCreated;
 use App\Events\Backend\Project\ProjectDeleted;
 use App\Events\Backend\Project\ProjectUpdated;
+use App\Events\Backend\Tasks\TaskAssigned;
 use App\Events\Backend\Tasks\TaskCreated;
+use App\Events\Backend\Tasks\TaskDeleted;
 use App\Events\Backend\Tasks\TaskUpdated;
 use App\Models\Project\Project;
 use App\Models\Project\ProjectJobListing;
@@ -132,6 +134,7 @@ class EloquentProjectRepository
             ]);
         }
         Event::fire(new TaskCreated($task, auth()->user() ));
+        Event::fire(new TaskAssigned($task, auth()->user(), [], $request->get('members')));
         return $task;
 
     }
@@ -141,9 +144,10 @@ class EloquentProjectRepository
         $task->update([
             'title' => $request->get('title')
         ]);
-
+        $previousMembers = \DB::table('staff_task')->where('task_id', $task->id)->lists('user_id');
         TaskMember::where('task_id', $task->id)->delete();
         Event::fire(new TaskUpdated($task, auth()->user() ));
+        Event::fire(new TaskAssigned($task, auth()->user(), $previousMembers, $request->get('members')));
         foreach ($request->get('members') as $member) {
             TaskMember::create([
                 'task_id'       => $task->id,
@@ -156,6 +160,9 @@ class EloquentProjectRepository
     }
 
     public function deleteTask(Task $task, Request $request){
+
+        Event::fire(new TaskDeleted($task, auth()->user()));
+
         $task->delete();
 
         return;

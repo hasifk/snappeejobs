@@ -56,6 +56,13 @@
 
             var socket = io('http://{{ env('SOCKETIO_SERVER_IP', '127.0.0.1') }}:{{ env('SOCKETIO_SERVER_PORT', 8000) }}');
 
+            socket.on('disconnect', function() {
+                socketConnectTimeInterval = setInterval(function () {
+                    socket.socket.reconnect();
+                    if(socket.socket.connected) {clearInterval(socketConnectTimeInterval);}
+                }, 3000);
+            });
+
             var SnappeeJobs = new Vue({
                 el: '.notifications-header',
 

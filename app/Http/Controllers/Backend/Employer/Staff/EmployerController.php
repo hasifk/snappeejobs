@@ -106,7 +106,17 @@ LogsActivitysRepository $userLogs)
      * @return mixed
      */
     public function mark($id, $status, Requests\Backend\Employer\Staff\MarkEmployerRequest $request) {
-        $this->staffs->mark($id, $status);
+        $empStaff =User::find($id);
+        $array['type'] = 'Employer Staff';
+        $array['heading']='Name:'.$empStaff->name;
+
+       if($this->staffs->mark($id, $status))
+       {
+           $array['event'] = 'updated';
+
+           $name = $this->userLogs->getActivityDescriptionForEvent($array);
+           Activity::log($name);
+       }
         return redirect()->back()->withFlashSuccess(trans("alerts.users.updated"));
     }
 

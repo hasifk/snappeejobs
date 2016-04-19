@@ -11,6 +11,7 @@ use App\Models\Job\Job;
 use App\Models\Job\JobApplication\JobApplication;
 use App\Models\JobSeeker\JobSeeker;
 use App\Repositories\Backend\Job\EloquentJobRepository;
+use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use App\Repositories\Backend\Mail\EloquentMailRepository;
 use App\Repositories\Backend\Permission\PermissionRepositoryContract;
 use App\Repositories\Backend\Role\RoleRepositoryContract;
@@ -19,7 +20,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
+use Activity;
 class JobsController extends Controller
 {
     /**
@@ -34,18 +35,20 @@ class JobsController extends Controller
      * @var PermissionRepositoryContract
      */
     private $permissions;
-
+    private $userLogs;
     /**
      * JobsController constructor.
      * @param EloquentJobRepository $jobs
      * @param RoleRepositoryContract $roles
      * @param PermissionRepositoryContract $permissions
      */
-    public function __construct(EloquentJobRepository $jobs, RoleRepositoryContract $roles, PermissionRepositoryContract $permissions)
+    public function __construct(EloquentJobRepository $jobs, RoleRepositoryContract $roles, PermissionRepositoryContract $permissions,
+LogsActivitysRepository $userLogs)
     {
         $this->jobs = $jobs;
         $this->roles = $roles;
         $this->permissions = $permissions;
+        $this->userLogs = $userLogs;
     }
 
     /**
@@ -105,8 +108,15 @@ class JobsController extends Controller
      */
     public function store(Requests\Backend\Employer\Job\CreateJobRequest $request)
     {
+        $array['type'] = 'Job';
+        $array['heading']='Name:'.$request->title;
+        if($this->jobs->create($request))
+        {
+            $array['event'] = 'created';
 
-        $this->jobs->create($request);
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 
         return redirect()
             ->route('admin.employer.jobs.index')
@@ -166,7 +176,16 @@ class JobsController extends Controller
      */
     public function update(Requests\Backend\Employer\Job\UpdateJobRequest $request, $id)
     {
-        $this->jobs->update($id,$request->all());
+        $job =Job::find($id);
+        $array['type'] = 'Job';
+        $array['heading']='Name:'.$job->title;
+       if($this->jobs->update($id,$request->all()))
+       {
+           $array['event'] = 'updated';
+
+           $name = $this->userLogs->getActivityDescriptionForEvent($array);
+           Activity::log($name);
+       }
 
         return redirect()->route('admin.employer.jobs.index')->withFlashSuccess("The job was successfully updated.");
     }
@@ -179,7 +198,17 @@ class JobsController extends Controller
      */
     public function destroy(Requests\Backend\Employer\Job\DeleteJobRequest $request, $id)
     {
-        $this->jobs->destroy($id);
+        $job =Job::find($id);
+        $array['type'] = 'Job';
+        $array['heading']='Name:'.$job->title;
+
+        if($this->jobs->destroy($id))
+        {
+            $array['event'] = 'deleted';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
         return redirect()->back()->withFlashSuccess('Job deleted successfully');
     }
 
@@ -190,21 +219,50 @@ class JobsController extends Controller
      * @return mixed
      */
     public function mark($id, $status, MarkJobRequest $request) {
-        $this->jobs->mark($id, $status);
+        $job =Job::find($id);
+        $array['type'] = 'Job';
+        $array['heading']='Name:'.$job->title;
+
+       if($this->jobs->mark($id, $status))
+       {
+           $array['event'] = 'updated';
+
+           $name = $this->userLogs->getActivityDescriptionForEvent($array);
+           Activity::log($name);
+       }
 
         return redirect(route('admin.employer.jobs.index'))->withFlashSuccess('The job was successfully updated.');
     }
 
     public function publish($id, PublishJobRequest $request)
     {
-        $this->jobs->publish($id);
+        $job =Job::find($id);
+        $array['type'] = 'Job';
+        $array['heading']='Name:'.$job->title;
+
+        if($this->jobs->publish($id))
+        {
+            $array['event'] = 'published';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 
         return redirect(route('admin.employer.jobs.index'))->withFlashSuccess('The job was successfully updated.');
     }
 
     public function hide($id, HideJobRequest $request)
     {
-        $this->jobs->hide($id);
+        $job =Job::find($id);
+        $array['type'] = 'Job';
+        $array['heading']='Name:'.$job->title;
+        if($this->jobs->hide($id))
+        {
+            $array['event'] = 'hide';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 
         return redirect(route('admin.employer.jobs.index'))->withFlashSuccess('The job was successfully updated.');
     }

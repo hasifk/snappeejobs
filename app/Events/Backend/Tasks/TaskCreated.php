@@ -38,7 +38,7 @@ class TaskCreated extends Event implements ShouldBroadcast
 
         $this->eventDetails->{'notification_type'} = 'task_created';
         $this->eventDetails->{'notification_type_text'} = 'Task Created';
-        $this->eventDetails->{'task'} = $task->title;
+        $this->eventDetails->{'task_title'} = $task->title;
         $this->eventDetails->{'created_by'} = $user->name;
     }
 

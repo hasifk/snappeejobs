@@ -38,7 +38,7 @@ class TaskDeleted extends Event implements ShouldBroadcast
 
         $this->eventDetails->{'notification_type'} = 'task_deleted';
         $this->eventDetails->{'notification_type_text'} = 'Task Deleted';
-        $this->eventDetails->{'task'} = $task->title;
+        $this->eventDetails->{'task_title'} = $task->title;
         $this->eventDetails->{'created_by'} = $user->name;
     }
 

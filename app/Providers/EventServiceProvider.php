@@ -66,14 +66,17 @@ class EventServiceProvider extends ServiceProvider {
         'App\Events\Backend\Project\ProjectDeleted' => [
             'App\Listeners\Backend\Project\ProjectDeletedHandler'
         ],
-		'App\Events\Backend\Task\TaskCreated' => [
+		'App\Events\Backend\Tasks\TaskCreated' => [
 			'App\Listeners\Backend\Task\TaskCreatedHandler'
 		],
-		'App\Events\Backend\Task\TaskUpdated' => [
+		'App\Events\Backend\Tasks\TaskUpdated' => [
 			'App\Listeners\Backend\Task\TaskUpdatedHandler'
 		],
-        'App\Events\Backend\Task\TaskDeleted' => [
+        'App\Events\Backend\Tasks\TaskDeleted' => [
             'App\Listeners\Backend\Task\TaskDeletedHandler'
+        ],
+        'App\Events\Backend\Tasks\TaskAssigned' => [
+            'App\Listeners\Backend\Task\TaskAssignedHandler'
         ],
 	];
 

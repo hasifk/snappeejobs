@@ -91,6 +91,35 @@
                     </li><!-- /.messages-menu -->
 
 
+                    <li v-cloak v-if="tasks_assigned.length" class="dropdown messages-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="fa fa-flag"></i>
+                            <span v-cloak class="label label-danger">@{{ tasks_assigned.length }}</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="header">You have @{{ tasks_assigned.length }} task(s) assigned</li>
+
+                            <li>
+                                <ul class="menu">
+                                    <li v-for="task_assigned in tasks_assigned | orderBy 'created_at' job_applications_order">
+                                        <a href="#">
+                                            <div class="pull-left">
+                                                <img src="@{{ task_assigned.image }}" class="img-circle" alt="User Image"/>
+                                            </div>
+                                            <p>
+                                                <b>@{{ task_assigned.task_title }}</b> from <br>
+                                                project <b>@{{ task_assigned.project_title }}</b>
+                                                <br>
+                                                <small><i class="fa fa-clock-o"></i> @{{ task_assigned.was_created }}</small>
+                                            </p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
+
                   <!-- Notifications Menu -->
                   <li style="display: none;" class="dropdown notifications-menu">
                     <!-- Menu toggle button -->

@@ -38,14 +38,14 @@
                     style="width: 100%;"
             >
                 @if (count($task->members) > 0)
-                    @foreach($task->members as $member)
+                    @foreach($project_members as $member)
                         <option
-                                value="{{ $member->user->id }}"
+                                value="{{ $member->id }}"
                                 {{ old('members')
-                                && in_array($member->user->id, old('members')) ? 'selected="selected"' : '' }}
-                                {{ $task->members()->lists('user_id')->toArray() && in_array($member->user->id, $task->members()->lists('user_id')->toArray()) ? 'selected="selected"' : '' }}
+                                && in_array($member->id, old('members')) ? 'selected="selected"' : '' }}
+                                {{ $task->members()->lists('user_id')->toArray() && in_array($member->id, $task->members()->lists('user_id')->toArray()) ? 'selected="selected"' : '' }}
                         >
-                            {{ $member->user->name }}
+                            {{ $member->name }}
                         </option>
                     @endforeach
                 @endif

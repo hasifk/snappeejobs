@@ -73,16 +73,16 @@
         },
         {
             "name": "arcanedev/support",
-            "version": "3.7.5",
+            "version": "3.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ARCANEDEV/Support.git",
-                "reference": "e431142e975e8990ee324ae958e6f195bff5d808"
+                "reference": "bbe6d6b7dc9171c00103e2f4aa0357ce1ac94d1e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ARCANEDEV/Support/zipball/e431142e975e8990ee324ae958e6f195bff5d808",
-                "reference": "e431142e975e8990ee324ae958e6f195bff5d808",
+                "url": "https://api.github.com/repos/ARCANEDEV/Support/zipball/bbe6d6b7dc9171c00103e2f4aa0357ce1ac94d1e",
+                "reference": "bbe6d6b7dc9171c00103e2f4aa0357ce1ac94d1e",
                 "shasum": ""
             },
             "require": {
@@ -128,7 +128,7 @@
                 "laravel",
                 "support"
             ],
-            "time": "2016-02-06 10:30:25"
+            "time": "2016-04-17 18:12:30"
         },
         {
             "name": "aws/aws-sdk-php",
@@ -1025,16 +1025,16 @@
         },
         {
             "name": "geoip2/geoip2",
-            "version": "v2.3.3",
+            "version": "v2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/maxmind/GeoIP2-php.git",
-                "reference": "ee15b2e466dd09fd2246cf64efa1aa9eca988b86"
+                "reference": "2edce6957126399039124459174d5dce24edfdae"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maxmind/GeoIP2-php/zipball/ee15b2e466dd09fd2246cf64efa1aa9eca988b86",
-                "reference": "ee15b2e466dd09fd2246cf64efa1aa9eca988b86",
+                "url": "https://api.github.com/repos/maxmind/GeoIP2-php/zipball/2edce6957126399039124459174d5dce24edfdae",
+                "reference": "2edce6957126399039124459174d5dce24edfdae",
                 "shasum": ""
             },
             "require": {
@@ -1043,7 +1043,8 @@
                 "php": ">=5.3.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "4.2.*"
+                "phpunit/phpunit": "4.2.*",
+                "squizlabs/php_codesniffer": "2.*"
             },
             "type": "library",
             "autoload": {
@@ -1071,7 +1072,7 @@
                 "geolocation",
                 "maxmind"
             ],
-            "time": "2015-09-24 17:29:28"
+            "time": "2016-04-15 19:49:51"
         },
         {
             "name": "guzzle/guzzle",

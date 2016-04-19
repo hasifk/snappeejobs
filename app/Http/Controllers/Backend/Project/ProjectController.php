@@ -217,8 +217,17 @@ class ProjectController extends Controller
     public function editTask(EditTaskViewRequest $request, $id){
 
         $task = Task::findOrFail($id);
+        $project_members = \DB::table('members_project')
+            ->join('users', 'users.id', '=', 'members_project.user_id')
+            ->where('members_project.project_id', $task->project_id)
+            ->select(['users.id', 'users.name'])
+            ->get();
 
-        $view = [ 'task'=> $task ];
+        $project_members_array = \DB::table('members_project')
+            ->join('users', 'users.id', '=', 'members_project.user_id')
+            ->where('members_project.project_id', $task->project_id)->lists('users.id');
+
+        $view = [ 'task'=> $task, 'project_members' => $project_members, 'project_members_array' => $project_members_array ];
 
         return view('backend.projects.edittasks', $view);
 

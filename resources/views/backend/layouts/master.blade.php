@@ -55,7 +55,7 @@
         <script>
 
             {{--var socket = io('http://{{ env('SOCKETIO_SERVER_IP', '127.0.0.1') }}:{{ env('SOCKETIO_SERVER_PORT', 8000) }}');--}}
-            var socket = io.connect('http://{{ env('SOCKETIO_SERVER_IP', '127.0.0.1') }}:{{ env('SOCKETIO_SERVER_PORT', 8000) }}');
+            var socket = io.connect();
 
             var SnappeeJobs = new Vue({
                 el: '.notifications-header',

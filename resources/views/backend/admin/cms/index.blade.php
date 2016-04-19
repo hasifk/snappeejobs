@@ -35,6 +35,13 @@
         @endforeach
         </tbody>
     </table>
+    <div class="pull-left">
+    {!! count($cms) !!} CMS Total
+</div>
+
+<div class="pull-right">
+    {!! $cms->render(); !!}
+</div>
     <div class="clearfix"></div>
 @endsection
 @section('after-scripts-end')

@@ -34,7 +34,7 @@ class AdminNewsfeedController extends Controller {
      */
     public function showNewsfeeds() {
         $view = [
-            'newsfeeds' => $this->newsfeedRepository->getNewsfeedsPaginated(config('jobs.default_per_page')),
+            'newsfeeds' => $this->newsfeedRepository->getNewsfeedsPaginated(),
         ];
         return view('backend.admin.newsfeed.index', $view);
     }

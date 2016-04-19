@@ -37,7 +37,7 @@ class AdminLogController extends Controller {
         $user = Auth::user()->id;
         
         $view = [
-            'user' => Activity::with('user')->latest()->limit(100)->get(),
+            'logs' => Activity::with('user')->latest()->limit(100)->paginate(20),
         ];
         return view('backend.admin.logs.index', $view);
     }

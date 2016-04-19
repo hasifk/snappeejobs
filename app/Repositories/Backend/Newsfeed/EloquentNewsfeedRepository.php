@@ -11,9 +11,9 @@ use Event;
 
 class EloquentNewsfeedRepository {
 
-    public function getNewsfeedsPaginated($per_page, $order_by = 'newsfeeds.id', $sort = 'desc') {
-        return Newsfeed::orderBy($order_by, $sort)
-                        ->paginate($per_page);
+    public function getNewsfeedsPaginated() {
+        return Newsfeed::orderBy('newsfeeds.id','desc')
+                        ->paginate(3);
     }
 
     public function save($request) {

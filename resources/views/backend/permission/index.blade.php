@@ -2,13 +2,6 @@
 
 @section ('title', 'Admin Company Profile')
 
-@section('page-header')
-<h1>
-    Employer Company Profile
-    <small>View Company Profile</small>
-</h1>
-@endsection
-
 @section ('breadcrumbs')
 <li><a href="{!!route('backend.dashboard')!!}"><i class="fa fa-dashboard"></i> {{ trans('menus.dashboard') }}</a></li>
 <li class="active">{!! link_to_route('admin.employer.company.showprofile', 'Company Profile' ) !!}</li>
@@ -16,21 +9,24 @@
 
 @section('content')
 
-@include('backend.employer.includes.partials.company.header-buttons')
-
-<h3>Company Profile</h3>
-
+<h3>Permission Lists</h3>
+<?php $f=1; ?>
 <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="profile">
         <table class="table table-striped table-hover table-bordered dashboard-table">
-            <tr>
-                <td>Allowable Permission</td>
+            <tr> 
+                <th>Allowable Permission</th>
                 <td>
-                    <table>
+                    <table class="table table-condensed">
                         @foreach($permissions as $permission)
+                         @if($f==1)
                         <tr>
+                           @endif 
                             <td>{{ $permission->display_name }}</td>
+                            @if($f==2)
                         </tr>
+                        @endif
+                        <?php if($f==2) $f=1; else $f++; ?>
                         @endforeach
                     </table>
                 </td>

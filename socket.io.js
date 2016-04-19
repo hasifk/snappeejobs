@@ -1,8 +1,6 @@
 var server = require('http').Server();
 var io = require('socket.io')(server);
 
-io.set("reconnection limit", 5000);
-
 var Redis = require('ioredis');
 var redis = new Redis();
 

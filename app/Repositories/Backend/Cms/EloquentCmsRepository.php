@@ -9,10 +9,10 @@ use Storage;
 
 class EloquentCmsRepository {
 
-    public function getCmsPaginated($per_page, $order_by = 'cms.id', $sort = 'desc') {
+    public function getCmsPaginated() {
         $userid = Auth::user()->id;
-        return Cms::where('user_id', $userid)->orderBy($order_by, $sort)
-                        ->paginate($per_page);
+        return Cms::where('user_id', $userid)->orderBy('cms.id', 'desc')
+                        ->paginate(3);
     }
 
     public function save($request) {

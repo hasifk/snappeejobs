@@ -12,6 +12,6 @@ redis.on('pmessage', function (subscribed, channel, message) {
     io.emit(channel + ':' + message.event, message.data);
 });
 
-server.listen(8000, function(){
+server.listen(7878, function(){
     console.log('Listening on the port 8000');
 });

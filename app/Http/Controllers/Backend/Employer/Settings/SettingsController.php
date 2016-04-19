@@ -7,6 +7,7 @@ use App\Models\Access\User\User;
 use App\Models\Company\Company;
 use App\Models\Job\Job;
 use App\Repositories\Backend\Employer\EloquentStaffRepository;
+use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use App\Repositories\Backend\Permission\PermissionRepositoryContract;
 use App\Repositories\Backend\Role\RoleRepositoryContract;
 use Carbon\Carbon;
@@ -14,6 +15,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Activity;
 
 class SettingsController extends Controller
 {
@@ -30,13 +32,16 @@ class SettingsController extends Controller
      * @var PermissionRepositoryContract
      */
     private $permissions;
+    private $userLogs;
 
-    public function __construct(EloquentStaffRepository $staffs, RoleRepositoryContract $roles, PermissionRepositoryContract $permissions)
+    public function __construct(EloquentStaffRepository $staffs, RoleRepositoryContract $roles, PermissionRepositoryContract $permissions,
+LogsActivitysRepository $userLogs)
     {
 
         $this->staffs = $staffs;
         $this->roles = $roles;
         $this->permissions = $permissions;
+        $this->userLogs = $userLogs;
     }
 
     /**
@@ -94,8 +99,15 @@ class SettingsController extends Controller
         ]);
 
         auth()->user()->save();
+        $array['type'] = 'Subscription Plan';
+        $array['heading']='of User:'.auth()->user()->name;
+        if($this->staffs->employerPlanSave($planDetails, auth()->user()))
+        {
+            $array['event'] = 'updated';
 
-        $this->staffs->employerPlanSave($planDetails, auth()->user());
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 
         return redirect()
             ->route('admin.employer.settings.dashboard')
@@ -195,6 +207,12 @@ class SettingsController extends Controller
                 'updated_at'        => Carbon::now(),
             ]);
 
+            $array['type'] = 'Addon';
+            $array['heading']='of Type:'.$addon.'  is purchased by'.auth()->user()->name;
+            $array['event'] = 'purchased';
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+
             return redirect()
                 ->route('admin.employer.settings.usage')
                 ->withFlashSuccess('You have successfully purchased the add on.');
@@ -243,6 +261,12 @@ class SettingsController extends Controller
                 'updated_at'        => Carbon::now(),
             ]);
 
+            $array['type'] = 'AddonPack';
+            $array['heading']='of Type:'.$pack.'  is purchased by'.auth()->user()->name;
+            $array['event'] = 'purchased';
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+
             return redirect()
                 ->route('admin.employer.settings.usage')
                 ->withFlashSuccess('You have successfully purchased the add on pack.');
@@ -269,6 +293,11 @@ class SettingsController extends Controller
             $update_company->paid_expiry=$expiry;
             $update_company->save();
 
+            $array['type'] = 'Paid Company';
+            $array['heading']='Status of :'.auth()->user()->company_name;
+            $array['event'] = 'updated';
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
             return redirect()
                 ->route('admin.employer.settings.makepaid')
                 ->withFlashSuccess('Your Company successfully became paid .');
@@ -294,6 +323,11 @@ class SettingsController extends Controller
             $update_job->paid_expiry=$expiry;
             $update_job->save();
 
+            $array['type'] = 'Paid Job';
+            $array['heading']='Status of :'.$update_job->title;
+            $array['event'] = 'updated';
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
             return redirect()
                 ->route('admin.employer.settings.makepaid')
                 ->withFlashSuccess('The Selected Job successfully became paid .');

@@ -5,11 +5,13 @@ namespace App\Http\Controllers\Backend\Employer\Mail;
 use App\Events\Frontend\Job\JobSeekerChatReceived;
 use App\Models\Job\JobApplication\JobApplication;
 use App\Models\Mail\Thread;
+use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use App\Repositories\Backend\Mail\EloquentMailRepository;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Activity;
 
 class MailController extends Controller
 {
@@ -22,10 +24,12 @@ class MailController extends Controller
      * MailController constructor.
      * @param EloquentMailRepository $mail
      */
-    public function __construct(EloquentMailRepository $mail)
+    private  $userLogs;
+    public function __construct(EloquentMailRepository $mail,LogsActivitysRepository $userLogs)
     {
 
         $this->mail = $mail;
+        $this->userLogs = $userLogs;
     }
 
     /**
@@ -61,7 +65,18 @@ class MailController extends Controller
      */
     public function send(Requests\Backend\Employer\Mail\EmployerMailSendNewMessage $request)
     {
-        $this->mail->sendPrivateMessage($request);
+        $array['type'] = 'Email';
+        $recipient=\DB::table('users')
+            ->where('id',$request->to)->first();
+        $array['heading']='Recipient:'.$recipient->email.'   and sent';
+
+       if($this->mail->sendPrivateMessage($request))
+       {
+           $array['event'] = 'created';
+
+           $name = $this->userLogs->getActivityDescriptionForEvent($array);
+           Activity::log($name);
+       }
 
         return redirect()
             ->route('admin.employer.mail.inbox')
@@ -152,7 +167,18 @@ class MailController extends Controller
      */
     public function destroy(Requests\Backend\Employer\Mail\EmployerMailDeleteRequest $request, $id)
     {
-        $this->mail->deleteThread($id);
+
+        $array['type'] = 'Email';
+        $recipient=\DB::table('threads')
+            ->where('id',$id)->first();
+        $array['heading']='Subject:  '.$recipient->subject;
+        if($this->mail->deleteThread($id))
+        {
+            $array['event'] = 'deleted';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 
         return redirect()
             ->route('admin.employer.mail.inbox')

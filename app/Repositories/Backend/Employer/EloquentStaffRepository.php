@@ -192,7 +192,8 @@ class EloquentStaffRepository {
 		$user->detachPermissions($user->permissions);
 
 		try {
-			$user->forceDelete();
+			if($user->forceDelete())
+				return true;
 		} catch (\Exception $e) {
 			throw new GeneralException($e->getMessage());
 		}

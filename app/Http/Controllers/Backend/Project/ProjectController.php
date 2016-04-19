@@ -7,12 +7,13 @@ use App\Http\Requests\Backend\Employer\Project\ProjectCreateRequest;
 use App\Http\Requests\Backend\Employer\Task\CreateTaskRequest;
 use App\Models\Project\Project;
 use App\Models\Task\Task;
+use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use App\Repositories\Backend\Project\EloquentProjectRepository;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
+use Activity;
 class ProjectController extends Controller
 {
 
@@ -20,11 +21,12 @@ class ProjectController extends Controller
      * @var EloquentProjectRepository
      */
     private $projectRepository;
-
-    public function __construct(EloquentProjectRepository $projectRepository)
+    private $userLogs;
+    public function __construct(EloquentProjectRepository $projectRepository,LogsActivitysRepository $userLogs)
     {
 
         $this->projectRepository = $projectRepository;
+        $this->userLogs = $userLogs;
     }
 
     /**
@@ -71,8 +73,15 @@ class ProjectController extends Controller
      */
     public function store(ProjectCreateRequest $request)
     {
+        $array['type'] = 'Project';
+        $array['heading']='Name:'.$request->title;
+        if($this->projectRepository->createProject($request))
+        {
+            $array['event'] = 'created';
 
-        $this->projectRepository->createProject($request);
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 
         return redirect()
             ->route('admin.projects.index')
@@ -162,8 +171,14 @@ class ProjectController extends Controller
     {
 
         $project = Project::findOrFail($id);
-
-        $this->projectRepository->updateProject($project, $request);
+        $array['type'] = 'Project';
+        $array['heading']='Name:'.$project->title;
+       if($this->projectRepository->updateProject($project, $request))
+       {
+           $array['event'] = 'updated';
+           $name = $this->userLogs->getActivityDescriptionForEvent($array);
+           Activity::log($name);
+       }
 
         return redirect()
             ->route('admin.projects.index')
@@ -179,8 +194,14 @@ class ProjectController extends Controller
     public function destroy(Requests\Backend\Employer\Project\DeleteProjectRequest $request, $id)
     {
         $project = Project::find($id);
-
-        $this->projectRepository->deleteProject($project);
+        $array['type'] = 'Project';
+        $array['heading']='Name:'.$project->title;
+        if($this->projectRepository->deleteProject($project))
+        {
+            $array['event'] = 'deleted';
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 
         return redirect()
             ->route('admin.projects.index')
@@ -205,8 +226,14 @@ class ProjectController extends Controller
     public function storeTask(CreateTaskRequest $request, $project_id){
 
         $project = Project::findOrFail($project_id);
-
-        $this->projectRepository->createTask($project, $request);
+        $array['type'] = 'Task';
+        $array['heading']='Name:'.$request->title;
+        if($this->projectRepository->createTask($project, $request))
+        {
+            $array['event'] = 'created';
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 
         return redirect()
             ->route('admin.projects.index')
@@ -248,8 +275,14 @@ class ProjectController extends Controller
     public function updateTask(Requests\Backend\Employer\Task\UpdateTaskRequest $request, $id){
 
         $task = Task::find($id);
-
-        $this->projectRepository->updateTask($task, $request);
+        $array['type'] = 'Task';
+        $array['heading']='Name:'.$task->title;
+        if($this->projectRepository->updateTask($task, $request))
+        {
+            $array['event'] = 'updated';
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 
         return redirect()
             ->route('admin.projects.showtask', $id)
@@ -262,8 +295,14 @@ class ProjectController extends Controller
         $task = Task::find($id);
 
         $project_id = \DB::table('task_project')->where('id', $id)->value('project_id');
-
-        $this->projectRepository->deleteTask($task, $request);
+        $array['type'] = 'Task';
+        $array['heading']='Name:'.$task->title;
+        if($this->projectRepository->deleteTask($task, $request))
+        {
+            $array['event'] = 'deleted';
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 
         return redirect()
             ->route('admin.projects.show', $project_id)

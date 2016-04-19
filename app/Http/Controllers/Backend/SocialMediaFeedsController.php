@@ -4,10 +4,11 @@ use App\Http\Controllers\Controller;
 
 use App\Http\Requests\Backend\Employer\SocialFeeds\TwitterInfoRequest;
 use App\Repositories\Backend\Dashboard\DashboardRepository;
+use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use App\Repositories\Backend\SocialFeeds\SocialFeedsRepository;
 use \Illuminate\Http\Request;
 use DB;
-
+use Activity;
 
 /**
  * Class DashboardController
@@ -18,17 +19,17 @@ class SocialMediaFeedsController extends Controller {
      * @var DashboardRepository
      */
     private $repository;
-    private $searchJobRepo;
+    private $userLogs;
     private $socialRepository;
     /**
      * DashboardController constructor.
      * @param DashboardRepository $repository
      */
-    public function __construct(SocialFeedsRepository $socialRepository)
+    public function __construct(SocialFeedsRepository $socialRepository,LogsActivitysRepository $userLogs)
     {
 
         $this->socialRepository = $socialRepository;
-
+        $this->userLogs = $userLogs;
     }
 
     /**
@@ -67,12 +68,22 @@ class SocialMediaFeedsController extends Controller {
             $screenname=$this->socialRepository->getTwScreenName();
             if(!empty($screenname)):
             if($tw_screenname=$this->socialRepository->updateTwScreenname($request->tw_screen_name)):
+                $array['type'] = 'TwitterInfo';
+                $array['heading']='of:'.auth()->user()->name;
+                $array['event'] = 'updated';
+                $name = $this->userLogs->getActivityDescriptionForEvent($array);
+                Activity::log($name);
                 $request->session()->flash('tw_success', $tw_screenname);
             else:
                 $request->session()->flash('tw_failure','Failed to Update Twitter Screenname.Please try again. ') ;
             endif;
             else:
                 if($tw_screenname=$this->socialRepository->storeTwScreenname($request->tw_screen_name)):
+                    $array['type'] = 'TwitterInfo';
+                    $array['heading']=':'.auth()->user()->name;
+                    $array['event'] = 'created';
+                    $name = $this->userLogs->getActivityDescriptionForEvent($array);
+                    Activity::log($name);
                     $request->session()->flash('tw_success', $tw_screenname);
                 else:
                     $request->session()->flash('tw_failure','Failed to Store Twitter Screenname.Please try again. ') ;

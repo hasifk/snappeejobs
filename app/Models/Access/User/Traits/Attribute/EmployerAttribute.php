@@ -28,6 +28,13 @@ trait EmployerAttribute
         return \DB::table('companies')->where('employer_id', $this->employerId)->value('id');
     }
 
+    public function getCompanyNameAttribute(){
+        if ( is_null($this->employerId) ) {
+            return null;
+        }
+        return \DB::table('companies')->where('employer_id', $this->employerId)->value('title');
+    }
+
     public function getEmployerSubscriptionPlanAttribute()
     {
 

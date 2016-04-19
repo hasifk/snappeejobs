@@ -127,7 +127,17 @@ LogsActivitysRepository $userLogs)
      * @return mixed
      */
     public function delete($id, Requests\Backend\Employer\Staff\DeleteEmployerRequest $request) {
-        $this->staffs->delete($id);
+        $empStaff =User::find($id);
+        $array['type'] = 'Employer Staff';
+        $array['heading']='Name:'.$empStaff->name.'permanently';
+
+        if($this->staffs->delete($id))
+        {
+            $array['event'] = 'deleted';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
         return redirect()->back()->withFlashSuccess(trans("alerts.users.deleted_permanently"));
     }
 
@@ -168,11 +178,20 @@ LogsActivitysRepository $userLogs)
      */
     public function update(Requests\Backend\Employer\Staff\EditEmployerRequest $request, $id)
     {
-        $this->staffs->update($id,
+        $empStaff =User::find($id);
+        $array['type'] = 'Employer Staff';
+        $array['heading']='Name:'.$empStaff->name;
+        if($this->staffs->update($id,
             $request->except('assignees_roles', 'permission_user'),
             $request->only('assignees_roles'),
             ['permission_user' => []]
-        );
+        ))
+        {
+            $array['event'] = 'updated';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
         return redirect()->route('admin.employer.staffs.index')->withFlashSuccess(trans("alerts.users.updated"));
     }
 
@@ -184,7 +203,16 @@ LogsActivitysRepository $userLogs)
      */
     public function destroy($id, Requests\Backend\Employer\Staff\DeleteEmployerRequest $request)
     {
-        $this->staffs->destroy($id);
+        $empStaff =User::find($id);
+        $array['type'] = 'Employer Staff';
+        $array['heading']='Name:'.$empStaff->name;
+        if($this->staffs->destroy($id))
+        {
+            $array['event'] = 'deleted';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
         return redirect()->back()->withFlashSuccess(trans("alerts.users.deleted"));
     }
 
@@ -225,7 +253,16 @@ LogsActivitysRepository $userLogs)
      * @return mixed
      */
     public function updatePassword($id, Requests\Backend\Employer\Staff\UpdateEmployerPasswordRequest $request) {
-        $this->staffs->updatePassword($id, $request->all());
+        $empStaff =User::find($id);
+        $array['type'] = 'Employer Staff';
+        $array['heading']=$empStaff->name.':password';
+        if($this->staffs->updatePassword($id, $request->all()))
+        {
+            $array['event'] = 'updated';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
         return redirect()->route('admin.employer.staffs.index')->withFlashSuccess(trans("alerts.users.updated_password"));
     }
 

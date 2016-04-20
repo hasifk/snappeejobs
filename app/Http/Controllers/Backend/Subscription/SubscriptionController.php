@@ -2,15 +2,23 @@
 
 use App\Http\Requests\Backend\EmployerUpgradePlanRequest;
 use App\Models\Access\User\User;
+use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use Illuminate\Http\Request;
 
 use DB;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-
+use Activity;
 
 class SubscriptionController extends Controller
 {
+
+    private $userLogs;
+
+    public function __construct(LogsActivitysRepository $userLogs) {
+
+        $this->userLogs = $userLogs;
+    }
     public function index()
     {
 
@@ -43,6 +51,15 @@ class SubscriptionController extends Controller
     {
 
         User::find($userId)->subscription($request->get('plan_id'))->swap();
+
+            $user=User::find($userId);
+            $array['type'] = 'Plan';
+            $array['heading']='With user name:'.$user->name;
+            $array['event'] = 'updated';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+
 
         return redirect()
             ->route('backend.subscription')

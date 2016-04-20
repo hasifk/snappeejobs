@@ -192,6 +192,7 @@ class EloquentUserRepository implements UserContract {
 
 		try {
 			$user->forceDelete();
+               return true;
 		} catch (\Exception $e) {
 			throw new GeneralException($e->getMessage());
 		}

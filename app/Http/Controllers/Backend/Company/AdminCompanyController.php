@@ -6,25 +6,27 @@ use App\Http\Requests\Backend\Admin\Company\NewCompanyCreateRequest;
 use App\Http\Requests\Backend\Admin\Company\NewCompanyValidRequest;
 use App\Models\Company\Company;
 use App\Repositories\Backend\Admin\Company\EloquentCompanyRepository;
+use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use Illuminate\Http\Request;
 
 use App\Http\Controllers\Controller;
-
+use Activity;
 class AdminCompanyController extends Controller
 {
     /**
      * @var EloquentCompanyRepository
      */
     private $companyRepository;
-
+    private $userLogs;
     /**
      * AdminCompanyController constructor.
      * @param EloquentCompanyRepository $companyRepository
      */
-    public function __construct(EloquentCompanyRepository $companyRepository)
+    public function __construct(EloquentCompanyRepository $companyRepository,LogsActivitysRepository $userLogs)
     {
 
         $this->companyRepository = $companyRepository;
+        $this->userLogs = $userLogs;
     }
 
     /**
@@ -79,7 +81,15 @@ class AdminCompanyController extends Controller
     
     public function store(NewCompanyCreateRequest $request, $id)
     {
-        $this->companyRepository->create($request, $id);
+        $array['type'] = 'Company';
+        $array['heading']='With name:'.$request->title;
+       if($this->companyRepository->create($request, $id))
+       {
+           $array['event'] = 'created';
+
+           $name = $this->userLogs->getActivityDescriptionForEvent($array);
+           Activity::log($name);
+       }
 
         return redirect()
             ->route('admin.company.index')
@@ -140,7 +150,15 @@ class AdminCompanyController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->companyRepository->update($request, $id);
+        $user =Company::find($id);
+        $array['type'] = 'Company';
+        $array['heading']='With name:'.$user->title;
+       if($this->companyRepository->update($request, $id))
+       {
+           $array['event'] = 'updated';
+           $name = $this->userLogs->getActivityDescriptionForEvent($array);
+           Activity::log($name);
+       }
 
         return redirect()
             ->route('admin.company.index')

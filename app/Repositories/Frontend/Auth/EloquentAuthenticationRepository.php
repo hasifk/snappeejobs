@@ -99,6 +99,7 @@ class EloquentAuthenticationRepository implements AuthenticationContract {
 	public function logout() {
 		event(new UserLoggedOut($this->auth->user()));
 		$this->auth->logout();
+        return true;
 	}
 
 	/**

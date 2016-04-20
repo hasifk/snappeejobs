@@ -154,7 +154,7 @@ class EloquentAdminMailRepository
                 'deleted_at'    => Carbon::now()
             ]);
 
-        return;
+        return true;
     }
 
     public function getUnReadMessages(){

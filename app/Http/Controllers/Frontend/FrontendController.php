@@ -4,10 +4,12 @@ use App\Http\Requests\Frontend\EmployerSignupRequest;
 use App\Models\Company\Company;
 use App\Models\Job\Job;
 
+use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use App\Repositories\Frontend\Index\EloquentIndexRepository;
 use App\Repositories\Frontend\User\EloquentUserRepository;
 use DB;
 use Illuminate\Http\Request;
+use Activity;
 /**
  * Class FrontendController
  * @package App\Http\Controllers
@@ -18,14 +20,17 @@ class FrontendController extends Controller {
 	 */
 	private $users;
 	private $indexRepository;
+	private $userLogs;
 	/**
 	 * FrontendController constructor.
 	 * @param EloquentUserRepository $users
 	 */
-	public function __construct(EloquentUserRepository $users,EloquentIndexRepository $indexRepository)
+	public function __construct(EloquentUserRepository $users,EloquentIndexRepository $indexRepository,
+  LogsActivitysRepository $userLogs)
 	{
 		$this->users = $users;
 		$this->indexRepository = $indexRepository;
+		$this->userLogs=$userLogs;
 	}
 	/**
 	 * @param \Request $request
@@ -125,7 +130,15 @@ class FrontendController extends Controller {
 	}
 	public function employersAction(EmployerSignupRequest $request)
 	{
-		$this->users->createEmployerUser($request->all());
+        $array['type'] = 'Employer';
+        $array['heading']='With name:'.$request->name;
+		if($this->users->createEmployerUser($request->all()))
+        {
+            $array['event'] = 'created';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 		alert()->message('Please confirm you account.', 'Thank you!');
 		return redirect(route('employers'));
 	}

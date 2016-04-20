@@ -1,6 +1,8 @@
 <?php namespace App\Http\Controllers\Backend\Access\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Access\User\User;
+use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use App\Repositories\Backend\User\UserContract;
 use App\Repositories\Backend\Role\RoleRepositoryContract;
 use App\Repositories\Frontend\Auth\AuthenticationContract;
@@ -16,7 +18,7 @@ use App\Http\Requests\Backend\Access\User\UpdateUserPasswordRequest;
 use App\Repositories\Backend\Permission\PermissionRepositoryContract;
 use App\Http\Requests\Backend\Access\User\PermanentlyDeleteUserRequest;
 use App\Http\Requests\Backend\Access\User\ResendConfirmationEmailRequest;
-
+use Activity;
 /**
  * Class UserController
  */
@@ -36,16 +38,18 @@ class UserController extends Controller {
 	 * @var PermissionRepositoryContract
 	 */
 	protected $permissions;
-
+    protected $userLogs;
 	/**
 	 * @param UserContract $users
 	 * @param RoleRepositoryContract $roles
 	 * @param PermissionRepositoryContract $permissions
 	 */
-	public function __construct(UserContract $users, RoleRepositoryContract $roles, PermissionRepositoryContract $permissions) {
+	public function __construct(UserContract $users, RoleRepositoryContract $roles, PermissionRepositoryContract $permissions,
+LogsActivitysRepository $userLogs) {
 		$this->users = $users;
 		$this->roles = $roles;
 		$this->permissions = $permissions;
+        $this->userLogs = $userLogs;
 	}
 
 	/**
@@ -71,11 +75,19 @@ class UserController extends Controller {
 	 * @return mixed
      */
 	public function store(StoreUserRequest $request) {
-		$this->users->create(
+        $array['type'] = 'User';
+        $array['heading']='Name:'.$request->name;
+		if($this->users->create(
 			$request->except('assignees_roles', 'permission_user'),
 			$request->only('assignees_roles'),
 			$request->only('permission_user')
-		);
+		))
+        {
+            $array['event'] = 'created';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 		return redirect()->route('admin.access.users.index')->withFlashSuccess(trans("alerts.users.created"));
 	}
 
@@ -100,11 +112,20 @@ class UserController extends Controller {
 	 * @return mixed
 	 */
 	public function update($id, UpdateUserRequest $request) {
-		$this->users->update($id,
+        $user =User::find($id);
+        $array['type'] = 'User';
+        $array['heading']='With name:'.$user->name;
+		if($this->users->update($id,
 			$request->except('assignees_roles', 'permission_user'),
 			$request->only('assignees_roles'),
 			$request->only('permission_user')
-		);
+		))
+        {
+            $array['event'] = 'updated';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 		return redirect()->route('admin.access.users.index')->withFlashSuccess(trans("alerts.users.updated"));
 	}
 
@@ -114,7 +135,16 @@ class UserController extends Controller {
 	 * @return mixed
      */
 	public function destroy($id, DeleteUserRequest $request) {
-		$this->users->destroy($id);
+        $user =User::find($id);
+        $array['type'] = 'User';
+        $array['heading']='With name:'.$user->name;
+		if($this->users->destroy($id))
+        {
+            $array['event'] = 'deleted';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 		return redirect()->back()->withFlashSuccess(trans("alerts.users.deleted"));
 	}
 
@@ -124,7 +154,16 @@ class UserController extends Controller {
 	 * @return mixed
      */
 	public function delete($id, PermanentlyDeleteUserRequest $request) {
-		$this->users->delete($id);
+        $user =User::withTrashed()->find($id);
+        $array['type'] = 'User';
+        $array['heading']='With name:'.$user->name;
+		if($this->users->delete($id))
+        {
+            $array['event'] = 'permanentlydeleted';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 		return redirect()->back()->withFlashSuccess(trans("alerts.users.deleted_permanently"));
 	}
 
@@ -134,7 +173,15 @@ class UserController extends Controller {
 	 * @return mixed
      */
 	public function restore($id, RestoreUserRequest $request) {
-		$this->users->restore($id);
+        $user =User::withTrashed()->find($id);
+        $array['type'] = 'User';
+        $array['heading']='With name:'.$user->name.'is restored';
+		if($this->users->restore($id))
+        {
+            $array['event'] = 'restored';
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 		return redirect()->back()->withFlashSuccess(trans("alerts.users.restored"));
 	}
 
@@ -145,7 +192,15 @@ class UserController extends Controller {
 	 * @return mixed
      */
 	public function mark($id, $status, MarkUserRequest $request) {
-		$this->users->mark($id, $status);
+        $user =User::find($id);
+        $array['type'] = 'User';
+        $array['heading']='With name:'.$user->name;
+		if($this->users->mark($id, $status))
+        {
+            $array['event'] = 'updated';
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 		return redirect()->back()->withFlashSuccess(trans("alerts.users.updated"));
 	}
 
@@ -197,7 +252,16 @@ class UserController extends Controller {
 	 * @return mixed
 	 */
 	public function updatePassword($id, UpdateUserPasswordRequest $request) {
-		$this->users->updatePassword($id, $request->all());
+        $user =User::find($id);
+        $array['type'] = 'User';
+        $array['heading']='With name:'.$user->name.':password';
+		if($this->users->updatePassword($id, $request->all()))
+        {
+            $array['event'] = 'updated';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 		return redirect()->route('admin.access.users.index')->withFlashSuccess(trans("alerts.users.updated_password"));
 	}
 

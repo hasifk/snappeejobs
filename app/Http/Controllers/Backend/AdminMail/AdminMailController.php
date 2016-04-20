@@ -6,10 +6,12 @@ use App\Http\Requests\Backend\Admin\Mail\AdminMailSendMessageRequest;
 use App\Models\Company\Company;
 use App\Models\Mail\Thread;
 use App\Repositories\Backend\Admin\Mail\EloquentAdminMailRepository;
+use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use Activity;
 
 class AdminMailController extends Controller
 {
@@ -18,11 +20,12 @@ class AdminMailController extends Controller
      * @var EloquentAdminMailRepository
      */
     private $mailRepository;
-
-    public function __construct(EloquentAdminMailRepository $mailRepository)
+    private $userLogs;
+    public function __construct(EloquentAdminMailRepository $mailRepository,LogsActivitysRepository $userLogs)
     {
 
         $this->mailRepository = $mailRepository;
+        $this->userLogs = $userLogs;
     }
 
     public function create()
@@ -53,8 +56,17 @@ class AdminMailController extends Controller
     }
 
     public function sendMessage(AdminMailSendMessageRequest $request){
+        $array['type'] = 'Email';
+        $recipient=\DB::table('users')
+            ->where('id',$request->to)->first();
+        $array['heading']='Recipient:'.$recipient->email.'   and sent';
+        if($this->mailRepository->sendPrivateMessage($request))
+        {
+            $array['event'] = 'created';
 
-        $this->mailRepository->sendPrivateMessage($request);
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 
         return redirect()
             ->route('admin.mail.index')
@@ -102,8 +114,17 @@ class AdminMailController extends Controller
 
     public function destroy(Request $request, $id)
     {
+        $array['type'] = 'Email';
+        $recipient=\DB::table('threads')
+            ->where('id',$id)->first();
+        $array['heading']='Subject:  '.$recipient->subject;
+        if($this->mailRepository->deleteThread($id))
+        {
+            $array['event'] = 'deleted';
 
-        $this->mailRepository->deleteThread($id);
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
 
         return redirect()
             ->route('admin.mail.index')

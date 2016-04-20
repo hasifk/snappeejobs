@@ -195,7 +195,7 @@ class EloquentProjectRepository
        Event::fire(new ProjectDeleted($project, auth()->user()));
 
         $project->delete();
-        
+
         return true;
     }
 

@@ -2,6 +2,7 @@
 
 use App\Events\Frontend\Auth\UserLoggedIn;
 use App\Models\Access\User\User;
+use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use App\Repositories\Frontend\User\UserContract;
 use Illuminate\Http\Request;
 use App\Exceptions\GeneralException;
@@ -12,7 +13,7 @@ use App\Http\Requests\Frontend\Access\RegisterRequest;
 use App\Repositories\Frontend\Auth\AuthenticationContract;
 use Socialite;
 use Auth;
-
+use Activity;
 /**
  * Class AuthController
  * @package App\Http\Controllers\Frontend\Auth
@@ -25,14 +26,15 @@ class AuthController extends Controller
      * @var UserContract
      */
     private $users;
-
+    private $userLogs;
     /**
      * @param AuthenticationContract $auth
      */
-    public function __construct(AuthenticationContract $auth, UserContract $users)
+    public function __construct(AuthenticationContract $auth, UserContract $users,LogsActivitysRepository $userLogs)
     {
         $this->auth = $auth;
         $this->users = $users;
+        $this->userLogs = $userLogs;
     }
 
     /**
@@ -76,13 +78,29 @@ class AuthController extends Controller
         if (config('access.users.confirm_email')) {
             $user = $this->auth->create($request->all());
             $this->auth->createJobSeeker($user);
-            $this->users->updateProfileCompleteness($user);
+            $array['type'] = 'JobSeeker';
+            $array['heading']='Name:'.$user->name;
+            if($this->users->updateProfileCompleteness($user))
+            {
+                $array['event'] = 'created';
+
+                $name = $this->userLogs->getActivityDescriptionForEvent($array);
+                Activity::log($name);
+            }
             return redirect()->route('home')->withFlashSuccess("Your account was successfully created. We have sent you an e-mail to confirm your account.");
         } else {
             //Use native auth login because do not need to check status when registering
             $user = $this->auth->create($request->all());
             $this->auth->createJobSeeker($user);
-            $this->users->updateProfileCompleteness($user);
+            $array['type'] = 'JobSeeker';
+            $array['heading']='With name:'.$user->name;
+           if($this->users->updateProfileCompleteness($user))
+           {
+               $array['event'] = 'created';
+
+               $name = $this->userLogs->getActivityDescriptionForEvent($array);
+               Activity::log($name);
+           }
             auth()->login($user);
             return redirect()->route('home');
         }
@@ -116,6 +134,9 @@ class AuthController extends Controller
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
         // the IP address of the client making these requests into this application.
+        $array['type'] = 'User';
+        $array['heading']='with Email:'.$request->email.' is Logged In';
+
         $throttles = $this->isUsingThrottlesLoginsTrait();
 
         if ($throttles && $this->hasTooManyLoginAttempts($request))
@@ -131,8 +152,16 @@ class AuthController extends Controller
             // Chekcing if the logged in user is a Normal User
             // and if the user has uploaded resume and saved the job preferences.
             if ( access()->hasRole('User') ) {
+                $array['event'] = 'loggedIn';
+
+                $name = $this->userLogs->getActivityDescriptionForEvent($array);
+                Activity::log($name);
                 return redirect()->intended('/');
             } else {
+                $array['event'] = 'loggedIn';
+
+                $name = $this->userLogs->getActivityDescriptionForEvent($array);
+                Activity::log($name);
                 return redirect()->intended('/dashboard');
             }
 
@@ -162,7 +191,15 @@ class AuthController extends Controller
      */
     public function getLogout()
     {
-        $this->auth->logout();
+        $array['type'] = 'User';
+        $array['heading']='with Name:'.Auth::user()->name.' is Logged Out';
+        if($this->auth->logout())
+        {
+            $array['event'] = 'loggedOut';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
         return redirect()->route('home');
     }
 

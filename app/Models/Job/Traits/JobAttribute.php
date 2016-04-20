@@ -189,8 +189,15 @@ trait JobAttribute
         return '';
     }
 
+    public function getManageJobButtonAttribute(){
+        if (access()->can('employer-jobs-view-jobapplications'))
+            return '<a href="'.route('admin.employer.jobs.manage', $this->id).'" class="btn btn-xs btn-info"><i class="ion ion-ios-gear-outline" data-toggle="tooltip" data-placement="top" title="Manage Job Applications"></i></a>&nbsp;';
+        return '';
+    }
+
     public function getActionButtonsAttribute() {
-        return $this->getEditButtonAttribute().
+        return $this->getManageJobButtonAttribute().
+        $this->getEditButtonAttribute().
         $this->getStatusButtonAttribute().
         $this->getPublishedButtonAttribute().
         $this->getDeleteButtonAttribute();

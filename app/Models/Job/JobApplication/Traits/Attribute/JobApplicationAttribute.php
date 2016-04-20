@@ -19,8 +19,14 @@ trait JobApplicationAttribute
         return '<a href="'.route('admin.employer.jobs.application.decline', $this->id).'" class="btn btn-xs btn-danger"><i class="fa fa-ban" data-toggle="tooltip" data-placement="top" title="Decline"></i></a> ';
     }
 
+    public function getManageButtonAttribute(){
+        return '<a href="'.route('admin.employer.jobs.manage', $this->job_id).'" class="btn btn-xs btn-info"><i class="ion ion-ios-gear-outline" data-toggle="tooltip" data-placement="top" title="Manage Job Applications"></i></a>&nbsp; ';
+    }
+
+
+
     public function getActionButtonsAttribute() {
-        return $this->getViewtButtonAttribute();
+        return $this->getViewtButtonAttribute() . $this->getManageButtonAttribute();
     }
 
     public function getStatusAttribute(){

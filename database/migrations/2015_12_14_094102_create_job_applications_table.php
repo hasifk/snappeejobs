@@ -16,6 +16,7 @@ class CreateJobApplicationsTable extends Migration
             $table->increments('id')->unsigned();
             $table->integer('job_id')->unsigned();
             $table->integer('user_id')->unsigned();
+            $table->integer('job_application_status_company_id')->unsigned();
             $table->timestamp('accepted_at')->nullable();
             $table->integer('accepted_by')->nullable();
             $table->timestamp('declined_at')->nullable();
@@ -33,6 +34,11 @@ class CreateJobApplicationsTable extends Migration
                 ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+            $table->foreign('job_application_status_company_id')
+                ->references('id')
+                ->on('job_application_status_company')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
         });
     }
 
@@ -46,6 +52,7 @@ class CreateJobApplicationsTable extends Migration
         Schema::table('job_applications', function (Blueprint $table) {
             $table->dropForeign('job_applications_job_id_foreign');
             $table->dropForeign('job_applications_user_id_foreign');
+            $table->dropForeign('job_applications_job_application_status_company_id_foreign');
         });
 
         Schema::drop('job_applications');

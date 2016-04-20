@@ -21,6 +21,8 @@ $router->group([
         get('jobs/hidden', 'JobsController@hidden')->name('admin.employer.jobs.hidden');
         get('jobs/deleted', 'JobsController@deleted')->name('admin.employer.jobs.deleted');
 
+        get('jobs/manage/{id}', 'JobsController@manage')->name('admin.employer.jobs.manage');
+
         get('jobs/applications', 'JobsController@applications')->name('admin.employer.jobs.applications');
         get('jobs/application/{id}', 'JobsController@application')->name('admin.employer.jobs.application');
         post('jobs/application/accept/{id}', 'JobsController@acceptJobApplication')->name('admin.employer.jobs.application.accept');

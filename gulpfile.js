@@ -59,6 +59,7 @@ elixir(function(mix) {
                 'bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.all.js',
                 'select2/dist/js/select2.js',
                 './node_modules/socket.io-client/socket.io.js',
+                'Sortable/Sortable.js',
                 'Caret.js/dist/jquery.caret.js',
                 'owlcarousel/owl-carousel/owl.carousel.js',
                 'At.js/dist/js/jquery.atwho.js',

@@ -49,6 +49,7 @@
                             <input type="submit" value="Reject" class="btn btn-danger">
                         </form>
                     </td>
+                    <td>&nbsp;<a class="btn btn-primary" href="{{ route('admin.employer.jobs.manage', $job_application->job_id) }}">Manage Job Application</a></td>
                 </tr>
             </table>
             @endif

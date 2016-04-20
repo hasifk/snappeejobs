@@ -347,4 +347,9 @@ LogsActivitysRepository $userLogs)
 
     }
 
+    public function manage(){
+        $view = [];
+        return view('backend.employer.jobs.manage', $view);
+    }
+
 }

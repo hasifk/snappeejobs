@@ -39,8 +39,8 @@ class UserTableSeeder extends Seeder {
 				'confirmation_code' => md5(uniqid(mt_rand(), true)),
 				'confirmed' => true,
 				'employer_id'=>2,
-                'country_id'        => 38,
-                'state_id'          => 605,
+                'country_id'        => 222,
+                'state_id'          => 3428,
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			],
@@ -51,8 +51,8 @@ class UserTableSeeder extends Seeder {
 				'confirmation_code' => md5(uniqid(mt_rand(), true)),
 				'confirmed' => true,
                 'employer_id'=>3,
-                'country_id'        => 38,
-                'state_id'          => 605,
+                'country_id'        => 222,
+                'state_id'          => 3428,
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			],

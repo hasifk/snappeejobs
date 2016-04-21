@@ -104,12 +104,29 @@ class CustomTableSeeder extends \Illuminate\Database\Seeder
             "
         );
 
+        \DB::table('job_application_statuses')->insert([
+            [ 'name' => 'Applied', 'status' => 'applied'],
+            [ 'name' => 'Feedback','status' => 'feedback'],
+            [ 'name' => 'Interviewing','status' => 'interviewing'],
+            [ 'name' => 'Disqualified','status' => 'disqualified'],
+            [ 'name' => 'Hired','status' => 'hired']
+        ]);
+
+
+        \DB::table('job_application_status_company')->insert([
+            [ 'id' => '1', 'employer_id' =>'6', 'job_application_status_id' => '1','name' => 'Applied']
+        ]);
+
         \DB::statement(
             "
-            INSERT INTO `job_applications` (`id`, `job_id`, `user_id`, `accepted_at`, `accepted_by`, `declined_at`, `declined_by`, `declined_viewed_at`, `created_at`, `updated_at`) VALUES
-            (1, 2, 7, NULL, NULL, NULL, NULL, NULL, '2016-03-07 03:36:28', '2016-03-07 03:36:28');
+            INSERT INTO `job_applications` (`id`, `job_id`, `user_id`, `job_application_status_company_id`, `accepted_at`, `accepted_by`, `declined_at`, `declined_by`, `declined_viewed_at`, `created_at`, `updated_at`) VALUES
+            (1, 2, 7, 1, NULL, NULL, NULL, NULL, NULL, '2016-03-07 03:36:28', '2016-03-07 03:36:28');
             "
         );
+
+        \DB::table('job_application_status_history')->insert([
+            [ 'job_application_id' =>  '1', 'job_application_status_company_id' => '1']
+        ]);
 
         \DB::statement(
             "

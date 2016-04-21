@@ -34,11 +34,11 @@ class CreateJobApplicationsTable extends Migration
                 ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-          /*  $table->foreign('job_application_status_company_id')
+            $table->foreign('job_application_status_company_id')
                 ->references('id')
                 ->on('job_application_status_company')
                 ->onUpdate('cascade')
-                ->onDelete('cascade');*/
+                ->onDelete('cascade');
         });
     }
 
@@ -52,7 +52,7 @@ class CreateJobApplicationsTable extends Migration
         Schema::table('job_applications', function (Blueprint $table) {
             $table->dropForeign('job_applications_job_id_foreign');
             $table->dropForeign('job_applications_user_id_foreign');
-           // $table->dropForeign('job_applications_job_application_status_company_id_foreign');
+            $table->dropForeign('job_applications_job_application_status_company_id_foreign');
         });
 
         Schema::drop('job_applications');

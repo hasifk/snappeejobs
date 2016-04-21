@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\Job;
 
 use App\Models\Job\Job;
 use App\Models\JobSeeker\JobSeeker;
+use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use App\Repositories\Frontend\Job\EloquentJobRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -12,21 +13,22 @@ use DB;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
-
+use Activity;
 class JobsController extends Controller
 {
     /**
      * @var EloquentJobRepository
      */
     private $jobRepository;
-
+    private $userLogs;
     /**
      * JobsController constructor.
      * @param EloquentJobRepository $jobRepository
      */
-    public function __construct(EloquentJobRepository $jobRepository)
+    public function __construct(EloquentJobRepository $jobRepository,LogsActivitysRepository $userLogs)
     {
         $this->jobRepository = $jobRepository;
+        $this->userLogs = $userLogs;
     }
 
     public function index(Request $request){
@@ -112,6 +114,10 @@ class JobsController extends Controller
     {
 
         $jobId = $request->get('jobId');
+        $jobName=Job::where('id',$jobId)->pluck('title');
+        $array['type'] = 'JobSeeker';
+        $array['heading']='with Name:'.auth()->user()->name.' liked'.$jobName;
+
 
         if (! \DB::table('like_jobs')->where('job_id', $jobId)->where('user_id', auth()->user()->id)->count() ) {
             \DB::table('like_jobs')->insert([
@@ -129,13 +135,24 @@ class JobsController extends Controller
             ->where('id',$jobId)
             ->value('likes');
 
+
+        $array['event'] = 'liked';
+        $name = $this->userLogs->getActivityDescriptionForEvent($array);
+        Activity::log($name);
+
         return json_encode(['status'=>1,'likes'=>$likes]);
 
     }
 
     public function applyJob(Requests\Frontend\Job\ApplyJob $request){
         $status = $this->jobRepository->applyJob(auth()->user(), Job::findOrFail($request->get('jobId')));
+        $jobName=Job::where('id',$request->get('jobId'))->pluck('title');
+        $array['type'] = 'JobSeeker';
+        $array['heading']='with Name:'.auth()->user()->name.' applied for'.$jobName;
+        $array['event'] = 'applied';
 
+        $name = $this->userLogs->getActivityDescriptionForEvent($array);
+        Activity::log($name);
         return json_encode( [ 'status' => $status ] );
     }
 

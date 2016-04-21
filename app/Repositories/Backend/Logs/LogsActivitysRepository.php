@@ -68,6 +68,22 @@ public function getActivityDescriptionForEvent($eventName)
     {
         return $eventName['type'] .' logged out-The '.$eventName['type'].' '.$eventName['heading'].'-'.$author;
     }
+    if ($eventName['event'] == 'following')
+    {
+        return $eventName['type'] .' following -The '.$eventName['type'].' '.$eventName['heading'].'-'.$author;
+    }
+    if ($eventName['event'] == 'unfollowed')
+    {
+        return $eventName['type'] .' unfollowed-The '.$eventName['type'].' '.$eventName['heading'].'-'.$author;
+    }
+    if ($eventName['event'] == 'applied')
+    {
+        return $eventName['type'] .' applied-The '.$eventName['type'].' '.$eventName['heading'].'-'.$author;
+    }
+    if ($eventName['event'] == 'liked')
+    {
+        return $eventName['type'] .' liked-The '.$eventName['type'].' '.$eventName['heading'].'-'.$author;
+    }
     return '';
 }
 

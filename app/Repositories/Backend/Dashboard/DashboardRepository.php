@@ -166,8 +166,8 @@ class DashboardRepository
     /**************************************************************************************************************/
     public function getLatLong() {
         $user = auth()->user()->employer_id;
-        $company = Company::where('employer_id', $user)->first();
-
+        //$company = Company::where('employer_id', $user)->first();
+        $company = User::where('id',auth()->user()->id)->where('employer_id', $user)->first();
         $state =State::find($company->state_id);
         $address = $state->name;
 

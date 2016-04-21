@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Company\Company;
 use App\Models\Company\CompanyFollowers;
 use App\Models\Company\People\People;
+use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use App\Repositories\Frontend\Company\EloquentCompanyRepository;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Session;
-
+use Activity;
 //require_once 'vendor/autoload.php';
 /*use GeoIp2\Database\Reader;*/
 
@@ -23,15 +24,16 @@ class CompaniesController extends Controller
      */
 
     private $companyRepository;
-
+    private $userLogs;
     /**
      * JobsController constructor.
      * @param EloquentCompanyRepository $companyRepository
      */
 
-    public function __construct(EloquentCompanyRepository $companyRepository)
+    public function __construct(EloquentCompanyRepository $companyRepository,LogsActivitysRepository $userLogs)
     {
         $this->companyRepository = $companyRepository;
+        $this->userLogs=$userLogs;
     }
 
     public function index(Request $request)
@@ -105,6 +107,8 @@ class CompaniesController extends Controller
     {
 
         $companyId = $request->get('companyId');
+        $companyName=Company::where('id',$companyId)->pluck('title');
+
 
         if (! \DB::table('follow_companies')->where('company_id', $companyId)->where('user_id', auth()->user()->id)->count() ) {
             \DB::table('follow_companies')->insert([
@@ -117,12 +121,28 @@ class CompaniesController extends Controller
                 ->where('id',$companyId)
                 ->increment('followers');
             $followerStatus='Following';
+
+            $array['type'] = 'User';
+            $array['heading']='with Name:'.auth()->user()->name.' is Following '.$companyName;
+            $array['event'] = 'following';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
         }
      else
         {
          CompanyFollowers::where('user_id',auth()->user()->id)->delete();
          Company::where('id',$companyId)->decrement('followers');
+
             $followerStatus='Follow';
+
+            $array['type'] = 'User';
+            $array['heading']='with Name:'.auth()->user()->name.' is unfollowed '.$companyName;
+            $array['event'] = 'unfollowed';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+
         }
         $followers = Company::where('id',$companyId)->value('followers');
 

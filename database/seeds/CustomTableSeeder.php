@@ -114,7 +114,11 @@ class CustomTableSeeder extends \Illuminate\Database\Seeder
 
 
         \DB::table('job_application_status_company')->insert([
-            [ 'id' => '1', 'employer_id' =>'6', 'job_application_status_id' => '1','name' => 'Applied']
+            [ 'id' => '1', 'employer_id' =>'6', 'job_application_status_id' => '1','name' => 'Applied'],
+            [ 'id' => '2', 'employer_id' =>'6', 'job_application_status_id' => '2','name' => 'Feedback'],
+            [ 'id' => '3', 'employer_id' =>'6', 'job_application_status_id' => '3','name' => 'Interviewing'],
+            [ 'id' => '4', 'employer_id' =>'6', 'job_application_status_id' => '4','name' => 'Disqualified'],
+            [ 'id' => '5', 'employer_id' =>'6', 'job_application_status_id' => '5','name' => 'Hired'],
         ]);
 
         \DB::statement(

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Employer\Jobs;
 
 use App\Events\Backend\Job\JobDeleted;
 use App\Events\Frontend\Job\JobSeekerChatReceived;
+use App\Http\Requests\Backend\Employer\Job\EmployerJobApplicationStatusEditRequest;
 use App\Http\Requests\Backend\Employer\Job\HideJobRequest;
 use App\Http\Requests\Backend\Employer\Job\MarkJobRequest;
 use App\Http\Requests\Backend\Employer\Job\PublishJobRequest;
@@ -350,6 +351,35 @@ LogsActivitysRepository $userLogs)
     public function manage(){
         $view = [];
         return view('backend.employer.jobs.manage', $view);
+    }
+
+    public function manageApplicationStatus(){
+        $job_application_statuses = \DB::table('job_application_status_company')
+            ->where('employer_id', auth()->user()->employer_id)
+            ->get();
+
+        $view = [
+            'job_application_statuses' => $job_application_statuses
+        ];
+        return view('backend.employer.jobs.manageapplicationstatus', $view);
+    }
+
+    public function editApplicationStatus(EmployerJobApplicationStatusEditRequest $request, $id){
+
+        $job_application_status = \DB::table('job_application_status_company')
+            ->where('employer_id', auth()->user()->employer_id)
+            ->where('id', $id)
+            ->first();
+
+        $view = [
+            'job_application_status' => $job_application_status
+        ];
+
+        return view('backend.employer.jobs.manageapplicationstatusedit', $view);
+    }
+
+    public function updateApplicationStatus(Requests\Backend\Employer\Job\EmployerJobApplicationStatusUpdateRequest $request, $id){
+        dd($id);
     }
 
 }

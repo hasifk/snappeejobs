@@ -22,6 +22,9 @@ $router->group([
         get('jobs/deleted', 'JobsController@deleted')->name('admin.employer.jobs.deleted');
 
         get('jobs/manage/{id}', 'JobsController@manage')->name('admin.employer.jobs.manage');
+        get('jobs/manage-application-status', 'JobsController@manageApplicationStatus')->name('admin.employer.jobs.manage.applicationstatus');
+        get('jobs/manage-application-status/edit/{id}', 'JobsController@editApplicationStatus')->name('admin.employer.jobs.manage.applicationstatus.edit');
+        post('jobs/manage-application-status/edit/{id}', 'JobsController@updateApplicationStatus')->name('admin.employer.jobs.manage.applicationstatus.update');
 
         get('jobs/applications', 'JobsController@applications')->name('admin.employer.jobs.applications');
         get('jobs/application/{id}', 'JobsController@application')->name('admin.employer.jobs.application');

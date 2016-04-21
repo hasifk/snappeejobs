@@ -4,7 +4,7 @@
 
 @section('page-header')
     <h1>
-        Manage Job Candidates
+        Manage Job Application Statuses
     </h1>
 @endsection
 
@@ -16,7 +16,6 @@
 @section('content')
 
 
-    @if(access()->can('employer-jobs-view-jobapplications'))
     <div style="margin-bottom:10px;">
         <div class="btn-group">
             <button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -25,8 +24,8 @@
             </button>
             <ul class="dropdown-menu" role="menu">
                 <li>
-                    <a href="{{route('admin.employer.jobs.manage.applicationstatus')}}">
-                        Job Application Status Setting
+                    <a href="{{route('admin.employer.jobs.index')}}">
+                        Jobs
                     </a>
                 </li>
             </ul>
@@ -34,8 +33,16 @@
     </div>
 
     <div class="clearfix"></div>
-    @endif
 
+    <table class="table">
+        @foreach($job_application_statuses as $job_application_status)
+        <tr>
+            <td>{{ $job_application_status->name }}</td>
+            <td>
+                <a href="{{ route('admin.employer.jobs.manage.applicationstatus.edit', $job_application_status->id) }}" class="btn btn-primary">Edit the text</a>
+            </td>
+        </tr>
+        @endforeach
+    </table>
 
-    <div class="clearfix"></div>
 @stop

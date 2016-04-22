@@ -18,7 +18,9 @@ get('employeranalytics/interestedjobs', 'EmployerAnalyticsController@interestedj
 get('employeranalytics/notinterestedjobs', 'EmployerAnalyticsController@notinterestedjobsanalytics')->name('backend.employernotintjobs');
 get('staffmemebers/{id}', 'DashboardController@showstaffmembers')->name('staffmembers.show');
 get('employeranalytics/companyvisitors', 'EmployerAnalyticsController@companyVisitors')->name('backend.companyvisitors');
+get('employeranalytics/companyauthvisitors', 'EmployerAnalyticsController@companyAuthVisitors')->name('backend.companyauthvisitors');
 get('employeranalytics/jobvisitors', 'EmployerAnalyticsController@jobVisitors')->name('backend.jobvisitors');
+get('employeranalytics/jobauthvisitors', 'EmployerAnalyticsController@jobAuthVisitors')->name('backend.jobauthvisitors');
 get('employeranalytics/uniquejobvisitors', 'EmployerAnalyticsController@uniqueJobVisitors')->name('backend.uniquejobvisitors');
 get('employeranalytics/uniquecompanyvisitors', 'EmployerAnalyticsController@uniqueCompanyVisitors')->name('backend.uniquecompanyvisitors');
 get('socialmediafeeds/addtwitterinfo', 'SocialMediaFeedsController@addtwitterinfo')->name('backend.addtwitterinfo');

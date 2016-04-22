@@ -21,7 +21,7 @@
         @roles(['Employer', 'Employer Staff'])
 
 
-        @if(count($job_visitors)>0 )
+        @if(count($job_auth_visitors)>0)
 
 
 
@@ -40,13 +40,10 @@
                         </tr>
 
 
-
-
-
-                            @foreach($job_visitors as $job)
+                            @foreach($job_auth_visitors as $job)
                                 <tr>
                                     <td><a href="{{ route('jobs.view' , [ $job->url_slug , $job->title_url_slug ] ) }}">{{ $job->title }}</a></td>
-                                    <td>Guest</td>
+                                    <td><a href="{{ route('jobseeker.show' , [ $job->user_id ] ) }}">{{ $job->name }}</a></td>
                                     <td>{{$job->country}}</td>
                                     <td>
                                         {{$job->latitude}}
@@ -54,6 +51,10 @@
                                     <td>{{$job->longitude}}</td>
                                 </tr>
                             @endforeach
+
+
+
+
 
                     </table>
                 </div><!-- /.box-body -->

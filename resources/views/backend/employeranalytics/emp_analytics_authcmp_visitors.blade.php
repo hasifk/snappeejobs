@@ -22,7 +22,7 @@
 
 
 
-        @if(count($company_visitors)>0)
+        @if(count($company_auth_visitors)>0 )
 
 
 
@@ -39,19 +39,19 @@
                         <th style="width: 40px">Longitude</th>
                     </tr>
 
-    @foreach($company_visitors as $cmp)
-    <tr>
-        <td>Guest.</td>
-        <td>{{$cmp->country}}</td>
-        <td>
-            {{$cmp->latitude}}
-        </td>
-        <td>{{$cmp->longitude}}</td>
-    </tr>
- @endforeach
-                    <div class="col-md-12 center-block">
-                        {!! $company_visitors->render() !!}
-                    </div>
+                    @if(count($company_auth_visitors)>0)
+                        @foreach($company_auth_visitors as $cmp)
+                            <tr>
+                                <td> <a href="{{ route('jobseeker.show' , [ $cmp->user_id ] ) }}">{{ $cmp->name }}</a></td>
+                                <td>{{$cmp->country}}</td>
+                                <td>
+                                    {{$cmp->latitude}}
+                                </td>
+                                <td>{{$cmp->longitude}}</td>
+                            </tr>
+                        @endforeach
+                         @endif
+
 </table>
 </div><!-- /.box-body -->
 

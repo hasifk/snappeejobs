@@ -260,10 +260,16 @@
                     <li class="{{ Active::pattern('admin/employeranalytics/companyvisitors') }}">
                       <a href="{!! url('admin/employeranalytics/companyvisitors') !!}">{{ 'Company Visitors' }}</a>
                     </li>
+
+                      <li class="{{ Active::pattern('admin/employeranalytics/companyauthvisitors') }}">
+                          <a href="{!! url('admin/employeranalytics/companyauthvisitors') !!}">{{ 'Authenticated Company  Visitors' }}</a>
+                      </li>
                     <li class="{{ Active::pattern('admin/employeranalytics/jobvisitors') }}">
                       <a href="{!! url('admin/employeranalytics/jobvisitors') !!}">{{ 'Job Visitors' }}</a>
                     </li>
-
+                      <li class="{{ Active::pattern('admin/employeranalytics/jobauthvisitors') }}">
+                          <a href="{!! url('admin/employeranalytics/jobauthvisitors') !!}">{{ 'Authenticated Job  Visitors' }}</a>
+                      </li>
                     <li class="{{ Active::pattern('admin/employeranalytics/uniquejobvisitors') }}">
                       <a href="{!! url('admin/employeranalytics/uniquejobvisitors') !!}">{{ 'Unique Job Visitors' }}</a>
                     </li>

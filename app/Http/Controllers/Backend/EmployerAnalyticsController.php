@@ -78,14 +78,27 @@ class EmployerAnalyticsController extends Controller {
     public function companyVisitors(Request $request)
     {
         if ( access()->hasRole('Employer','Employer Staff') ) {
-            $company_visitors =$this->repository->getTotalCmpVisitors();
+            $company_visitors =$this->repository->getTotalCmpVisitors($request);
+            /*$paginator = $company_visitors1['paginator'];
+            $company_visitors = $company_visitors1['company_visitors'];*/
+            $view = [
+                'company_visitors'              => $company_visitors,
+
+            ];
+            return view('backend.employeranalytics.emp_analytics_cmp_visitors',$view);
+
+        }
+    }
+    /************************************************************************************************************/
+    public function companyAuthVisitors(Request $request)
+    {
+        if ( access()->hasRole('Employer','Employer Staff') ) {
             $company_auth_visitors =$this->repository->getTotalAuthCmpVisitors();
 
             $view = [
-                'company_visitors'              => $company_visitors,
                 'company_auth_visitors'         => $company_auth_visitors,
             ];
-            return view('backend.employeranalytics.emp_analytics_cmp_visitors',$view);
+            return view('backend.employeranalytics.emp_analytics_authcmp_visitors',$view);
 
         }
     }
@@ -94,16 +107,27 @@ class EmployerAnalyticsController extends Controller {
 {
     if ( access()->hasRole('Employer','Employer Staff') ) {
         $job_visitors =$this->repository->getTotalJobVisitors();
-        $job_auth_visitors =$this->repository->getTotalAuthJobVisitors();
 
         $view = [
             'job_visitors'              => $job_visitors,
-            'job_auth_visitors'         => $job_auth_visitors,
         ];
         return view('backend.employeranalytics.emp_analytics_job_visitors',$view);
 
     }
 }
+    /************************************************************************************************************/
+    public function jobAuthVisitors(Request $request)
+    {
+        if ( access()->hasRole('Employer','Employer Staff') ) {
+            $job_auth_visitors =$this->repository->getTotalAuthJobVisitors();
+
+            $view = [
+                'job_auth_visitors'         => $job_auth_visitors,
+            ];
+            return view('backend.employeranalytics.emp_analytics_authjob_visitors',$view);
+
+        }
+    }
     /************************************************************************************************************/
     public function UniqueJobVisitors(Request $request)
     {

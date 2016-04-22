@@ -7,16 +7,27 @@ use App\Models\Access\User\CompanyVisitor;
 use App\Models\Access\User\JobVisitor;
 use App\Models\Company\Company;
 
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+
 
 class EmployerAnalyticsRepository
 {
 
 
 
-    public function getTotalCmpVisitors()
+    public function getTotalCmpVisitors(Request $request)
     {
-        return  CompanyVisitor::where('company_id', auth()->user()->company_id)
-            ->whereNull('user_id')->get();
+       $company_visitors=  CompanyVisitor::where('company_id', auth()->user()->company_id)
+            ->whereNull('user_id')->paginate(10);
+      // $paginator = $this->getPaginator($request,$company_visitors, count($company_visitors), 1);
+       // $company_visitors=$company_visitors->paginate(2);
+        /*return [
+            'company_visitors'         => $company_visitors,
+            'paginator'         => $paginator
+        ];*/
+        return $company_visitors;
     }
    /***************************************************************************************************************/
     public function getTotalAuthCmpVisitors()
@@ -82,6 +93,23 @@ class EmployerAnalyticsRepository
             ->where('company_visitors.company_id',auth()->user()->company_id)
             ->groupBy('users.id')
             ->get(['company_visitors.*',\DB::raw('count(users.id) as visitors'),'users.*']);
+    }
+
+    /***************************************************************************************************************/
+    public function getPaginator(Request $request,$obj,$count,$limit)
+    {
+        $curPage = Paginator::resolveCurrentPage();
+
+
+        $paginator = new LengthAwarePaginator(
+            $obj, $count, $limit, $curPage,
+            ['path' => Paginator::resolveCurrentPath()]
+        );
+
+        $paginator->appends($request->except(['page']));
+
+        return $paginator;
+
     }
 
     /***************************************************************************************************************/

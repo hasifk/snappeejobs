@@ -31,7 +31,7 @@
             <tr>
                 <td>{{ $jobapplication->job->title }}</td>
                 <td>{{ $jobapplication->jobseeker->name }}</td>
-                <td>{{ $jobapplication->status }}</td>
+                <td>{{ $jobapplication->name }}</td>
                 <td>{!! $jobapplication->action_buttons !!}</td>
             </tr>
         @endforeach

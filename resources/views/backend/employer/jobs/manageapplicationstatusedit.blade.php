@@ -37,7 +37,14 @@
     {!! Form::open(['route' => ['admin.employer.jobs.manage.applicationstatus.update', $job_application_status->id], 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'post']) !!}
 
     <div class="form-group">
-        {!! Form::label('name', 'Name', ['class' => 'col-lg-2 control-label']) !!}
+        {!! Form::label('name', 'Real Name', ['class' => 'col-lg-2 control-label']) !!}
+        <div class="col-lg-10">
+            <label for="" disabled="disabled" class="form-control">{{ $job_application_real_name }}</label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        {!! Form::label('name', 'Your version', ['class' => 'col-lg-2 control-label']) !!}
         <div class="col-lg-10">
             {!! Form::text('name', ( old('name') ? old('name') : $job_application_status->name ), ['class' => 'form-control', 'placeholder' => 'Status Name']) !!}
         </div>

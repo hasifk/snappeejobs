@@ -64,6 +64,9 @@ class UserCreatedHandler
                 ]);
 
                 $user->employer_id = $createdUserId;
+                $user->country_id = $createdUser->country_id;
+                $user->state_id = $createdUser->state_id;
+                $user->employer_id = $createdUserId;
                 $user->save();
 
             } else if ( $employer && (!$employer->is_admin) ) {

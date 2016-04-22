@@ -281,6 +281,18 @@ class EloquentUserRepository implements UserContract {
 		$user->group_token = str_random(20);
 		$user->save();
 
+		// Create job_application_status_company entry for this employer
+		$job_application_statuses = \DB::table('job_application_statuses')->get();
+		foreach ($job_application_statuses as $application_status) {
+			\DB::table('job_application_status_company')->insert([
+				'employer_id' => $user->id,
+				'job_application_status_id' => $application_status->id,
+				'name' => $application_status->name,
+				'created_at' => Carbon::now(),
+				'updated_at' => Carbon::now(),
+			]);
+		}
+
 		$this->sendConfirmationEmail($user);
 
 		return $user;

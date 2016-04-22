@@ -93,6 +93,7 @@ class EloquentJobRepository {
 	public function getJobApplications($per_page){
 		$job_applications = JobApplication
 			::join('jobs', 'jobs.id', '=', 'job_applications.job_id')
+			->join('job_application_status_company', 'job_application_status_company.id', '=', 'job_applications.job_application_status_company_id')
 			->where('company_id', $this->companyId)
 			->where(function($query){
 				$query->whereNull('job_applications.accepted_at' )
@@ -103,6 +104,7 @@ class EloquentJobRepository {
 				'job_applications.id',
 				'job_applications.job_id',
 				'job_applications.user_id',
+				'job_application_status_company.name',
 				'job_applications.accepted_at',
 				'job_applications.declined_at'
 			])

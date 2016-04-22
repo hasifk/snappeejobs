@@ -183,11 +183,20 @@ class EloquentJobRepository {
 
         if ( $jobApplied ) return false;
 
+        // get the job_application_status_company_id from the job_application_status_company table for this employer
+        $employer_id = \DB::table('companies')->where('id', $job->company_id)->value('employer_id');
+
+        $job_application_status_company_id = \DB::table('job_application_status_company')
+            ->where('employer_id', $employer_id)
+            ->where('job_application_status_id', 1)
+            ->value('id');
+
         $jobApplicationId = \DB::table('job_applications')->insertGetId([
-            'job_id'        => $job->id,
-            'user_id'       => $user->id,
-            'created_at'    => Carbon::now(),
-            'updated_at'    => Carbon::now()
+            'job_id'                                => $job->id,
+            'user_id'                               => $user->id,
+            'job_application_status_company_id'     => $job_application_status_company_id,
+            'created_at'                            => Carbon::now(),
+            'updated_at'                            => Carbon::now()
         ]);
 
         event(new JobApplied($jobApplicationId));

@@ -2,10 +2,11 @@
 
 namespace App\Repositories\Backend\Admin\Company;
 
+use App\Events\Backend\Company\CompanyUpdated;
 use App\Models\Company\Company;
 use App\Models\Company\NewCompanyTemp\NewCompanyTemp;
 use Illuminate\Http\Request;
-
+use Event;
 class EloquentCompanyRepository
 {
     public function getCompaniesPaginated($per_page, $order_by = 'companies.id', $sort = 'asc'){
@@ -65,7 +66,7 @@ class EloquentCompanyRepository
             ], $request->get('photos_delete'));
 
             $company->attachLogo($request->file('logo'));
-
+            Event::fire(new CompanyUpdated($company));
             return $company;
         }
 

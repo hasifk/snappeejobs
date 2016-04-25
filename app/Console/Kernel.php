@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel {
 		'App\Console\Commands\Inspire',
 		'App\Console\Commands\MigrateClear',
 		'App\Console\Commands\PaidCompany',
+		'App\Console\Commands\EmployerAddOnReset',
 	];
 
 	/**
@@ -25,7 +26,7 @@ class Kernel extends ConsoleKernel {
 	 */
 	protected function schedule(Schedule $schedule)
 	{
-		$schedule->command('inspire')->hourly();
         $schedule->command('snappeepaidcompany')->hourly();
+        $schedule->command('snappeejobs:employeraddonreset')->monthly();
 	}
 }

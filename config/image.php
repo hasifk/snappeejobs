@@ -20,16 +20,16 @@ return array(
     'thumbnails' => [
         'user_profile_image' => [
             [
+                'height' => 90,
+                'width'  => 90,
+            ],
+            [
                 'height' => 45,
                 'width'  => 45,
             ],
             [
                 'height' => 25,
                 'width'  => 25,
-            ],
-            [
-                'height' => 90,
-                'width'  => 90,
             ]
         ]
     ]

@@ -129,28 +129,49 @@ class ProfileController extends Controller {
 	public function update(UserContract $user, UpdateProfileRequest $request) {
 		$user->updateProfile($request->all());
 
-        $avatar = $request->file('avatar');
+		$avatar = $request->file('avatar');
 
-        if ( $avatar && $avatar->isValid() ) {
+		if ( $avatar && $avatar->isValid() ) {
 
-			if ( auth()->user()->avatar_filename && Storage::has(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension) ) {
-				Storage::delete(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension);
+			if ( \Storage::has(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension) ) {
+				\Storage::deleteDirectory(auth()->user()->avatar_path);
 			}
 
-            $filePath = "users/" . auth()->user()->id."/avatar/";
-            Storage::put($filePath. $avatar->getClientOriginalName() , file_get_contents($avatar));
-            Storage::setVisibility($filePath. $avatar->getClientOriginalName(), 'public');
+			$filePath = "users/" . auth()->user()->id."/avatar/";
+			\Storage::put($filePath. $avatar->getClientOriginalName() , file_get_contents($avatar));
+			\Storage::setVisibility($filePath. $avatar->getClientOriginalName(), 'public');
 
-            $update_array = [
-                'avatar_filename' => pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME),
-                'avatar_extension' => $avatar->getClientOriginalExtension(),
-                'avatar_path' => $filePath
-            ];
+			if ( auth()->user()->avatar_filename ) {
+				foreach (config('image.thumbnails.user_profile_image') as $image) {
+					if ( \Storage::has($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension()) ) {
+						\Storage::delete($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension());
+					}
+				}
+			}
 
-            auth()->user()->update($update_array);
+			$update_array = [
+				'avatar_filename' => pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME),
+				'avatar_extension' => $avatar->getClientOriginalExtension(),
+				'avatar_path' => $filePath
+			];
+
+			auth()->user()->update($update_array);
+
+			// Resize User Profile Image
+			$profile_image = \Image::make($avatar);
+
+			\Storage::disk('local')->put($filePath.$avatar->getClientOriginalName(), file_get_contents($avatar));
+
+			foreach (config('image.thumbnails.user_profile_image') as $image) {
+				$profile_image->resize($image['width'], $image['height'])->save( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) );
+				\Storage::put($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() , file_get_contents( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) ) );
+				\Storage::setVisibility($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension(), 'public');
+			}
+
+			\Storage::disk('local')->deleteDirectory($filePath);
 
 			$this->users->updateProfileCompleteness(auth()->user());
-        }
+		}
 
 		return redirect()->route('frontend.dashboard')->withFlashSuccess(trans("strings.profile_successfully_updated"));
 	}
@@ -161,12 +182,20 @@ class ProfileController extends Controller {
 
 		if ( $avatar && $avatar->isValid() ) {
 
+			if ( \Storage::has(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension) ) {
+				\Storage::deleteDirectory(auth()->user()->avatar_path);
+			}
+
 			$filePath = "users/" . auth()->user()->id."/avatar/";
-			Storage::put($filePath. $avatar->getClientOriginalName() , file_get_contents($avatar));
-			Storage::setVisibility($filePath. $avatar->getClientOriginalName(), 'public');
+			\Storage::put($filePath. $avatar->getClientOriginalName() , file_get_contents($avatar));
+			\Storage::setVisibility($filePath. $avatar->getClientOriginalName(), 'public');
 
 			if ( auth()->user()->avatar_filename ) {
-				Storage::delete(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension);
+				foreach (config('image.thumbnails.user_profile_image') as $image) {
+					if ( \Storage::has($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension()) ) {
+						\Storage::delete($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension());
+					}
+				}
 			}
 
 			$update_array = [
@@ -176,6 +205,20 @@ class ProfileController extends Controller {
 			];
 
 			auth()->user()->update($update_array);
+
+			// Resize User Profile Image
+			$profile_image = \Image::make($avatar);
+
+			\Storage::disk('local')->put($filePath.$avatar->getClientOriginalName(), file_get_contents($avatar));
+
+			foreach (config('image.thumbnails.user_profile_image') as $image) {
+				$profile_image->resize($image['width'], $image['height'])->save( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) );
+				\Storage::put($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() , file_get_contents( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) ) );
+				\Storage::setVisibility($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension(), 'public');
+			}
+
+			\Storage::disk('local')->deleteDirectory($filePath);
+
 			$this->users->updateProfileCompleteness(auth()->user());
 		}
 

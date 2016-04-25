@@ -176,7 +176,7 @@ class DashboardController extends Controller {
 
         if ($jobApplications) {
             foreach ($jobApplications as $key => $jobApplication) {
-                $jobApplications[$key]->{'image'} = User::find($jobApplication->user_id)->picture;
+                $jobApplications[$key]->{'image'} = User::find($jobApplication->user_id)->getPictureAttribute(25, 25);
                 $jobApplications[$key]->{'was_created'} = Carbon::parse($jobApplication->created_at)->diffForHumans();
             }
         }

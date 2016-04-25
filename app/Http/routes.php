@@ -56,3 +56,6 @@ $router->group(['namespace' => 'Backend'], function () use ($router)
 		});
 	});
 });
+
+Route::post('stripe/webhook', '\Laravel\Cashier\WebhookController@handleWebhook');
+

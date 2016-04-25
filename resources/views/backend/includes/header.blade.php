@@ -35,7 +35,7 @@
                             @endauth
                               <div class="pull-left">
                                 <!-- User Image -->
-                                <img src="{!! \App\Models\Access\User\User::find($unread_message->id)->picture !!}" class="img-circle" alt="User Image"/>
+                                <img src="{!! \App\Models\Access\User\User::find($unread_message->id)->getPictureAttribute(25, 25) !!}" class="img-circle" alt="User Image"/>
                               </div>
                               <!-- Message title and timestamp -->
                               <h4>
@@ -182,14 +182,14 @@
                     <!-- Menu Toggle Button -->
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                       <!-- The user image in the navbar-->
-                      <img src="{!! access()->user()->picture !!}" class="user-image" alt="User Image"/>
+                      <img src="{!! access()->user()->getPictureAttribute(25, 25) !!}" class="user-image" alt="User Image"/>
                       <!-- hidden-xs hides the username on small devices so only the image appears. -->
                       <span class="hidden-xs">{{ access()->user()->name }}</span>
                     </a>
                     <ul class="dropdown-menu">
                       <!-- The user image in the menu -->
                       <li class="user-header">
-                        <img src="{!! access()->user()->picture !!}" class="img-circle" alt="User Image" />
+                        <img src="{!! access()->user()->getPictureAttribute(25, 25) !!}" class="img-circle" alt="User Image" />
                         <p>
                           {{ access()->user()->name }}
                           <small>{{ trans('strings.member_since') }} {{ auth()->user()->created_at }}</small>

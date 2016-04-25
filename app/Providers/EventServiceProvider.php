@@ -78,6 +78,9 @@ class EventServiceProvider extends ServiceProvider {
         'App\Events\Backend\Tasks\TaskAssigned' => [
             'App\Listeners\Backend\Task\TaskAssignedHandler'
         ],
+		'App\Events\Backend\JobApplication\JobApplicationStatusChanged' => [
+			'App\Listeners\Backend\JobApplication\JobApplicationStatusChangedHandler'
+		]
 	];
 
 	/**

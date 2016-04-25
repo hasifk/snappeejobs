@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Employer\Jobs;
 
 use App\Events\Backend\Job\JobDeleted;
+use App\Events\Backend\JobApplication\JobApplicationStatusChanged;
 use App\Events\Frontend\Job\JobSeekerChatReceived;
 use App\Http\Requests\Backend\Employer\Job\EmployerJobApplicationStatusEditRequest;
 use App\Http\Requests\Backend\Employer\Job\HideJobRequest;
@@ -324,6 +325,10 @@ LogsActivitysRepository $userLogs)
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);
+
+        $jobApplication = JobApplication::find($job_application_id);
+
+        event(new JobApplicationStatusChanged($jobApplication, $request->get('to_status')));
 
         return response()->json(['status' => 1]);
 

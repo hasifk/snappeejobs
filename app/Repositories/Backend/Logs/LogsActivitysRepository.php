@@ -84,6 +84,26 @@ public function getActivityDescriptionForEvent($eventName)
     {
         return $eventName['type'] .' liked-The '.$eventName['type'].' '.$eventName['heading'].'-'.$author;
     }
+    if ($eventName['event'] == 'job application status change to applied')
+    {
+        return $eventName['type'] .' status changed-The '.$eventName['type'].' '.$eventName['heading'].'-'.$author;
+    }
+    if ($eventName['event'] == 'job application status change to feedback')
+    {
+        return $eventName['type'] .' status changed-The '.$eventName['type'].' '.$eventName['heading'].'-'.$author;
+    }
+    if ($eventName['event'] == 'job application status change to interviewed')
+    {
+        return $eventName['type'] .' status changed-The '.$eventName['type'].' '.$eventName['heading'].'-'.$author;
+    }
+    if ($eventName['event'] == 'job application status change to disqualified')
+    {
+        return $eventName['type'] .' status changed-The '.$eventName['type'].' '.$eventName['heading'].'-'.$author;
+    }
+    if ($eventName['event'] == 'job application status change to hired')
+    {
+        return $eventName['type'] .' status changed-The '.$eventName['type'].' '.$eventName['heading'].'-'.$author;
+    }
     return '';
 }
 

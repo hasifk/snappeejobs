@@ -53,7 +53,7 @@ class CompanyUpdated extends Event implements ShouldBroadcast
         $broadCastOn = [];
 
         foreach ($staffs as $staff) {
-            $broadCastOn[] = 'employer_staff.'.$staff;
+            $broadCastOn[] = 'employer.'.$staff;
         }
 
         return $broadCastOn;

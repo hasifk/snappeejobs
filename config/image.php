@@ -76,6 +76,21 @@ return array(
                 'height' => 25,
                 'width'  => 25,
             ]
+        ],
+
+        'jobseeker_images' => [
+            [
+                'height' => 90,
+                'width'  => 90,
+            ],
+            [
+                'height' => 45,
+                'width'  => 45,
+            ],
+            [
+                'height' => 25,
+                'width'  => 25,
+            ]
         ]
 
     ]

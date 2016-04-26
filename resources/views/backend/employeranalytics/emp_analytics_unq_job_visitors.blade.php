@@ -53,6 +53,9 @@
                                 </tr>
                             @endif
                             @endforeach
+                        <div class="col-md-12 center-block">
+                            {!! $job_unique_visitors->render() !!}
+                        </div>
 
                     </table>
                 </div><!-- /.box-body -->

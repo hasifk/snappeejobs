@@ -50,7 +50,9 @@
                             </tr>
                             @endif
                         @endforeach
-
+                        <div class="col-md-12 center-block">
+                            {!! $company_unique_visitors->render() !!}
+                        </div>
                     </table>
                 </div><!-- /.box-body -->
 

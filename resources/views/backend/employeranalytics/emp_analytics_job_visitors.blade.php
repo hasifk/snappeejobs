@@ -54,7 +54,9 @@
                                     <td>{{$job->longitude}}</td>
                                 </tr>
                             @endforeach
-
+                        <div class="col-md-12 center-block">
+                            {!! $job_visitors->render() !!}
+                        </div>
                     </table>
                 </div><!-- /.box-body -->
 

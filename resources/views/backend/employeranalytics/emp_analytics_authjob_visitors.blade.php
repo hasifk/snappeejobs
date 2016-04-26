@@ -54,7 +54,9 @@
 
 
 
-
+                        <div class="col-md-12 center-block">
+                            {!! $job_auth_visitors->render() !!}
+                        </div>
 
                     </table>
                 </div><!-- /.box-body -->

@@ -8,8 +8,6 @@ use App\Models\Access\User\JobVisitor;
 use App\Models\Company\Company;
 
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
 
 
 class EmployerAnalyticsRepository
@@ -21,12 +19,6 @@ class EmployerAnalyticsRepository
     {
        $company_visitors=  CompanyVisitor::where('company_id', auth()->user()->company_id)
             ->whereNull('user_id')->paginate(10);
-      // $paginator = $this->getPaginator($request,$company_visitors, count($company_visitors), 1);
-       // $company_visitors=$company_visitors->paginate(2);
-        /*return [
-            'company_visitors'         => $company_visitors,
-            'paginator'         => $paginator
-        ];*/
         return $company_visitors;
     }
    /***************************************************************************************************************/
@@ -39,7 +31,7 @@ class EmployerAnalyticsRepository
                 'company_visitors.*',
                 'users.*'
 
-            ])->get();
+            ])->paginate(10);
 
     }
     /***************************************************************************************************************/
@@ -56,7 +48,7 @@ class EmployerAnalyticsRepository
                 'jobs.title',
                 'jobs.title_url_slug',
                 'companies.url_slug'
-            ])->get();
+            ])->paginate(10);
     }
     /***************************************************************************************************************/
     public function getTotalAuthJobVisitors()
@@ -72,7 +64,7 @@ class EmployerAnalyticsRepository
                 'companies.url_slug',
                 'users.name'
 
-            ])->get();
+            ])->paginate(10);
     }
     /***************************************************************************************************************/
     public function getUniqueJobVisitors()
@@ -82,7 +74,8 @@ class EmployerAnalyticsRepository
             ->join('users', 'users.id','=','job_visitors.user_id')
             ->where('companies.id', '=', auth()->user()->company_id)
              ->groupBy('users.id')
-            ->get(['job_visitors.*',\DB::raw('count(users.id) as visitors'),'jobs.title','jobs.title_url_slug','companies.url_slug','users.name']);
+            ->select(['job_visitors.*',\DB::raw('count(users.id) as visitors'),'jobs.title','jobs.title_url_slug','companies.url_slug','users.name'])
+            ->paginate(10);
     }
     /***************************************************************************************************************/
 
@@ -92,28 +85,9 @@ class EmployerAnalyticsRepository
         return  CompanyVisitor::join('users','users.id','=','company_visitors.user_id' )
             ->where('company_visitors.company_id',auth()->user()->company_id)
             ->groupBy('users.id')
-            ->get(['company_visitors.*',\DB::raw('count(users.id) as visitors'),'users.*']);
+            ->select(['company_visitors.*',\DB::raw('count(users.id) as visitors'),'users.*'])->paginate(10);
     }
 
     /***************************************************************************************************************/
-    public function getPaginator(Request $request,$obj,$count,$limit)
-    {
-        $curPage = Paginator::resolveCurrentPage();
-
-
-        $paginator = new LengthAwarePaginator(
-            $obj, $count, $limit, $curPage,
-            ['path' => Paginator::resolveCurrentPath()]
-        );
-
-        $paginator->appends($request->except(['page']));
-
-        return $paginator;
-
-    }
-
-    /***************************************************************************************************************/
-
-
 
 }

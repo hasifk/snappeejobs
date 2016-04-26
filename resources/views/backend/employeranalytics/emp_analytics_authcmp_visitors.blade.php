@@ -50,6 +50,10 @@
                                 <td>{{$cmp->longitude}}</td>
                             </tr>
                         @endforeach
+
+                            <div class="col-md-12 center-block">
+                                {!! $company_auth_visitors->render() !!}
+                            </div>
                          @endif
 
 </table>

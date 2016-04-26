@@ -311,7 +311,7 @@
                 @endauth
                 @endauth
 
-
+                @role('Administrator')
                 <li class="{{ Active::pattern('admin/log-viewer*') }} treeview">
                   <a href="#">
                     <span>{{ trans('menus.log-viewer.main') }}</span>
@@ -326,6 +326,7 @@
                     </li>
                   </ul>
                 </li>
+                @endauth
                 
               </ul><!-- /.sidebar-menu -->
             </section>

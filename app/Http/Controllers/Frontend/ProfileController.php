@@ -12,6 +12,7 @@ use App\Models\Access\User\User;
 use App\Models\JobSeeker\JobSeeker;
 use App\Models\Mail\Thread;
 use App\Repositories\Backend\JobSeeker\EloquentJobSeekerRepository;
+use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use App\Repositories\Backend\Mail\EloquentMailRepository;
 use App\Repositories\Frontend\User\UserContract;
 use App\Http\Requests\Frontend\User\UpdateProfileRequest;
@@ -19,6 +20,8 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use Storage;
+use Auth;
+use Activity;
 
 /**
  * Class ProfileController
@@ -29,17 +32,18 @@ class ProfileController extends Controller {
 	 * @var UserContract
 	 */
 	private $users;
-
+    private $userLogs;
 
 	/**
 	 * ProfileController constructor.
 	 * @param UserContract $users
      */
-	public function __construct(UserContract $users,EloquentJobSeekerRepository $videorepo)
+	public function __construct(UserContract $users,EloquentJobSeekerRepository $videorepo,LogsActivitysRepository $userLogs)
 	{
 
 		$this->users = $users;
         $this->videorepo =$videorepo;
+		$this->userLogs =$userLogs;
 	}
 
 	/**
@@ -65,7 +69,8 @@ class ProfileController extends Controller {
 	}
 
 	public function editResume(){
-
+		$array['type'] = 'Resume';
+		$array['heading']='';
 		$job_seeker_details = auth()->user()->jobseeker_details;
 
 		$resume_link = '';
@@ -79,6 +84,10 @@ class ProfileController extends Controller {
 			}
 		}
 
+        $array['event'] = 'updated';
+
+        $name = $this->userLogs->getActivityDescriptionForEvent($array);
+        Activity::log($name);
 		return view('frontend.user.resume.edit', [
 			'job_seeker' 	=> $job_seeker,
 			'resume_link'	=> $resume_link
@@ -127,6 +136,9 @@ class ProfileController extends Controller {
 	 * @return mixed
 	 */
 	public function update(UserContract $user, UpdateProfileRequest $request) {
+
+        $array['type'] = 'Profile';
+        $array['heading']='';
 		$user->updateProfile($request->all());
 
 		$avatar = $request->file('avatar');
@@ -170,6 +182,11 @@ class ProfileController extends Controller {
 			\Storage::disk('local')->deleteDirectory($filePath);
 
 			$this->users->updateProfileCompleteness(auth()->user());
+
+            $array['event'] = 'updated';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
 		}
 
 		return redirect()->route('frontend.dashboard')->withFlashSuccess(trans("strings.profile_successfully_updated"));
@@ -177,6 +194,8 @@ class ProfileController extends Controller {
 
 	public function updateProfileImage(Request $request) {
 
+        $array['type'] = 'Profile Image';
+        $array['heading']='';
 		$avatar = $request->file('file');
 
 		if ( $avatar && $avatar->isValid() ) {
@@ -218,13 +237,18 @@ class ProfileController extends Controller {
 			\Storage::disk('local')->deleteDirectory($filePath);
 
 			$this->users->updateProfileCompleteness(auth()->user());
+
+            $array['event'] = 'updated';
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
 		}
 
 		return response()->json(['status' => 1]);
 	}
 
 	public function resumeUpload(ResumeUploadRequest $request){
-
+        $array['type'] = 'Resume';
+        $array['heading']='has been Uploaded';
 		$resume = $request->file('file');
 
 		if ( $resume && $resume->isValid() ) {
@@ -257,6 +281,9 @@ class ProfileController extends Controller {
 
 			$this->users->updateProfileCompleteness(auth()->user());
 
+            $array['event'] = 'uploaded';
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
             return response()->json(['status' => 1]);
 		}
 
@@ -265,7 +292,8 @@ class ProfileController extends Controller {
 	public function savePreferences(PreferencesSaveRequest $request){
 
 		$industries = $request->get('industries');
-
+        $array['type'] = 'Preferences';
+        $array['heading']='auth()->user()->name';
 		foreach ($industries as $industry) {
 			\DB::table('job_seeker_industry_preferences')->insert([
 				'user_id'				=> auth()->user()->jobseeker_details->id,
@@ -303,12 +331,16 @@ class ProfileController extends Controller {
 		]);
 
 		$this->users->updateProfileCompleteness(auth()->user());
-
+        $array['event'] = 'created';
+        $name = $this->userLogs->getActivityDescriptionForEvent($array);
+        Activity::log($name);
 		return response()->json(['status' => 1]);
 	}
 
 	public function saveEmployerPreferences(PreferencesSaveRequest $request){
 
+        $array['type'] = 'Employer Preferences';
+        $array['heading']='';
 		$industries = $request->get('industries');
 
 		\DB::table('job_seeker_industry_preferences')->where('user_id', auth()->user()->jobseeker_details->id)->delete();
@@ -354,7 +386,9 @@ class ProfileController extends Controller {
 		]);
 
 		$this->users->updateProfileCompleteness(auth()->user());
-
+        $array['event'] = 'updated';
+        $name = $this->userLogs->getActivityDescriptionForEvent($array);
+        Activity::log($name);
 		alert()->success('Your preferences are saved.')->autoclose(3000);
 
 		return redirect(route('frontend.preferences.edit'));
@@ -403,6 +437,9 @@ class ProfileController extends Controller {
 	}
 
 	public function uploadVideos(ProfileVideoUploadRequest $request){
+
+        $array['type'] = 'Video';
+        $array['heading']='has been Uploaded';
 		$video = $request->file('file');
 
 		if ( $video && $video->isValid() ) {
@@ -436,20 +473,25 @@ class ProfileController extends Controller {
 		}
 
 		$this->users->updateProfileCompleteness(auth()->user());
-
+        $array['event'] = 'uploaded';
+        $name = $this->userLogs->getActivityDescriptionForEvent($array);
+        Activity::log($name);
 		return response()->json(['status' => 1]);
 	}
 /***************************************************************************************************************/
 	public function storeVideoLinks(JobSeekerVideoLinkRequest $request){
-
+        $array['type'] = 'Video Link';
+        $array['heading']='has been Uploaded';
       if($videolink=$this->videorepo->storeJobSeekerVideoLink($request->videolink)):
+          $array['event'] = 'uploaded';
+          $name = $this->userLogs->getActivityDescriptionForEvent($array);
+          Activity::log($name);
         $request->session()->flash('success', $videolink);
         else:
         $request->session()->flash('failure','Failed to Store VideoLink.Please try again. ') ;
         endif;
 
         return back();
-        //return view('frontend.user.profile.videos', ['key' => $key]);
 	}
 /**************************************************************************************************************/
 	public function images(){
@@ -476,6 +518,8 @@ class ProfileController extends Controller {
 	}
 
 	public function uploadImages(ProfileImagesUploadRequest $request){
+        $array['type'] = 'Image';
+        $array['heading']='has been Uploaded';
 
 		$avatar = $request->file('file');
 
@@ -513,7 +557,12 @@ class ProfileController extends Controller {
 
 			$this->users->updateProfileCompleteness(auth()->user());
 
+            $array['event'] = 'uploaded';
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+
 			return response()->json(['status' => 1]);
+
 		}
 
 		return response()->json(['status' => 0]);

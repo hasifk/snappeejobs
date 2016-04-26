@@ -79,8 +79,6 @@ class EmployerAnalyticsController extends Controller {
     {
         if ( access()->hasRole('Employer','Employer Staff') ) {
             $company_visitors =$this->repository->getTotalCmpVisitors($request);
-            /*$paginator = $company_visitors1['paginator'];
-            $company_visitors = $company_visitors1['company_visitors'];*/
             $view = [
                 'company_visitors'              => $company_visitors,
 

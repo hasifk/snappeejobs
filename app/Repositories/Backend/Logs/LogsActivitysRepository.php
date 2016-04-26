@@ -104,6 +104,10 @@ public function getActivityDescriptionForEvent($eventName)
     {
         return $eventName['type'] .' status changed-The '.$eventName['type'].' '.$eventName['heading'].'-'.$author;
     }
+    if ($eventName['event'] == 'uploaded')
+    {
+        return $eventName['type'] .' uploaded-The '.$eventName['type'].' '.$eventName['heading'].'-'.$author;
+    }
     return '';
 }
 

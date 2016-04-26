@@ -6,21 +6,23 @@ elixir(function(mix) {
         //
         //// Copy webfont files from /vendor directories to /public directory.
         .copy('vendor/fortawesome/font-awesome/fonts', 'public/build/fonts/font-awesome')
-        .copy('vendor/twbs/bootstrap-sass/assets/fonts/bootstrap', 'public/build/fonts/bootstrap')
+        .copy('vendor/twbs/bootstrap-sass/assets/fonts/bootstrap', 'public/build/fonts')
         .copy('vendor/twbs/bootstrap/dist/js/bootstrap.min.js', 'public/js/vendor')
         .copy('./resources/assets/js/Ionicons/fonts', 'public/build/fonts')
 
-        .sass([ // Process front-end stylesheets
-                'frontend/main.scss'
-            ], 'resources/assets/css/frontend/main.css')
+
         .styles([  // Combine pre-processed CSS files
-                'frontend/main.css',
+                './resources/assets/js/bootstrap/dist/css/bootstrap.min.css',
+                './resources/assets/js/bootstrap/dist/css/bootstrap-theme.min.css',
+                'frontend/style.css',
                 './resources/assets/js/dropzone/dist/min/dropzone.min.css',
                 './resources/assets/js/select2/dist/css/select2.min.css',
                 './resources/assets/js/bootstrap-datepicker/dist/css/bootstrap-datepicker.css',
                 './resources/assets/js/sweetalert/dist/sweetalert.css'
             ], 'public/css/frontend.css')
         .scripts([ // Combine front-end scripts
+                'jquery/dist/jquery.min.js',
+                'bootstrap/dist/js/bootstrap.min.js',
                 'plugins.js',
                 'vue/dist/vue.js',
                 'select2/dist/js/select2.js',

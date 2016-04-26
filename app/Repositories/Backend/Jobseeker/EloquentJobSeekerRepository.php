@@ -19,8 +19,8 @@ class EloquentJobSeekerRepository {
         $searchObj = $searchObj->join('users', 'users.id', '=', 'job_seeker_details.user_id');
 
         // Joining the job applications
-        $searchObj = $searchObj->join('job_applications', 'job_applications.user_id', '=', 'users.id');
-        $searchObj = $searchObj->join('jobs', 'jobs.id', '=', 'job_applications.job_id');
+        $searchObj = $searchObj->join('job_applications', 'job_applications.user_id', '=', 'users.id', 'left');
+        $searchObj = $searchObj->join('jobs', 'jobs.id', '=', 'job_applications.job_id', 'left');
 
         // First the joins
         if ( $request->get('categories') ) {

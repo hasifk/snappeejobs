@@ -36,7 +36,7 @@ class JobSeekerChatReceived extends Event implements ShouldBroadcast, SelfHandli
         $this->message_details = new \stdClass();
 
         $this->message_details->{'last_message'} = str_limit($latest_message, 35);
-        $this->message_details->{'image'} = User::find($this->thread->employer_id)->picture;
+        $this->message_details->{'image'} = User::find($this->thread->employer_id)->getPictureAttribute(25, 25);
         $this->message_details->{'thread_id'} = $thread_id;
         $this->message_details->{'was_created'} = Carbon::parse($this->thread->updated_at)->diffForHumans();
     }

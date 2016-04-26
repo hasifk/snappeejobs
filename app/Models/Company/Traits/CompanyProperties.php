@@ -88,6 +88,19 @@ trait CompanyProperties
                     \Storage::put($filePath. $avatar->getClientOriginalName() , file_get_contents($avatar));
                     \Storage::setVisibility($filePath. $avatar->getClientOriginalName(), 'public');
 
+                    // Resizing the people images
+                    $people_image = \Image::make($avatar);
+
+                    \Storage::disk('local')->put($filePath.$avatar->getClientOriginalName(), file_get_contents($avatar));
+
+                    foreach (config('image.thumbnails.company_people') as $image) {
+                        $people_image->resize($image['width'], $image['height'])->save( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) );
+                        \Storage::put($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() , file_get_contents( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) ) );
+                        \Storage::setVisibility($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension(), 'public');
+                    }
+
+                    \Storage::disk('local')->deleteDirectory($filePath);
+
                     $peopleModel->update([
                         'filename' => pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME),
                         'extension' => $avatar->getClientOriginalExtension(),
@@ -129,6 +142,20 @@ trait CompanyProperties
                 \Storage::put($filePath. $avatar->getClientOriginalName() , file_get_contents($avatar));
                 \Storage::setVisibility($filePath. $avatar->getClientOriginalName(), 'public');
 
+
+                // Resizing the company images
+                $company_image = \Image::make($avatar);
+
+                \Storage::disk('local')->put($filePath.$avatar->getClientOriginalName(), file_get_contents($avatar));
+
+                foreach (config('image.thumbnails.company_photo') as $image) {
+                    $company_image->resize($image['width'], $image['height'])->save( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) );
+                    \Storage::put($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() , file_get_contents( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) ) );
+                    \Storage::setVisibility($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension(), 'public');
+                }
+
+                \Storage::disk('local')->deleteDirectory($filePath);
+
             }
 
         }
@@ -149,8 +176,25 @@ trait CompanyProperties
 
         $filePath = "companies/" . $this->id."/logo/";
 
+        \Storage::deleteDirectory($filePath);
+
         \Storage::put($filePath. $logoFile->getClientOriginalName() , file_get_contents($logoFile));
         \Storage::setVisibility($filePath. $logoFile->getClientOriginalName(), 'public');
+
+
+        // Resizing the company images
+        $avatar = $logoFile;
+        $company_logo = \Image::make($avatar);
+
+        \Storage::disk('local')->put($filePath.$avatar->getClientOriginalName(), file_get_contents($avatar));
+
+        foreach (config('image.thumbnails.company_photo') as $image) {
+            $company_logo->resize($image['width'], $image['height'])->save( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) );
+            \Storage::put($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() , file_get_contents( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) ) );
+            \Storage::setVisibility($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension(), 'public');
+        }
+
+        \Storage::disk('local')->deleteDirectory($filePath);
 
     }
 

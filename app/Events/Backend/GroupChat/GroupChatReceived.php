@@ -42,7 +42,7 @@ class GroupChatReceived extends Event implements ShouldBroadcast
         $this->eventDetails = new \stdClass();
 
         $this->eventDetails->{'message'} = preg_replace($group_contacts_names, $group_contacts_replace_names, $groupMessage->message);
-        $this->eventDetails->{'sender_picture'} = User::find($groupMessage->sender_id)->picture;
+        $this->eventDetails->{'sender_picture'} = User::find($groupMessage->sender_id)->getPictureAttribute(25, 25);
         $this->eventDetails->{'sent_at'} = Carbon::parse($groupMessage->created_at)->diffForHumans();
     }
 

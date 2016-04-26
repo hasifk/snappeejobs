@@ -133,7 +133,7 @@ class ProfileController extends Controller {
 
 		if ( $avatar && $avatar->isValid() ) {
 
-			if ( \Storage::has(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension) ) {
+			if ( (!empty(auth()->user()->avatar_path)) && \Storage::has(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension) ) {
 				\Storage::deleteDirectory(auth()->user()->avatar_path);
 			}
 
@@ -182,7 +182,7 @@ class ProfileController extends Controller {
 
 		if ( $avatar && $avatar->isValid() ) {
 
-			if ( \Storage::has(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension) ) {
+			if ( (!empty(auth()->user()->avatar_path)) && \Storage::has(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension) ) {
 				\Storage::deleteDirectory(auth()->user()->avatar_path);
 			}
 
@@ -567,7 +567,7 @@ class ProfileController extends Controller {
 		if ( $unread_messages ) {
 			foreach ($unread_messages as $key => $unread_message) {
 				$unread_messages[$key]->{'last_message'} = str_limit($unread_message->last_message, 30);
-				$unread_messages[$key]->{'image'} = User::find($unread_message->id)->picture;
+				$unread_messages[$key]->{'image'} = User::find($unread_message->id)->getPictureAttribute(25, 25);
 				$unread_messages[$key]->{'was_created'} = Carbon::parse($unread_message->created_at)->diffForHumans();
 			}
 		}
@@ -595,7 +595,7 @@ class ProfileController extends Controller {
 				$company_id = \DB::table('jobs')->where('id', $rejected_application->job_id)->value('company_id');
 				$company_title = \DB::table('companies')->where('id', $company_id)->value('title');
 				$rejected_applications[$key]->{'message'} = $company_title." rejected your application";
-				$rejected_applications[$key]->{'image'} = User::find($rejected_application->declined_by)->picture;
+				$rejected_applications[$key]->{'image'} = User::find($rejected_application->declined_by)->getPictureAttribute(25, 25);
 				$rejected_applications[$key]->{'was_created'} = Carbon::parse($rejected_application->declined_at)->diffForHumans();
 			}
 		}

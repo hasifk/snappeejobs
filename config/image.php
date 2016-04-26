@@ -31,7 +31,53 @@ return array(
                 'height' => 25,
                 'width'  => 25,
             ]
+        ],
+
+        'company_people' => [
+            [
+                'height' => 90,
+                'width'  => 90,
+            ],
+            [
+                'height' => 45,
+                'width'  => 45,
+            ],
+            [
+                'height' => 25,
+                'width'  => 25,
+            ]
+        ],
+
+        'company_photo' => [
+            [
+                'height' => 90,
+                'width'  => 90,
+            ],
+            [
+                'height' => 45,
+                'width'  => 45,
+            ],
+            [
+                'height' => 25,
+                'width'  => 25,
+            ]
+        ],
+
+        'company_logo' => [
+            [
+                'height' => 90,
+                'width'  => 90,
+            ],
+            [
+                'height' => 45,
+                'width'  => 45,
+            ],
+            [
+                'height' => 25,
+                'width'  => 25,
+            ]
         ]
+
     ]
 
 );

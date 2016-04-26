@@ -31,7 +31,7 @@
                                 <tr>
                                     <th>{{ trans('validation.attributes.profile_image') }}</th>
                                     <td>
-                                        <img style="height: 20px; width: 20px;" src="{!! $user->getAvatarImage(25) !!}" alt="{{ $user->name }}">
+                                        <img style="height: 20px; width: 20px;" src="{!! $user->getPictureAttribute(25, 25) !!}" alt="{{ $user->name }}">
                                     </td>
                                 </tr>
                                 <tr>

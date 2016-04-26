@@ -38,7 +38,7 @@ class JobApplied extends Event implements ShouldBroadcast
 
         $applicant = User::find($jobApplication->user_id);
 
-        $jobApplication->{'image'} = $applicant->picture;
+        $jobApplication->{'image'} = $applicant->getPictureAttribute(25, 25);
         $jobApplication->{'name'} = $applicant->name;
         $jobApplication->{'was_created'} = Carbon::parse($jobApplication->created_at)->diffForHumans();
 

@@ -46,7 +46,7 @@
                     @foreach($job_applications as $job_application)
                         @if($job_application->job_application_status_company_id == $job_application_status_company->id)
                             <div data-user-id="{{ $job_application->user_id }}">
-                                <img style="height: 50px; width: 50px;" src="{{ \App\Models\Access\User\User::find($job_application->user_id)->picture }}" alt="">
+                                <img style="height: 50px; width: 50px;" src="{{ \App\Models\Access\User\User::find($job_application->user_id)->getPictureAttribute(25, 25) }}" alt="">
                                 <p>
                                     {{ \App\Models\Access\User\User::find($job_application->user_id)->name }}
                                 </p>

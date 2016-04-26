@@ -189,7 +189,7 @@
                     <ul class="dropdown-menu">
                       <!-- The user image in the menu -->
                       <li class="user-header">
-                        <img src="{!! access()->user()->getPictureAttribute(25, 25) !!}" class="img-circle" alt="User Image" />
+                        <img src="{!! access()->user()->getPictureAttribute(90, 90) !!}" class="img-circle" alt="User Image" />
                         <p>
                           {{ access()->user()->name }}
                           <small>{{ trans('strings.member_since') }} {{ auth()->user()->created_at }}</small>

@@ -125,21 +125,45 @@ class DashboardController extends Controller {
             'state_id' => $request->get('state_id'),
         ];
 
-        if ($avatar && $avatar->isValid()) {
+        if ( $avatar && $avatar->isValid() ) {
 
-            $filePath = "users/" . auth()->user()->id . "/avatar/";
-            Storage::put($filePath . $avatar->getClientOriginalName(), file_get_contents($avatar));
-            Storage::setVisibility($filePath . $avatar->getClientOriginalName(), 'public');
-
-            if (auth()->user()->avatar_filename) {
-                Storage::delete(auth()->user()->avatar_path . auth()->user()->avatar_filename . '.' . auth()->user()->avatar_extension);
+            if ( (!empty(auth()->user()->avatar_path)) && \Storage::has(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension) ) {
+                \Storage::deleteDirectory(auth()->user()->avatar_path);
             }
 
-            $update_array = array_merge($update_array, [
+            $filePath = "users/" . auth()->user()->id."/avatar/";
+            \Storage::put($filePath. $avatar->getClientOriginalName() , file_get_contents($avatar));
+            \Storage::setVisibility($filePath. $avatar->getClientOriginalName(), 'public');
+
+            if ( auth()->user()->avatar_filename ) {
+                foreach (config('image.thumbnails.user_profile_image') as $image) {
+                    if ( \Storage::has($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension()) ) {
+                        \Storage::delete($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension());
+                    }
+                }
+            }
+
+            $update_array = [
                 'avatar_filename' => pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME),
                 'avatar_extension' => $avatar->getClientOriginalExtension(),
                 'avatar_path' => $filePath
-            ]);
+            ];
+
+            auth()->user()->update($update_array);
+
+            // Resize User Profile Image
+            $profile_image = \Image::make($avatar);
+
+            \Storage::disk('local')->put($filePath.$avatar->getClientOriginalName(), file_get_contents($avatar));
+
+            foreach (config('image.thumbnails.user_profile_image') as $image) {
+                $profile_image->resize($image['width'], $image['height'])->save( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) );
+                \Storage::put($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() , file_get_contents( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) ) );
+                \Storage::setVisibility($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension(), 'public');
+            }
+
+            \Storage::disk('local')->deleteDirectory($filePath);
+
         }
 
         if ($request->get('password')) {
@@ -203,7 +227,7 @@ class DashboardController extends Controller {
 
         if ($tasks_assigned) {
             foreach ($tasks_assigned as $key => $task) {
-                $tasks_assigned[$key]->{'image'} = User::find($task->user_id)->picture;
+                $tasks_assigned[$key]->{'image'} = User::find($task->user_id)->getPictureAttribute(25, 25);
                 $tasks_assigned[$key]->{'was_created'} = Carbon::parse($task->created_at)->diffForHumans();
             }
         }

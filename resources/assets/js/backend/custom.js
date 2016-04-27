@@ -22,4 +22,7 @@ $(function() {
             fa: true
         }
     });
+    $(".bootstrap-datepicker").datepicker({
+        autoclose: true
+    });
 });

@@ -9,13 +9,13 @@
 
 @section('content')
 
-<h3>Permission Lists</h3>
+<h3>{{ trans('strings.backend.employer_permissions') }}</h3>
 <?php $f=1; ?>
 <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="profile">
         <table class="table table-striped table-hover table-bordered dashboard-table">
             <tr> 
-                <th>Allowable Permission</th>
+
                 <td>
                     <table class="table table-condensed">
                         @foreach($permissions as $permission)

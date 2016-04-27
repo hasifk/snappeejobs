@@ -66,7 +66,7 @@ class AuthController extends Controller
             'states'    => $states
         ];
 
-        return view('frontend.auth.register', $view);
+        return view('frontend.auth.register' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ), $view);
     }
 
     /**
@@ -121,7 +121,7 @@ class AuthController extends Controller
      */
     public function getLogin()
     {
-        return view('frontend.auth.login')
+        return view('frontend.auth.login' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ))
             ->withSocialiteLinks($this->getSocialLinks());
     }
 

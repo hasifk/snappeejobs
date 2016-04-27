@@ -24,6 +24,7 @@ return [
         'dashboard_cmp_interest_map' => 'Company Interest Map',
         'newsfeed_management' => 'News Feed Management',
         'log_management' => 'Log for all events',
+        'employer_permissions'=>'Available Permissions'
     ],
     'based_on' => [
         'permission' => 'Permission Based - ',

@@ -19,6 +19,8 @@
 
     @include('frontend.includes.nav_new')
 
+    @yield('content')
+
     @include('frontend.includes.footer')
 
     @yield('before-scripts-end')

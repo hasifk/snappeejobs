@@ -12,7 +12,7 @@ class EloquentCmsRepository {
     public function getCmsPaginated() {
         $userid = Auth::user()->id;
         return Cms::where('user_id', $userid)->orderBy('cms.id', 'desc')
-                        ->paginate(3);
+                        ->paginate(10);
     }
 
     public function save($request) {
@@ -73,12 +73,12 @@ class EloquentCmsRepository {
 
     public function article() {
         $userid = Auth::user()->id;
-        return Cms::where('type', 'Article')->where('user_id', $userid)->get();
+        return Cms::where('type', 'Article')->where('user_id', $userid)->paginate(1);
     }
 
     public function blog() {
         $userid = Auth::user()->id;
-        return Cms::where('type', 'Blog')->where('user_id', $userid)->get();
+        return Cms::where('type', 'Blog')->where('user_id', $userid)->paginate(1);
     }
 
 }

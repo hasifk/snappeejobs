@@ -40,7 +40,7 @@
 </div>
 
 <div class="pull-right">
-    {!! $cms->render(); !!}
+    {!! $cms->render() !!}
 </div>
     <div class="clearfix"></div>
 @endsection

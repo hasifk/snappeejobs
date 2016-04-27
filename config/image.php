@@ -24,6 +24,10 @@ return array(
                 'width'  => 90,
             ],
             [
+                'height' => 39,
+                'width'  => 39,
+            ],
+            [
                 'height' => 45,
                 'width'  => 45,
             ],
@@ -49,6 +53,10 @@ return array(
         ],
 
         'company_photo' => [
+            [
+                'height' => 218,
+                'width'  => 295,
+            ],
             [
                 'height' => 90,
                 'width'  => 90,

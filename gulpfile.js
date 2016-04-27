@@ -14,6 +14,7 @@ elixir(function(mix) {
         .styles([  // Combine pre-processed CSS files
                 './resources/assets/js/bootstrap/dist/css/bootstrap.min.css',
                 './resources/assets/js/bootstrap/dist/css/bootstrap-theme.min.css',
+                'frontend/custom.css',
                 'frontend/style.css',
                 './resources/assets/js/dropzone/dist/min/dropzone.min.css',
                 './resources/assets/js/select2/dist/css/select2.min.css',

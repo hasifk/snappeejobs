@@ -59,7 +59,7 @@ trait UserAttribute {
             $this->avatar_filename. ( $height ? $height : '' ) . ($height && $width ? 'x' : '') . ( $width ? $width : '' ) . '.'.
             $this->avatar_extension;
         } else {
-            return gravatar()->get($this->email, ['size' => 50]);
+            return gravatar()->get($this->email, ['size' => $height]);
         }
     }
 

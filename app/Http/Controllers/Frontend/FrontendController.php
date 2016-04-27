@@ -109,7 +109,8 @@ class FrontendController extends Controller {
 
 
 		];
-		return view('frontend.index', $view);
+
+		return view('frontend.index' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ) , $view);
 	}
 	/**
 	 * @return \Illuminate\View\View

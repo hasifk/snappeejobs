@@ -56,7 +56,7 @@ class CompaniesController extends Controller
 
         $companies_data = $this->companyRepository->getCompaniesPaginated($request, config('companies.default_per_page'));
 
-        return view('frontend.companies.index',[
+        return view('frontend.companies.index' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ),[
             'countries'         => $countries,
             'states'            => $states,
             'industries'        =>  $industries,

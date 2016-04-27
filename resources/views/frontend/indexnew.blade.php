@@ -18,50 +18,16 @@
 <body>
 
     @if(auth()->user())
-        <header class="top-nav">
-            <nav class="navbar navbar-default">
-                <div class="container">
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand" href="#"><img src="images/snap-logo-small.png" /></a>
-                    </div>
-                    <div id="navbar" class="navbar-collapse collapse">
-                        <ul class="nav navbar-nav">
-                            <li class="active"><a href="#">HOME</a></li>
-                            <li><a href="#">EXPLORE</a></li>
-                            <li><a href="#">COMPANIES</a></li>
-                            <li><a href="#">GET ADVICE</a></li>
-                            <li><a href="#">FOR EMPLOYERS</a></li>
-                        </ul>
-                        <ul class="nav navbar-nav navbar-right">
-                            <li class="dropdown">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                    <img src="images/user-icon.png" />
-                                    Hey Akhil <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="/dashboard">Profile</a></li>
-                                    <li><a href="/profile/favourites">Favourites</a></li>
-                                    <li><a href="/jobseeker/appliedjobs">Applied Jobs</a></li>
-                                    <li><a href="/auth/logout">Logout</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div><!--/.nav-collapse -->
-                </div><!--/.container-fluid -->
-            </nav>
-        </header>
+
+        @include('frontend.includes.nav_new')
 
         <div class="container user-home">
             <div class="browse col-md-10">
-                <p><span class="username">Hey Akhil,</span> Let's make today great. Check out some new jobs</p>
+                <p><span class="username">Hey {{ explode(' ', Auth::user()->name)[0] }},</span> Let's make today great. Check out some new jobs and companies</p>
             </div>
         </div>
+
+        @if(count($companies_landing)>0)
         <section class="home-loggedin">
             <div class="bodycontent">
                 <div class="container">
@@ -69,42 +35,28 @@
                         <div class="col-md-10 col-md-offset-1 col-sm-12 companies">
                             <h1>Newest Companies</h1>
                             <div class="row">
-                                <div class="col-sm-6 col-md-4 thumbs">
-                                    <div><img src="images/companies/thumbtack.jpg" /></div>
-                                    <h2>Thumbtack</h2>
-                                    <h5>Software Engineer, Integrations</h5>
-                                    <p>Media  |  Small Size  |   York City Metro Area</p>
-                                </div>
-                                <div class="col-sm-6 col-md-4 thumbs">
-                                    <div><img src="images/companies/comcast.jpg" /></div>
-                                    <h2>Comcast</h2>
-                                    <h5>Intermediate/Senior Web Graphic Designer</h5>
-                                    <p>Socialgood  |  Small Size  |   Washington DC</p>
-                                </div>
-                                <div class="col-sm-6 col-md-4 thumbs">
-                                    <div><img src="images/companies/orange.jpg" /></div>
-                                    <h2>Orange</h2>
-                                    <h5>Intermediate/Senior Web Graphic Designer </h5>
-                                    <p>Consumer |  Large Size  |   San Francisco</p>
-                                </div>
-                                <div class="col-sm-6 col-md-4 thumbs">
-                                    <div><img src="images/companies/orange.jpg" /></div>
-                                    <h2>Jive</h2>
-                                    <h5>Territory Sales Manager - Benelux</h5>
-                                    <p>Senior Level  |   Bangalore, India  |   Development</p>
-                                </div>
-                                <div class="col-sm-6 col-md-4 thumbs">
-                                    <div><img src="images/companies/annelouis.jpg" /></div>
-                                    <h2>Thumbtack</h2>
-                                    <h5>Software Engineer</h5>
-                                    <p>Socialgood  |  Small Size  |   Washington DC</p>
-                                </div>
-                                <div class="col-sm-6 col-md-4 thumbs">
-                                    <div><img src="images/companies/thumbtack.jpg" /></div>
-                                    <h2>Euclid Analytics</h2>
-                                    <h5>Data Scientist</h5>
-                                    <p>Consumer |  Large Size  |   San Francisco</p>
-                                </div>
+
+                                @foreach($companies_landing as $company)
+
+                                    <div class="col-sm-6 col-md-4 thumbs">
+                                        @if ($company->photos->count())
+                                            <div>
+                                                <img src="{{ env('APP_S3_URL') . $company->photos->first()->path . $company->photos->first()->filename . '295x218.' . $company->photos->first()->extension}}" alt="company photo">
+                                            </div>
+                                        @else
+                                            <div><img src="http://placehold.it/295x218">
+                                            </div>
+                                        @endif
+                                        <h2>
+                                            <a href="/companies/{{$company->url_slug}}">
+                                                {{$company->title}}
+                                            </a>
+                                        </h2>
+                                        <h5>{{$company->countryname}} , {{$company->statename}}</h5>
+                                        <p> @foreach($company->industries as $industry){{ $industry->name }} | @endforeach  {{$company->size}} | {{$company->stateName}}</p>
+                                    </div>
+
+                                @endforeach
 
                             </div>
                         </div>
@@ -113,59 +65,101 @@
                 </div>
             </div>
         </section>
+
         <section>
             <hr />
             <div class="container">
                 <div class="row">
                     <div class="col-md-10 col-md-offset-1 companies text-right">
-                        <a href="#" class="view-jobs-btn">View all jobs</a>
+                        <a href="/companies" class="view-jobs-btn">View all companies</a>
                     </div>
                 </div>
             </div>
         </section>
+
+        @endif
+
+        @if( (count($pref_jobs_landing)> 0) && (count($jobs_landing)> 0) )
         <section class="new-comp">
             <div class="bodycontent">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-10 col-md-offset-1 col-sm-12 companies">
-                            <h1>Newest Companies</h1>
+                            <h1>Newest Jobs</h1>
                             <div class="row">
-                                <div class="col-sm-6 col-md-4 thumbs">
-                                    <div><img src="images/companies/thumbtack.jpg" /></div>
-                                    <h2>Thumbtack</h2>
-                                    <h5>Software Engineer, Integrations</h5>
-                                    <p>Media  |  Small Size  |   York City Metro Area</p>
-                                </div>
-                                <div class="col-sm-6 col-md-4 thumbs">
-                                    <div><img src="images/companies/comcast.jpg" /></div>
-                                    <h2>Comcast</h2>
-                                    <h5>Intermediate/Senior Web Graphic Designer</h5>
-                                    <p>Socialgood  |  Small Size  |   Washington DC</p>
-                                </div>
-                                <div class="col-sm-6 col-md-4 thumbs">
-                                    <div><img src="images/companies/orange.jpg" /></div>
-                                    <h2>Orange</h2>
-                                    <h5>Intermediate/Senior Web Graphic Designer </h5>
-                                    <p>Consumer |  Large Size  |   San Francisco</p>
-                                </div>
-                                <div class="col-sm-6 col-md-4 thumbs">
-                                    <div><img src="images/companies/orange.jpg" /></div>
-                                    <h2>Jive</h2>
-                                    <h5>Territory Sales Manager - Benelux</h5>
-                                    <p>Senior Level  |   Bangalore, India  |   Development</p>
-                                </div>
-                                <div class="col-sm-6 col-md-4 thumbs">
-                                    <div><img src="images/companies/annelouis.jpg" /></div>
-                                    <h2>Thumbtack</h2>
-                                    <h5>Software Engineer</h5>
-                                    <p>Socialgood  |  Small Size  |   Washington DC</p>
-                                </div>
-                                <div class="col-sm-6 col-md-4 thumbs">
-                                    <div><img src="images/companies/thumbtack.jpg" /></div>
-                                    <h2>Euclid Analytics</h2>
-                                    <h5>Data Scientist</h5>
-                                    <p>Consumer |  Large Size  |   San Francisco</p>
-                                </div>
+
+                                @foreach($pref_jobs_landing as $job)
+
+                                        <div class="col-sm-6 col-md-4 thumbs">
+                                            @if ($company->photos->count())
+                                            <div><img src="{{ env('APP_S3_URL') . $company->photos->first()->path . $company->photos->first()->filename . '295x218.' . $job->company->photos->first()->extension}}" /></div>
+                                            @else
+                                            <div><img src="http://placehold.it/295x218">
+                                            </div>
+                                            @endif
+                                            <h2>
+                                                <a href="{{ route('jobs.view' , [ $job->company->url_slug , $job->title_url_slug ] ) }}">{{ $job->title }}
+                                                </a>
+                                            </h2>
+                                            <h5>Software Engineer, Integrations</h5>
+                                            <p><a href="{{ route('jobs.search', ['level' => $job->level]) }}">
+                                                    {{ str_studly($job->level) }}
+                                                </a>
+                                                |
+                                                @foreach($job->categories as $category)
+                                                        <a href="{{ route('jobs.search', ['category' => $category->id]) }}">
+                                                            {{ $category->name }}
+                                                        </a>
+                                                @endforeach
+                                                |
+                                                <a href="{{ route('jobs.search', ['country' => $job->country_id]) }}">
+                                                    {{ $job->country->name }}
+                                                </a>
+                                                |
+                                                <a href="{{ route('jobs.search', ['country' => $job->country_id]) }}">
+                                                    {{ $job->state->name }}
+                                                </a>
+                                            </p>
+                                        </div>
+
+
+                                @endforeach
+
+                                @foreach($jobs_landing as $job)
+
+                                        <div class="col-sm-6 col-md-4 thumbs">
+                                            @if ($company->photos->count())
+                                                <div><img src="{{ env('APP_S3_URL') . $company->photos->first()->path . $company->photos->first()->filename . '295x218.' . $job->company->photos->first()->extension}}" /></div>
+                                            @else
+                                                <div><img src="http://placehold.it/295x218">
+                                                </div>
+                                            @endif
+                                            <h2>
+                                                <a href="{{ route('jobs.view' , [ $job->company->url_slug , $job->title_url_slug ] ) }}">{{ $job->title }}
+                                                </a>
+                                            </h2>
+                                            <h5>Software Engineer, Integrations</h5>
+                                            <p><a href="{{ route('jobs.search', ['level' => $job->level]) }}">
+                                                    {{ str_studly($job->level) }}
+                                                </a>
+                                                |
+                                                @foreach($job->categories as $category)
+                                                    <a href="{{ route('jobs.search', ['category' => $category->id]) }}">
+                                                        {{ $category->name }}
+                                                    </a>
+                                                @endforeach
+                                                |
+                                                <a href="{{ route('jobs.search', ['country' => $job->country_id]) }}">
+                                                    {{ $job->country->name }}
+                                                </a>
+                                                |
+                                                <a href="{{ route('jobs.search', ['country' => $job->country_id]) }}">
+                                                    {{ $job->state->name }}
+                                                </a>
+                                            </p>
+                                        </div>
+
+                                @endforeach
 
                             </div>
                         </div>
@@ -179,11 +173,14 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-10 col-md-offset-1 companies text-right">
-                        <a href="#" class="view-jobs-btn">View all Companies</a>
+                        <a href="/jobs" class="view-jobs-btn">View all Jobs</a>
                     </div>
                 </div>
             </div>
         </section>
+        @endif
+
+
         <section class="user-home">
             <div class="cl-logos featured ftr-logos">
                 <div class="container">
@@ -198,117 +195,331 @@
             </div>
         </section>
 
-        <section class="hm-contact">
-            <div class="container">
-                <div class="row text-center">
-                    <div class="col-md-4 cnt-phone"><img src="images/ic-hone.png" /> Tool Free <span>number</span>  555 444 777</div>
-                    <div class="col-md-4 cnt-phone cnt-support"><img src="images/ic-hone.png" /> Support  547548 ( 954 )</div>
-                    <div class="col-md-4 cnt-email"><img src="images/ic-email.png" /> Support  547548 ( 954 )</div>
-                </div>
-            </div>
-        </section>
 
-        <footer class="footer-cnt">
-            <div class="container">
-                <div class="row">
-                    <div class="col-xs-6 footer-secs">
-                        <h3>Information</h3>
-                        <ul>
-                            <li><a href="{{ route('information.aboutus') }}">About Us</a></li>
-                            <li><a href="{{ route('information.terms') }}">Terms & Conditions</a></li>
-                            <li><a href="{{ route('information.privacy') }}">Privacy Policy</a></li>
-                            <li><a href="{{ route('information.career') }}">Careers with Us</a></li>
-                            <li><a href="{{ route('information.contact') }}">Contact Us</a></li>
-                            <li><a href="{{ route('information.faq') }}">FAQs</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-6 footer-secs">
-                        <h3>Jobseekers</h3>
-                        <ul>
-                            <li><a href="#">Register Now</a></li>
-                            <li><a href="#">Search Jobs</a></li>
-                            <li><a href="#">Login</a></li>
-                            <li><a href="#">Create Job Alert</a></li>
-                            <li><a href="#">Report a Problem</a></li>
-                            <li><a href="#">Security Advice</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-6 footer-secs">
-                        <h3>Browse Jobs</h3>
-                        <ul>
-                            <li><a href="#">Browse All Jobs</a></li>
-                            <li><a href="#">Premium MBA Jobs</a></li>
-                            <li><a href="#">Premium Engineering Jobs</a></li>
-                            <li><a href="#">Govt. Jobs</a></li>
-                            <li><a href="#">International Jobs</a></li>
-                            <li><a href="#">Jobs by Company</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-6 footer-secs">
-                        <h3>Employers</h3>
-                        <ul>
-                            <li><a href="#">Post Jobs</a></li>
-                            <li><a href="#">Access Database</a></li>
-                            <li><a href="#">Manage Responses</a></li>
-                            <li><a href="#">Buy Online</a></li>
-                            <li><a href="#">Report a Problem</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-xs-12 footer-secs socialWrap">
-                        <h3>Follow us</h3>
-                        <ul>
-                            <li class="socials"><a href="#"><img src="images/facebook.png" />Facebook</a></li>
-                            <li class="socials"><a href="#"><img src="images/twitter.png" />Twitter</a></li>
-                            <li class="socials"><a href="#"><img src="images/gplus.png" />Google+</a></li>
-                            <li class="socials"><a href="#"><img src="images/linkedin.png" />LinkedIn</a></li>
-                        </ul>
-                    </div>
-                </div>
-
-            </div>
-
-        </footer>
-        <div class="copyright">
-            <div class="container">© 2016 Snappeejobs LLC. All rights reserved</div>
-        </div>
-
-    @else
+    @endif
 
     <!-- Home page Content -->
-    <div class="container-fluid">
-        <div class="row">
-            <header>
-                <div class="home-banner">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-5 top-head">
-                                <a href="/employers">For Employers</a>
-                                <a href="/auth/login"> Sign In</a>
-                                <a href="/auth/register" class="signup-btn">Sign Up</a>
-                            </div>
-                        </div>
-                        <div class="home-logo text-center"><img src="images/snap-logo.png" /></div>
-                        <h1>The best way to find a job</h1>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <form class="form-inline text-center">
-                                    <div class="form-group">
-                                        <label class="sr-only" for="">Your name</label>
-                                        <input type="email" class="form-control input-lg" id="" placeholder="Your name">
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="sr-only" for="">Your email</label>
-                                        <input type="email" class="form-control input-lg" id="" placeholder="Your email">
-                                    </div>
-                                    <button type="submit" class="btn btn-primary btn-lg">Sign up</button>
-                                </form>
-                            </div>
-                        </div>
 
+        <div
+                v-show="!registered || !resumeUploaded || !preferencesSaved"
+                v-bind:class="{ 'panel-defaultt' : !registered, 'panell' : !registered }"
+                class="homepage-modal"
+        >
+
+            @if( auth()->guest() )
+
+            <header style="display: block;">
+                    <div class="home-banner">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-5 top-head">
+                                    <a href="/employers">For Employers</a>
+                                    <a href="/auth/login"> Sign In</a>
+                                    <a href="/auth/register" class="signup-btn">Sign Up</a>
+                                </div>
+                            </div>
+                            <div class="home-logo text-center"><img src="images/snap-logo.png" /></div>
+                            <h1>The best way to find a job</h1>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <form v-on:submit.prevent="showModal($event)" action="" class="form-inline text-center">
+                                        <div class="form-group">
+                                            <label class="sr-only" for="">Your name</label>
+                                            <input v-model="name" type="text" class="form-control input-lg" id="name" placeholder="Your name">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="sr-only" for="">Your email</label>
+                                            <input v-model="email" type="email" class="form-control input-lg" id="email" placeholder="Your email">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary btn-lg">Sign up</button>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
-                </div>
             </header>
+
+            @endif
+
+            <div v-cloak class="modal" id="registrationModal" tabindex="-1" role="dialog" aria-labelledby="registrationModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <button type="button" class="btn-close close" data-dismiss="modal" aria-label="Close"><img src="images/close-btn.png" /></button>
+                                <h2 class="modal-title text-center">@{{ modalHeading }}</h2>
+                                <p class="text-center" v-if="registered && !confirmed">
+                                    Please confirm your account by following the email sent to your account.
+                                </p>
+                            </div>
+
+                            <div class="modal-body">
+
+                                <div v-if="errors.length" class="alert alert-danger">
+                                    <p>Oops, there are some errors. </p>
+                                    <ul>
+                                        <li v-for="error in errors">
+                                            @{{ error }}
+                                        </li>
+                                    </ul>
+                                </div>
+
+
+                                <div v-if="! registered" class="form-horizontal">
+
+                                    <div class="form-group">
+                                        <label for="name" class="col-sm-5 control-label">Name</label>
+                                        <div class="col-sm-6">
+                                            <input v-model="name" class="form-control" name="name2" type="name" id="name2">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="email" class="col-sm-5 control-label">E-mail</label>
+                                        <div class="col-sm-6">
+                                            <input v-model="email" class="form-control" name="email" type="email" id="email">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="password" class="col-sm-5 control-label">Password</label>
+                                        <div class="col-sm-6">
+                                            <input v-model="password" class="form-control" name="password" type="password" id="password">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="password_confirmation" class="col-sm-5 control-label">Password Confirmation</label>
+                                        <div class="col-sm-6">
+                                            <input v-model="password_confirmation" class="form-control" name="password_confirmation" type="password" id="password_confirmation">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        {!! Form::label('gender', "Gender", ['class' => 'col-sm-5 control-label']) !!}
+                                        <div class="col-sm-6">
+                                            <div class="checkbox">
+                                                <input v-model="gender"
+                                                       type="radio"
+                                                       name="gender"
+                                                       id="gender_male"
+                                                       value="male"
+                                                />
+                                                <label for="gender_male">Male</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <input v-model="gender"
+                                                       type="radio"
+                                                       name="gender"
+                                                       id="gender_female"
+                                                       value="female"
+                                                />
+                                                <label for="gender_female">Female</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        {!! Form::label('dob', "Date of Birth", ['class' => 'col-sm-5 control-label']) !!}
+                                        <div class="col-sm-6">
+                                            <input v-model="dob" class="form-control bootstrap-datepicker" placeholder="Date of Birth" name="dob" type="text" id="dob">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="office_life" class="col-sm-5 control-label">Country</label>
+                                        <div class="col-sm-6">
+                                            <select v-model="country_id" name="country_id" id="country_id" class="form-control">
+                                                <option value="">Please select</option>
+                                                @foreach($countries as $country)
+                                                    <option
+                                                            value="{{ $country->id }}"
+                                                            {{ old('country_id') && $country->id == old('country_id') ? 'selected="selected"' : '' }}
+                                                    >
+                                                        {{ $country->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="office_life" class="col-sm-5 control-label">State</label>
+                                        <div class="col-sm-6">
+                                            <select v-model="state_id" name="state_id" id="state_id" class="form-control">
+                                                <option value="">Please select</option>
+                                                @foreach($states as $state)
+                                                    <option
+                                                            value="{{ $state->id }}"
+                                                            {{ old('state_id') && $state->id == old('state_id') ? 'selected="selected"' : '' }}
+                                                    >
+                                                        {{ $state->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-sm-6 col-sm-offset-5">
+                                            <button
+                                                    v-on:click="validateRegistration($event)"
+                                                    class="btn btn-primary"
+                                                    type="submit"
+                                                    value="Register"
+                                                    data-loading-text='<i class="fa fa-circle-o-notch fa-spin"></i> Register'
+                                            >Register</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div v-show="registered && !avatarUploaded" class="form-horizontal">
+                                    <form
+                                            enctype="multipart/form-data"
+                                            method="post"
+                                            action="{{ route('frontend.profile.resume') }}"
+                                            id="upload-profile-image"
+                                    >
+                                    </form>
+                                </div>
+
+                                <div v-show="registered && avatarUploaded && !resumeUploaded" class="form-horizontal">
+                                    <form enctype="multipart/form-data" method="post" action="{{ route('frontend.profile.resume') }}" id="upload-resume"></form>
+                                </div>
+
+                                <div v-show="resumeUploaded && !preferencesSaved" class="form-horizontal">
+
+                                    <div class="form-group">
+                                        <label for="description" class="col-lg-4 control-label">Industry</label>
+                                        <div class="col-lg-6">
+                                            <select
+                                                    v-model="industries"
+                                                    name="industries[]"
+                                                    id="industries"
+                                                    class="form-control select2 select2-hidden-accessible js-example-basic-multiple"
+                                                    multiple="multiple"
+                                                    style="width: 100%;"
+                                            >
+                                                @if (count($industries) > 0)
+                                                    @foreach($industries as $industry)
+                                                        <option value="{{ $industry->id }}">
+                                                            {{ $industry->name }}
+                                                        </option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="description" class="col-lg-4 control-label">Skills</label>
+                                        <div class="col-lg-6">
+                                            <select
+                                                    v-model="skills"
+                                                    name="skills[]"
+                                                    id="skills"
+                                                    class="form-control select2 select2-hidden-accessible js-example-basic-multiple"
+                                                    multiple="multiple"
+                                                    style="width: 100%;"
+                                            >
+                                                @if (count($skills) > 0)
+                                                    @foreach($skills as $skill)
+                                                        <option value="{{ $skill->id }}">
+                                                            {{ $skill->name }}
+                                                        </option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="description" class="col-lg-4 control-label">Preffered Job Categories</label>
+                                        <div class="col-lg-6">
+                                            <select
+                                                    v-model="job_categories"
+                                                    name="job_categories[]"
+                                                    id="job_categories"
+                                                    class="form-control select2 select2-hidden-accessible js-example-basic-multiple"
+                                                    multiple="multiple"
+                                                    style="width: 100%;"
+                                            >
+                                                @if (count($job_categories) > 0)
+                                                    @foreach($job_categories as $job_category)
+                                                        <option value="{{ $job_category->id }}">
+                                                            {{ $job_category->name }}
+                                                        </option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="description" class="col-lg-4 control-label">I prefer working in a company which is</label>
+                                        <div class="col-lg-6">
+                                            <div class="checkbox">
+                                                <input
+                                                        type="radio"
+                                                        name="size"
+                                                        id="size_small"
+                                                        v-model="size"
+                                                        value="small" {{ request('size') == 'small' ? 'checked="checked"' : '' }}
+                                                />
+                                                <label for="size_small">Small</label>
+                                                &nbsp;
+                                                <input
+                                                        type="radio"
+                                                        name="size"
+                                                        id="size_medium"
+                                                        v-model="size"
+                                                        value="medium" {{ request('size') == 'medium' ? 'checked="checked"' : '' }}
+                                                />
+                                                <label for="size_medium">Medium</label>
+                                                &nbsp;
+                                                <input
+                                                        type="radio"
+                                                        name="size"
+                                                        id="size_big"
+                                                        v-model="size"
+                                                        value="big" {{ request('size') == 'big' ? 'checked="checked"' : '' }}
+                                                />
+                                                <label for="size_big">Big</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <div class="col-md-6 col-md-offset-4">
+                                            <button
+                                                    v-on:click="submitPreferences($event)"
+                                                    class="btn btn-primary"
+                                                    type="button"
+                                                    value="Save"
+                                                    data-loading-text='<i class="fa fa-circle-o-notch fa-spin"></i> Saving...'
+                                            >Save</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div v-show="preferencesSaved" style="min-height: 400px;" class="form-horizontal">
+                                    <h3>Thank you for completing the registration.</h3>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
         </div>
+
+        @if(auth()->guest())
         <div class="popcap text-center">
             <a href="#">How  Snappeejobs Help Me?</a>
         </div>
@@ -336,31 +547,27 @@
             </div>
         </section>
         <section>
-            <div class="row">
-                <div class="boxWrap">
-                    <div class="boxImage applicant"></div>
-                    <div class="boxContent">
-                        <h2>Snappeejobs<br />Better Jobs for Everyone</h2>
-                        <p class="clearfix">We connect millions of aspiring job seekers
-                            to world's best employers</p>
-                        <div class="clearfix MB-30"></div>
-                        <a href="/auth/register" class="signup-btn">Sign Up</a>
-                    </div>
+            <div class="boxWrap">
+                <div class="boxImage applicant"></div>
+                <div class="boxContent">
+                    <h2>Snappeejobs<br />Better Jobs for Everyone</h2>
+                    <p class="clearfix">We connect millions of aspiring job seekers
+                        to world's best employers</p>
+                    <div class="clearfix MB-30"></div>
+                    <a href="/auth/register" class="signup-btn">Sign Up</a>
                 </div>
             </div>
-            <div class="row">
-                <div class="boxWrap">
-                    <div class="boxContent emplr">
-                        <h2>For Employers</h2>
-                        <p class="clearfix">Are you an employer looking to attract the best talent? Showcase the<br />
-                            heart and soul of your company and find the candidates<br />
-                            that you are searching for !
-                            to world's best employers</p>
-                        <div class="clearfix MB-30"></div>
-                        <a href="/employers" class="signup-btn">learn more <img src="images/btn-arrow.png" align="center" /></a>
-                    </div>
-                    <div class="boxImage employer"></div>
+            <div class="boxWrap">
+                <div class="boxContent emplr">
+                    <h2>For Employers</h2>
+                    <p class="clearfix">Are you an employer looking to attract the best talent? Showcase the<br />
+                        heart and soul of your company and find the candidates<br />
+                        that you are searching for !
+                        to world's best employers</p>
+                    <div class="clearfix MB-30"></div>
+                    <a href="/employers" class="signup-btn">learn more <img src="images/btn-arrow.png" align="center" /></a>
                 </div>
+                <div class="boxImage employer"></div>
             </div>
         </section>
 
@@ -392,116 +599,240 @@
         </section>
 
         <section>
-            <div class="row">
-                <div class="boxWrap">
-                    <div class="boxImage deal"></div>
-                    <div class="boxContent">
-                        <h2>Everything About Your Career<br /> at One Place Now</h2>
-                        <p class="clearfix">Start Your Job Search With 250,000+ Jobs from  <br />All Over the Web</p>
-                        <div class="clearfix MB-30"></div>
-                        <a href="#" class="signup-btn">Sign Up</a>
-                    </div>
+
+            <div class="boxWrap">
+                <div class="boxImage deal"></div>
+                <div class="boxContent">
+                    <h2>Everything About Your Career<br /> at One Place Now</h2>
+                    <p class="clearfix">Start Your Job Search With 250,000+ Jobs from  <br />All Over the Web</p>
+                    <div class="clearfix MB-30"></div>
+                    <a href="#" class="signup-btn">Sign Up</a>
                 </div>
             </div>
-            <div class="row">
-                <div class="boxWrap">
-                    <div class="boxContent hire">
-                        <h2>Discover your next great hire</h2>
-                        <p class="clearfix">Are you an employer looking to attract the best talent? Showcase the heart and soul of your company and find the candidates that you are searching for !</p>
-                        <div class="clearfix MB-30"></div>
-                        <a href="#" class="signup-btn">Employer side  <img src="images/btn-arrow.png" align="center" /></a>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="boxImage employees"></div>
+            <div class="boxWrap">
+                <div class="boxContent hire">
+                    <h2>Discover your next great hire</h2>
+                    <p class="clearfix">Are you an employer looking to attract the best talent? Showcase the heart and soul of your company and find the candidates that you are searching for !</p>
+                    <div class="clearfix MB-30"></div>
+                    <a href="#" class="signup-btn">Employer side  <img src="images/btn-arrow.png" align="center" /></a>
+                    <div class="clearfix"></div>
                 </div>
+                <div class="boxImage employees"></div>
             </div>
         </section>
-
         <section class="container featurd">
             <div class="cl-logos featured">
                 As featured in
-                <img src="images/tnw.png" />
-                <img src="images/lg-entpr.png" />
-                <img src="images/lg-giga.png" />
-                <img src="images/lg-fast.png" />
-                <img src="images/lg-wired.png" />
+                <img src="images/tnw.png">
+                <img src="images/lg-entpr.png">
+                <img src="images/lg-giga.png">
+                <img src="images/lg-fast.png">
+                <img src="images/lg-wired.png">
             </div>
         </section>
-        <section class="hm-contact row">
-            <div class="container">
-                <div class="row text-center">
-                    <div class="col-md-4 cnt-phone"><img src="images/ic-hone.png" /> Tool Free <span>number</span>  555 444 777</div>
-                    <div class="col-md-4 cnt-phone cnt-support"><img src="images/ic-hone.png" /> Support  547548 ( 954 )</div>
-                    <div class="col-md-4 cnt-email"><img src="images/ic-email.png" /> Support  547548 ( 954 )</div>
-                </div>
-            </div>
-        </section>
+        @endif
 
         @include('frontend.includes.footer')
 
-    </div>
     <!-- Home page Content -->
-
-    @endif
 
     @yield('before-scripts-end')
 
     {!! HTML::script(elixir('js/frontend.js')) !!}
 
-    <script>
-
-        @if(auth()->user())
-
-        var socket = io('http://{{ env('SOCKETIO_SERVER_IP', '127.0.0.1') }}:{{ env('SOCKETIO_SERVER_PORT', 8000) }}');
-
-        var SnappeeJobsHeader = new Vue({
-            el: '.notifications-header',
-
-            data: {
-                unread_messages: [],
-                rejected_applications: [],
-                unread_messages_order: -1,
-                rejected_applications_order: -1
-            },
-
-            ready: function(){
-
-                var that = this;
-
-                $.post('{{ route('frontend.notification.unreadchats') }}', { _token : $('meta[name="_token"]').attr('content') }, function(data){
-                    if ( data.length ) {
-                        that.unread_messages = data;
-                    }
-                });
-
-                $.post('{{ route('frontend.notification.rejected_applications') }}', { _token : $('meta[name="_token"]').attr('content') }, function(data){
-                    if ( data.length ) {
-                        that.rejected_applications = data;
-                    }
-                });
-
-                // Listening to the socket
-                socket.on('user.{{ auth()->user()->id }}:employerchat-received', function(data){
-                    that.unread_messages.push(data.message_details)
-                });
-
-            },
-
-            methods: {
-                mark_rejected_applications_read: function(){
-                    $.post('{{ route('frontend.notification.rejected_applications_mark_read') }}', { _token : $('meta[name="_token"]').attr('content') }, function(data){
-
-                    });
-                }
-            }
-        });
-
-        @endif
-
-    </script>
+    @include('frontend.includes.notification_code')
 
     @yield('after-scripts-end')
 
     @include('sweet::alert')
+
+    <script>
+            Dropzone.autoDiscover = false
+            var homeRegisterApp = new Vue({
+                el: '.homepage-modal',
+                data: {
+                    modalHeading            : 'Complete your registration here',
+                    name                    : '',
+                    email                   : '',
+                    password                : '',
+                    password_confirmation   : '',
+                    gender                  : '',
+                    dob                     : '',
+                    country_id              : '',
+                    state_id                : '',
+                    errors                  : [],
+                    user                    : {},
+                    registered              : {{ auth()->guest() ? "false" : "true" }},
+                    confirmed               : {{ auth()->user() && auth()->user()->confirmed ? "true" : "false" }},
+                    avatarUploaded          : {{ auth()->user() && auth()->user()->avatar_filename ? "true" : "false" }},
+                    resumeUploaded          : {{ auth()->user() && auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->has_resume ? "true" : "false" }},
+                    industries              : [],
+                    skills                  : [],
+                    job_categories          : [],
+                    size                    : '',
+                    preferencesSaved        : {{ auth()->user() && auth()->user()->job_seeker_details && auth()->user()->job_seeker_details->preferences_saved ? "true" : "false" }},
+                },
+                methods: {
+                    showModal: function(event){
+                        event.preventDefault();
+                        $("#registrationModal").modal();
+                    },
+                    validateRegistration: function(event){
+                        $(event.target).button('loading');
+                        var that = this;
+                        $.post( "{{ route('frontend.access.validate') }}", this.$data, function(data){
+                            $(event.target).button('reset');
+                            that.user = data.user;
+                            that.registered = true;
+                            that.errors = [];
+                            that.modalHeading = 'Please upload your profile image';
+                            that.enableProfileImageUploadDropZone();
+                        }).error(function(err, data){
+                            var errorArray = [];
+                            for(var key in err.responseJSON) {
+                                var error = err.responseJSON[key];
+                                error.forEach(function(element, index){
+                                    errorArray.push(error[index]);
+                                });
+                            }
+                            that.errors = errorArray;
+                            $(event.target).button('reset');
+                        });
+                    },
+                    enableProfileImageUploadDropZone: function(){
+                        var that = this;
+                        $("#upload-profile-image").addClass('dropzone').dropzone({
+                            url: "{{ route('frontend.profileimage.update') }}",
+                            dictDefaultMessage: 'Drag your profile image here or Click to upload.',
+                            paramName: "file",
+                            maxFilesize: 5,
+                            accept: function (file, done) {
+                                if (
+                                        ( file.type == 'image/png' ) ||
+                                        ( file.type == 'image/jpg' ) ||
+                                        ( file.type == 'image/jpeg' ) ||
+                                        ( file.type == 'image/bmp' )
+                                ) {
+                                    done();
+                                } else {
+                                    alert('Please upload an image file')
+                                }
+                            },
+                            sending: function (file, xhr, data) {
+                                data.append('_token', $('meta[name="_token"]').attr('content'));
+                            },
+                            success: function (file, xhr) {
+                                that.modalHeading = 'Please upload your resume now';
+                                that.avatarUploaded = true;
+                                that.enableResumeUploadDropZone();
+                            }
+                        });
+                    },
+                    enableResumeUploadDropZone: function(){
+                        var that = this;
+                        $("#upload-resume").addClass('dropzone').dropzone({
+                            url: "{{ route('frontend.profile.resume') }}",
+                            dictDefaultMessage: 'Drag your resume file here or Click to upload.',
+                            paramName: "file",
+                            maxFilesize: 5,
+                            accept: function (file, done) {
+                                if (
+                                        ( file.type == 'application/msword' ) ||
+                                        ( file.type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ) ||
+                                        ( file.type == 'application/pdf' ) ||
+                                        ( file.type == 'application/kswps' )
+                                ) {
+                                    done();
+                                } else {
+                                    alert('Please upload doc/docx/pdf files')
+                                }
+                            },
+                            sending: function (file, xhr, data) {
+                                data.append('_token', $('meta[name="_token"]').attr('content'));
+                            },
+                            success: function (file, xhr) {
+                                that.modalHeading = 'One more step, fill in your skills and job categories';
+                                that.resumeUploaded = true;
+                            }
+                        });
+                    },
+                    submitPreferences: function(event){
+                        $(event.target).button('loading');
+                        var that = this;
+                        $.post( "{{ route('frontend.profile.preferences') }}",
+                                {
+                                    industries      : $('select#industries').select2().val(),
+                                    skills          : $('select#skills').select2().val(),
+                                    job_categories  : $('select#job_categories').select2().val(),
+                                    size            : $('input[type=radio][name=size]:checked').val()
+                                },
+                                function(data){
+                                    $(event.target).button('reset');
+                                    that.preferencesSaved = true;
+                                    that.errors = [];
+                                    that.modalHeading = '';
+                                    setTimeout(function () {
+                                        $("#registrationModal").modal('toggle');
+                                        location.href = '{{ route('frontend.dashboard') }}'+"?confirmed=false";
+                                    }, 1);
+                                }).error(function(err, data){
+                            var errorArray = [];
+                            for(var key in err.responseJSON) {
+                                var error = err.responseJSON[key];
+                                error.forEach(function(element, index){
+                                    errorArray.push(error[index]);
+                                });
+                            }
+                            that.errors = errorArray;
+                            $(event.target).button('reset');
+                        });
+                    }
+                }
+            });
+            @if( auth()->user() && access()->hasRole('User') )
+                    @if( auth()->user()->avatar_filename )
+                    @if(
+                        auth()->user()->job_seeker_details &&
+                        auth()->user()->job_seeker_details->has_resume
+                        )
+                    homeRegisterApp.resumeUploaded = true;
+
+            @if(
+                auth()->user()->job_seeker_details &&
+                auth()->user()->job_seeker_details->preferences_saved
+                )
+                    homeRegisterApp.preferencesSaved = true;
+            @else
+                    homeRegisterApp.modalHeading = "Please save your preferences";
+            $("#registrationModal").modal();
+            @endif
+
+                    @else
+                    homeRegisterApp.modalHeading = "Please upload your resume";
+            homeRegisterApp.registered = true;
+            homeRegisterApp.enableResumeUploadDropZone();
+            $("#registrationModal").modal();
+            @endif
+
+                    @else
+                    homeRegisterApp.modalHeading = "Please upload your profile image";
+            homeRegisterApp.registered = true;
+            homeRegisterApp.enableProfileImageUploadDropZone();
+            $("#registrationModal").modal();
+
+            @endif
+    @endif
+    $('#country_id').on('change', function(){
+                $.getJSON('/get-states/'+$(this).val(), function(json){
+                    var listitems = '<option value="">Please select</option>';
+                    $.each(json,function(key, value)
+                    {
+                        listitems += '<option value=' + value.id + '>' + value.name + '</option>';
+                    });
+                    $('#state_id').html(listitems);
+                });
+            });
+        </script>
+
 </body>
 </html>

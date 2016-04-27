@@ -8,6 +8,9 @@ body {
     padding: 0;
     font-family: Arial, Helvetica, sans-serif;
 }
+a{
+    color: inherit;
+}
 ul {
     margin: 0;
     padding: 0;
@@ -391,7 +394,7 @@ h5 {
     }
 }
 .top-nav {
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
 }
 .inner-logo {
     display: inline-block;
@@ -656,49 +659,35 @@ h5 {
 .employers .ftr-logos span {
     margin-left: 0;
 }
-.lightbox {
-    background: rgba(67, 181, 219, .8);
-    position: fixed;
+.modal-header {
+    position: relative;
     margin: 0;
-    padding: 0;
+    padding: 30px 30px 0;
     width: 100%;
     height: 100%;
     z-index: 1;
 }
-.lightbox-pop {
-    position: absolute;
-    width: 40%;
-    left: 30%;
-    top: 7%;
-    background: #fff;
-    padding: 40px;
-    box-shadow: 1px 1px 20px rgba(0, 0, 0, .5);
-}
-.lightbox-pop h2 {
+.modal-header h2 {
     margin: 10px 0 0 0;
     font-weight: bold;
 }
-.lightbox-pop p {
+.modal-header p {
     color: #666;
     margin-bottom: 30px;
 }
-.lightbox-pop input[type="text"], .search-field input[type="text"] {
-    font-size: 16px;
-    border-radius: 6px;
-    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3) inset;
-    border: 0;
-    margin-bottom: 18px;
-    border-bottom: 1px solid #eaeaea;
-}
-.lightbox-pop .btn-primary {
-    border: 0;
-    width: 100%;
-    text-transform: uppercase;
-    padding: 15px 0;
-}
-.lightbox-pop .btn-close {
+.modal-header .btn-close {
     position: absolute;
     right: -6.5%;
+    opacity: 1;
+}
+.modal-backdrop {
+    background: rgba(4, 140, 185, 1);
+}
+.modal-backdrop.in {
+    opacity: 0.85;
+}
+.modal-body {
+    padding: 35px;
 }
 .job-dtmenu ul li {
     display: inline-block;
@@ -785,6 +774,12 @@ h5 {
 @media (max-width:991px) {
     .sidetop {
         text-align: center;
+    }
+    .bodycontent {
+        padding-top: 5px;
+    }
+    .navbar-default .navbar-toggle {
+        margin-right: 0;
     }
 }
 img {
@@ -947,12 +942,25 @@ img {
     color: #1d376c;
     background: url('../images/gear-icon.png') no-repeat left center;
     padding-left: 30px;
-    margin-bottom: 30px;
+    margin-bottom: 5px;
 }
 .job-seeker {
     padding: 15px;
     box-shadow: 0 0 3px rgba(0, 0, 0, .3);
-    overflow: hidden;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+}
+.profileImage {
+    width: 20%;
+    min-width: 120px;
+    padding-right: 15px;
+}
+.profileContent {
+    width: 80%;
+    min-width: calc(100% - 120px);
 }
 .thumb-wrap {
     padding: 15px 0;
@@ -961,6 +969,8 @@ img {
     font-size: 24px;
     font-weight: bold;
     margin: 10px 0 5px;
+    position: relative;
+    padding-right: 50px;
 }
 .jobseeker-loc {
     color: #9d9d9d;
@@ -972,6 +982,7 @@ img {
 }
 .job-seeker hr {
     margin-top: 5px;
+    margin-bottom: 5px;
     width: 90%;
     margin-left: 0;
 }
@@ -979,10 +990,6 @@ img {
     font-size: 14px;
     color: #747474;
     margin-bottom: 0;
-    display: block;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
 }
 .job-seeker .skills span {
     color: #000;
@@ -992,7 +999,12 @@ img {
     display: inline-block;
     border-radius: 5px;
     border: 1px solid #dadada;
-    padding: 8px 15px;
+    padding: 5px 7px;
+    font-size: 13px !important;
+    font-weight: normal !important;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 .btn-fav img {
     margin-top: -4px;
@@ -1004,9 +1016,32 @@ img {
 .job-search .search-btn {
     margin-top: 39px;
 }
-.job-search .companies {
-    margin-left: 1%;
-    width: 98%;
+select.sort {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background: url('../images/dp-downarrow.png') no-repeat 95% center;
+    font-size: 14px;
+    border-radius: 6px;
+    border: 0px solid #eaeaea;
+    padding: 5px 20px 5px 5px;
+    background-color: transparent;
+    cursor: pointer;
+}
+select.sort option {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 3px;
+    border: 1px solid #ddd;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-collapse: collapse;
+}
+@media (min-width: 768px) {
+    .withTitle {
+        margin: 20px 0 10px;
+    }
 }
 .grid-item, .grid-sizer {
     width: 50%;
@@ -1017,6 +1052,18 @@ img {
 @media (max-width:639px) {
     .grid-item, .grid-sizer {
         width: 100%;
+    }
+    .profileImage {
+        width: 20%;
+        min-width: 80px;
+        padding-right: 15px;
+    }
+    .profileContent {
+        width: 80%;
+        min-width: calc(100% - 80px);
+    }
+    .job-seeker h2 {
+        font-size: 18px;
     }
 }
 .comp-photo .detail-caps {
@@ -1187,7 +1234,6 @@ img {
 .back-box-straight {
     box-shadow: 0 0 4px rgba(0, 0, 0, .2);
     margin-top: 90px;
-    margin-left: 5%;
 }
 .tilted-box {
     box-shadow: 0 0 16px rgba(0, 0, 0, 0.3);
@@ -1216,6 +1262,33 @@ img {
 .cadid-btns {
     margin-top: -30px;
     text-align: right;
+}
+@media (max-width: 991px) {
+    .cadid-btns {
+        margin-top: 20px;
+        text-align: center;
+    }
+    .candidate-details {
+        padding: 20px 20px;
+    }
+    .tilted-box {
+        box-shadow: 0 0 16px rgba(0, 0, 0, 0.3);
+        -ms-transform: rotate(0deg); /* IE 9 */
+        -webkit-transform: rotate(0deg); /* Safari */
+        -moz-transform: rotate(0deg);
+        transform: rotate(0deg);
+        background: #fff;
+    }
+    .candidate-details {
+        padding: 20px;
+        -ms-transform: rotate(0deg); /* IE 9 */
+        -webkit-transform: rotate(0deg); /* Safari */
+        -moz-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    .photo_gallery > div {
+        max-width: 100%;
+    }
 }
 .cadid-btns .btn-primary, .cnd-invite .btn-primary {
     padding: 15px 40px;

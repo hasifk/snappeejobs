@@ -73,12 +73,12 @@ class EloquentCmsRepository {
 
     public function article() {
         $userid = Auth::user()->id;
-        return Cms::where('type', 'Article')->where('user_id', $userid)->paginate(1);
+        return Cms::where('type', 'Article')->where('user_id', $userid)->paginate(10);
     }
 
     public function blog() {
         $userid = Auth::user()->id;
-        return Cms::where('type', 'Blog')->where('user_id', $userid)->paginate(1);
+        return Cms::where('type', 'Blog')->where('user_id', $userid)->paginate(10);
     }
 
 }

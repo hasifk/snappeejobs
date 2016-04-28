@@ -65,7 +65,7 @@ class ProfileController extends Controller {
 			'states'    => $states
 		];
 
-		return view('frontend.user.profile.edit', $data);
+		return view('frontend.user.profile.edit' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ), $data);
 	}
 
 	public function editResume(){
@@ -88,7 +88,7 @@ class ProfileController extends Controller {
 
         $name = $this->userLogs->getActivityDescriptionForEvent($array);
         Activity::log($name);
-		return view('frontend.user.resume.edit', [
+		return view('frontend.user.resume.edit' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ), [
 			'job_seeker' 	=> $job_seeker,
 			'resume_link'	=> $resume_link
 		]);
@@ -107,7 +107,7 @@ class ProfileController extends Controller {
 		$job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
 		$industries = \DB::table('industries')->select(['id', 'name'])->get();
 
-		return view('frontend.user.preferences.edit', [
+		return view('frontend.user.preferences.edit' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ), [
 			'skills' 			=> $skills,
 			'job_categories'	=> $job_categories,
 			'industries'		=> $industries,
@@ -421,7 +421,7 @@ class ProfileController extends Controller {
 			])
 			->get();
 
-		return view('frontend.user.profile.favourites', [
+		return view('frontend.user.profile.favourites' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ), [
 			'companies' => $companies,
 			'jobs' 		=> $jobs
 		]);
@@ -433,7 +433,7 @@ class ProfileController extends Controller {
 		$jobSeekerObj = JobSeeker::findOrNew($jobSeeker->id);
 		$jobSeekerVideo = $jobSeekerObj->videos()->first();
         $videoLink = $jobSeekerObj->videoLink()->first();
-		return view('frontend.user.profile.videos', [ 'video' => $jobSeekerVideo,'videolink' => $videoLink ]);
+		return view('frontend.user.profile.videos' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ), [ 'video' => $jobSeekerVideo,'videolink' => $videoLink ]);
 	}
 
 	public function uploadVideos(ProfileVideoUploadRequest $request){
@@ -514,7 +514,7 @@ class ProfileController extends Controller {
 
 		javascript()->put(['profile_images' => $images]);
 
-		return view('frontend.user.profile.images');
+		return view('frontend.user.profile.images' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ));
 	}
 
 	public function uploadImages(ProfileImagesUploadRequest $request){
@@ -599,7 +599,7 @@ class ProfileController extends Controller {
 	}
 
 	public function socialmedia(){
-		return view('frontend.user.profile.socialmedia');
+		return view('frontend.user.profile.socialmedia' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ));
 	}
 
 	public function unreadchats(){

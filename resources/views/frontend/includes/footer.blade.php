@@ -14,9 +14,9 @@
 <section class="hm-contact">
     <div class="container">
         <div class="row text-center">
-            <div class="col-md-4 cnt-phone"><img src="images/ic-hone.png" /> Tool Free <span>number</span>  555 444 777</div>
-            <div class="col-md-4 cnt-phone cnt-support"><img src="images/ic-hone.png" /> Support  547548 ( 954 )</div>
-            <div class="col-md-4 cnt-email"><img src="images/ic-email.png" /> Support  547548 ( 954 )</div>
+            <div class="col-md-4 cnt-phone"><img src="/images/ic-hone.png" /> Tool Free <span>number</span>  555 444 777</div>
+            <div class="col-md-4 cnt-phone cnt-support"><img src="/images/ic-hone.png" /> Support  547548 ( 954 )</div>
+            <div class="col-md-4 cnt-email"><img src="/images/ic-email.png" /> Support  547548 ( 954 )</div>
         </div>
     </div>
 </section>
@@ -69,10 +69,10 @@
             <div class="col-xs-12 footer-secs socialWrap">
                 <h3>Follow us</h3>
                 <ul>
-                    <li class="socials"><a href="http://www.facebook.com/"><img src="images/facebook.png" />Facebook</a></li>
-                    <li class="socials"><a href="http://twitter.com/"><img src="images/twitter.png" />Twitter</a></li>
-                    <li class="socials"><a href="http://plus.google.com/"><img src="images/gplus.png" />Google+</a></li>
-                    <li class="socials"><a href="http://www.linkedin.com/"><img src="images/linkedin.png" />LinkedIn</a></li>
+                    <li class="socials"><a href="http://www.facebook.com/"><img src="/images/facebook.png" />Facebook</a></li>
+                    <li class="socials"><a href="http://twitter.com/"><img src="/images/twitter.png" />Twitter</a></li>
+                    <li class="socials"><a href="http://plus.google.com/"><img src="/images/gplus.png" />Google+</a></li>
+                    <li class="socials"><a href="http://www.linkedin.com/"><img src="/images/linkedin.png" />LinkedIn</a></li>
                 </ul>
             </div>
         </div>

@@ -42,7 +42,7 @@ class PasswordController extends Controller {
 	 */
 	public function getEmail()
 	{
-		return view('frontend.auth.password');
+		return view('frontend.auth.password' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ));
 	}
 
 	/**
@@ -85,14 +85,14 @@ class PasswordController extends Controller {
 	{
 		if (is_null($token))
 			throw new NotFoundHttpException;
-		return view('frontend.auth.reset')->withToken($token);
+		return view('frontend.auth.reset' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ))->withToken($token);
 	}
 
 	/**
 	 * @return \Illuminate\View\View
 	 */
 	public function getChangePassword() {
-		return view('frontend.auth.change-password');
+		return view('frontend.auth.change-password' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ));
 	}
 
 	/**

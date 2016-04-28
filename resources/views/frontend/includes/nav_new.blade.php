@@ -8,7 +8,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/"><img src="images/snap-logo-small.png" /></a>
+                <a class="navbar-brand" href="/"><img src="/images/snap-logo-small.png" /></a>
             </div>
             <div id="navbar" class="notifications-header navbar-collapse collapse">
                 <ul class="nav navbar-nav">

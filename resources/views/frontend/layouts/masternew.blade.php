@@ -19,6 +19,14 @@
 
     @include('frontend.includes.nav_new')
 
+    <div class="container">
+        @include('frontend.includes.alerts')
+    </div>
+
+    <div class="container">
+        @include('includes.partials.messages')
+    </div>
+
     @yield('content')
 
     @include('frontend.includes.footer')

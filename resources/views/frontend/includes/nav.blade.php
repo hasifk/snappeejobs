@@ -88,7 +88,7 @@
 						<li class="dropdown">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
 								{{ Auth::user()->name }}
-								<img style="height: 25px; width: 25px;" src="{!! access()->user()->getAvatarImage(25) !!}" class="user-image" alt="User Image"/>
+								<img style="height: 25px; width: 25px;" src="{!! access()->user()->getPictureAttribute(25, 25) !!}" class="user-image" alt="User Image"/>
 								<span class="caret"></span>
 							</a>
 							<ul class="dropdown-menu" role="menu">

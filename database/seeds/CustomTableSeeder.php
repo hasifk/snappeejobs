@@ -11,8 +11,8 @@ class CustomTableSeeder extends \Illuminate\Database\Seeder
         \DB::statement(
             "
             INSERT INTO `users` (`id`, `name`, `email`, `password`, `status`, `confirmation_code`, `confirmed`, `remember_token`, `avatar_filename`, `avatar_extension`, `avatar_path`, `about_me`, `country_id`, `state_id`, `dob`, `gender`, `no_password`, `employer_id`, `group_token`, `created_at`, `updated_at`, `deleted_at`, `stripe_active`, `stripe_id`, `stripe_subscription`, `stripe_plan`, `last_four`, `trial_ends_at`, `subscription_ends_at`) VALUES
-            (6, 'Employer 1', 'employer1@gmail.com', '$2y$10$uSIinViohancWj52hu.msOWTQ9oMjI85qHJ5G4JG/GPQN2piS.IXq', 1, '08b0e03775b306dcf43434dc7eaad42f', 1, 'shsltrEh32bW7PrJIYdjkJpZsP9v0ZDBIfEPBp3tWESBmvmEznsWBMyedlMo', '', '', '', '', 1, 1, '0000-00-00', '', 1, 6, 'asdasd', '2016-03-07 03:08:35', '2016-03-07 03:18:52', NULL, 1, 'cus_82OlaTABFNAM3s', 'sub_82OlR9gPkqN4g2', 'snappeejobs1', '4242', NULL, NULL),
-            (7, 'Job Seeker 1', 'jobseeker1@mail.com', '$2y$10$n4N0WiGEKRQIDMUDJGdu0.afhoNfWBAqvq5PAtDqb2HufCkWYecyy', 1, 'bcb915527c7e342b2d837d4d7d31f65c', 1, 'tHI5nsrdzw0IGEaWyyGqqglE9XNLXGpmrfHg72YoAIkLVULwTKgdvvHWgi95', '12122755_1035809229783745_2617442617398920722_n', 'jpg', 'users/7/avatar/', '', 1, 1, '2016-03-07', 'male', 0, 0, '', '2016-03-07 03:18:20', '2016-03-07 03:51:57', NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL);
+            (6, 'Employer 1', 'employer1@gmail.com', '$2y$10$uSIinViohancWj52hu.msOWTQ9oMjI85qHJ5G4JG/GPQN2piS.IXq', 1, '08b0e03775b306dcf43434dc7eaad42f', 1, 'shsltrEh32bW7PrJIYdjkJpZsP9v0ZDBIfEPBp3tWESBmvmEznsWBMyedlMo', '', '', '', '', 222, 3428, '0000-00-00', '', 1, 6, 'asdasd', '2016-03-07 03:08:35', '2016-03-07 03:18:52', NULL, 1, 'cus_82OlaTABFNAM3s', 'sub_82OlR9gPkqN4g2', 'snappeejobs1', '4242', NULL, NULL),
+            (7, 'Job Seeker 1', 'jobseeker1@mail.com', '$2y$10$n4N0WiGEKRQIDMUDJGdu0.afhoNfWBAqvq5PAtDqb2HufCkWYecyy', 1, 'bcb915527c7e342b2d837d4d7d31f65c', 1, 'tHI5nsrdzw0IGEaWyyGqqglE9XNLXGpmrfHg72YoAIkLVULwTKgdvvHWgi95', '12122755_1035809229783745_2617442617398920722_n', 'jpg', 'users/7/avatar/', '', 222, 3428, '2016-03-07', 'male', 0, 0, '', '2016-03-07 03:18:20', '2016-03-07 03:51:57', NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL);
             "
         );
 
@@ -104,12 +104,33 @@ class CustomTableSeeder extends \Illuminate\Database\Seeder
             "
         );
 
+        \DB::table('job_application_statuses')->insert([
+            [ 'name' => 'Applied', 'status' => 'applied'],
+            [ 'name' => 'Feedback','status' => 'feedback'],
+            [ 'name' => 'Interviewing','status' => 'interviewing'],
+            [ 'name' => 'Disqualified','status' => 'disqualified'],
+            [ 'name' => 'Hired','status' => 'hired']
+        ]);
+
+
+        \DB::table('job_application_status_company')->insert([
+            [ 'id' => '1', 'employer_id' =>'6', 'job_application_status_id' => '1','name' => 'Applied'],
+            [ 'id' => '2', 'employer_id' =>'6', 'job_application_status_id' => '2','name' => 'Feedback'],
+            [ 'id' => '3', 'employer_id' =>'6', 'job_application_status_id' => '3','name' => 'Interviewing'],
+            [ 'id' => '4', 'employer_id' =>'6', 'job_application_status_id' => '4','name' => 'Disqualified'],
+            [ 'id' => '5', 'employer_id' =>'6', 'job_application_status_id' => '5','name' => 'Hired'],
+        ]);
+
         \DB::statement(
             "
-            INSERT INTO `job_applications` (`id`, `job_id`, `user_id`, `accepted_at`, `accepted_by`, `declined_at`, `declined_by`, `declined_viewed_at`, `created_at`, `updated_at`) VALUES
-            (1, 2, 7, NULL, NULL, NULL, NULL, NULL, '2016-03-07 03:36:28', '2016-03-07 03:36:28');
+            INSERT INTO `job_applications` (`id`, `job_id`, `user_id`, `job_application_status_company_id`, `accepted_at`, `accepted_by`, `declined_at`, `declined_by`, `declined_viewed_at`, `created_at`, `updated_at`) VALUES
+            (1, 2, 7, 1, NULL, NULL, NULL, NULL, NULL, '2016-03-07 03:36:28', '2016-03-07 03:36:28');
             "
         );
+
+        \DB::table('job_application_status_history')->insert([
+            [ 'job_application_id' =>  '1', 'job_application_status_company_id' => '1']
+        ]);
 
         \DB::statement(
             "

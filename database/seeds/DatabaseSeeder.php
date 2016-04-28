@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder {
 		$this->call(JobCategoriesTableSeeder::class);
 		$this->call(SkillsTableSeeder::class);
 		$this->call(CompanyTableSeeder::class);
+		$this->call(JobApplicationStatusTableSeeder::class);
 		$this->call(CustomTableSeeder::class);
 
 		if(env('DB_DRIVER')=='mysql')

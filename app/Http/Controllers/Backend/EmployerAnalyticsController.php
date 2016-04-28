@@ -54,7 +54,7 @@ class EmployerAnalyticsController extends Controller {
         }
     }
 
-    /*     * ********************************************************************************************************* */
+    /*     ********************************************************************************************************** */
 
     public function notinterestedjobsanalytics(Request $request) {
         if (access()->hasRole('Employer', 'Employer Staff')) {
@@ -70,37 +70,59 @@ class EmployerAnalyticsController extends Controller {
         }
     }
 
-    /*     * ********************************************************************************************************* */
+
+    /*     ********************************************************************************************************** */
 
     public function companyVisitors(Request $request) {
         if (access()->hasRole('Employer', 'Employer Staff')) {
-            $company_visitors = $this->repository->getTotalCmpVisitors();
-            $company_auth_visitors = $this->repository->getTotalAuthCmpVisitors();
-
+            $company_visitors = $this->repository->getTotalCmpVisitors($request);
             $view = [
                 'company_visitors' => $company_visitors,
-                'company_auth_visitors' => $company_auth_visitors,
             ];
             return view('backend.employeranalytics.emp_analytics_cmp_visitors', $view);
         }
     }
 
-    /*     * ********************************************************************************************************* */
+    /*     ********************************************************************************************************** */
+
+    public function companyAuthVisitors(Request $request) {
+        if (access()->hasRole('Employer', 'Employer Staff')) {
+            $company_auth_visitors = $this->repository->getTotalAuthCmpVisitors();
+
+            $view = [
+                'company_auth_visitors' => $company_auth_visitors,
+            ];
+            return view('backend.employeranalytics.emp_analytics_authcmp_visitors', $view);
+        }
+    }
+
+    /*     ********************************************************************************************************** */
 
     public function jobVisitors(Request $request) {
         if (access()->hasRole('Employer', 'Employer Staff')) {
             $job_visitors = $this->repository->getTotalJobVisitors();
-            $job_auth_visitors = $this->repository->getTotalAuthJobVisitors();
 
             $view = [
                 'job_visitors' => $job_visitors,
-                'job_auth_visitors' => $job_auth_visitors,
             ];
             return view('backend.employeranalytics.emp_analytics_job_visitors', $view);
         }
     }
 
-    /*     * ********************************************************************************************************* */
+    /*     ********************************************************************************************************** */
+
+    public function jobAuthVisitors(Request $request) {
+        if (access()->hasRole('Employer', 'Employer Staff')) {
+            $job_auth_visitors = $this->repository->getTotalAuthJobVisitors();
+
+            $view = [
+                'job_auth_visitors' => $job_auth_visitors,
+            ];
+            return view('backend.employeranalytics.emp_analytics_authjob_visitors', $view);
+        }
+    }
+
+    /*     ********************************************************************************************************** */
 
     public function UniqueJobVisitors(Request $request) {
         if (access()->hasRole('Employer', 'Employer Staff')) {
@@ -113,7 +135,7 @@ class EmployerAnalyticsController extends Controller {
         }
     }
 
-    /*     * ********************************************************************************************************* */
+    /*     ********************************************************************************************************** */
 
     public function UniqueCompanyVisitors(Request $request) {
         if (access()->hasRole('Employer', 'Employer Staff')) {
@@ -126,5 +148,5 @@ class EmployerAnalyticsController extends Controller {
         }
     }
 
-    /*     * ********************************************************************************************************* */
+    /*     ********************************************************************************************************** */
 }

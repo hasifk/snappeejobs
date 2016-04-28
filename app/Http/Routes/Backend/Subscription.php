@@ -8,7 +8,6 @@ $router->group([
     get('/', 'SubscriptionController@index')->name('backend.subscription');
     get('/upgradeplan/{userId}', 'SubscriptionController@chooseplanupgrade')->name('backend.user.subscription');
     post('/upgradeplan/{userId}', 'SubscriptionController@upgradeplan')->name('backend.user.subscription.update');
-    Route::post('stripe/webhook', '\Laravel\Cashier\WebhookController@handleWebhook');
 });
 
 

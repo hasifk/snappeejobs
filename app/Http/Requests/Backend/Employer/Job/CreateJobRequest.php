@@ -40,7 +40,7 @@ class CreateJobRequest extends Request
             'title.required'                => 'Title is required',
             'level.required'                => 'Level is required',
             'job_category.required'         => 'Any of the job category is required',
-            'skills.required'               => 'Any of the job category is required',
+            'skills.required'               => 'Any of the skills is required',
             'description.required'          => 'Description is required',
             'country_id.required'           => 'Country is required',
             'state_id.required'             => 'State is required',

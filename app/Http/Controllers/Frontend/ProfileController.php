@@ -12,6 +12,7 @@ use App\Models\Access\User\User;
 use App\Models\JobSeeker\JobSeeker;
 use App\Models\Mail\Thread;
 use App\Repositories\Backend\JobSeeker\EloquentJobSeekerRepository;
+use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use App\Repositories\Backend\Mail\EloquentMailRepository;
 use App\Repositories\Frontend\User\UserContract;
 use App\Http\Requests\Frontend\User\UpdateProfileRequest;
@@ -19,6 +20,8 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use Storage;
+use Auth;
+use Activity;
 
 /**
  * Class ProfileController
@@ -29,17 +32,18 @@ class ProfileController extends Controller {
 	 * @var UserContract
 	 */
 	private $users;
-
+    private $userLogs;
 
 	/**
 	 * ProfileController constructor.
 	 * @param UserContract $users
      */
-	public function __construct(UserContract $users,EloquentJobSeekerRepository $videorepo)
+	public function __construct(UserContract $users,EloquentJobSeekerRepository $videorepo,LogsActivitysRepository $userLogs)
 	{
 
 		$this->users = $users;
         $this->videorepo =$videorepo;
+		$this->userLogs =$userLogs;
 	}
 
 	/**
@@ -61,11 +65,12 @@ class ProfileController extends Controller {
 			'states'    => $states
 		];
 
-		return view('frontend.user.profile.edit', $data);
+		return view('frontend.user.profile.edit' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ), $data);
 	}
 
 	public function editResume(){
-
+		$array['type'] = 'Resume';
+		$array['heading']='';
 		$job_seeker_details = auth()->user()->jobseeker_details;
 
 		$resume_link = '';
@@ -79,7 +84,11 @@ class ProfileController extends Controller {
 			}
 		}
 
-		return view('frontend.user.resume.edit', [
+        $array['event'] = 'updated';
+
+        $name = $this->userLogs->getActivityDescriptionForEvent($array);
+        Activity::log($name);
+		return view('frontend.user.resume.edit' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ), [
 			'job_seeker' 	=> $job_seeker,
 			'resume_link'	=> $resume_link
 		]);
@@ -98,7 +107,7 @@ class ProfileController extends Controller {
 		$job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
 		$industries = \DB::table('industries')->select(['id', 'name'])->get();
 
-		return view('frontend.user.preferences.edit', [
+		return view('frontend.user.preferences.edit' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ), [
 			'skills' 			=> $skills,
 			'job_categories'	=> $job_categories,
 			'industries'		=> $industries,
@@ -127,46 +136,28 @@ class ProfileController extends Controller {
 	 * @return mixed
 	 */
 	public function update(UserContract $user, UpdateProfileRequest $request) {
+
+        $array['type'] = 'Profile';
+        $array['heading']='';
 		$user->updateProfile($request->all());
 
-        $avatar = $request->file('avatar');
-
-        if ( $avatar && $avatar->isValid() ) {
-
-			if ( auth()->user()->avatar_filename && Storage::has(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension) ) {
-				Storage::delete(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension);
-			}
-
-            $filePath = "users/" . auth()->user()->id."/avatar/";
-            Storage::put($filePath. $avatar->getClientOriginalName() , file_get_contents($avatar));
-            Storage::setVisibility($filePath. $avatar->getClientOriginalName(), 'public');
-
-            $update_array = [
-                'avatar_filename' => pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME),
-                'avatar_extension' => $avatar->getClientOriginalExtension(),
-                'avatar_path' => $filePath
-            ];
-
-            auth()->user()->update($update_array);
-
-			$this->users->updateProfileCompleteness(auth()->user());
-        }
-
-		return redirect()->route('frontend.dashboard')->withFlashSuccess(trans("strings.profile_successfully_updated"));
-	}
-
-	public function updateProfileImage(Request $request) {
-
-		$avatar = $request->file('file');
+		$avatar = $request->file('avatar');
 
 		if ( $avatar && $avatar->isValid() ) {
 
 			$filePath = "users/" . auth()->user()->id."/avatar/";
-			Storage::put($filePath. $avatar->getClientOriginalName() , file_get_contents($avatar));
-			Storage::setVisibility($filePath. $avatar->getClientOriginalName(), 'public');
+			\Storage::put($filePath. $avatar->getClientOriginalName() , file_get_contents($avatar));
+			\Storage::setVisibility($filePath. $avatar->getClientOriginalName(), 'public');
 
 			if ( auth()->user()->avatar_filename ) {
-				Storage::delete(auth()->user()->avatar_path.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension);
+				foreach (config('image.thumbnails.user_profile_image') as $image) {
+					if ( \Storage::has($filePath.auth()->user()->avatar_filename.$image['width'].'x'.$image['height'].'.'.auth()->user()->avatar_extension) ) {
+						\Storage::delete($filePath.auth()->user()->avatar_filename.$image['width'].'x'.$image['height'].'.'.auth()->user()->avatar_extension);
+					}
+				}
+				if ( \Storage::has($filePath.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension) ) {
+					\Storage::delete($filePath.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension);
+				}
 			}
 
 			$update_array = [
@@ -176,14 +167,88 @@ class ProfileController extends Controller {
 			];
 
 			auth()->user()->update($update_array);
+
+			// Resize User Profile Image
+			$profile_image = \Image::make($avatar);
+
+			\Storage::disk('local')->put($filePath.$avatar->getClientOriginalName(), file_get_contents($avatar));
+
+			foreach (config('image.thumbnails.user_profile_image') as $image) {
+				$profile_image->resize($image['width'], $image['height'])->save( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) );
+				\Storage::put($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() , file_get_contents( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) ) );
+				\Storage::setVisibility($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension(), 'public');
+			}
+
+			\Storage::disk('local')->deleteDirectory($filePath);
+
 			$this->users->updateProfileCompleteness(auth()->user());
+
+            $array['event'] = 'updated';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+		}
+
+		return redirect()->route('frontend.dashboard')->withFlashSuccess(trans("strings.profile_successfully_updated"));
+	}
+
+	public function updateProfileImage(Request $request) {
+
+        $array['type'] = 'Profile Image';
+        $array['heading']='';
+		$avatar = $request->file('file');
+
+		if ( $avatar && $avatar->isValid() ) {
+
+			$filePath = "users/" . auth()->user()->id."/avatar/";
+			\Storage::put($filePath. $avatar->getClientOriginalName() , file_get_contents($avatar));
+			\Storage::setVisibility($filePath. $avatar->getClientOriginalName(), 'public');
+
+			if ( auth()->user()->avatar_filename ) {
+				foreach (config('image.thumbnails.user_profile_image') as $image) {
+					if ( \Storage::has($filePath.auth()->user()->avatar_filename.$image['width'].'x'.$image['height'].'.'.auth()->user()->avatar_extension) ) {
+						\Storage::delete($filePath.auth()->user()->avatar_filename.$image['width'].'x'.$image['height'].'.'.auth()->user()->avatar_extension);
+					}
+				}
+				if ( \Storage::has($filePath.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension) ) {
+					\Storage::delete($filePath.auth()->user()->avatar_filename.'.'.auth()->user()->avatar_extension);
+				}
+			}
+
+			$update_array = [
+				'avatar_filename' => pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME),
+				'avatar_extension' => $avatar->getClientOriginalExtension(),
+				'avatar_path' => $filePath
+			];
+
+			auth()->user()->update($update_array);
+
+			// Resize User Profile Image
+			$profile_image = \Image::make($avatar);
+
+			\Storage::disk('local')->put($filePath.$avatar->getClientOriginalName(), file_get_contents($avatar));
+
+			foreach (config('image.thumbnails.user_profile_image') as $image) {
+				$profile_image->resize($image['width'], $image['height'])->save( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) );
+				\Storage::put($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() , file_get_contents( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) ) );
+				\Storage::setVisibility($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension(), 'public');
+			}
+
+			\Storage::disk('local')->deleteDirectory($filePath);
+
+			$this->users->updateProfileCompleteness(auth()->user());
+
+            $array['event'] = 'updated';
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
 		}
 
 		return response()->json(['status' => 1]);
 	}
 
 	public function resumeUpload(ResumeUploadRequest $request){
-
+        $array['type'] = 'Resume';
+        $array['heading']='has been Uploaded';
 		$resume = $request->file('file');
 
 		if ( $resume && $resume->isValid() ) {
@@ -216,6 +281,9 @@ class ProfileController extends Controller {
 
 			$this->users->updateProfileCompleteness(auth()->user());
 
+            $array['event'] = 'uploaded';
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
             return response()->json(['status' => 1]);
 		}
 
@@ -224,7 +292,8 @@ class ProfileController extends Controller {
 	public function savePreferences(PreferencesSaveRequest $request){
 
 		$industries = $request->get('industries');
-
+        $array['type'] = 'Preferences';
+        $array['heading']='auth()->user()->name';
 		foreach ($industries as $industry) {
 			\DB::table('job_seeker_industry_preferences')->insert([
 				'user_id'				=> auth()->user()->jobseeker_details->id,
@@ -262,12 +331,16 @@ class ProfileController extends Controller {
 		]);
 
 		$this->users->updateProfileCompleteness(auth()->user());
-
+        $array['event'] = 'created';
+        $name = $this->userLogs->getActivityDescriptionForEvent($array);
+        Activity::log($name);
 		return response()->json(['status' => 1]);
 	}
 
 	public function saveEmployerPreferences(PreferencesSaveRequest $request){
 
+        $array['type'] = 'Employer Preferences';
+        $array['heading']='';
 		$industries = $request->get('industries');
 
 		\DB::table('job_seeker_industry_preferences')->where('user_id', auth()->user()->jobseeker_details->id)->delete();
@@ -313,7 +386,9 @@ class ProfileController extends Controller {
 		]);
 
 		$this->users->updateProfileCompleteness(auth()->user());
-
+        $array['event'] = 'updated';
+        $name = $this->userLogs->getActivityDescriptionForEvent($array);
+        Activity::log($name);
 		alert()->success('Your preferences are saved.')->autoclose(3000);
 
 		return redirect(route('frontend.preferences.edit'));
@@ -337,16 +412,16 @@ class ProfileController extends Controller {
 			])
 			->get();
 
-		$companies = \DB::table('like_companies')
-			->join('companies', 'companies.id', '=', 'like_companies.company_id')
-			->where('like_companies.user_id', auth()->user()->id)
+		$companies = \DB::table('follow_companies')
+			->join('companies', 'companies.id', '=', 'follow_companies.company_id')
+			->where('follow_companies.user_id', auth()->user()->id)
 			->select([
 				'companies.url_slug',
 				'companies.title'
 			])
 			->get();
 
-		return view('frontend.user.profile.favourites', [
+		return view('frontend.user.profile.favourites' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ), [
 			'companies' => $companies,
 			'jobs' 		=> $jobs
 		]);
@@ -358,10 +433,13 @@ class ProfileController extends Controller {
 		$jobSeekerObj = JobSeeker::findOrNew($jobSeeker->id);
 		$jobSeekerVideo = $jobSeekerObj->videos()->first();
         $videoLink = $jobSeekerObj->videoLink()->first();
-		return view('frontend.user.profile.videos', [ 'video' => $jobSeekerVideo,'videolink' => $videoLink ]);
+		return view('frontend.user.profile.videos' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ), [ 'video' => $jobSeekerVideo,'videolink' => $videoLink ]);
 	}
 
 	public function uploadVideos(ProfileVideoUploadRequest $request){
+
+        $array['type'] = 'Video';
+        $array['heading']='has been Uploaded';
 		$video = $request->file('file');
 
 		if ( $video && $video->isValid() ) {
@@ -395,20 +473,25 @@ class ProfileController extends Controller {
 		}
 
 		$this->users->updateProfileCompleteness(auth()->user());
-
+        $array['event'] = 'uploaded';
+        $name = $this->userLogs->getActivityDescriptionForEvent($array);
+        Activity::log($name);
 		return response()->json(['status' => 1]);
 	}
 /***************************************************************************************************************/
 	public function storeVideoLinks(JobSeekerVideoLinkRequest $request){
-
+        $array['type'] = 'Video Link';
+        $array['heading']='has been Uploaded';
       if($videolink=$this->videorepo->storeJobSeekerVideoLink($request->videolink)):
+          $array['event'] = 'uploaded';
+          $name = $this->userLogs->getActivityDescriptionForEvent($array);
+          Activity::log($name);
         $request->session()->flash('success', $videolink);
         else:
         $request->session()->flash('failure','Failed to Store VideoLink.Please try again. ') ;
         endif;
 
         return back();
-        //return view('frontend.user.profile.videos', ['key' => $key]);
 	}
 /**************************************************************************************************************/
 	public function images(){
@@ -431,10 +514,12 @@ class ProfileController extends Controller {
 
 		javascript()->put(['profile_images' => $images]);
 
-		return view('frontend.user.profile.images');
+		return view('frontend.user.profile.images' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ));
 	}
 
 	public function uploadImages(ProfileImagesUploadRequest $request){
+        $array['type'] = 'Image';
+        $array['heading']='has been Uploaded';
 
 		$avatar = $request->file('file');
 
@@ -457,9 +542,27 @@ class ProfileController extends Controller {
 
 			$result = $jobSeekerObj->images()->create($insert_array);
 
+			// Resize User Profile Image
+			$profile_image = \Image::make($avatar);
+
+			\Storage::disk('local')->put($filePath.$avatar->getClientOriginalName(), file_get_contents($avatar));
+
+			foreach (config('image.thumbnails.jobseeker_images') as $image) {
+				$profile_image->resize($image['width'], $image['height'])->save( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) );
+				\Storage::put($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() , file_get_contents( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) ) );
+				\Storage::setVisibility($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension(), 'public');
+			}
+
+			\Storage::disk('local')->deleteDirectory($filePath);
+
 			$this->users->updateProfileCompleteness(auth()->user());
 
+            $array['event'] = 'uploaded';
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+
 			return response()->json(['status' => 1]);
+
 		}
 
 		return response()->json(['status' => 0]);
@@ -496,7 +599,7 @@ class ProfileController extends Controller {
 	}
 
 	public function socialmedia(){
-		return view('frontend.user.profile.socialmedia');
+		return view('frontend.user.profile.socialmedia' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ));
 	}
 
 	public function unreadchats(){
@@ -524,7 +627,7 @@ class ProfileController extends Controller {
 		if ( $unread_messages ) {
 			foreach ($unread_messages as $key => $unread_message) {
 				$unread_messages[$key]->{'last_message'} = str_limit($unread_message->last_message, 30);
-				$unread_messages[$key]->{'image'} = User::find($unread_message->id)->picture;
+				$unread_messages[$key]->{'image'} = User::find($unread_message->id)->getPictureAttribute(25, 25);
 				$unread_messages[$key]->{'was_created'} = Carbon::parse($unread_message->created_at)->diffForHumans();
 			}
 		}
@@ -552,7 +655,7 @@ class ProfileController extends Controller {
 				$company_id = \DB::table('jobs')->where('id', $rejected_application->job_id)->value('company_id');
 				$company_title = \DB::table('companies')->where('id', $company_id)->value('title');
 				$rejected_applications[$key]->{'message'} = $company_title." rejected your application";
-				$rejected_applications[$key]->{'image'} = User::find($rejected_application->declined_by)->picture;
+				$rejected_applications[$key]->{'image'} = User::find($rejected_application->declined_by)->getPictureAttribute(25, 25);
 				$rejected_applications[$key]->{'was_created'} = Carbon::parse($rejected_application->declined_at)->diffForHumans();
 			}
 		}

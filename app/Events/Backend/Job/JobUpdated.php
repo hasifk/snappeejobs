@@ -40,7 +40,7 @@ class JobUpdated extends Event implements ShouldBroadcast
         $this->eventDetails->{'notification_type_text'} = 'Job Updated';
         $this->eventDetails->{'job_title'} = $job->title;
         $this->eventDetails->{'created_by'} = $user->name;
-        $this->eventDetails->{'created_by_image'} = $user->picture;
+        $this->eventDetails->{'created_by_image'} = $user->getPictureAttribute(25, 25);
     }
 
     /**

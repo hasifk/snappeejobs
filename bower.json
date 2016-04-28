@@ -25,6 +25,7 @@
     "sweetalert": "~1.1.3",
     "At.js": "~1.5.0",
     "owlcarousel": "git://github.com/OwlFonk/OwlCarousel.git",
-    "Sortable": "~1.4.2"
+    "Sortable": "~1.4.2",
+    "bootstrap": "~3.3.6"
   }
 }

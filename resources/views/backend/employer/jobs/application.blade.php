@@ -27,7 +27,7 @@
             <h3>
                 Job Seeker Details
 
-                <img style="height: 25px; width: 25px;" src="{{ $job_application->jobseeker->picture }}" alt="{{ $job_application->jobseeker->name }}">
+                <img style="height: 25px; width: 25px;" src="{{ $job_application->jobseeker->getPictureAttribute(25, 25) }}" alt="{{ $job_application->jobseeker->name }}">
 
             </h3>
 

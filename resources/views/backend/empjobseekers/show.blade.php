@@ -17,7 +17,7 @@
                 <tr>
                     <td>Profile Image</td>
                     <td>
-                        <img style="height: 50px; width: 50px;" src="{{ $jobseeker_user->getAvatarImage(50) }}" alt="{{ $jobseeker_user->name }}">
+                        <img style="height: 50px; width: 50px;" src="{{ $jobseeker_user->getPictureAttribute(45, 45) }}" alt="{{ $jobseeker_user->name }}">
                     </td>
                 </tr>
                 @if($jobseeker_user->about_me)

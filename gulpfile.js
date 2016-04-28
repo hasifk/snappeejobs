@@ -6,21 +6,24 @@ elixir(function(mix) {
         //
         //// Copy webfont files from /vendor directories to /public directory.
         .copy('vendor/fortawesome/font-awesome/fonts', 'public/build/fonts/font-awesome')
-        .copy('vendor/twbs/bootstrap-sass/assets/fonts/bootstrap', 'public/build/fonts/bootstrap')
+        .copy('vendor/twbs/bootstrap-sass/assets/fonts/bootstrap', 'public/build/fonts')
         .copy('vendor/twbs/bootstrap/dist/js/bootstrap.min.js', 'public/js/vendor')
         .copy('./resources/assets/js/Ionicons/fonts', 'public/build/fonts')
 
-        .sass([ // Process front-end stylesheets
-                'frontend/main.scss'
-            ], 'resources/assets/css/frontend/main.css')
+
         .styles([  // Combine pre-processed CSS files
-                'frontend/main.css',
+                './resources/assets/js/bootstrap/dist/css/bootstrap.min.css',
+                './resources/assets/js/bootstrap/dist/css/bootstrap-theme.min.css',
+                'frontend/custom.css',
+                'frontend/style.css',
                 './resources/assets/js/dropzone/dist/min/dropzone.min.css',
                 './resources/assets/js/select2/dist/css/select2.min.css',
                 './resources/assets/js/bootstrap-datepicker/dist/css/bootstrap-datepicker.css',
                 './resources/assets/js/sweetalert/dist/sweetalert.css'
             ], 'public/css/frontend.css')
         .scripts([ // Combine front-end scripts
+                'jquery/dist/jquery.min.js',
+                'bootstrap/dist/js/bootstrap.min.js',
                 'plugins.js',
                 'vue/dist/vue.js',
                 'select2/dist/js/select2.js',
@@ -38,6 +41,7 @@ elixir(function(mix) {
             'backend/plugin/toastr/toastr.scss',
             './resources/assets/js/select2/src/scss/core.scss',
             './resources/assets/js/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.css',
+            './resources/assets/js/bootstrap-datepicker/dist/css/bootstrap-datepicker.css',
             './resources/assets/js/Ionicons/scss/ionicons.scss',
             'backend/plugin/select2/select2.scss',
             './resources/assets/js/At.js/dist/css/jquery.atwho.css',
@@ -55,6 +59,7 @@ elixir(function(mix) {
                 'plugins.js',
                 'vue/dist/vue.js',
                 'backend/main.js',
+            './resources/assets/js/bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
                 'backend/plugin/toastr/toastr.min.js',
                 'bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.all.js',
                 'select2/dist/js/select2.js',

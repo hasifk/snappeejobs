@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Backend\Employer\Jobs;
 
 use App\Events\Backend\Job\JobDeleted;
+use App\Events\Backend\JobApplication\JobApplicationStatusChanged;
 use App\Events\Frontend\Job\JobSeekerChatReceived;
+use App\Http\Requests\Backend\Employer\Job\EmployerJobApplicationStatusEditRequest;
 use App\Http\Requests\Backend\Employer\Job\HideJobRequest;
+use App\Http\Requests\Backend\Employer\Job\JobApplicationChangeStatus;
 use App\Http\Requests\Backend\Employer\Job\MarkJobRequest;
 use App\Http\Requests\Backend\Employer\Job\PublishJobRequest;
 use App\Models\Job\Job;
@@ -300,6 +303,37 @@ LogsActivitysRepository $userLogs)
         return view('backend.employer.jobs.application', $view);
     }
 
+    public function applicationChangeStatus(JobApplicationChangeStatus $request, $id){
+
+        $job_application_id = \DB::table('job_applications')
+            ->where('job_id', $id)
+            ->where('user_id', $request->get('user_id'))
+            ->where('job_application_status_company_id', $request->get('from_status'))
+            ->value('id');
+
+        \DB::table('job_applications')
+            ->where('job_id', $id)
+            ->where('user_id', $request->get('user_id'))
+            ->where('job_application_status_company_id', $request->get('from_status'))
+            ->update([
+                'job_application_status_company_id' => $request->get('to_status')
+            ]);
+
+        \DB::table('job_application_status_history')->insert([
+            'job_application_id' => $job_application_id,
+            'job_application_status_company_id' => $request->get('to_status'),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
+
+        $jobApplication = JobApplication::find($job_application_id);
+
+        event(new JobApplicationStatusChanged($jobApplication, $request->get('to_status')));
+
+        return response()->json(['status' => 1]);
+
+    }
+
     public function acceptJobApplication(Requests\Backend\Employer\Job\AcceptJobApplicationRequest $request, EloquentMailRepository $mailRepository, $id){
 
         $jobApplication = JobApplication::find($id);
@@ -347,9 +381,65 @@ LogsActivitysRepository $userLogs)
 
     }
 
-    public function manage(){
-        $view = [];
+    public function manage(Requests\Backend\Employer\Job\ViewJobApplicationsViewRequest $request, $id){
+
+        $job_applications = JobApplication::where('job_id', $id)->get();
+
+        $job_application_statuses_company = \DB::table('job_application_status_company')
+            ->where('employer_id', auth()->user()->employer_id)
+            ->get();
+
+        $view = [
+            'job_id' => $id,
+            'job_applications' => $job_applications,
+            'job_application_statuses_company' => $job_application_statuses_company
+        ];
+
         return view('backend.employer.jobs.manage', $view);
+    }
+
+    public function manageApplicationStatus(){
+        $job_application_statuses = \DB::table('job_application_status_company')
+            ->where('employer_id', auth()->user()->employer_id)
+            ->get();
+
+        $view = [
+            'job_application_statuses' => $job_application_statuses
+        ];
+        return view('backend.employer.jobs.manageapplicationstatus', $view);
+    }
+
+    public function editApplicationStatus(EmployerJobApplicationStatusEditRequest $request, $id){
+
+        $job_application_status = \DB::table('job_application_status_company')
+            ->where('employer_id', auth()->user()->employer_id)
+            ->where('id', $id)
+            ->first();
+
+        $job_application_real_name = \DB::table('job_application_statuses')
+            ->where('id', $job_application_status->job_application_status_id)
+            ->value('name');
+
+        $view = [
+            'job_application_status' => $job_application_status,
+            'job_application_real_name' => $job_application_real_name
+        ];
+
+        return view('backend.employer.jobs.manageapplicationstatusedit', $view);
+    }
+
+    public function updateApplicationStatus(Requests\Backend\Employer\Job\EmployerJobApplicationStatusUpdateRequest $request, $id){
+
+        \DB::table('job_application_status_company')
+            ->where('employer_id', auth()->user()->employer_id)
+            ->where('id', $id)
+            ->update([
+                'name' => $request->get('name')
+            ]);
+
+        return redirect(route('admin.employer.jobs.manage.applicationstatus'))
+            ->withFlashSuccess('The status name has been updated');
+
     }
 
 }

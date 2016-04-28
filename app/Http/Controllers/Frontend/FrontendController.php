@@ -109,7 +109,8 @@ class FrontendController extends Controller {
 
 
 		];
-		return view('frontend.index', $view);
+
+		return view('frontend.index' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ) , $view);
 	}
 	/**
 	 * @return \Illuminate\View\View
@@ -126,10 +127,11 @@ class FrontendController extends Controller {
 			'countries' => $countries,
 			'states'    => $states
 		];
-		return view('frontend.employers', $data);
+		return view('frontend.employers' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ), $data);
 	}
 	public function employersAction(EmployerSignupRequest $request)
 	{
+
         $array['type'] = 'Employer';
         $array['heading']='With name:'.$request->name;
 		if($this->users->createEmployerUser($request->all()))
@@ -139,8 +141,15 @@ class FrontendController extends Controller {
             $name = $this->userLogs->getActivityDescriptionForEvent($array);
             Activity::log($name);
         }
-		alert()->message('Please confirm you account.', 'Thank you!');
-		return redirect(route('employers'));
+		if ( $request->ajax() ) {
+			return response()->json([
+				'status' => true,
+				'message' => 'Please confirm you account.'
+			]);
+		} else {
+			alert()->message('Please confirm you account.', 'Thank you!');
+			return redirect(route('employers'));
+		}
 	}
 	public function companiesAction()
 	{

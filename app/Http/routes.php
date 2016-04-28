@@ -19,6 +19,7 @@ $router->group(['namespace' => 'Frontend'], function () use ($router)
 	require(__DIR__ . "/Routes/Frontend/Job.php");
 	require(__DIR__ . "/Routes/Frontend/Access.php");
 	require(__DIR__ . "/Routes/Frontend/JobSeekers.php");
+	require(__DIR__ . "/Routes/Frontend/Information.php");
 });
 
 /**
@@ -57,3 +58,6 @@ $router->group(['namespace' => 'Backend'], function () use ($router)
 		});
 	});
 });
+
+Route::post('stripe/webhook', '\Laravel\Cashier\WebhookController@handleWebhook');
+

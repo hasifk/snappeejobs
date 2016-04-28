@@ -26,6 +26,9 @@ class UserTableSeeder extends Seeder {
 				'password' => bcrypt('eeppans'),
 				'confirmation_code' => md5(uniqid(mt_rand(), true)),
 				'confirmed' => true,
+                'employer_id'=>1,
+                'country_id'        => 0,
+                'state_id'          => 0,
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			],
@@ -35,6 +38,9 @@ class UserTableSeeder extends Seeder {
 				'password' => bcrypt('asdasd'),
 				'confirmation_code' => md5(uniqid(mt_rand(), true)),
 				'confirmed' => true,
+				'employer_id'=>2,
+                'country_id'        => 222,
+                'state_id'          => 3428,
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			],
@@ -44,6 +50,9 @@ class UserTableSeeder extends Seeder {
 				'password' => bcrypt('asdasd'),
 				'confirmation_code' => md5(uniqid(mt_rand(), true)),
 				'confirmed' => true,
+                'employer_id'=>3,
+                'country_id'        => 222,
+                'state_id'          => 3428,
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			],
@@ -53,6 +62,9 @@ class UserTableSeeder extends Seeder {
 				'password' => bcrypt('asdasd'),
 				'confirmation_code' => md5(uniqid(mt_rand(), true)),
 				'confirmed' => true,
+                'employer_id'=>4,
+                'country_id'        => 0,
+                'state_id'          => 0,
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			],[
@@ -61,6 +73,9 @@ class UserTableSeeder extends Seeder {
 				'password' => bcrypt('asdasd'),
 				'confirmation_code' => md5(uniqid(mt_rand(), true)),
 				'confirmed' => true,
+                'employer_id'=>5,
+                'country_id'        => 0,
+                'state_id'          => 0,
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			],

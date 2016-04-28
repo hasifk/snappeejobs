@@ -259,9 +259,17 @@ class EloquentUserRepository implements UserContract {
 		if ( $data['country_id'] ) {
 			$insert_data['country_id'] = $data['country_id'];
 		}
+        else
+        {
+            $insert_data['country_id'] = 222;
+        }
 		if ( $data['state_id'] ) {
 			$insert_data['state_id'] = $data['state_id'];
 		}
+        else
+        {
+            $insert_data['state_id'] = 3428;
+        }
 
 		$user = User::create($insert_data);
 		$user->attachRoles([2]);
@@ -280,6 +288,18 @@ class EloquentUserRepository implements UserContract {
 		$user->employer_id = $user->id;
 		$user->group_token = str_random(20);
 		$user->save();
+
+		// Create job_application_status_company entry for this employer
+		$job_application_statuses = \DB::table('job_application_statuses')->get();
+		foreach ($job_application_statuses as $application_status) {
+			\DB::table('job_application_status_company')->insert([
+				'employer_id' => $user->id,
+				'job_application_status_id' => $application_status->id,
+				'name' => $application_status->name,
+				'created_at' => Carbon::now(),
+				'updated_at' => Carbon::now(),
+			]);
+		}
 
 		$this->sendConfirmationEmail($user);
 

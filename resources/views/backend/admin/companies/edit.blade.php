@@ -209,7 +209,7 @@
                             Thumbnail
                         </label>
                         <div class="col-md-10">
-                            {!! '<img style="height: 25px; width: 25px;" src="'. $company->people->first()->image .'" alt="'.$company->people->first()->filename.'">' !!}
+                            {!! '<img style="height: 25px; width: 25px;" src="'. $company->people->first()->getPictureAttribute(25, 25) .'" alt="'.$company->people->first()->filename.'">' !!}
                         </div>
                     </div>
                 @endif
@@ -321,7 +321,7 @@
                         </label>
                         <div class="col-md-10">
                             {!! '<img style="height: 25px; width: 25px;" src="'.
-                                    $company->people()->skip(1)->take(1)->first()->image
+                                    $company->people()->skip(1)->take(1)->first()->getPictureAttribute(25, 25)
                                     .'" alt="'.$company->people()->skip(1)->take(1)->first()->filename.'">' !!}
                         </div>
                     </div>
@@ -434,7 +434,7 @@
                         </label>
                         <div class="col-md-10">
                             {!! '<img style="height: 25px; width: 25px;" src="'.
-                                    $company->people()->skip(2)->take(1)->first()->image
+                                    $company->people()->skip(2)->take(1)->first()->getPictureAttribute(25, 25)
                                     .'" alt="'.$company->people()->skip(2)->take(1)->first()->filename.'">' !!}
                         </div>
                     </div>
@@ -547,7 +547,7 @@
                         </label>
                         <div class="col-md-10">
                             {!! '<img style="height: 25px; width: 25px;" src="'.
-                                    $company->people()->skip(3)->take(1)->first()->image
+                                    $company->people()->skip(3)->take(1)->first()->getPictureAttribute(25, 25)
                                     .'" alt="'.$company->people()->skip(3)->take(1)->first()->filename.'">' !!}
                         </div>
                     </div>
@@ -636,7 +636,7 @@
         @if(( $company && $company->photos->count() > 0 ))
             <div class="col-lg-5">
                 {!! '<img style="height: 25px; width: 25px;" src="'.
-                                $company->photos()->first()->image
+                                $company->photos()->first()->getPictureAttribute(25, 25)
                                 .'" alt="'.$company->photos()->first()->filename.'">' !!}
                 <input
                         type="checkbox"
@@ -666,7 +666,7 @@
         @if(( $company && $company->photos->count() > 1 ))
             <div class="col-lg-5">
                 {!! '<img style="height: 25px; width: 25px;" src="'.
-                                $company->photos()->skip(1)->take(1)->first()->image
+                                $company->photos()->skip(1)->take(1)->first()->getPictureAttribute(25, 25)
                                 .'" alt="'.$company->photos()->skip(1)->take(1)->first()->filename.'">' !!}
                 <input
                         type="checkbox"
@@ -695,7 +695,7 @@
         @if(( $company && $company->photos->count() > 2 ))
             <div class="col-lg-5">
                 {!! '<img style="height: 25px; width: 25px;" src="'.
-                                $company->photos()->skip(2)->take(1)->first()->image
+                                $company->photos()->skip(2)->take(1)->first()->getPictureAttribute(25, 25)
                                 .'" alt="'.$company->photos()->skip(2)->take(1)->first()->filename.'">' !!}
                 <input
                         type="checkbox"
@@ -724,7 +724,7 @@
         @if(( $company && $company->photos->count() > 3 ))
             <div class="col-lg-5">
                 {!! '<img style="height: 25px; width: 25px;" src="'.
-                                $company->photos()->skip(3)->take(1)->first()->image
+                                $company->photos()->skip(3)->take(1)->first()->getPictureAttribute(25, 25)
                                 .'" alt="'.$company->photos()->skip(3)->take(1)->first()->filename.'">' !!}
                 <input
                         type="checkbox"

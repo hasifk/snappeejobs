@@ -7,16 +7,19 @@ use App\Models\Access\User\CompanyVisitor;
 use App\Models\Access\User\JobVisitor;
 use App\Models\Company\Company;
 
+use Illuminate\Http\Request;
+
 
 class EmployerAnalyticsRepository
 {
 
 
 
-    public function getTotalCmpVisitors()
+    public function getTotalCmpVisitors(Request $request)
     {
-        return  CompanyVisitor::where('company_id', auth()->user()->company_id)
-            ->whereNull('user_id')->get();
+       $company_visitors=  CompanyVisitor::where('company_id', auth()->user()->company_id)
+            ->whereNull('user_id')->paginate(10);
+        return $company_visitors;
     }
    /***************************************************************************************************************/
     public function getTotalAuthCmpVisitors()
@@ -28,7 +31,7 @@ class EmployerAnalyticsRepository
                 'company_visitors.*',
                 'users.*'
 
-            ])->get();
+            ])->paginate(10);
 
     }
     /***************************************************************************************************************/
@@ -45,7 +48,7 @@ class EmployerAnalyticsRepository
                 'jobs.title',
                 'jobs.title_url_slug',
                 'companies.url_slug'
-            ])->get();
+            ])->paginate(10);
     }
     /***************************************************************************************************************/
     public function getTotalAuthJobVisitors()
@@ -61,7 +64,7 @@ class EmployerAnalyticsRepository
                 'companies.url_slug',
                 'users.name'
 
-            ])->get();
+            ])->paginate(10);
     }
     /***************************************************************************************************************/
     public function getUniqueJobVisitors()
@@ -71,7 +74,8 @@ class EmployerAnalyticsRepository
             ->join('users', 'users.id','=','job_visitors.user_id')
             ->where('companies.id', '=', auth()->user()->company_id)
              ->groupBy('users.id')
-            ->get(['job_visitors.*',\DB::raw('count(users.id) as visitors'),'jobs.title','jobs.title_url_slug','companies.url_slug','users.name']);
+            ->select(['job_visitors.*',\DB::raw('count(users.id) as visitors'),'jobs.title','jobs.title_url_slug','companies.url_slug','users.name'])
+            ->paginate(10);
     }
     /***************************************************************************************************************/
 
@@ -81,11 +85,9 @@ class EmployerAnalyticsRepository
         return  CompanyVisitor::join('users','users.id','=','company_visitors.user_id' )
             ->where('company_visitors.company_id',auth()->user()->company_id)
             ->groupBy('users.id')
-            ->get(['company_visitors.*',\DB::raw('count(users.id) as visitors'),'users.*']);
+            ->select(['company_visitors.*',\DB::raw('count(users.id) as visitors'),'users.*'])->paginate(10);
     }
 
     /***************************************************************************************************************/
-
-
 
 }

@@ -44,7 +44,7 @@
                 <div class="mailbox-read-message">
                     <div class="row">
                         <div class="col-md-1">
-                            <img style="height: 25px; width: 25px;" src="{{ \App\Models\Access\User\User::find($message->sender_id)->picture }}" alt="User">
+                            <img style="height: 25px; width: 25px;" src="{{ \App\Models\Access\User\User::find($message->sender_id)->getPictureAttribute(25, 25) }}" alt="User">
                         </div>
                         <div class="col-md-9">
                             {!! $message->content !!}

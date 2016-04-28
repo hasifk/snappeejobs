@@ -50,7 +50,7 @@ class TaskAssigned extends Event implements ShouldBroadcast
 
         $this->eventDetails->{'task_title'} = $task->title;
         $this->eventDetails->{'project_title'} = $task->projectname;
-        $this->eventDetails->{'image'} = User::find($task->created_by)->picture;
+        $this->eventDetails->{'image'} = User::find($task->created_by)->getPictureAttribute(25, 25);
         $this->eventDetails->{'was_created'} = Carbon::parse($task->created_at)->diffForHumans();
     }
 

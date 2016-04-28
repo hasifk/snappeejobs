@@ -1,5 +1,5 @@
 @if(auth()->user() && !auth()->user()->confirmed)
-<div class="container-fluid">
+<div style="margin-top: 100px;" class="container-fluid">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <div class="alert alert-info">

@@ -6,7 +6,7 @@
               <!-- Sidebar user panel (optional) -->
               <div class="user-panel">
                 <div class="pull-left image">
-                  <img src="{!! access()->user()->picture !!}" class="img-circle" alt="User Image" />
+                  <img src="{!! access()->user()->getPictureAttribute(45, 45) !!}" class="img-circle" alt="User Image" />
                 </div>
                 <div class="pull-left info">
                   <p>{{ access()->user()->name }}</p>
@@ -260,10 +260,16 @@
                     <li class="{{ Active::pattern('admin/employeranalytics/companyvisitors') }}">
                       <a href="{!! url('admin/employeranalytics/companyvisitors') !!}">{{ 'Company Visitors' }}</a>
                     </li>
+
+                      <li class="{{ Active::pattern('admin/employeranalytics/companyauthvisitors') }}">
+                          <a href="{!! url('admin/employeranalytics/companyauthvisitors') !!}">{{ 'Authenticated Company  Visitors' }}</a>
+                      </li>
                     <li class="{{ Active::pattern('admin/employeranalytics/jobvisitors') }}">
                       <a href="{!! url('admin/employeranalytics/jobvisitors') !!}">{{ 'Job Visitors' }}</a>
                     </li>
-
+                      <li class="{{ Active::pattern('admin/employeranalytics/jobauthvisitors') }}">
+                          <a href="{!! url('admin/employeranalytics/jobauthvisitors') !!}">{{ 'Authenticated Job  Visitors' }}</a>
+                      </li>
                     <li class="{{ Active::pattern('admin/employeranalytics/uniquejobvisitors') }}">
                       <a href="{!! url('admin/employeranalytics/uniquejobvisitors') !!}">{{ 'Unique Job Visitors' }}</a>
                     </li>
@@ -305,7 +311,7 @@
                 @endauth
                 @endauth
 
-
+                @role('Administrator')
                 <li class="{{ Active::pattern('admin/log-viewer*') }} treeview">
                   <a href="#">
                     <span>{{ trans('menus.log-viewer.main') }}</span>
@@ -320,6 +326,7 @@
                     </li>
                   </ul>
                 </li>
+                @endauth
                 
               </ul><!-- /.sidebar-menu -->
             </section>

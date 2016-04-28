@@ -5,7 +5,7 @@ elixir(function(mix) {
         //.phpUnit()
         //
         //// Copy webfont files from /vendor directories to /public directory.
-        .copy('vendor/fortawesome/font-awesome/fonts', 'public/build/fonts/font-awesome')
+        .copy('./resources/assets/js/font-awesome/fonts', 'public/build/fonts')
         .copy('vendor/twbs/bootstrap-sass/assets/fonts/bootstrap', 'public/build/fonts')
         .copy('vendor/twbs/bootstrap/dist/js/bootstrap.min.js', 'public/js/vendor')
         .copy('./resources/assets/js/Ionicons/fonts', 'public/build/fonts')

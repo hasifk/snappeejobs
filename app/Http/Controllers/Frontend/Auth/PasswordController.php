@@ -92,7 +92,7 @@ class PasswordController extends Controller {
 	 * @return \Illuminate\View\View
 	 */
 	public function getChangePassword() {
-		return view('frontend.auth.change-password');
+		return view('frontend.auth.change-password' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ));
 	}
 
 	/**

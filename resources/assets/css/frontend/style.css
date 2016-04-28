@@ -920,6 +920,7 @@ img {
     border: 0;
     margin-bottom: 18px;
     border-bottom: 1px solid #eaeaea;
+    line-height: inherit;
 }
 .search-btn .btn-primary {
     width: 100%;
@@ -1391,4 +1392,9 @@ select.sort option {
     h2, .h2 {
         font-size: 20px;
     }
+}
+.profile-alert-icon {
+    vertical-align: middle;
+    color: #a94442;
+    font-size:16px;
 }

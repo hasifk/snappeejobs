@@ -56,10 +56,10 @@
             <div class="col-xs-12 footer-secs socialWrap">
                 <h3>Follow us</h3>
                 <ul>
-                    <li class="socials"><a href="http://www.facebook.com/"><img src="images/facebook.png" />Facebook</a></li>
-                    <li class="socials"><a href="http://twitter.com/"><img src="images/twitter.png" />Twitter</a></li>
-                    <li class="socials"><a href="http://plus.google.com/"><img src="images/gplus.png" />Google+</a></li>
-                    <li class="socials"><a href="http://www.linkedin.com/"><img src="images/linkedin.png" />LinkedIn</a></li>
+                    <li class="socials"><a href="http://www.facebook.com/"><img src="/images/facebook.png" />Facebook</a></li>
+                    <li class="socials"><a href="http://twitter.com/"><img src="/images/twitter.png" />Twitter</a></li>
+                    <li class="socials"><a href="http://plus.google.com/"><img src="/images/gplus.png" />Google+</a></li>
+                    <li class="socials"><a href="http://www.linkedin.com/"><img src="/images/linkedin.png" />LinkedIn</a></li>
                 </ul>
             </div>
         </div>

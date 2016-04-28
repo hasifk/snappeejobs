@@ -20,7 +20,7 @@ class DashboardController extends Controller {
             return redirect(route('home'))->withErrors('Please confirm your account');
         }
 
-		return view('frontend.user.dashboard')
+		return view('frontend.user.dashboard' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ))
 			->withUser(auth()->user());
 	}
 

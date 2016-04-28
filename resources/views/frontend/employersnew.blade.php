@@ -23,6 +23,13 @@
                 </div>
                 <div class="modal-body">
 
+                    <div style="display: none;" class="employer_registration_errors alert alert-danger">
+                        <p>Oops, there are some errors. </p>
+                        <ul>
+
+                        </ul>
+                    </div>
+
                     <form class="employer_register" enctype="multipart/form-data" accept-charset="UTF-8" action="/employers" method="POST" role="form">
 
                         {{ csrf_field() }}
@@ -148,9 +155,16 @@
                         $('#myModal').modal('toggle');
                         swal(response.message, 'We have sent you an email to confirm your account to proceed');
                     }
-                }).error(function(error){
+                }).error(function(err){
                     $('form.employer_register').find('.submit_button').eq(0).button('reset');
-                    console.log(error);
+                    $('.employer_registration_errors ul').html('');
+                    for(var key in err.responseJSON) {
+                        var error = err.responseJSON[key];
+                        error.forEach(function(element, index){
+                            $('.employer_registration_errors ul').append('<li>'+error[index]+'</li>');
+                            $('.employer_registration_errors').show();
+                        });
+                    }
                 });
             });
 

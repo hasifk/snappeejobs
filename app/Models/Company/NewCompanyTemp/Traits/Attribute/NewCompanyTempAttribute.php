@@ -12,4 +12,11 @@ trait NewCompanyTempAttribute
     public function getActionButtonsAttribute() {
         return $this->getCreateCompanyButtonAttribute();
     }
+
+    public function getEmployerNameAttribute(){
+        if ( is_null($this->employer_id) ) {
+            return null;
+        }
+        return \DB::table('users')->where('employer_id', $this->employer_id)->value('name');
+    }
 }

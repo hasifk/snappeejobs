@@ -1,4 +1,4 @@
-@extends ('backend.layouts.master')
+\@extends ('backend.layouts.master')
 
 @section ('title', "New Companies Management")
 
@@ -22,7 +22,7 @@
         <tbody>
         @foreach ($newcompanies as $newcompany)
             <tr>
-                <td>{{ $newcompany->employer->name }}</td>
+                <td>{{ $newcompany->employer_name }}</td>
                 <td>{!! $newcompany->action_buttons !!}</td>
             </tr>
         @endforeach

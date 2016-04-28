@@ -15,7 +15,7 @@ class EloquentCompanyRepository
     }
 
     public function getNewCompaniesPaginated($per_page, $order_by = 'new_company_temps.created_at', $sort = 'desc'){
-        return NewCompanyTemp::where('completed', false)->orderBy($order_by, $sort)
+        return NewCompanyTemp::where('completed', false)->orderBy($order_by, $sort)->has('employer')
             ->paginate($per_page);
     }
 

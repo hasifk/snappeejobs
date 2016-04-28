@@ -53,62 +53,67 @@
                         <li>{!! link_to('auth/register', trans('navs.register')) !!}</li>
                     @else
 
-                        <li v-cloak v-if="rejected_applications.length" class="dropdown messages-menu">
-                            <a v-on:click="mark_rejected_applications_read" href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="fa fa-exclamation"></i>
-                                <span v-cloak class="label label-success">@{{ rejected_applications.length }}</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="header">You have @{{ rejected_applications.length }} job interests rejected</li>
-                                <li>
-                                    <ul class="menu">
-                                        <li v-for="rejected_application in rejected_applications | orderBy 'created_at' rejected_applications_order">
-                                            <a href="#">
-                                                <div class="pull-left">
-                                                    <!-- User Image -->
-                                                    <img src="@{{ rejected_application.image }}" class="img-circle" alt="User Image"/>
-                                                </div>
-                                                <!-- Message title and timestamp -->
-                                                <p>
-                                                    @{{ rejected_application.message }}
-                                                    <br>
-                                                    <small><i class="fa fa-clock-o"></i> @{{ rejected_application.was_created }}</small>
-                                                </p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
+                        <li v-cloak v-if="rejected_applications.length" class="messages-menu">
+                            <div class="dropdown">
+                                <a v-on:click="mark_rejected_applications_read" href="#" id="rejected_app_menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-exclamation"></i>
+                                    <span v-cloak class="label label-success">@{{ rejected_applications.length }}</span>
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="rejected_app_menu">
+                                    <li class="msgheader">You have @{{ rejected_applications.length }} job interests rejected</li>
+                                    <li>
+                                        <ul class="dropdown-menu">
+                                            <li v-for="rejected_application in rejected_applications | orderBy 'created_at' rejected_applications_order">
+                                                <a href="#">
+                                                    <div class="pull-left">
+                                                        <!-- User Image -->
+                                                        <img src="@{{ rejected_application.image }}" class="img-circle" alt="User Image"/>
+                                                    </div>
+                                                    <!-- Message title and timestamp -->
+                                                    <p>
+                                                        @{{ rejected_application.message }}
+                                                        <br>
+                                                        <small><i class="fa fa-clock-o"></i> @{{ rejected_application.was_created }}</small>
+                                                    </p>
+                                                    <div class="clearfix"></div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
                         </li>
-
-                        <li v-cloak v-if="unread_messages.length" class="dropdown messages-menu">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="fa fa-envelope-o"></i>
-                                <span v-cloak class="label label-success">@{{ unread_messages.length }}</span>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li class="header">You have @{{ unread_messages.length }} message(s)</li>
-                                <li>
-                                    <ul class="menu">
-                                        <li v-for="unread_message in unread_messages | orderBy 'created_at' unread_messages_order">
-                                            <a href="/message/@{{ unread_message.thread_id }}">
-                                                <div class="pull-left">
-                                                    <!-- User Image -->
-                                                    <img src="@{{ unread_message.image }}" class="img-circle" alt="User Image"/>
-                                                </div>
-                                                <!-- Message title and timestamp -->
-                                                <p>
-                                                    @{{ unread_message.last_message }}
-                                                    <br>
-                                                    <small><i class="fa fa-clock-o"></i> @{{ unread_message.was_created }}</small>
-                                                </p>
-                                            </a>
+                            <li v-cloak v-if="unread_messages.length" class="messages-menu">
+                                <div class="dropdown">
+                                    <a href="#" href="#" id="unread_app_menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fa fa-envelope-o"></i>
+                                        <span v-cloak class="label label-success">@{{ unread_messages.length }}</span>
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="rejected_app_menu">
+                                        <li class="msgheader">You have @{{ unread_messages.length }} message(s)</li>
+                                        <li>
+                                            <ul class="dropdown-menu">
+                                                <li v-for="unread_message in unread_messages | orderBy 'created_at' unread_messages_order">
+                                                    <a href="/message/@{{ unread_message.thread_id }}">
+                                                        <div class="pull-left">
+                                                            <!-- User Image -->
+                                                            <img src="@{{ unread_message.image }}" class="img-circle" alt="User Image"/>
+                                                        </div>
+                                                        <!-- Message title and timestamp -->
+                                                        <p>
+                                                            @{{ unread_message.last_message }}
+                                                            <br>
+                                                            <small><i class="fa fa-clock-o"></i> @{{ unread_message.was_created }}</small>
+                                                        </p>
+                                                        <div class="clearfix"></div>
+                                                    </a>
+                                                </li>
+                                            </ul>
                                         </li>
+                                        <li class="footer"><a href="{{ route('frontend.messages') }}">View all messages</a></li>
                                     </ul>
-                                </li>
-                                <li class="footer"><a href="{{ route('frontend.messages') }}">View all messages</a></li>
-                            </ul>
-                        </li>
+                                </div>
+                            </li>
                     @endif
 
                 </ul>

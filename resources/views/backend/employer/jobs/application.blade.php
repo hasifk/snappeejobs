@@ -104,7 +104,7 @@
                             <ul class="list-group">
                                 @foreach($job_seeker->images as $image)
                                     <li class="list-group-item">
-                                        <img src="{{ $image->image }}" alt="{{ $image->filename }}" style="max-width:50px; max-height: 50px;" >
+                                        <img src="{{ $image->getPictureAttribute(45, 45) }}" alt="{{ $image->filename }}" style="max-width:50px; max-height: 50px;" >
                                     </li>
                                 @endforeach
                             </ul>

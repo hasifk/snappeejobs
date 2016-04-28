@@ -91,7 +91,7 @@ class CompaniesController extends Controller
          endif;
         endif;
 
-                return view('frontend.companies.company',['company'	=>	$company,'followingStatus'	=>	$followingStatus]);
+                return view('frontend.companies.company'.( env('APP_DESIGN') == 'new' ? 'new' : "" ),['company'	=>	$company,'followingStatus'	=>	$followingStatus]);
 
 
 

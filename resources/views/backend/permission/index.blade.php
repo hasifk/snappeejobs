@@ -15,7 +15,7 @@
     <div role="tabpanel" class="tab-pane active" id="profile">
         <table class="table table-striped table-hover table-bordered dashboard-table">
             <tr> 
-                <th>Allowable Permission</th>
+                <th>Allowed Permissions</th>
                 <td>
                     <table class="table table-condensed">
                         @foreach($permissions as $permission)

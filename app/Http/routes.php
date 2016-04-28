@@ -25,6 +25,7 @@ $router->group(['namespace' => 'Frontend'], function () use ($router)
  * Backend Routes
  * Namespaces indicate folder structure
  */
+
 $router->group(['namespace' => 'Backend'], function () use ($router)
 {
 	$router->group(['prefix' => 'admin', 'middleware' => 'auth'], function () use ($router)

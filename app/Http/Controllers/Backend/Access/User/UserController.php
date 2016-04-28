@@ -116,7 +116,7 @@ LogsActivitysRepository $userLogs) {
         $array['type'] = 'User';
         $array['heading']='With name:'.$user->name;
 		if($this->users->update($id,
-			$request->except('assignees_roles', 'permission_user'),
+			$request->except('assignees_roles', 'permission_user','age'),
 			$request->only('assignees_roles'),
 			$request->only('permission_user')
 		))

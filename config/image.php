@@ -54,6 +54,10 @@ return array(
 
         'company_photo' => [
             [
+                'height' => 412,
+                'width'  => 620,
+            ],
+            [
                 'height' => 218,
                 'width'  => 295,
             ],

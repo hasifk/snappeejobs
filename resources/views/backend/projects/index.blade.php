@@ -3,34 +3,36 @@
 @section ('title', "Project")
 
 @section('page-header')
-    <h1>
-        Projects Management
-    </h1>
+<h1>
+    Projects Management
+</h1>
 @endsection
 
 @section('content')
 
-    @include('backend.projects.includes.partials.header-buttons')
+@include('backend.projects.includes.partials.header-buttons')
 
-    <table class="table table-striped table-bordered table-hover">
-        <thead>
+<table class="table table-striped table-bordered table-hover">
+    <thead>
         <tr>
             <th>Title</th>
             <th>{{ trans('crud.actions') }}</th>
         </tr>
-        </thead>
-        <tbody>
+    </thead>
+    <tbody>
 
-            @foreach($projects as $project)
-                <tr>
-                    <td>{{ $project->title }}</td>
-                    <td>{!! $project->action_buttons !!}</td>
-                </tr>
-                
-            @endforeach
+        @foreach($projects as $project)
+        <tr>
+            <td>{{ $project->title }}</td>
+            <td>{!! $project->action_buttons !!}</td>
+        </tr>
+        @endforeach
 
-        </tbody>
-    </table>
+    </tbody>
+</table>
 
-    <div class="clearfix"></div>
-@stop
+<div class="pull-right">
+    {!! $projects->render() !!}
+</div>
+<div class="clearfix"></div>
+@endsection

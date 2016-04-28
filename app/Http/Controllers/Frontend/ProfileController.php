@@ -412,9 +412,9 @@ class ProfileController extends Controller {
 			])
 			->get();
 
-		$companies = \DB::table('like_companies')
-			->join('companies', 'companies.id', '=', 'like_companies.company_id')
-			->where('like_companies.user_id', auth()->user()->id)
+		$companies = \DB::table('follow_companies')
+			->join('companies', 'companies.id', '=', 'follow_companies.company_id')
+			->where('follow_companies.user_id', auth()->user()->id)
 			->select([
 				'companies.url_slug',
 				'companies.title'

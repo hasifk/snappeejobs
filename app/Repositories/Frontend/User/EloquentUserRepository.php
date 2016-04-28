@@ -259,9 +259,17 @@ class EloquentUserRepository implements UserContract {
 		if ( $data['country_id'] ) {
 			$insert_data['country_id'] = $data['country_id'];
 		}
+        else
+        {
+            $insert_data['country_id'] = 222;
+        }
 		if ( $data['state_id'] ) {
 			$insert_data['state_id'] = $data['state_id'];
 		}
+        else
+        {
+            $insert_data['state_id'] = 3428;
+        }
 
 		$user = User::create($insert_data);
 		$user->attachRoles([2]);

@@ -1,3 +1,16 @@
+<section>
+    <div class="cl-logos featured ftr-logos">
+        <div class="container">
+            <span>As featured in</span>
+            <img src="images/tnw.png" />
+            <img src="images/lg-entpr.png" />
+            <img src="images/lg-giga.png" />
+            <img src="images/lg-fast.png" />
+            <img src="images/lg-wired.png" />
+        </div>
+
+    </div>
+</section>
 <section class="hm-contact">
     <div class="container">
         <div class="row text-center">

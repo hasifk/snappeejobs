@@ -64,8 +64,8 @@ class UserCreatedHandler
                 ]);
 
                 $user->employer_id = $createdUserId;
-                $user->country_id = $createdUser->country_id;
-                $user->state_id = $createdUser->state_id;
+                (empty($user->country_id)) ? $user->country_id = $createdUser->country_id : '';
+                (empty($user->state_id)) ? $user->state_id = $createdUser->state_id : '';
                 $user->employer_id = $createdUserId;
                 $user->save();
 

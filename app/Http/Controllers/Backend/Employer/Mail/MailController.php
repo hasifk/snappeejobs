@@ -132,7 +132,7 @@ class MailController extends Controller
         }
 
         return redirect()
-            ->route('admin.employer.mail.sent')
+            ->route('admin.employer.mail.view', $thread_id)
             ->withFlashSuccess('Successfully sent the reply');
     }
 

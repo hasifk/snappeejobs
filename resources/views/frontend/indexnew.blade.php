@@ -91,8 +91,8 @@
                                 @foreach($pref_jobs_landing as $job)
 
                                         <div class="col-sm-6 col-md-4 thumbs">
-                                            @if ($company->photos->count())
-                                            <div><img src="{{ env('APP_S3_URL') . $company->photos->first()->path . $company->photos->first()->filename . '295x218.' . $job->company->photos->first()->extension}}" /></div>
+                                            @if ($job->company->photos->count())
+                                            <div><img src="{{ env('APP_S3_URL') . $job->company->photos->first()->path . $job->company->photos->first()->filename . '295x218.' . $job->company->photos->first()->extension}}" /></div>
                                             @else
                                             <div><img src="http://placehold.it/295x218">
                                             </div>
@@ -128,8 +128,8 @@
                                 @foreach($jobs_landing as $job)
 
                                         <div class="col-sm-6 col-md-4 thumbs">
-                                            @if ($company->photos->count())
-                                                <div><img src="{{ env('APP_S3_URL') . $company->photos->first()->path . $company->photos->first()->filename . '295x218.' . $job->company->photos->first()->extension}}" /></div>
+                                            @if ($job->company->photos->count())
+                                                <div><img src="{{ env('APP_S3_URL') . $job->company->photos->first()->path . $job->company->photos->first()->filename . '295x218.' . $job->company->photos->first()->extension}}" /></div>
                                             @else
                                                 <div><img src="http://placehold.it/295x218">
                                                 </div>

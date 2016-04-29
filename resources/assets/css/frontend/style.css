@@ -1398,9 +1398,40 @@ select.sort option {
     color: #a94442;
     font-size:16px;
 }
-
+#rejected_app_menu .label {
+    display: inline;
+    font-size: 10px;
+    height: 3px;
+    line-height: 0;
+    margin-left: -5px;
+    padding: 0 4px;
+    vertical-align: text-top;
+}
+#unread_app_menu .label {
+    display: inline;
+    font-size: 10px;
+    height: 3px;
+    line-height: 0;
+    margin-left: -5px;
+    padding: 0 4px;
+    vertical-align: text-top;
+}
+#unread_app_menu .fa-envelope-o {
+    font-size: 16px;
+}
+#rejected_app_menu .fa-exclamation {
+    font-size: 16px;
+}
+.notifications-header .messages-menu .dropdown-menu {
+    min-width: 280px !important;
+}
+.messages-menu {
+    padding-top: 9px;
+}
 .messages-menu a {
     border-bottom: 1px solid #f4f4f4;
+    margin: 0;
+    padding: 10px;
 }
 .messages-menu h4 {
     padding: 0;
@@ -1419,12 +1450,15 @@ select.sort option {
     width: 40px;
     height: 40px;
 }
-.messages-menu h4 > small {
+.messages-menu a.unread_message_item {
+    position: relative;
+}
+.messages-menu a.unread_message_item small {
     color: #999999;
     font-size: 10px;
     position: absolute;
-    top: 0;
-    right: 0;
+    top: 10px;
+    right: 10px;
 }
 .messages-menu li.msgheader {
     border-top-left-radius: 4px;
@@ -1448,4 +1482,26 @@ select.sort option {
     border-bottom: 1px solid #eeeeee;
     color: #444 !important;
     text-align: center;
+}
+[v-cloak] {
+    display: none !important;
+}
+
+.expand-transition {
+    transition: all .3s ease;
+    height: auto;
+    padding: 10px;
+    overflow: hidden;
+}
+
+/* .expand-enter defines the starting state for entering */
+/* .expand-leave defines the ending state for leaving */
+.expand-enter, .expand-leave {
+    height: 0;
+    padding: 0 10px;
+    opacity: 0;
+}
+
+body.frontend .alert {
+    margin-top:100px;
 }

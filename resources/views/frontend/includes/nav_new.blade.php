@@ -33,52 +33,38 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="rejected_app_menu">
                             <li class="msgheader">You have @{{ rejected_applications.length }} job interests rejected</li>
-                            <li>
-                                <ul>
-                                    <li v-for="rejected_application in rejected_applications | orderBy 'created_at' rejected_applications_order">
-                                        <a href="#">
-                                            <div class="pull-left">
-                                                <!-- User Image -->
-                                                <img src="@{{ rejected_application.image }}" class="img-circle" alt="User Image"/>
-                                            </div>
-                                            <!-- Message title and timestamp -->
-                                            <p>
-                                                @{{ rejected_application.message }}
-                                                <br>
-                                                <small><i class="fa fa-clock-o"></i> @{{ rejected_application.was_created }}</small>
-                                            </p>
-                                            <div class="clearfix"></div>
-                                        </a>
-                                    </li>
-                                </ul>
+                            <li v-for="rejected_application in rejected_applications | orderBy 'created_at' rejected_applications_order">
+                                <a class="unread_message_item" href="#">
+                                    @{{{ rejected_application.image }}}
+                                    <!-- Message title and timestamp -->
+                                    <p>
+                                        @{{ rejected_application.message }}
+                                        <br>
+                                        <small><i class="fa fa-clock-o"></i> @{{ rejected_application.was_created }}</small>
+                                    </p>
+                                    <div class="clearfix"></div>
+                                </a>
                             </li>
                         </ul>
                     </li>
                     <li v-cloak v-if="unread_messages.length" class="messages-menu">
-                        <a href="#" href="#" id="unread_app_menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a href="#" id="unread_app_menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-envelope-o"></i>
                             <span v-cloak class="label label-success">@{{ unread_messages.length }}</span>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="rejected_app_menu">
                             <li class="msgheader">@{{ unread_messages.length }} new message(s)</li>
-                            <li>
-                                <ul>
-                                    <li v-for="unread_message in unread_messages | orderBy 'created_at' unread_messages_order">
-                                        <a href="/message/@{{ unread_message.thread_id }}">
-                                            <div class="pull-left">
-                                                <!-- User Image -->
-                                                <img src="@{{ unread_message.image }}" class="img-circle" alt="User Image"/>
-                                            </div>
-                                            <!-- Message title and timestamp -->
-                                            <p>
-                                                @{{ unread_message.last_message }}
-                                                <br>
-                                                <small><i class="fa fa-clock-o"></i> @{{ unread_message.was_created }}</small>
-                                            </p>
-                                            <div class="clearfix"></div>
-                                        </a>
-                                    </li>
-                                </ul>
+                            <li v-for="unread_message in unread_messages | orderBy 'created_at' unread_messages_order">
+                                <a class="unread_message_item" href="/message/@{{ unread_message.thread_id }}">
+                                    @{{{ unread_message.image }}}
+                                    <!-- Message title and timestamp -->
+                                    <p>
+                                        @{{{ unread_message.last_message }}}
+                                        <br>
+                                        <small><i class="fa fa-clock-o"></i> @{{ unread_message.was_created }}</small>
+                                    </p>
+                                    <div class="clearfix"></div>
+                                </a>
                             </li>
                             <li class="footer"><a href="{{ route('frontend.messages') }}">View all messages</a></li>
                         </ul>

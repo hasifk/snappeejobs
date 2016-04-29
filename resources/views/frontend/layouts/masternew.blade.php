@@ -15,7 +15,7 @@
     @yield('after-styles-end')
 
 </head>
-<body>
+<body class="frontend">
 
     @include('frontend.includes.nav_new')
 

@@ -15,7 +15,6 @@ elixir(function(mix) {
                 './resources/assets/js/bootstrap/dist/css/bootstrap.min.css',
                 './resources/assets/js/bootstrap/dist/css/bootstrap-theme.min.css',
                 './resources/assets/js/font-awesome/css/font-awesome.css',
-                'frontend/custom.css',
                 'frontend/style.css',
                 './resources/assets/js/dropzone/dist/min/dropzone.min.css',
                 './resources/assets/js/select2/dist/css/select2.min.css',

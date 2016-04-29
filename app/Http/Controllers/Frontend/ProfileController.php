@@ -627,8 +627,8 @@ class ProfileController extends Controller {
 		if ( $unread_messages ) {
 			foreach ($unread_messages as $key => $unread_message) {
 				$unread_messages[$key]->{'last_message'} = str_limit($unread_message->last_message, 30);
-				$unread_messages[$key]->{'image'} = User::find($unread_message->id)->getPictureAttribute(25, 25);
-				$unread_messages[$key]->{'was_created'} = Carbon::parse($unread_message->created_at)->diffForHumans();
+				$unread_messages[$key]->{'image'} = '<img src="'.User::find($unread_message->id)->getPictureAttribute(25, 25).'" class="pull-left img-circle" alt="User Image"/>';
+				$unread_messages[$key]->{'was_created'} = Carbon::parse($unread_message->updated_at)->diffForHumans();
 			}
 		}
 
@@ -655,7 +655,7 @@ class ProfileController extends Controller {
 				$company_id = \DB::table('jobs')->where('id', $rejected_application->job_id)->value('company_id');
 				$company_title = \DB::table('companies')->where('id', $company_id)->value('title');
 				$rejected_applications[$key]->{'message'} = $company_title." rejected your application";
-				$rejected_applications[$key]->{'image'} = User::find($rejected_application->declined_by)->getPictureAttribute(25, 25);
+				$rejected_applications[$key]->{'image'} = '<img src="'.User::find($rejected_application->declined_by)->getPictureAttribute(25, 25).'" class="pull-left img-circle" alt="User Image"/>';
 				$rejected_applications[$key]->{'was_created'} = Carbon::parse($rejected_application->declined_at)->diffForHumans();
 			}
 		}
@@ -682,7 +682,7 @@ class ProfileController extends Controller {
 
 	public function viewThread(EloquentMailRepository $mailRepository, $id){
 	    $thread = $mailRepository->getThread($id);
-		return view('frontend.user.mail.show', [ 'thread' => $thread ]);
+		return view('frontend.user.mail.show' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ), [ 'thread' => $thread ]);
 	}
 
 	public function replyThread(JobSeekerReplyMessage $request, EloquentMailRepository $mailRepository, $thread_id){

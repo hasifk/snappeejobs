@@ -253,6 +253,7 @@
 
 @section('after-scripts-end')
     <script>
+
         $(document).ready(function(){
             $('#country_id').on('change', function(){
                 $.getJSON('/admin/get-states/'+$(this).val(), function(json){
@@ -264,6 +265,7 @@
                     $('#state_id').html(listitems);
                 });
             });
+
         });
     </script>
 @endsection

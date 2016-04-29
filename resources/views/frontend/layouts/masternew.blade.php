@@ -17,7 +17,10 @@
 </head>
 <body class="frontend">
 
+    <header class="top-nav">
     @include('frontend.includes.nav_new')
+    @yield('search_div')
+    </header>
 
     <div class="container">
         @include('frontend.includes.alerts')

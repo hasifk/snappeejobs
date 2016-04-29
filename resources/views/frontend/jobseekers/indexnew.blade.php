@@ -275,7 +275,7 @@
 
         $(document).ready(function(){
             $('#country_id').on('change', function(){
-                $.getJSON('/admin/get-states/'+$(this).val(), function(json){
+                $.getJSON('/get-states/'+$(this).val(), function(json){
                     var listitems = '<option value="">Please select</option>';
                     $.each(json,function(key, value)
                     {

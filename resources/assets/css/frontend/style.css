@@ -378,6 +378,25 @@ h5 {
     color: #fff;
     font-weight: bold;
 }
+.browsetab li a {
+    padding:15px;
+}
+.browsetab li.active a{
+    background: #3b5998;
+    color: #fff;
+    padding:18px 20px;
+    font-weight:bold;
+    border-radius: 0;
+}
+.browsetab li.active a:after{
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    content: "";
+    width: 13px;
+    height: 6px;
+    margin-left: -6px;
+}
 .browse span img {
     display: block;
     border: 0;
@@ -930,7 +949,6 @@ img {
 }
 .com-search {
     position: relative;
-    padding-bottom: 30px;
 }
 .com-search .btn-close {
     display: block;

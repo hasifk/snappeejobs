@@ -1,0 +1,344 @@
+
+<!doctype html>
+<html class="no-js" lang="">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="_token" content="3wxTo7bsxhG8zYP1wewU1C5KduUsVaiKu4gvEI0q" />
+    <title>SnappeeJobs</title>
+    <meta name="description" content="SNAP - The best way to find a job">
+    <meta name="author" content="Silverbloom Technologies">
+
+    <link media="all" type="text/css" rel="stylesheet" href="http://snappeejobs.dev/build/css/frontend-22f34f3dc4.css">
+
+
+</head>
+<body class="frontend">
+
+<header class="top-nav">
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/"><img src="/images/snap-logo-small.png" /></a>
+            </div>
+            <div id="navbar" class="notifications-header navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class=""><a href="http://snappeejobs.dev">HOME</a></li>
+                    <li class=""><a href="http://snappeejobs.dev/employers">EMPLOYERS</a></li>
+                    <li class=""><a href="http://snappeejobs.dev/companies">COMPANIES</a></li>
+                    <li class=""><a href="http://snappeejobs.dev/jobs">JOBS</a></li>
+                    <li class=""><a href="http://snappeejobs.dev/jobseekers">JOBSEEKERS</a></li>
+                </ul>
+
+
+                <ul  class="nav navbar-nav navbar-right">
+
+
+                    <li v-cloak v-if="rejected_applications.length" class="messages-menu">
+                        <a v-on:click="mark_rejected_applications_read" href="#" id="rejected_app_menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-exclamation"></i>
+                            <span v-cloak class="label label-success">{{ rejected_applications.length }}</span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="rejected_app_menu">
+                            <li class="msgheader">You have {{ rejected_applications.length }} job interests rejected</li>
+                            <li v-for="rejected_application in rejected_applications | orderBy 'created_at' rejected_applications_order">
+                                <a class="unread_message_item" href="#">
+                                    {{{ rejected_application.image }}}
+                                    <!-- Message title and timestamp -->
+                                    <p>
+                                        {{ rejected_application.message }}
+                                        <br>
+                                        <small><i class="fa fa-clock-o"></i> {{ rejected_application.was_created }}</small>
+                                    </p>
+                                    <div class="clearfix"></div>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li v-cloak v-if="unread_messages.length" class="messages-menu">
+                        <a href="#" id="unread_app_menu" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fa fa-envelope-o"></i>
+                            <span v-cloak class="label label-success">{{ unread_messages.length }}</span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="rejected_app_menu">
+                            <li class="msgheader">{{ unread_messages.length }} new message(s)</li>
+                            <li v-for="unread_message in unread_messages | orderBy 'created_at' unread_messages_order">
+                                <a class="unread_message_item" href="/message/{{ unread_message.thread_id }}">
+                                    {{{ unread_message.image }}}
+                                    <!-- Message title and timestamp -->
+                                    <p>
+                                        {{{ unread_message.last_message }}}
+                                        <br>
+                                        <small><i class="fa fa-clock-o"></i> {{ unread_message.was_created }}</small>
+                                    </p>
+                                    <div class="clearfix"></div>
+                                </a>
+                            </li>
+                            <li class="footer"><a href="http://snappeejobs.dev/messages">View all messages</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            <img src="http://www.gravatar.com/avatar/0943b792dc6edddf5863d6613e3d4720.jpg?s=39&d=mm&r=g" class="user-image img-circle" alt="User Image"/>
+                            Hey Employer
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="http://snappeejobs.dev/dashboard">Profile</a></li>
+                            <li><a href="http://snappeejobs.dev/profile/favourites">Favourites</a></li>
+                            <li><a href="http://snappeejobs.dev/admin/dashboard">Administration</a></li>
+
+                            <li><a href="http://snappeejobs.dev/auth/logout">Logout</a></li>
+                        </ul>
+                    </li>
+
+
+
+
+
+                </ul>
+
+
+            </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+    </nav>
+</header>
+
+<div class="container">
+</div>
+
+<div class="container">
+</div>
+
+
+<div class="bodycontent">
+
+    <div class="container cnt-body">
+
+        <div class="col-md-10 col-md-offset-1 companies">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="thumb-wrap">
+                        <div class="job-seeker">
+                            <div class="profileImage">
+                                <img src="https://s3-eu-west-1.amazonaws.com/snappeejobs/users/8/avatar/12122755_1035809229783745_2617442617398920722_n90x90.12122755_1035809229783745_2617442617398920722_n">
+                            </div>
+                            <div class="profileContent">
+                                <h2>Simon Cross <a href="#" class="btn-fav"><img src="images/red-heart.png" align="absmiddle"> 56</a></h2>
+                                <p class="req">Looking for Small sized company</p>
+                                <p class="jobseeker-loc"><img src="images/loc-icongrey.png"> California, United
+                                    States</p>
+                                <hr>
+                                <p class="skills"><span>Skills</span> : Software lead, Project manager</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="col-sm-6">
+                <div class="thumb-wrap">
+                    <div class="job-seeker">
+                        <div class="profileImage">
+                            <img src="https://s3-eu-west-1.amazonaws.com/snappeejobs/users/7/avatar/12122755_1035809229783745_2617442617398920722_n90x90.12122755_1035809229783745_2617442617398920722_n">
+                        </div>
+                        <div class="profileContent">
+                            <h2>Simon Cross <a href="#" class="btn-fav"><img src="images/red-heart.png" align="absmiddle"> 56</a></h2>
+                            <p class="req">Looking for Small sized company</p>
+                            <p class="jobseeker-loc"><img src="images/loc-icongrey.png"> California, United
+                                States</p>
+                            <hr>
+                            <p class="skills"><span>Skills</span> : Software lead, Project manager</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+
+<section>
+    <div class="cl-logos featured ftr-logos">
+        <div class="container">
+            <span>As featured in</span>
+            <img src="/images/tnw.png" />
+            <img src="/images/lg-entpr.png" />
+            <img src="/images/lg-giga.png" />
+            <img src="/images/lg-fast.png" />
+            <img src="/images/lg-wired.png" />
+        </div>
+
+    </div>
+</section>
+<section class="hm-contact">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4 cnt-phone"><img src="/images/ic-hone.png" /> Tool Free <span>number</span>  555 444 777</div>
+            <div class="col-md-4 cnt-phone cnt-support"><img src="/images/ic-hone.png" /> Support  547548 ( 954 )</div>
+            <div class="col-md-4 cnt-email"><img src="/images/ic-email.png" /> Support  547548 ( 954 )</div>
+        </div>
+    </div>
+</section>
+<footer class="footer-cnt">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-6 footer-secs">
+                <h3>Information</h3>
+                <ul>
+                    <li><a href="http://snappeejobs.dev/aboutus">About Us</a></li>
+                    <li><a href="http://snappeejobs.dev/terms">Terms & Conditions</a></li>
+                    <li><a href="http://snappeejobs.dev/privacy">Privacy Policy</a></li>
+                    <li><a href="http://snappeejobs.dev/career">Careers with Us</a></li>
+                    <li><a href="http://snappeejobs.dev/contact">Contact Us</a></li>
+                    <li><a href="http://snappeejobs.dev/faq">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="col-xs-6 footer-secs">
+                <h3>Jobseekers</h3>
+                <ul>
+                    <li><a href="/auth/register">Register Now</a></li>
+                    <li><a href="jobs">Search Jobs</a></li>
+                    <li><a href="/auth/login">Login</a></li>
+                    <li><a href="#">Create Job Alert</a></li>
+                    <li><a href="#">Report a Problem</a></li>
+                    <li><a href="#">Security Advice</a></li>
+                </ul>
+            </div>
+            <div class="col-xs-6 footer-secs">
+                <h3>Browse Jobs</h3>
+                <ul>
+                    <li><a href="/jobs">Browse All Jobs</a></li>
+                    <li><a href="#">Premium MBA Jobs</a></li>
+                    <li><a href="#">Premium Engineering Jobs</a></li>
+                    <li><a href="#">Govt. Jobs</a></li>
+                    <li><a href="#">International Jobs</a></li>
+                    <li><a href="/jobs?search=1">Jobs by Company</a></li>
+                </ul>
+            </div>
+            <div class="col-xs-6 footer-secs">
+                <h3>Employers</h3>
+                <ul>
+                    <li><a href="#">Post Jobs</a></li>
+                    <li><a href="#">Access Database</a></li>
+                    <li><a href="#">Manage Responses</a></li>
+                    <li><a href="#">Buy Online</a></li>
+                    <li><a href="#">Report a Problem</a></li>
+                </ul>
+            </div>
+            <div class="col-xs-12 footer-secs socialWrap">
+                <h3>Follow us</h3>
+                <ul>
+                    <li class="socials"><a href="http://www.facebook.com/"><img src="/images/facebook.png" />Facebook</a></li>
+                    <li class="socials"><a href="http://twitter.com/"><img src="/images/twitter.png" />Twitter</a></li>
+                    <li class="socials"><a href="http://plus.google.com/"><img src="/images/gplus.png" />Google+</a></li>
+                    <li class="socials"><a href="http://www.linkedin.com/"><img src="/images/linkedin.png" />LinkedIn</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+</footer>
+<div class="copyright">
+    <div class="container">© 2016 Snappeejobs LLC. All rights reserved</div>
+</div>
+
+
+<script src="http://snappeejobs.dev/build/js/frontend-2c0c01db33.js"></script>
+
+
+<script>
+
+
+    var socket = io('http://127.0.0.1:8000');
+
+    var SnappeeJobsHeader = new Vue({
+        el: '.notifications-header',
+
+        data: {
+            unread_messages: [],
+            rejected_applications: [],
+            unread_messages_order: -1,
+            rejected_applications_order: -1
+        },
+
+        ready: function(){
+
+            var that = this;
+
+            $.post('http://snappeejobs.dev/profile/unreadchats', { _token : $('meta[name="_token"]').attr('content') }, function(data){
+                if ( data.length ) {
+                    that.unread_messages = data;
+                }
+            });
+
+            $.post('http://snappeejobs.dev/profile/rejected_applications', { _token : $('meta[name="_token"]').attr('content') }, function(data){
+                if ( data.length ) {
+                    that.rejected_applications = data;
+                }
+            });
+
+            // Listening to the socket
+            socket.on('user.6:employerchat-received', function(data){
+                that.unread_messages.push(data.message_details)
+            });
+
+        },
+
+        methods: {
+            mark_rejected_applications_read: function(){
+                $.post('http://snappeejobs.dev/profile/rejected_applications_mark_read', { _token : $('meta[name="_token"]').attr('content') }, function(data){
+
+                });
+            }
+        }
+    });
+
+
+</script>
+
+
+<link rel="stylesheet" type="text/css" href="http://snappeejobs.dev/_debugbar/assets/stylesheets?1456744244">
+<script type="text/javascript" src="http://snappeejobs.dev/_debugbar/assets/javascript?1456744239"></script>
+<script type="text/javascript">jQuery.noConflict(true);</script>
+<script type="text/javascript">
+    var phpdebugbar = new PhpDebugBar.DebugBar();
+    phpdebugbar.addTab("exceptions", new PhpDebugBar.DebugBar.Tab({"icon":"bug","title":"Exceptions", "widget": new PhpDebugBar.Widgets.ExceptionsWidget()}));
+    phpdebugbar.addTab("request", new PhpDebugBar.DebugBar.Tab({"icon":"tags","title":"Request", "widget": new PhpDebugBar.Widgets.VariableListWidget()}));
+    phpdebugbar.addTab("views", new PhpDebugBar.DebugBar.Tab({"icon":"leaf","title":"Views", "widget": new PhpDebugBar.Widgets.TemplatesWidget()}));
+    phpdebugbar.addTab("route", new PhpDebugBar.DebugBar.Tab({"icon":"share","title":"Route", "widget": new PhpDebugBar.Widgets.VariableListWidget()}));
+    phpdebugbar.addIndicator("currentroute", new PhpDebugBar.DebugBar.Indicator({"icon":"share","tooltip":"Route"}), "right");
+    phpdebugbar.addTab("queries", new PhpDebugBar.DebugBar.Tab({"icon":"inbox","title":"Queries", "widget": new PhpDebugBar.Widgets.SQLQueriesWidget()}));
+    phpdebugbar.setDataMap({
+        "exceptions": ["exceptions.exceptions", []],
+        "exceptions:badge": ["exceptions.count", null],
+        "request": ["request", {}],
+        "views": ["views", []],
+        "views:badge": ["views.nb_templates", 0],
+        "route": ["route", {}],
+        "currentroute": ["route.uri", ],
+        "queries": ["queries", []],
+        "queries:badge": ["queries.nb_statements", 0]
+    });
+    phpdebugbar.restoreState();
+    phpdebugbar.ajaxHandler = new PhpDebugBar.AjaxHandler(phpdebugbar);
+    phpdebugbar.ajaxHandler.bindToXHR();
+    phpdebugbar.setOpenHandler(new PhpDebugBar.OpenHandler({"url":"http:\/\/snappeejobs.dev\/_debugbar\/open"}));
+    phpdebugbar.addDataSet({"__meta":{"id":"57cd1d2dc9f79ae93ac91ae71c2f934a","datetime":"2016-04-29 09:09:09","utime":1461920949.4196,"method":"GET","uri":"\/jobseekers","ip":"127.0.0.1"},"exceptions":{"count":0,"exceptions":[]},"request":{"$_GET":"[]","$_POST":"[]","$_COOKIE":"array:3 [\n  \"_ga\" => \"GA1.2.2128510111.1452603078\"\n  \"XSRF-TOKEN\" => \"eyJpdiI6InI2cVExOXhYTGJPWnVXMWNcL1FscmJRPT0iLCJ2YWx1ZSI6InMwOFhFOExqalFkWTJITUtqOUljWmozNlFMNUw1VTcyVUxLXC9tcko0NG50MmVvVlwvNnFWb1NNYjA0bUxLK0FQSitsNzhuSGpsUkFwZ1lFWVFpOTl1WlE9PSIsIm1hYyI6ImFhM2ExNGYxOGFmYWJjODQ3M2QyOThmMjA0ZTI1ZmUwNjIwMDdlMTY5MzMyODJmYzA0ZGE2OGFlZDhmMmQwZTkifQ==\"\n  \"laravel_session\" => \"eyJpdiI6IlR2MEhBOW1hSGlVS2lraklJQTkrNHc9PSIsInZhbHVlIjoiVmxCRUZcL2FMTTkzdVBGblNKaW84eHBFUG1hNlwvZVJQMGxlUUh4aHpcLzFieXV3SWV6VTA0V3Azdmx2XC9TUnFEeGkwcDRQQnk0YloxK2tcL1BadVpYZWlLUT09IiwibWFjIjoiNjQxMTIzYjE1ODRiZjdjZTk4OTZiYjZkMzA3NWVkZGQyZjM1MzdlOWY2YjE3ZjdjOTY0YzRiMWM1ZjVmMzFlYiJ9\"\n]","$_SERVER":"array:86 [\n  \"REDIRECT_STATUS\" => \"200\"\n  \"HTTP_HOST\" => \"snappeejobs.dev\"\n  \"HTTP_CONNECTION\" => \"keep-alive\"\n  \"HTTP_CACHE_CONTROL\" => \"max-age=0\"\n  \"HTTP_ACCEPT\" => \"text\/html,application\/xhtml+xml,application\/xml;q=0.9,image\/webp,*\/*;q=0.8\"\n  \"HTTP_UPGRADE_INSECURE_REQUESTS\" => \"1\"\n  \"HTTP_USER_AGENT\" => \"Mozilla\/5.0 (Windows NT 10.0; WOW64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/49.0.2623.112 Safari\/537.36\"\n  \"HTTP_ACCEPT_ENCODING\" => \"gzip, deflate, sdch\"\n  \"HTTP_ACCEPT_LANGUAGE\" => \"en-GB,en-US;q=0.8,en;q=0.6\"\n  \"HTTP_COOKIE\" => \"_ga=GA1.2.2128510111.1452603078; XSRF-TOKEN=eyJpdiI6InI2cVExOXhYTGJPWnVXMWNcL1FscmJRPT0iLCJ2YWx1ZSI6InMwOFhFOExqalFkWTJITUtqOUljWmozNlFMNUw1VTcyVUxLXC9tcko0NG50MmVvVlwvNnFWb1NNYjA0bUxLK0FQSitsNzhuSGpsUkFwZ1lFWVFpOTl1WlE9PSIsIm1hYyI6ImFhM2ExNGYxOGFmYWJjODQ3M2QyOThmMjA0ZTI1ZmUwNjIwMDdlMTY5MzMyODJmYzA0ZGE2OGFlZDhmMmQwZTkifQ%3D%3D; laravel_session=eyJpdiI6IlR2MEhBOW1hSGlVS2lraklJQTkrNHc9PSIsInZhbHVlIjoiVmxCRUZcL2FMTTkzdVBGblNKaW84eHBFUG1hNlwvZVJQMGxlUUh4aHpcLzFieXV3SWV6VTA0V3Azdmx2XC9TUnFEeGkwcDRQQnk0YloxK2tcL1BadVpYZWlLUT09IiwibWFjIjoiNjQxMTIzYjE1ODRiZjdjZTk4OTZiYjZkMzA3NWVkZGQyZjM1MzdlOWY2YjE3ZjdjOTY0YzRiMWM1ZjVmMzFlYiJ9\"\n  \"PATH\" => \"C:\\Program Files (x86)\\OpenSSH\\bin;C:\\Users\\user\\AppData\\Roaming\\casperjs\\bin;C:\\Users\\user\\AppData\\Roaming\\phantomjs;C:\\Program Files\\nodejs\\;C:\\Program Files (x86)\\Skype\\Phone\\;C:\\laragon\\bin\\php\\php-7.0.0;%SystemRoot%\\system32;%SystemRoot%;%SystemRoot%\\System32\\Wbem;%SYSTEMROOT%\\System32\\WindowsPowerShell\\v1.0\\;C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python35-32\\Scripts\\;C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python35-32\\;D:\\Ruby193\\bin;C:\\Program Files (x86)\\Intel\\iCLS Client\\;C:\\Program Files\\Intel\\iCLS Client\\;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files (x86)\\Intel\\OpenCL SDK\\2.0\\bin\\x86;C:\\Program Files (x86)\\Intel\\OpenCL SDK\\2.0\\bin\\x64;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\laragon\\bin\\php\\php-7.0.0;C:\\ProgramData\\Composer\\bin;D:\\Program Files (x86)\\Git\\cmd;C:\\Users\\user\\AppData\\Roaming\\Composer\\vendor\\bin;C:\\Users\\user\\AppData\\Roaming\\npm\"\n  \"SystemRoot\" => \"C:\\WINDOWS\"\n  \"COMSPEC\" => \"C:\\WINDOWS\\system32\\cmd.exe\"\n  \"PATHEXT\" => \".COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC\"\n  \"WINDIR\" => \"C:\\WINDOWS\"\n  \"SERVER_SIGNATURE\" => \"\"\n  \"SERVER_SOFTWARE\" => \"Apache\/2.4.17 (Win32) OpenSSL\/1.0.2d PHP\/7.0.0\"\n  \"SERVER_NAME\" => \"snappeejobs.dev\"\n  \"SERVER_ADDR\" => \"127.0.0.1\"\n  \"SERVER_PORT\" => \"80\"\n  \"REMOTE_ADDR\" => \"127.0.0.1\"\n  \"DOCUMENT_ROOT\" => \"C:\/laragon\/www\/snappeejobs\/public\/\"\n  \"REQUEST_SCHEME\" => \"http\"\n  \"CONTEXT_PREFIX\" => \"\"\n  \"CONTEXT_DOCUMENT_ROOT\" => \"C:\/laragon\/www\/snappeejobs\/public\/\"\n  \"SERVER_ADMIN\" => \"admin@example.com\"\n  \"SCRIPT_FILENAME\" => \"C:\/laragon\/www\/snappeejobs\/public\/index.php\"\n  \"REMOTE_PORT\" => \"54712\"\n  \"REDIRECT_URL\" => \"http:\/\/snappeejobs.dev\/jobseekers\"\n  \"GATEWAY_INTERFACE\" => \"CGI\/1.1\"\n  \"SERVER_PROTOCOL\" => \"HTTP\/1.1\"\n  \"REQUEST_METHOD\" => \"GET\"\n  \"QUERY_STRING\" => \"\"\n  \"REQUEST_URI\" => \"\/jobseekers\"\n  \"SCRIPT_NAME\" => \"\/index.php\"\n  \"PHP_SELF\" => \"\/index.php\"\n  \"REQUEST_TIME_FLOAT\" => 1461920948.656\n  \"REQUEST_TIME\" => 1461920948\n  \"APP_ENV\" => \"local\"\n  \"APP_DEBUG\" => \"true\"\n  \"APP_URL\" => \"http:\/\/snappeejobs.dev\"\n  \"APP_LOCALE\" => \"en\"\n  \"APP_FALLBACK_LOCALE\" => \"en\"\n  \"APP_KEY\" => \"bj1gvb2UBFgFXOp181jUrl3XuhrAYwPx\"\n  \"APP_DESIGN\" => \"new\"\n  \"APP_S3_URL\" => \"https:\/\/s3-eu-west-1.amazonaws.com\/snappeejobs\/\"\n  \"DB_HOST\" => \"localhost\"\n  \"DB_DATABASE\" => \"snappeejobs\"\n  \"DB_USERNAME\" => \"root\"\n  \"DB_PASSWORD\" => \"\"\n  \"DB_DRIVER\" => \"mysql\"\n  \"CACHE_DRIVER\" => \"redis\"\n  \"SESSION_DRIVER\" => \"redis\"\n  \"QUEUE_DRIVER\" => \"sync\"\n  \"MAIL_DRIVER\" => \"smtp\"\n  \"FILE_SYSTEM_DRIVER\" => \"s3\"\n  \"BROADCAST_DRIVER\" => \"redis\"\n  \"MAIL_HOST\" => \"mailtrap.io\"\n  \"MAIL_PORT\" => \"2525\"\n  \"MAIL_USERNAME\" => \"34915a8e2d406f8fc\"\n  \"MAIL_PASSWORD\" => \"9ab2fd5103658f\"\n  \"MAIL_FROM\" => \"admin@snappeejobs.com\"\n  \"MAIL_NAME\" => \"SnappeeJobs\"\n  \"STRIPE_SECRET\" => \"sk_test_H234C42ig6NEFL2mhJ5JaHUx\"\n  \"STRIPE_KEY\" => \"pk_test_NFFMo93wj4LC8ZbvD3icHlxd\"\n  \"GITHUB_CLIENT_ID\" => \"\"\n  \"GITHUB_CLIENT_SECRET\" => \"\"\n  \"GITHUB_REDIRECT\" => \"\"\n  \"FACEBOOK_CLIENT_ID\" => \"152809105102504\"\n  \"FACEBOOK_CLIENT_SECRET\" => \"201cf725bcce125a49f206c0c068f706\"\n  \"FACEBOOK_REDIRECT\" => \"http:\/\/snappeejobs.dev\/auth\/connect\/facebook\/callback\"\n  \"TWITTER_CLIENT_ID\" => \"lGlIgD1g5vY5iFdXSWcf8Twyx\"\n  \"TWITTER_CLIENT_SECRET\" => \"amtovic0joBtG34fXNLLSnquPcAzMkYfFKfOIdrl5d6866wp6t\"\n  \"TWITTER_REDIRECT\" => \"http:\/\/snappeejobs.dev\/auth\/connect\/twitter\/callback\"\n  \"GOOGLE_CLIENT_ID\" => \"551491568233-adseriij4lapd5ap416o56p3dij6g27v.apps.googleusercontent.com\"\n  \"GOOGLE_CLIENT_SECRET\" => \"Az-0v7jo6OfC7P1Z0JQgbHIw\"\n  \"GOOGLE_REDIRECT\" => \"http:\/\/snappeejobs.dev\/auth\/connect\/google\/callback\"\n  \"LINKEDIN_CLIENT_ID\" => \"75vs2g85fcta68\"\n  \"LINKEDIN_CLIENT_SECRET\" => \"D4SCtCxKEaZrAgtB\"\n  \"LINKEDIN_REDIRECT\" => \"http:\/\/snappeejobs.dev\/auth\/linkedin\/callback\"\n  \"AWS_S3_KEY\" => \"AKIAIXQMNLAZQKI35X2Q\"\n  \"AWS_S3_SECRET\" => \"8x3hSXOtf+P17LAhHOtIML1OwtiG3ecB\/gMOVCoE\"\n  \"AWS_S3_REGION\" => \"eu-west-1\"\n  \"AWS_S3_BUCKET\" => \"snappeejobs\"\n  \"SOCKETIO_SERVER_IP\" => \"127.0.0.1\"\n  \"SOCKETIO_SERVER_PORT\" => \"8000\"\n]"},"views":{"nb_templates":8,"templates":[{"name":"frontend.jobseekers.indexnew (\\resources\\views\\frontend\\jobseekers\\indexnew.blade.php)","param_count":6,"params":["countries","states","skills","categories","job_seekers","paginator"],"type":"blade"},{"name":"frontend.layouts.masternew (\\resources\\views\\frontend\\layouts\\masternew.blade.php)","param_count":12,"params":["obLevel","__env","app","errors","countries","states","skills","categories","job_seekers","paginator","t","job_seeker"],"type":"blade"},{"name":"frontend.includes.nav_new (\\resources\\views\\frontend\\includes\\nav_new.blade.php)","param_count":12,"params":["obLevel","__env","app","errors","countries","states","skills","categories","job_seekers","paginator","t","job_seeker"],"type":"blade"},{"name":"frontend.includes.alerts (\\resources\\views\\frontend\\includes\\alerts.blade.php)","param_count":12,"params":["obLevel","__env","app","errors","countries","states","skills","categories","job_seekers","paginator","t","job_seeker"],"type":"blade"},{"name":"includes.partials.messages (\\resources\\views\\includes\\partials\\messages.blade.php)","param_count":12,"params":["obLevel","__env","app","errors","countries","states","skills","categories","job_seekers","paginator","t","job_seeker"],"type":"blade"},{"name":"frontend.includes.footer (\\resources\\views\\frontend\\includes\\footer.blade.php)","param_count":12,"params":["obLevel","__env","app","errors","countries","states","skills","categories","job_seekers","paginator","t","job_seeker"],"type":"blade"},{"name":"frontend.includes.notification_code (\\resources\\views\\frontend\\includes\\notification_code.blade.php)","param_count":12,"params":["obLevel","__env","app","errors","countries","states","skills","categories","job_seekers","paginator","t","job_seeker"],"type":"blade"},{"name":"sweet::alert (\\resources\\views\\vendor\\sweet\\alert.blade.php)","param_count":12,"params":["obLevel","__env","app","errors","countries","states","skills","categories","job_seekers","paginator","t","job_seeker"],"type":"blade"}]},"route":{"uri":"GET jobseekers","controller":"App\\Http\\Controllers\\Frontend\\JobSeekers\\JobSeekerController@index","namespace":"App\\Http\\Controllers\\Frontend\\JobSeekers","prefix":null,"where":[],"as":"jobseeker.search","file":"\\app\\Http\\Controllers\\Frontend\\JobSeekers\\JobSeekerController.php:37-71"},"queries":{"nb_statements":14,"nb_failed_statements":0,"accumulated_duration":0.01858,"accumulated_duration_str":"18.58ms","statements":[{"sql":"select `id`, `name` from `countries`","params":{"hints":"The <code>SELECT<\/code> statement has no <code>WHERE<\/code> clause and could examine many more rows than intended"},"duration":0.00159,"duration_str":"1.59ms","stmt_id":null,"connection":"snappeejobs"},{"sql":"select `id`, `name` from `skills`","params":{"hints":"The <code>SELECT<\/code> statement has no <code>WHERE<\/code> clause and could examine many more rows than intended"},"duration":0.00439,"duration_str":"4.39ms","stmt_id":null,"connection":"snappeejobs"},{"sql":"select `id`, `name` from `job_categories`","params":{"hints":"The <code>SELECT<\/code> statement has no <code>WHERE<\/code> clause and could examine many more rows than intended"},"duration":0.00059,"duration_str":"590\u03bcs","stmt_id":null,"connection":"snappeejobs"},{"sql":"select `id`, `name` from `states` where `country_id` = '222'","params":{"0":"222"},"duration":0.00128,"duration_str":"1.28ms","stmt_id":null,"connection":"snappeejobs"},{"sql":"select `job_seeker_details`.`id`, `job_seeker_details`.`user_id`, `job_seeker_details`.`country_id`, `job_seeker_details`.`state_id`, `job_seeker_details`.`size`, `job_seeker_details`.`likes` from `job_seeker_details` inner join `users` on `users`.`id` = `job_seeker_details`.`user_id` where `job_seeker_details`.`has_resume` = '1' and `users`.`status` = '1' and `users`.`confirmed` = '1' group by `job_seeker_details`.`id` order by `users`.`created_at` desc limit 10 offset 0","params":{"0":"1","1":"1","2":"1"},"duration":0.00088,"duration_str":"880\u03bcs","stmt_id":null,"connection":"snappeejobs"},{"sql":"select * from `users` where `users`.`deleted_at` is null and `users`.`id` in ('8', '7')","params":{"0":"8","1":"7","hints":"Use <code>SELECT *<\/code> only if you need all columns from table"},"duration":0.00122,"duration_str":"1.22ms","stmt_id":null,"connection":"snappeejobs"},{"sql":"select * from `countries` where `countries`.`id` in ('1', '222')","params":{"0":"1","1":"222","hints":"Use <code>SELECT *<\/code> only if you need all columns from table"},"duration":0.00108,"duration_str":"1.08ms","stmt_id":null,"connection":"snappeejobs"},{"sql":"select * from `states` where `states`.`id` in ('1', '3428')","params":{"0":"1","1":"3428","hints":"Use <code>SELECT *<\/code> only if you need all columns from table"},"duration":0.00066,"duration_str":"660\u03bcs","stmt_id":null,"connection":"snappeejobs"},{"sql":"select `skills`.*, `skills_job_seeker`.`user_id` as `pivot_user_id`, `skills_job_seeker`.`skill_id` as `pivot_skill_id` from `skills` inner join `skills_job_seeker` on `skills`.`id` = `skills_job_seeker`.`skill_id` where `skills_job_seeker`.`user_id` in ('2', '1')","params":{"0":"2","1":"1","hints":"Use <code>SELECT *<\/code> only if you need all columns from table"},"duration":0.00135,"duration_str":"1.35ms","stmt_id":null,"connection":"snappeejobs"},{"sql":"select `job_categories`.*, `category_preferences_job_seeker`.`user_id` as `pivot_user_id`, `category_preferences_job_seeker`.`job_category_id` as `pivot_job_category_id` from `job_categories` inner join `category_preferences_job_seeker` on `job_categories`.`id` = `category_preferences_job_seeker`.`job_category_id` where `category_preferences_job_seeker`.`user_id` in ('2', '1')","params":{"0":"2","1":"1"},"duration":0.00076,"duration_str":"760\u03bcs","stmt_id":null,"connection":"snappeejobs"},{"sql":"select count(*) as aggregate from (select job_seeker_details.id AS jobseeker_id, count(*) as total from `job_seeker_details` inner join `users` on `users`.`id` = `job_seeker_details`.`user_id` where `job_seeker_details`.`has_resume` = '1' and `job_seeker_details`.`preferences_saved` = '1' and `users`.`status` = '1' and `users`.`confirmed` = '1' group by `job_seeker_details`.`id`) as sub","params":{"0":"1","1":"1","2":"1","3":"1"},"duration":0.00087,"duration_str":"870\u03bcs","stmt_id":null,"connection":"snappeejobs"},{"sql":"select * from `users` where `users`.`deleted_at` is null and `users`.`id` = '6' limit 1","params":{"0":"6","hints":"Use <code>SELECT *<\/code> only if you need all columns from table<br \/><code>LIMIT<\/code> without <code>ORDER BY<\/code> causes non-deterministic results, depending on the query execution plan"},"duration":0.00084,"duration_str":"840\u03bcs","stmt_id":null,"connection":"snappeejobs"},{"sql":"select `roles`.*, `assigned_roles`.`user_id` as `pivot_user_id`, `assigned_roles`.`role_id` as `pivot_role_id` from `roles` inner join `assigned_roles` on `roles`.`id` = `assigned_roles`.`role_id` where `assigned_roles`.`user_id` = '6'","params":{"0":"6","hints":"Use <code>SELECT *<\/code> only if you need all columns from table"},"duration":0.00096,"duration_str":"960\u03bcs","stmt_id":null,"connection":"snappeejobs"},{"sql":"select `permissions`.*, `permission_role`.`role_id` as `pivot_role_id`, `permission_role`.`permission_id` as `pivot_permission_id` from `permissions` inner join `permission_role` on `permissions`.`id` = `permission_role`.`permission_id` where `permission_role`.`role_id` = '2' order by `display_name` asc","params":{"0":"2","hints":"Use <code>SELECT *<\/code> only if you need all columns from table"},"duration":0.00211,"duration_str":"2.11ms","stmt_id":null,"connection":"snappeejobs"}]}}, "57cd1d2dc9f79ae93ac91ae71c2f934a");
+
+</script>
+</body>
+</html>

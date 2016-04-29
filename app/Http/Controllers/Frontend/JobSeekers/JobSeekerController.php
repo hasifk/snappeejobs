@@ -67,7 +67,7 @@ class JobSeekerController extends Controller
             'paginator'         => $paginator
         ];
 
-        return view('frontend.jobseekers.index', $view);
+        return view('frontend.jobseekers.index' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ), $view);
     }
 
     /**

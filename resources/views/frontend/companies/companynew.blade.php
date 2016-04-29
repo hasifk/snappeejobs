@@ -53,7 +53,12 @@
 
                                         @foreach($company->people as $people)
                                         <div class="col-sm-6 grid-item">
-                                            {{--<img src="{{env('APP_S3_URL') .$people->path . $people->filename . '295x218.' . $people->extension }}" />--}}
+
+                                            @if($people->path)
+                                            <img src="{{env('APP_S3_URL') .$people->path . $people->filename . '295x297.' . $people->extension }}" />
+                                            @else
+                                                 <img src="https://placeholdit.imgix.net/~text?txtsize=28&txt=295%C3%97297&w=295&h=297" />
+                                            @endif
                                             <div class="moreinfo">
                                                 <div>
                                                     <h3>{{ $people->name }}</h3>
@@ -90,9 +95,9 @@
 
                                 </div>
                                 <div class="col-md-4 company-desc">
-                                    <div class="sidetop">
+                                    {{--<div class="sidetop">
                                         <a href="#"><img src="images/heart-grey.png" /></a><img src="images/logos/squarespace.png" />
-                                    </div>
+                                    </div>--}}
                                     <div class="cmp-thms">
                                         <div class="cmp-smallpics" style="background-image: url('images/companies/comp-thumb1.jpg')">
                                         </div>
@@ -130,7 +135,7 @@
                                             <strong>Michael</strong><br />
                                             Interface Director
                                         </div>
-                                        <div class="col-md-4 pull-right company-container">
+                                        <div class=" pull-right company-container">
                                         <button v-cloak class="btn btn-default btn-block" v-on:click="followCompany" v-show={{ count(auth()->user()) }}>
                                             <span class="glyphicon glyphicon-ok"></span>
                                             @{{ followerStatus }}(@{{ companyFollowers }})
@@ -138,9 +143,9 @@
                                             </div>
 
 
-                                        <div class="col-md-4">
+
                                             <a href="{{ route('companies.next', $company->id) }}" class="btn btn-primary">Next Company</a>
-                                        </div>
+
                                     </div>
                                 </div>
 

@@ -39,6 +39,10 @@ return array(
 
         'company_people' => [
             [
+                'height' => 297,
+                'width'  => 295,
+            ],
+            [
                 'height' => 90,
                 'width'  => 90,
             ],

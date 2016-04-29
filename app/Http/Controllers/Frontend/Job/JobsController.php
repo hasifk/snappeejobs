@@ -65,7 +65,7 @@ class JobsController extends Controller
             'paginator'         => $paginator
         ];
 
-        return view('frontend.jobs.index', $view);
+        return view('frontend.jobs.index'.( env('APP_DESIGN') == 'new' ? 'new' : "" ), $view);
     }
 
     public function show($company, $slug,Request $request){
@@ -97,7 +97,7 @@ class JobsController extends Controller
             'job' => $job
         ];
 
-        return view('frontend.jobs.show', $view);
+        return view('frontend.jobs.show'.( env('APP_DESIGN') == 'new' ? 'new' : "" ), $view);
 
     }
 

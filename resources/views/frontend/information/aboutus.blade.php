@@ -2,7 +2,7 @@
 
 @section('search_div')
 
-    <div class="container com-search margin-top">
+    <div class="container com-search margin-top" style="margin-top: 7%">
      @if(!empty($about_us))
         <div class="row">
           <h3>{{$about_us->header}}</h3>

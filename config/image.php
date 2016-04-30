@@ -20,6 +20,10 @@ return array(
     'thumbnails' => [
         'user_profile_image' => [
             [
+                'height' => 136,
+                'width'  => 136,
+            ],
+            [
                 'height' => 90,
                 'width'  => 90,
             ],
@@ -95,6 +99,18 @@ return array(
         ],
 
         'jobseeker_images' => [
+            [
+                'height' => 457,
+                'width'  => 720,
+            ],
+            [
+                'height' => 56,
+                'width'  => 85,
+            ],
+            [
+                'height' => 66,
+                'width'  => 99,
+            ],
             [
                 'height' => 90,
                 'width'  => 90,

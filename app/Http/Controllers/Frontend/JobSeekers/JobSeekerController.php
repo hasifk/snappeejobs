@@ -81,7 +81,7 @@ class JobSeekerController extends Controller
         $jobSeeker = JobSeeker::findOrFail($id);
         $jobSeekerUser = User::find($jobSeeker->user_id);
 
-        return view('frontend.jobseekers.show', [ 'jobseeker' => $jobSeeker, 'jobseeker_user' => $jobSeekerUser ]);
+        return view('frontend.jobseekers.show' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ), [ 'jobseeker' => $jobSeeker, 'jobseeker_user' => $jobSeekerUser ]);
     }
 
     public function likeJob(Request $request){

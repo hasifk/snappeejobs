@@ -164,80 +164,35 @@
                                         </form>
                                     </div>
                                 </div>
-                            </div>
+                            <div class="row">
+                                @if(count($companies_data['companies'])>0)
+                                    @foreach($companies_data['companies'] as $company)
 
-                            <div class="col-md-12">
-
-                                <div class="col-md-6">
-                                    <h4>Companies</h4>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="dropdown pull-right">
-                                        Sorted by
-                                        <button class="btn btn-default dropdown-toggle" type="button" id="sortingMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                            @if ( is_null(request()->get('sort')) )
-                                                Newest
+                                        <div class="col-sm-6 col-md-4 thumbs">
+                                            @if ($company->photos->count())
+                                                <div> <img src="{{ env('APP_S3_URL') . $company->photos->first()->path . $company->photos->first()->filename . '295x218.' . $company->photos->first()->extension}}" alt="company photo"></div>
                                             @else
-                                                {{ (request()->get('sort') == 'created_at') ? 'Newest' : 'Popular' }}
+                                                <div><img src="https://placeholdit.imgix.net/~text?txtsize=28&txt=295%C3%97218&w=295&h=218"></div>
                                             @endif
-                                            <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="sortingMenu">
-                                            <li><a href="
-                        @if ( request()->get('sort') == 'likes' )
-                                                {{ route('companies.search', array_merge(request()->except('sort'), ['sort' => 'created_at'])) }}
-                                                @elseif ( request()->get('sort') == 'created_at' )
-                                                {{ route('companies.search', array_merge(request()->except('sort'), ['sort' => 'likes'])) }}
-                                                @else
-                                                {{ route('companies.search', array_merge(request()->except('sort'), ['sort' => 'likes'])) }}
-                                                @endif
-                                                        ">
-                                                    @if ( is_null(request()->get('sort')) )
-                                                        Popular
-                                                    @else
-                                                        {{ (request()->get('sort') == 'created_at') ? 'Popular' : 'Newest' }}
-                                                    @endif
-                                                </a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div style="margin-top: 25px;" class="col-md-12" id="companies_list">
-
-                                <div class="panel panel-default">
-                                    <div class="panel-heading">
-                                        <h3>{{ trans('strings.companies_title') }}</h3>
-                                    </div>
-
-                                    <div class="panel-body">
-
-                                        <div class="col-md-9">
-                                            @if(count($companies_data['companies'])>0)
-                                                <h4>{{ trans('strings.companies_subtitle') }}</h4>
-                                            @else
-                                                <h4>No results found.</h4>
-                                            @endif
-                                        </div>
-                                        @if(count($companies_data['companies'])>0)
-                                            @foreach($companies_data['companies'] as $company)
+                                            <h2>
                                                 <a href="/companies/{{$company->url_slug}}">
-                                                    <div class="col-md-5">
-                                                        @if ($company->photos->count())
-                                                            <img src="{{$company->photos->first()->path . $company->photos->first()->filename . $company->photos->first()->extension}}" alt="company photo" width="400">
-                                                        @endif
-                                                        <h2>{{$company->title}}</h2>
-                                                        <h4> @foreach($company->industries as $industry){{ $industry->name }} | @endforeach  {{$company->size}} | {{$company->stateName}}</h4>
-                                                    </div>
+                                                    {{$company->title}}
                                                 </a>
-                                            @endforeach
-                                        @endif
-                                    </div>
-                                </div><!-- panel -->
+                                            </h2>
+                                            <h5>{{$company->countryname}} , {{$company->statename}}</h5>
+                                            <h5>@foreach($company->industries as $industry){{ $industry->name }} | @endforeach  {{$company->size}} | {{$company->stateName}} </h5>
+                                            <p>Consumer |  Large Size  |   San Francisco</p>
+                                        </div>
+
+                                    @endforeach
+                                @endif
+
+
+
+                            </div>
                             </div>
 
-                        </div>
+
                     </div>
 
                 </div>

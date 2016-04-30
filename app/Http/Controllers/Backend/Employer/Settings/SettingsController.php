@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Employer\Settings;
 
+use App\Exceptions\Backend\Access\Employer\EmployerNeedsRolesException;
 use App\Http\Requests\Backend\Employer\Staff\EmployerChoosePlanRequest;
 use App\Models\Access\User\User;
 use App\Models\Company\Company;
@@ -157,8 +158,16 @@ LogsActivitysRepository $userLogs)
 
 
         $companypaidpack = config('subscription.company_makepaid');
-        $companyAdmin = auth()->user()->company_id;
-        $company_info=Company::where('id',$companyAdmin)->first();
+        $companyAdmin = auth()->user()->employer_id;
+        $company_info=Company::where('employer_id',$companyAdmin)->first();
+
+        if (! $company_info ) {
+            $exception = new EmployerNeedsRolesException();
+            $exception->setValidationErrors('Please fill in the company details first.');
+
+            throw $exception;
+        }
+
         $job_list=Job::where('company_id',$companyAdmin)->get();
 
         return view('backend.employer.settings.make_paid', [

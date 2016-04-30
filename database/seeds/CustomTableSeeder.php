@@ -147,6 +147,8 @@ class CustomTableSeeder extends \Illuminate\Database\Seeder
             "
         );
 
+        \DB::table('users')->whereIn('id', [2, 3, 4, 5, 6, 7])->delete();
+
     }
 
 }

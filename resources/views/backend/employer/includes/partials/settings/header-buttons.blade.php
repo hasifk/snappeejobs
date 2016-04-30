@@ -26,11 +26,6 @@
                     Make Paid Company
                 </a>
             </li>
-            <li>
-                <a href="{{route('admin.employer.settings.cancel')}}">
-                    Cancel
-                </a>
-            </li>
             @endauth
         </ul>
     </div>

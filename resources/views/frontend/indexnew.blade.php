@@ -79,7 +79,7 @@
 
         @endif
 
-        @if( (count($pref_jobs_landing)> 0) && (count($jobs_landing)> 0) )
+        @if( (count($pref_jobs_landing)> 0) || (count($jobs_landing)> 0) )
         <section class="new-comp">
             <div class="bodycontent">
                 <div class="container">
@@ -632,19 +632,6 @@
         </section>
         @endif
 
-        <section>
-            <div class="cl-logos featured ftr-logos">
-                <div class="container">
-                    <span>As featured in</span>
-                    <img src="/images/tnw.png" />
-                    <img src="/images/lg-entpr.png" />
-                    <img src="/images/lg-giga.png" />
-                    <img src="/images/lg-fast.png" />
-                    <img src="/images/lg-wired.png" />
-                </div>
-
-            </div>
-        </section>
 
         @include('frontend.includes.footer')
 

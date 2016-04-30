@@ -361,6 +361,8 @@ class EloquentStaffRepository {
 		$user->password = $input['password'];
 		$user->gender = $input['gender'];
 		$user->dob = (!empty($input['dob'])) ? new Carbon($input['dob']) : '';
+		$user->country_id=auth()->user()->country_id;
+        $user->state_id=auth()->user()->state_id;
 		$user->status = isset($input['status']) ? 1 : 0;
 		$user->confirmation_code = md5(uniqid(mt_rand(), true));
 		$user->confirmed = isset($input['confirmed']) ? 1 : 0;

@@ -39,17 +39,18 @@
 
                     <div class="clearfix"></div>
                     <h2>{{ $job->title }}</h2>
-                    <a href="#" class="btn-primary">APPLY NOW</a>
-                    <div v-cloak v-show="!jobApplied" class="apply-button">
+                    @if(auth()->user())
+                    <div v-cloak v-show="!jobApplied" class="apply-button col-md-12">
                         <button v-on:click="applyJob" class="btn btn-primary applyjob">Apply</button>
                     </div>
                     <div v-cloak v-show="jobApplied" class="job-applied alert alert-info" transition="expand">
                         <span>@{{ notificationText }}</span>
                     </div>
+                    @endif
                     <h3><strong>Info</strong></h3>
                     <ul>
                         <li>Level:-{{ str_studly($job->level) }}</li>
-                        <li>Country:-{{ $job->countryname }}</li>{{ $job->statename }}
+                        <li>Country:-{{ $job->countryname }}</li>
                         <li>State:-{{ $job->statename }}</li>
                         <li>Posted:-{{ \Carbon\Carbon::parse($job->created_at)->diffForHumans() }}</li>
                     </ul>
@@ -75,17 +76,96 @@
                     </ul>
                     <h3><strong>Description</strong></h3>
                     <p>{!! $job->description !!}</p>
-                    <p>Squarespace provides creative tools and services to help anyone build and manage their brand online. For more than a decade, we’ve empowered millions of people — from individuals and local artists to entrepreneurs building the world’s most iconic businesses — to take control of their online presence like never before. By blending elegant design and sophisticated engineering, Squarespace sets the new standard for modern publishing.</p>
-                    <p>Squarespace’s team of more than 500 is headquartered in downtown New York City, with offices in Dublin and Portland. For more information, visit www.squarespace.com/about. </p>
-                    <h3><strong>About This Job</strong></h3>
+                    @if($job->prerequisites)
+                    <h3><strong>Prerequisites</strong></h3>
                     <div class="col-lg-8 about-job">
                         <ul>
-                            <li ><a href="#" class="level">Senior Level </a></li>
-                            <li><a href="#" class="location">New York City Metro Area</a> </li>
-                            <li><a href="#" class="document">Project & Product Management</a></li>
+                            @foreach($job->prerequisites as $prerequisite)
+                            <li > {{ $prerequisite->content }}</li>
+                            @endforeach
                         </ul>
                     </div>
-                    <a href="#" class="btn-primary MB-60">APPLY NOW</a>
+                    @endif
+                    @if(auth()->user())
+                    @roles(['User'])
+                        <h3><strong>Like this Job? </strong></h3>
+                    <div>
+                            <button class="btn btn-default" v-on:click="likeJob">
+                                <span class="glyphicon glyphicon-thumbs-up"></span>
+                                Like (@{{ jobLikes }})
+                            </button>
+                    </div>
+
+                    @endauth
+                    @endif
+                    <div class="col-md-12">
+                        <a href="{{ route('jobs.next', $job->id) }}" class="btn btn-primary">Next Job</a>
+                    </div>
+                    <!-- Modal Body -->
+                    <div class="modal" id="jobApplicationModal" tabindex="-1" role="dialog" aria-labelledby="jobApplicationModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <h3 v-show="resumeUploaded && !jobApplied">Are you sure you want to apply for this job?</h3>
+                                    <h3 v-show="!resumeUploaded">Please upload your resume to process this job application</h3>
+                                    <h3 v-show="resumeUploaded && shouldShowPrerequisites && !jobApplied">Please confirm the Prerequisites</h3>
+                                    <h3 v-show="jobApplied && matchedJobs.length">
+                                        Thank you for applying this job
+                                        <br>
+                                        Here are some matching jobs
+                                    </h3>
+                                </div>
+
+                                <div class="modal-body">
+
+                                    <div class="row" id="matchedJobs" v-show="jobApplied && matchedJobs.length"></div>
+
+                                    <div v-show="resumeUploaded && shouldShowPrerequisites && !jobApplied" class="form-horizontal">
+                                        @if($job->prerequisites->count())
+                                            <ul class="list-group">
+                                                @foreach($job->prerequisites as $prerequisite)
+                                                    <li class="list-group-item">
+                                                        {{ $prerequisite->content }}
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                            <hr>
+                                            <p>You might want to make sure you satisfy the above mentioned prerequisite</p>
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" class="checkbox" v-model="prerequisiteConfirmed">
+                                                    Yes, I agree that I qualify these prerequisite(s)
+                                                </label>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <div v-show="resumeUploaded && !jobApplied">
+                                        <button
+                                                class="btn btn-default"
+                                                v-bind:class="{ 'disabled': !prerequisiteConfirmed }"
+                                                v-on:click="sendJobApplication"
+                                        >
+                                            Yes, Apply for this job.
+                                        </button>
+
+                                        &nbsp;
+                                        &nbsp;
+
+                                        <button
+                                                class="btn btn-default"
+                                                v-on:click="cancelJobApplication"
+                                        >
+                                            No, I dont want to apply for this job.
+                                        </button>
+                                    </div>
+
+                                    <div v-show="!resumeUploaded" class="form-horizontal">
+                                        <form enctype="multipart/form-data" method="post" action="{{ route('frontend.profile.resume') }}" id="upload-resume"></form>
+                                    </div>
+
+                                </div>
                 </div>
 
             </div>

@@ -16,6 +16,7 @@ elixir(function(mix) {
                 './resources/assets/js/bootstrap/dist/css/bootstrap-theme.min.css',
                 './resources/assets/js/font-awesome/css/font-awesome.css',
                 'frontend/style.css',
+                'frontend/photogallery.css',
                 './resources/assets/js/dropzone/dist/min/dropzone.min.css',
                 './resources/assets/js/select2/dist/css/select2.min.css',
                 './resources/assets/js/bootstrap-datepicker/dist/css/bootstrap-datepicker.css',
@@ -24,6 +25,7 @@ elixir(function(mix) {
         .scripts([ // Combine front-end scripts
                 'jquery/dist/jquery.min.js',
                 'bootstrap/dist/js/bootstrap.min.js',
+                'plugins.js',
                 'plugins.js',
                 'vue/dist/vue.js',
                 'select2/dist/js/select2.js',

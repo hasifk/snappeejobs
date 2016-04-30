@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Frontend\Information;
 
+use App\Models\Cms\Cms;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -12,27 +13,33 @@ class InformationController extends Controller
 
     public function aboutus()
     {
-        return view('frontend.information.aboutus');
+        $about_us=Cms::find(1);
+        return view('frontend.information.aboutus')->with('about_us', $about_us);
     }
 
     public function terms(){
-        return view('frontend.information.terms');
+        $terms=Cms::find(2);
+        return view('frontend.information.terms')->with('terms', $terms);
     }
 
     public function privacy(){
-        return view('frontend.information.privacy');
+        $privacy=Cms::find(3);
+        return view('frontend.information.privacy')->with('privacy', $privacy);
     }
 
     public function career(){
-        return view('frontend.information.career');
+        $career=Cms::find(4);
+        return view('frontend.information.career')->with('career', $career);
     }
 
     public function contact(){
-        return view('frontend.information.contact');
+        $contact=Cms::find(5);
+        return view('frontend.information.contact')->with('contact', $contact);
     }
 
     public function faq(){
-        return view('frontend.information.faq');
+        $faq=Cms::find(6);
+        return view('frontend.information.faq')->with('faq', $faq);
     }
 
 }

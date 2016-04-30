@@ -44,7 +44,7 @@ class EloquentCompanyRepository {
             if ( $request->get('industries') ) {
                 $searchObj = $searchObj->whereIn('industry_company.industry_id', $request->get('industries'));
             } else if ( $jobseeker_industry_preferences ) {
-                $searchObj = $searchObj->whereIn('industry_company.industry_id', $jobseeker_industry_preferences);
+                //$searchObj = $searchObj->whereIn('industry_company.industry_id', $jobseeker_industry_preferences);
             }
         }
 
@@ -56,7 +56,7 @@ class EloquentCompanyRepository {
             if ( $request->get('size') ) {
                 $searchObj = $searchObj->where('companies.size', $request->get('size'));
             } else {
-                $searchObj = $searchObj->where('companies.size', $jobseeker_size_preferences);
+                //$searchObj = $searchObj->where('companies.size', $jobseeker_size_preferences);
             }
         }
 
@@ -109,7 +109,7 @@ class EloquentCompanyRepository {
             if ( $request->get('industries') ) {
                 $searchObj = $searchObj->whereIn('industry_company.industry_id', $request->get('industries'));
             } else {
-                $searchObj = $searchObj->whereIn('industry_company.industry_id', $jobseeker_industry_preferences);
+                //$searchObj = $searchObj->whereIn('industry_company.industry_id', $jobseeker_industry_preferences);
             }
         }
 
@@ -121,7 +121,7 @@ class EloquentCompanyRepository {
             if ( $request->get('size') ) {
                 $searchObj = $searchObj->where('companies.size', $request->get('size'));
             } else {
-                $searchObj = $searchObj->where('companies.size', $jobseeker_size_preferences);
+                //$searchObj = $searchObj->where('companies.size', $jobseeker_size_preferences);
             }
         }
 

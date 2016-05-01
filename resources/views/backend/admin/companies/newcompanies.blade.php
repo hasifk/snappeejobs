@@ -1,4 +1,4 @@
-\@extends ('backend.layouts.master')
+@extends ('backend.layouts.master')
 
 @section ('title', "New Companies Management")
 

@@ -45,9 +45,8 @@
     </table>
     <div class="clearfix"></div>
     <hr>
-
+@if(!empty($job_list))
     <h5>Job List</h5>
-
     <table class="table">
         @foreach($job_list as $key=> $value)
         <tr>
@@ -77,6 +76,7 @@
         </tr>
         @endforeach
     </table>
+    @endif
 
     <div class="clearfix"></div>
 @stop

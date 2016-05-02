@@ -159,6 +159,7 @@ LogsActivitysRepository $userLogs)
 
         $companypaidpack = config('subscription.company_makepaid');
         $companyAdmin = auth()->user()->employer_id;
+        $companyAdmin1 = auth()->user()->company_id;
         $company_info=Company::where('employer_id',$companyAdmin)->first();
 
         if (! $company_info ) {
@@ -168,7 +169,7 @@ LogsActivitysRepository $userLogs)
             throw $exception;
         }
 
-        $job_list=Job::where('company_id',$companyAdmin)->get();
+        $job_list=Job::where('company_id',$companyAdmin1)->get();
 
         return view('backend.employer.settings.make_paid', [
 

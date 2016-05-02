@@ -278,7 +278,7 @@
         </div>
 
     </div>
-    @roles(['Employer'])
+
     @if (!empty($cmp_interest_map_info))
     <div class="box-body no-padding">
 
@@ -293,7 +293,7 @@
         </div>
     </div>
     @endif
-    @endauth
+
 
 
     @if(!empty($job_visitors_today))
@@ -427,7 +427,7 @@ $location = GeoIP::getLocation(Request::ip());
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBfE_cndXYeZfY4bK1R9LKq50YxicFVZF4
         &callback=initMap">
 </script>
-@roles(['Employer'])
+@roles(['Employer', 'Employer Staff'])
 @if (!empty($cmp_interest_map_info))
 <?php $latlong= explode("_",$latlong); ?>
 

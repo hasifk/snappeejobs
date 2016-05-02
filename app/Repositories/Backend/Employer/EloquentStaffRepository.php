@@ -3,6 +3,7 @@
 use App\Events\Backend\Account\UserCreated;
 use App\Models\Access\User\User;
 use App\Exceptions\GeneralException;
+use App\Models\Company\Company;
 use App\Repositories\Backend\Role\RoleRepositoryContract;
 use App\Repositories\Frontend\Auth\AuthenticationContract;
 use App\Exceptions\Backend\Access\User\UserNeedsRolesException;
@@ -361,8 +362,17 @@ class EloquentStaffRepository {
 		$user->password = $input['password'];
 		$user->gender = $input['gender'];
 		$user->dob = (!empty($input['dob'])) ? new Carbon($input['dob']) : '';
-		$user->country_id=auth()->user()->country_id;
-        $user->state_id=auth()->user()->state_id;
+        $companyAdmin1 = auth()->user()->company_id;
+        if($company=Company::find($companyAdmin1)):
+            $country_id=$company->country_id;
+            $state_id=$company->state_id;
+        else:
+            $country_id=auth()->user()->country_id;;
+            $state_id=auth()->user()->state_id;
+            endif;
+
+		$user->country_id=$country_id;
+        $user->state_id=$state_id;
 		$user->status = isset($input['status']) ? 1 : 0;
 		$user->confirmation_code = md5(uniqid(mt_rand(), true));
 		$user->confirmed = isset($input['confirmed']) ? 1 : 0;

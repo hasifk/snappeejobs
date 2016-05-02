@@ -66,6 +66,18 @@ return array(
                 'width'  => 620,
             ],
             [
+                'height' => 295,
+                'width'  => 297,
+            ],
+            [
+                'height' => 233,
+                'width'  => 390,
+            ],
+            [
+                'height' => 179,
+                'width'  => 295,
+            ],
+            [
                 'height' => 218,
                 'width'  => 295,
             ],
@@ -84,6 +96,10 @@ return array(
         ],
 
         'company_logo' => [
+            [
+                'height' => 282,
+                'width'  => 44,
+            ],
             [
                 'height' => 90,
                 'width'  => 90,

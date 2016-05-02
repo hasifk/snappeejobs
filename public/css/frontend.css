@@ -3397,7 +3397,7 @@ select.sort option {
 .video-thb .moreinfo {
     padding: 30px 20px 20px 30px;
 }
-.twitter-acc, .fbook-acc {
+.twitter-acc, .fbook-acc, .instagram-acc, .pinterest-acc {
     text-align: left;
     padding: 30px 30px 15px 30px;
     margin-bottom: 25px;
@@ -3408,7 +3408,13 @@ select.sort option {
 .fbook-acc {
     background: #405d9b;
 }
-.twitter-acc h3, .fbook-acc h3 {
+.instagram-acc {
+    background: #125688;
+}
+.pinterest-acc {
+    background: #bd081c;
+}
+.twitter-acc h3, .fbook-acc h3, .instagram-acc h3, .pinterest-acc h3 {
     color: #fff;
     margin: 0;
     font-size: 22px;
@@ -3423,6 +3429,12 @@ select.sort option {
     width: auto;
 }
 .fbook-acc img {
+    width: 25px;
+}
+.instagram-acc img {
+    width: 25px;
+}
+.pinterest-acc img {
     width: 25px;
 }
 .testimonial {
@@ -3713,6 +3725,9 @@ select.sort option {
 
 body.frontend .alert {
     margin-top:100px;
+}
+h1.company_detail {
+    margin-bottom: 0px;
 }
 .jssora05l, .jssora05r {
             display: block;

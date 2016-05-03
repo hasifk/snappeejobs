@@ -2912,14 +2912,14 @@ h5 {
     background: #3b5998;
     color: #fff;
 }
-.job-dtmenu ul li span {
+.job-dtmenu ul li a.active span {
     background: url('../images/dn-arrow.png') no-repeat center center;
     display: block;
     position: absolute;
     bottom: -6px;
     height: 6px;
     width: 13px;
-    margin-left: 2.25%;
+    margin-left: 1.25%;
 }
 .job-dtmenu.browse.browse input[type="text"] {
     margin-left: 0;

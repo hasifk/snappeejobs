@@ -276,6 +276,9 @@
                     <li class="{{ Active::pattern('admin/employeranalytics/uniquecompanyvisitors') }}">
                       <a href="{!! url('admin/employeranalytics/uniquecompanyvisitors') !!}">{{ 'Unique Company Visitors' }}</a>
                     </li>
+                      <li class="{{ Active::pattern('admin/employeranalytics/companyinterestmap') }}">
+                          <a href="{!! url('admin/employeranalytics/companyinterestmap') !!}">{{ 'Company Interest Map' }}</a>
+                      </li>
                   </ul>
                 </li>
                 @endauth

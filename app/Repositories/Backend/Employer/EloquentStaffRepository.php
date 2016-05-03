@@ -62,7 +62,7 @@ class EloquentStaffRepository {
 	public function getUsersPaginated($per_page, $status = 1, $order_by = 'users.id', $sort = 'asc') {
 		return User::join('staff_employer', 'staff_employer.user_id', '=', 'users.id')
             ->where('users.status', $status)
-            ->where('staff_employer.employer_id', auth()->user()->id)
+            ->where('staff_employer.employer_id', auth()->user()->employer_id)
             ->select(['users.*'])
             ->orderBy($order_by, $sort)
             ->paginate($per_page);

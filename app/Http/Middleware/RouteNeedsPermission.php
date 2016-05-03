@@ -18,7 +18,7 @@ class RouteNeedsPermission {
 	{
 		if (! access()->can($permission)){
 
-			Log::alert("Unauthorised access to route diverted.");
+			\Log::alert("Unauthorised access to route diverted.");
 
 			return redirect(route('backend.dashboard'))->withFlashDanger("You do not have access to do that.");
 

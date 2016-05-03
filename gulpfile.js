@@ -37,19 +37,19 @@ elixir(function(mix) {
                 'backend/main.js',
             ], 'public/js/frontend.js')
 
-        .sass([ // Process back-end stylesheets
-            'backend/main.scss',
-            'backend/skin.scss',
-            'backend/plugin/toastr/toastr.scss',
-            './resources/assets/js/select2/src/scss/core.scss',
-            './resources/assets/js/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.css',
-            './resources/assets/js/bootstrap-datepicker/dist/css/bootstrap-datepicker.css',
-            './resources/assets/js/Ionicons/scss/ionicons.scss',
-            'backend/plugin/select2/select2.scss',
-            './resources/assets/js/At.js/dist/css/jquery.atwho.css',
-            './resources/assets/js/owlcarousel/owl-carousel/owl.carousel.css',
-            './resources/assets/js/owlcarousel/owl-carousel/owl.theme.css'
-        ], 'resources/assets/css/backend/main.css')
+        //.sass([ // Process back-end stylesheets
+        //    'backend/main.scss',
+        //    'backend/skin.scss',
+        //    'backend/plugin/toastr/toastr.scss',
+        //    './resources/assets/js/select2/src/scss/core.scss',
+        //    './resources/assets/js/bootstrap3-wysihtml5-bower/dist/bootstrap3-wysihtml5.css',
+        //    './resources/assets/js/bootstrap-datepicker/dist/css/bootstrap-datepicker.css',
+        //    './resources/assets/js/Ionicons/scss/ionicons.scss',
+        //    'backend/plugin/select2/select2.scss',
+        //    './resources/assets/js/At.js/dist/css/jquery.atwho.css',
+        //    './resources/assets/js/owlcarousel/owl-carousel/owl.carousel.css',
+        //    './resources/assets/js/owlcarousel/owl-carousel/owl.theme.css'
+        //], 'resources/assets/css/backend/main.css')
         .styles([ // Combine pre-processed CSS files
                 'backend/main.css',
             ], 'public/css/backend.css')

@@ -20,16 +20,19 @@ class EmployerAnalyticsController extends Controller {
      * @var DashboardRepository
      */
     private $repository;
-    private $searchJobRepo;
+    private $jobRepository;
+    private $dashboard;
 
     /**
      * DashboardController constructor.
      * @param DashboardRepository $repository
      */
-    public function __construct(EmployerAnalyticsRepository $repository, EloquentJobRepository $jobRepository) {
+    public function __construct(EmployerAnalyticsRepository $repository, EloquentJobRepository $jobRepository,
+DashboardRepository $dashboard) {
 
         $this->repository = $repository;
         $this->jobRepository = $jobRepository;
+        $this->dashboard=$dashboard;
     }
 
     /**
@@ -145,6 +148,16 @@ class EmployerAnalyticsController extends Controller {
                 'company_unique_visitors' => $company_unique_visitors
             ];
             return view('backend.employeranalytics.emp_analytics_unq_cmp_visitors', $view);
+        }
+    }
+
+    /*     ********************************************************************************************************** */
+    public function companyInterestMap(Request $request) {
+        if (access()->hasRole('Employer', 'Employer Staff')) {
+            $view['cmp_interest_map_info'] = $this->dashboard->getCompanyInterestMapInfo();
+            $view['latlong'] =$this->dashboard->getLatLong();
+
+            return view('backend.employeranalytics.company_interest_map', $view);
         }
     }
 

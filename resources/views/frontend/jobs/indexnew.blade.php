@@ -229,37 +229,16 @@
                                             <div> <img src="{{env('APP_S3_URL') .$job->company->photos->first()->path . $job->company->photos->first()->filename . '620x412.' . $job->company->photos->first()->extension }}" /></div>
                                             {{--<div><img src="images/companies/thumbtack.jpg" /></div>--}}
                                         @endif
-                                        <div><a href="{{ route('jobs.view' , [ $job->company->url_slug , $job->title_url_slug ] ) }}"> <h2> {{ $job->title }}</h2></a></div>
-                                        <div><a href="{{ route('companies.view', ['slug' => $job->company->url_slug]) }}">
-                                                <h2>{{ str_studly($job->company->title) }}</h2></a></div>
-                                        <div> <a href="{{ route('jobs.search', ['level' => $job->level]) }}">
-                                                <p>{{ str_studly($job->level) }}</p>
-                                            </a></div>
-
-                                        <div>
-                                            @foreach($job->categories as $category)
-                                                <a href="{{ route('jobs.search', ['category' => $category->id]) }}">
-                                                    <p>{{ $category->name }}</p>
-                                                </a>
-                                            @endforeach
-                                        </div>
-                                        <div>
-                                            @foreach($job->skills as $skill)
-                                                <a href="{{ route('jobs.search', ['skill' => $skill->id]) }}">
-                                                    <p>{{ $skill->name }}</p>
-                                                </a>
-                                            @endforeach
-                                        </div>
-
-                                        <div>
-                                            <a href="{{ route('jobs.search', ['country' => $job->country_id]) }}">
-                                                <p> {{ $job->country->name }}</p></a>
-                                        </div>
-                                        <div>
-                                            <a href="{{ route('jobs.search', ['state' => $job->state_id]) }}">
-                                                <p>{{ $job->state->name }}</p>
-                                            </a>
-                                        </div>
+                                        <a href="{{ route('jobs.view' , [ $job->company->url_slug , $job->title_url_slug ] ) }}"> <h2> {{ $job->title }}</h2></a>
+                                        <a href="{{ route('companies.view', ['slug' => $job->company->url_slug]) }}">
+                                            <h5>{{ str_studly($job->company->title) }}</h5>
+                                        </a>
+                                        <p>
+                                            @foreach($job->categories as $category) {{ $category->name }} | @endforeach
+                                                | {{ str_studly($job->level) }}
+                                                | @foreach($job->skills as $skill) {{ $skill->name }} @endforeach
+                                                | {{ $job->country->name }} | {{ $job->state->name }}
+                                        </p>
                                     </div>
 
                                 @endforeach
@@ -269,9 +248,6 @@
                                             <ul class="pagination">
                                                 {!! $paginator->render() !!}
                                             </ul>
-                                        </div>
-                                        <div class="col-sm-5 text-right">
-                                            <a href="#" class="browse-btn">Browse more Jobs</a>
                                         </div>
 
                                     </div>

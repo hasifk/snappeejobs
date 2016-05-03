@@ -26,7 +26,7 @@
         @include('frontend.includes.alerts')
     </div>
 
-    <div class="container"  style="margin-top: 7%">
+    <div class="container">
         @include('includes.partials.messages')
     </div>
 

@@ -52,14 +52,14 @@ class EloquentJobRepository {
             if ( $request->get('categories') ) {
                 $searchObj = $searchObj->whereIn('category_preferences_jobs.job_category_id', $request->get('categories'));
             } else {
-                $searchObj = $searchObj->whereIn('category_preferences_jobs.job_category_id', $jobseeker_category_preferences);
+                //$searchObj = $searchObj->whereIn('category_preferences_jobs.job_category_id', $jobseeker_category_preferences);
             }
         }
         if ( $request->get('skills') || $jobseeker_skill_preferences ) {
             if ($request->get('skills')) {
                 $searchObj = $searchObj->whereIn('job_skills.skill_id', $request->get('skills'));
             } else {
-                $searchObj = $searchObj->whereIn('job_skills.skill_id', $jobseeker_skill_preferences);
+                //$searchObj = $searchObj->whereIn('job_skills.skill_id', $jobseeker_skill_preferences);
             }
         }
         if ( $request->get('country_id') ) {

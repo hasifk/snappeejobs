@@ -10,7 +10,6 @@
             <div class="col-md-8 col-sm-12 col-md-offset-2">
 
                 <div>
-                    <h1>Explore Jobs</h1>
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="@if(!request()->has('search')) active @endif"><a href="#browse_jobs" aria-controls="browse_jobs" role="tab" data-toggle="tab">Browse</a></li>
                         <li role="presentation" class="@if(request()->has('search')) active @endif"><a href="#search_jobs" aria-controls="search_jobs" role="tab" data-toggle="tab">Search and Filter</a></li>

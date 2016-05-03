@@ -45,7 +45,7 @@ class AdminCmsController extends Controller {
 
     public function SaveCms(CmsRequests $request) {
         $array['type'] = $request->type;
-        $array['heading']='Heading of "'.substr($request->heading,0,40).'..."';
+        $array['heading']='Heading of  " '.substr(strip_tags($request->heading),0,40).'..."';
         if ($request->has('id')):
             $array['event'] = 'updated';
 
@@ -79,7 +79,7 @@ class AdminCmsController extends Controller {
         $obj = $this->cmsRepository->find($id);
         $array['type'] = $obj->type;
         $array['event'] = 'deleted';
-        $array['heading']='Heading of "'.substr($obj->header,0,40).'..."';
+        $array['heading']='Heading of  " '.substr(strip_tags($obj->header),0,40).'..."';
         
         $name = $this->userlogs->getActivityDescriptionForEvent($array);
         Activity::log($name);
@@ -92,7 +92,7 @@ class AdminCmsController extends Controller {
         $obj = $this->cmsRepository->find($id);
         $array['type'] = $obj->type;
         $array['event'] = 'hide';
-         $array['heading']='Heading of "'.substr($obj->header,0,40).'..."';
+         $array['heading']='Heading of  " '.substr(strip_tags($obj->header),0,40).'..."';
         $name = $this->userlogs->getActivityDescriptionForEvent($array);
         Activity::log($name);
 
@@ -105,7 +105,7 @@ class AdminCmsController extends Controller {
         $obj = $this->cmsRepository->find($id);
         $array['type'] = $obj->type;
         $array['event'] = 'published';
-        $array['heading']='Heading of "'.substr($obj->header,0,40).'..."';
+        $array['heading']='Heading of  " '.substr(strip_tags($obj->header),0,40).'..."';
         $name = $this->userlogs->getActivityDescriptionForEvent($array);
         Activity::log($name);
 

@@ -5,21 +5,22 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use DB;
-class PaidCompany extends Command
+
+class PaidJob extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'snappeejobs:paidcompany';
+    protected $signature = 'snappeejobs:paidjob';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Reset paid status of companies';
+    protected $description = 'Reset paid status of jobs';
 
     /**
      * Create a new command instance.
@@ -38,7 +39,6 @@ class PaidCompany extends Command
      */
     public function handle()
     {
-        //
-        DB::table('companies')->where('paid_expiry','<',Carbon::now())->update(['paid' => 0]);
+        DB::table('jobs')->where('paid_expiry','<',Carbon::now())->update(['paid' => 0]);
     }
 }

@@ -38,8 +38,9 @@ DashboardRepository $dashboard) {
     /**
      * @return \Illuminate\View\View
      */
+
     public function interestedjobsanalytics(Request $request) {
-        if (access()->hasRole('Employer', 'Employer Staff')) {
+        if (access()->hasRoles(array('Employer', 'Employer Staff'))) {
 
             $interested_jobs = Job::join('like_jobs', 'like_jobs.job_id', '=', 'jobs.id')
                             ->join('users', 'users.id', '=', 'like_jobs.user_id')
@@ -60,7 +61,8 @@ DashboardRepository $dashboard) {
     /*     ********************************************************************************************************** */
 
     public function notinterestedjobsanalytics(Request $request) {
-        if (access()->hasRole('Employer', 'Employer Staff')) {
+
+        if (access()->hasRoles(array('Employer', 'Employer Staff'))) {
             $jobsResult = $this->jobRepository->getJobsPaginated($request, config('jobs.default_per_page'));
 
             $paginator = $jobsResult['paginator'];
@@ -77,7 +79,8 @@ DashboardRepository $dashboard) {
     /*     ********************************************************************************************************** */
 
     public function companyVisitors(Request $request) {
-        if (access()->hasRole('Employer', 'Employer Staff')) {
+
+        if (access()->hasRoles(array('Employer', 'Employer Staff'))) {
             $company_visitors = $this->repository->getTotalCmpVisitors($request);
             $view = [
                 'company_visitors' => $company_visitors,
@@ -89,7 +92,8 @@ DashboardRepository $dashboard) {
     /*     ********************************************************************************************************** */
 
     public function companyAuthVisitors(Request $request) {
-        if (access()->hasRole('Employer', 'Employer Staff')) {
+
+        if (access()->hasRoles(array('Employer', 'Employer Staff'))) {
             $company_auth_visitors = $this->repository->getTotalAuthCmpVisitors();
 
             $view = [
@@ -102,7 +106,8 @@ DashboardRepository $dashboard) {
     /*     ********************************************************************************************************** */
 
     public function jobVisitors(Request $request) {
-        if (access()->hasRole('Employer', 'Employer Staff')) {
+
+        if (access()->hasRoles(array('Employer', 'Employer Staff'))) {
             $job_visitors = $this->repository->getTotalJobVisitors();
 
             $view = [
@@ -115,7 +120,8 @@ DashboardRepository $dashboard) {
     /*     ********************************************************************************************************** */
 
     public function jobAuthVisitors(Request $request) {
-        if (access()->hasRole('Employer', 'Employer Staff')) {
+
+        if (access()->hasRoles(array('Employer', 'Employer Staff'))) {
             $job_auth_visitors = $this->repository->getTotalAuthJobVisitors();
 
             $view = [
@@ -128,7 +134,7 @@ DashboardRepository $dashboard) {
     /*     ********************************************************************************************************** */
 
     public function UniqueJobVisitors(Request $request) {
-        if (access()->hasRole('Employer', 'Employer Staff')) {
+        if (access()->hasRoles(array('Employer', 'Employer Staff'))) {
             $job_unique_visitors = $this->repository->getUniqueJobVisitors();
 
             $view = [
@@ -141,7 +147,7 @@ DashboardRepository $dashboard) {
     /*     ********************************************************************************************************** */
 
     public function UniqueCompanyVisitors(Request $request) {
-        if (access()->hasRole('Employer', 'Employer Staff')) {
+        if (access()->hasRoles(array('Employer', 'Employer Staff'))) {
             $company_unique_visitors = $this->repository->getUniqueCompanyVisitors();
 
             $view = [
@@ -153,7 +159,7 @@ DashboardRepository $dashboard) {
 
     /*     ********************************************************************************************************** */
     public function companyInterestMap(Request $request) {
-        if (access()->hasRole('Employer', 'Employer Staff')) {
+        if (access()->hasRoles(array('Employer', 'Employer Staff'))) {
             $view['cmp_interest_map_info'] = $this->dashboard->getCompanyInterestMapInfo();
             $view['latlong'] =$this->dashboard->getLatLong();
 

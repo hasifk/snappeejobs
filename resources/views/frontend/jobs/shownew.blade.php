@@ -99,9 +99,13 @@
 
                     @endauth
                     @endif
+                    @if(!empty($job_count))
+                    @if($job_count>1)
                     <div class="col-md-12">
                         <a href="{{ route('jobs.next', $job->id) }}" class="btn btn-primary">Next Job</a>
                     </div>
+                    @endif
+                    @endif
                     <!-- Modal Body -->
                     <div class="modal" id="jobApplicationModal" tabindex="-1" role="dialog" aria-labelledby="jobApplicationModalLabel">
                         <div class="modal-dialog" role="document">

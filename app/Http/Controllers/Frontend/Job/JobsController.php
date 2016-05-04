@@ -77,7 +77,7 @@ class JobsController extends Controller
             ->value('jobs.id');
 
         $job = Job::find($job_id);
-
+        $job_count=Job::count();
         if (!Session::get('job_visitor-info-stored')):
 
             $current_ip = $request->ip();
@@ -94,7 +94,8 @@ class JobsController extends Controller
         endif;
 
         $view = [
-            'job' => $job
+            'job' => $job,
+            'job_count'=>$job_count
         ];
 
         return view('frontend.jobs.show'.( env('APP_DESIGN') == 'new' ? 'new' : "" ), $view);

@@ -103,8 +103,7 @@ class JobsController extends Controller
     }
 
     public function next($jobId){
-        $slugs = \DB::table('jobs')
-            ->join('companies', 'companies.id', '=', 'jobs.company_id')
+        $slugs = Job::join('companies', 'companies.id', '=', 'jobs.company_id')
             ->where('jobs.id', '<>', $jobId)
             ->orderByRaw('RAND()')
             ->first(['jobs.title_url_slug', 'companies.url_slug']);

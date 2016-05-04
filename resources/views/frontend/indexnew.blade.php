@@ -521,7 +521,7 @@
 
         @if(auth()->guest())
         <div class="popcap text-center">
-            <a href="#">How  Snappeejobs Help Me?</a>
+            <a href="#">How  JustSnapIt® Help Me?</a>
         </div>
         <section class="container pr-logos">
             <div class="row">
@@ -550,7 +550,7 @@
             <div class="boxWrap">
                 <div class="boxImage applicant"></div>
                 <div class="boxContent">
-                    <h2>Snappeejobs<br />Better Jobs for Everyone</h2>
+                    <h2>JustSnapIt®<br />Better Jobs for Everyone</h2>
                     <p class="clearfix">We connect millions of aspiring job seekers
                         to world's best employers</p>
                     <div class="clearfix MB-30"></div>

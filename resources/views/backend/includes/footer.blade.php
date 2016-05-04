@@ -5,5 +5,5 @@
                 
             </div>
             <!-- Default to the left -->
-            <strong>Copyright &copy; {{ date('Y') }} <a href="/">SnappeeJobs</a>.</strong> {{ trans('strings.all_rights_reserved') }}
+            <strong>Copyright &copy; {{ date('Y') }} <a href="/">JustSnapIt®</a>.</strong> {{ trans('strings.all_rights_reserved') }}
           </footer>

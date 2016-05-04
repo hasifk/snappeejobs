@@ -56,10 +56,10 @@
             <div class="col-xs-12 footer-secs socialWrap">
                 <h3>Follow us</h3>
                 <ul>
-                    <li class="socials"><a href="http://www.facebook.com/"><img src="/images/facebook.png" />Facebook</a></li>
-                    <li class="socials"><a href="http://twitter.com/"><img src="/images/twitter.png" />Twitter</a></li>
+                    <li class="socials"><a href="https://www.facebook.com/JustSnapIt.Ltd"><img src="/images/facebook.png" />Facebook</a></li>
+                    <li class="socials"><a href="https://twitter.com/Just_SnapIt"><img src="/images/twitter.png" />Twitter</a></li>
                     <li class="socials"><a href="http://plus.google.com/"><img src="/images/gplus.png" />Google+</a></li>
-                    <li class="socials"><a href="http://www.linkedin.com/"><img src="/images/linkedin.png" />LinkedIn</a></li>
+                    <li class="socials"><a href=" https://www.linkedin.com/company/justsnapit®"><img src="/images/linkedin.png" />LinkedIn</a></li>
                 </ul>
             </div>
         </div>
@@ -68,5 +68,5 @@
 
 </footer>
 <div class="copyright">
-    <div class="container">© 2016 Snappeejobs LLC. All rights reserved</div>
+    <div class="container">© 2016 JustSnapIt® LLC. All rights reserved</div>
 </div>

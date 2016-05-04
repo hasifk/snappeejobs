@@ -21,6 +21,7 @@
         </div>
     </div>
 </div>
+@if(!empty($job))
 <section>
     <div class="bodycontent">
         <div class="container">
@@ -173,6 +174,7 @@
 
     </div>
 </section>
+    @endif
  @endsection
 @section('after-scripts-end')
     <script>

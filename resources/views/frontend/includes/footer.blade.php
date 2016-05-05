@@ -68,5 +68,5 @@
 
 </footer>
 <div class="copyright">
-    <div class="container">© 2016 JustSnapIt® LLC. All rights reserved</div>
+    <div class="container">© 2016 JustSnapIt<sup>®</sup> LLC. All rights reserved</div>
 </div>

@@ -521,7 +521,7 @@
 
         @if(auth()->guest())
         <div class="popcap text-center">
-            <a href="#">How  JustSnapIt® Help Me?</a>
+            <a href="#">How  JustSnapIt<sup>®</sup> Help Me?</a>
         </div>
         <section class="container pr-logos">
             <div class="row">

@@ -78,6 +78,16 @@ class JobsController extends Controller
 
         $job = Job::find($job_id);
         $job_count=Job::count();
+
+        $job_liked = false;
+
+        if ( auth()->user() ) {
+            $job_likes = \DB::table('like_jobs')->where('user_id', auth()->user()->id)->where('job_id', $job_id)->count();
+            if ( $job_likes ) {
+                $job_liked = true;
+            }
+        }
+
         if (!Session::get('job_visitor-info-stored')):
 
             $current_ip = $request->ip();
@@ -95,7 +105,8 @@ class JobsController extends Controller
 
         $view = [
             'job' => $job,
-            'job_count'=>$job_count
+            'job_count'=>$job_count,
+            'job_liked' => $job_liked
         ];
 
         return view('frontend.jobs.show'.( env('APP_DESIGN') == 'new' ? 'new' : "" ), $view);

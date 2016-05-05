@@ -63,7 +63,15 @@
     <div class="form-group">
         {!! Form::label('dob', "Date of Birth", ['class' => 'col-lg-2 control-label']) !!}
         <div class="col-lg-10">
-            {!! Form::text('dob', $user->dob, ['class' => 'form-control', 'placeholder' => "Date of Birth"]) !!}
+
+            <input
+                    class="form-control bootstrap-datepicker"
+                    placeholder="Date of Birth"
+                    name="dob"
+                    type="text"
+                    id="dob"
+                    value="{{ $user->dob }}"
+            >
         </div>
     </div>
 

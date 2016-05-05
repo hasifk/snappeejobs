@@ -78,7 +78,7 @@
                       
                       <li class="{{ Active::pattern('admin/newsfeeds/*') }}">
                         <a href="{!!url(route('backend.admin.newsfeeds'))!!}">
-                          <i class="fa fa-suitcase"></i>
+                          <i class="fa fa-rss"></i>
                               <span>
                                 {{ 'Newsfeeds' }}
                               </span>
@@ -86,7 +86,7 @@
                       </li>
                       <li class="{{ Active::pattern('admin/cms/*') }}">
                         <a href="{!!url(route('backend.admin.cms_lists'))!!}">
-                          <i class="fa fa-suitcase"></i>
+                          <i class="fa fa-file-text-o"></i>
                               <span>
                                 {{ 'Cms' }}
                               </span>

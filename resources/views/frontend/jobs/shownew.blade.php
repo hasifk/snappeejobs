@@ -1,39 +1,58 @@
 @extends('frontend.layouts.masternew')
 
+@section('after-styles-end')
+    <style>
+        .prerequisites-list-group li {
+            margin-bottom:20px !important;
+        }
+        .job-details p {
+            margin:10px 0 !important;
+        }
+    </style>
+@endsection
+
 @section('content')
-<div class="container">
-    <div class="browse job-dtmenu">
-        <div class="row">
-            <div class="col-sm-6">
-                <ul>
-                    <li><a href="#">Browse</a></li>
-                    <li style="width: auto;"><input type="text" name="" value="" placeholder="Search and Filter" /></li>
-                </ul>
-            </div>
-            <div class="col-sm-6">
-                <ul>
-                    <li><a href="#" class="active">About<span></span></a></li>
-                    <li><a href="#">Office</a></li>
-                    <li><a href="#">People</a></li>
-                    <li><a href="#">Jobs</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
 @if(!empty($job))
-<section>
+<section style="margin-top: 50px;">
     <div class="bodycontent">
         <div class="container">
-            <div class="row job-details">
+            <div class="job-view row job-details">
                 <div class="col-md-10 col-md-offset-1 companies">
-                    <h1>{{ $job->company->title }}</h1>
+                    <h1>
+                        {{ $job->company->title }}
+                        <span>
+                            @foreach($job->categories as $category)
+                                {{ $category->name }},
+                            @endforeach
+                            {{ $job->statename }},
+                            {{ $job->countryname }}
+                        </span>
+                    </h1>
                     <div class="boxWrap">
-                        <div class="boxImage" style="background-image:url(images/companies/square-space.jpg);"></div>
+                        @if ( $job->company->photos->count() )
+                            <?php $job_main_image = env('APP_S3_URL') .$job->company->photos->first()->path . $job->company->photos->first()->filename . '620x412.' . $job->company->photos->first()->extension; ?>
+                        @else
+                            <?php $job_main_image = 'https://placeholdit.imgix.net/~text?txtsize=28&txt=No image&w=640&h=412'; ?>
+                        @endif
+                        <div class="boxImage" style="background-image:url('{{ $job_main_image }}');"></div>
                         <div class="boxContent company-desc">
-                            @if ( $job->company->photos->count() )
-                            <img src="{{env('APP_S3_URL') .$job->company->photos->first()->path . $job->company->photos->first()->filename . '620x412.' . $job->company->photos->first()->extension }}"/>
-@endif
+                            @if($job->company->logo_image)
+                            <img style="width: 288px; height: 44px;;" src="{{ $job->company->logo_image }}" />
+                            @endif
+                            <p>{{ $job->company->description }}</p>
+                            <a style="color: #337ab7;" href="mailto:?Subject=Thought you'd like to see inside {{ $job->company->title }}&body=Hey! I recently discovered Just Snapt It!, which showcases cool companies and what it's like to work there. When I saw the profile of {{ $job->company->title }}, I thought of you. Hope you enjoy! It's at: {{ $job->company->url_slug }}">
+                                <img src="/images/mail-icon.png" />
+                                Send to a friend
+                            </a>
+                            @if(auth()->user())
+                                @roles(['User'])
+                            <a v-on:click="likeJob" href="#" class="btn-fav">
+                                <img class="likejob" src="/images/heart-{{ $job_liked ? 'icon' : 'grey' }}.png" />
+                            </a>
+                                @endauth
+                            @endif
+                            <br>
+                            <a style="color: #337ab7;" href="#" class="flag"><img src="/images/flag-down.png" /> Flag this job as down</a>
                         </div>
                     </div>
 
@@ -42,70 +61,35 @@
                     <h2>{{ $job->title }}</h2>
                     @if(auth()->user())
                     <div v-cloak v-show="!jobApplied" class="apply-button col-md-12">
-                        <button v-on:click="applyJob" class="btn btn-primary applyjob">Apply</button>
+                        <button v-on:click="applyJob" class="btn btn-primary applyjob">APPLY NOW</button>
                     </div>
-                    <div v-cloak v-show="jobApplied" class="job-applied alert alert-info" transition="expand">
+                    <div v-cloak v-show="jobApplied" style="margin-top: 25px;" class="job-applied alert alert-info" transition="expand">
                         <span>@{{ notificationText }}</span>
                     </div>
                     @endif
-                    <h3><strong>Info</strong></h3>
-                    <ul>
-                        <li>Level:-{{ str_studly($job->level) }}</li>
-                        <li>Country:-{{ $job->countryname }}</li>
-                        <li>State:-{{ $job->statename }}</li>
-                        <li>Posted:-{{ \Carbon\Carbon::parse($job->created_at)->diffForHumans() }}</li>
-                    </ul>
-                    <h3><strong>Categories</strong></h3>
-                    <ul>
-                        @foreach($job->categories as $category)
 
-                            <li> <span class="label label-default">
-                                    {{ $category->name }}
-                                </span></li>
-                            &nbsp;
-                        @endforeach
-                    </ul>
-                    <h3><strong>Skills</strong></h3>
-                    <ul>
-                        @foreach($job->skills as $skill)
+                    <br>
 
-                            <li> <span class="label label-default">
-                                    {{ $skill->name }}
-                                </span></li>
-                            &nbsp;
-                        @endforeach
-                    </ul>
-                    <h3><strong>Description</strong></h3>
-                    <p>{!! $job->description !!}</p>
-                    @if($job->prerequisites)
-                    <h3><strong>Prerequisites</strong></h3>
+                    {!! $job->description !!}
+
+                    <h3><strong>About This Job</strong></h3>
                     <div class="col-lg-8 about-job">
                         <ul>
-                            @foreach($job->prerequisites as $prerequisite)
-                            <li > {{ $prerequisite->content }}</li>
-                            @endforeach
+                            <li ><a href="#" class="level">{{ str_studly($job->level) }}</a></li>
+                            <li><a href="#" class="location">{{ $job->statename }}, {{ $job->countryname }}</a> </li>
+                            <li>
+                                <a href="#" class="document">
+                                    @foreach($job->categories as $category)
+                                        {{ $category->name }}&nbsp;
+                                    @endforeach
+                                </a>
+                            </li>
                         </ul>
                     </div>
-                    @endif
-                    @if(auth()->user())
-                    @roles(['User'])
-                        <h3><strong>Like this Job? </strong></h3>
-                    <div>
-                            <button class="btn btn-default" v-on:click="likeJob">
-                                <span class="glyphicon glyphicon-thumbs-up"></span>
-                                Like (@{{ jobLikes }})
-                            </button>
-                    </div>
+                    <a v-on:click="applyJob" href="#" class="btn-primary MB-60 applyjob">APPLY NOW</a>
+                    <a href="{{ route('jobs.next', $job->id) }}" class="btn-primary MB-60">NEXT JOB</a>
 
-                    @endauth
-                    @endif
-                    @if(!empty($job_count))
-                    @if($job_count>1)
-                    <div class="col-md-12">
-                        <a href="{{ route('jobs.next', $job->id) }}" class="btn btn-primary">Next Job</a>
-                    </div>
-                    @endif
-                    @endif
+
                     <!-- Modal Body -->
                     <div class="modal" id="jobApplicationModal" tabindex="-1" role="dialog" aria-labelledby="jobApplicationModalLabel">
                         <div class="modal-dialog" role="document">
@@ -128,9 +112,9 @@
 
                                     <div v-show="resumeUploaded && shouldShowPrerequisites && !jobApplied" class="form-horizontal">
                                         @if($job->prerequisites->count())
-                                            <ul class="list-group">
+                                            <ul class="prerequisites-list-group">
                                                 @foreach($job->prerequisites as $prerequisite)
-                                                    <li class="list-group-item">
+                                                    <li>
                                                         {{ $prerequisite->content }}
                                                     </li>
                                                 @endforeach
@@ -143,6 +127,7 @@
                                                     Yes, I agree that I qualify these prerequisite(s)
                                                 </label>
                                             </div>
+                                            <br>
                                         @endif
                                     </div>
 
@@ -222,6 +207,7 @@
                         success:function(data){
                             data = $.parseJSON(data);
                             JobView.jobLikes = Number(data.likes);
+                            $('img.likejob').attr('src', '/images/heart-icon.png');
                         }
                     });
 

@@ -24,6 +24,13 @@ trait UserAttribute {
             $this->attributes['password'] = $value;
     }
 
+/*    public function setDobAttribute($value){
+        if ( is_null($value) ) {
+            return  Carbon::now();
+        }
+        return Carbon::createFromFormat('d-m-Y h:i', $value);
+    }*/
+
     /**
      * @return string
      */
@@ -179,6 +186,8 @@ trait UserAttribute {
     public function getAgeAttribute(){
         return Carbon::parse($this->dob)->diffInYears();
     }
+
+
 
     public function getResumeAttribute(){
         $jobSeeker = JobSeeker::where('user_id', $this->id)->first();

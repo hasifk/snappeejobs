@@ -18,7 +18,9 @@
                 @endif
                 <li class="{{ Active::pattern(['/companies']) }}">{!! link_to('/companies', 'COMPANIES') !!}</li>
                 <li class="{{ Active::pattern(['/jobs']) }}">{!! link_to('/jobs', 'JOBS' ) !!}</li>
+                @role('Employer')
                 <li class="{{ Active::pattern(['/jobseekers']) }}">{!! link_to('/jobseekers', 'JOBSEEKERS' ) !!}</li>
+                @endauth
             </ul>
 
 

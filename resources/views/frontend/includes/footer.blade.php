@@ -1,7 +1,7 @@
 <section class="hm-contact">
     <div class="container">
         <div class="row text-center">
-            <div class="col-md-4 cnt-phone"><img src="/images/ic-hone.png" /> Tool Free <span>number</span>  555 444 777</div>
+            <div class="col-md-4 cnt-phone"><img src="/images/ic-hone.png" /> Toll Free <span>number</span>  555 444 777</div>
             <div class="col-md-4 cnt-phone cnt-support"><img src="/images/ic-hone.png" /> Support  547548 ( 954 )</div>
             <div class="col-md-4 cnt-email"><img src="/images/ic-email.png" /> Support  547548 ( 954 )</div>
         </div>
@@ -68,5 +68,5 @@
 
 </footer>
 <div class="copyright">
-    <div class="container">© 2016 JustSnapIt® LLC. All rights reserved</div>
+    <div class="container">© 2016 JustSnapIt<sup>®</sup> LLC. All rights reserved</div>
 </div>

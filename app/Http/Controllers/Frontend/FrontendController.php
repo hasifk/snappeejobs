@@ -103,7 +103,7 @@ class FrontendController extends Controller {
 			'job_categories' 	=> $job_categories,
 			'countries' 		=> $countries,
 			'states'    		=> $states,
-			'jobs_landing'    		=> $jobs_landing,
+			'jobs_landing'    	    => $jobs_landing,
 			'pref_jobs_landing'       =>$pref_jobs_landing,
 			'companies_landing'    =>$companies_landing,
 

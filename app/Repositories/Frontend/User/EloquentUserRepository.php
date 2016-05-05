@@ -251,7 +251,7 @@ class EloquentUserRepository implements UserContract {
 			'password' => null,
 			'no_password' => true,
 			'gender' => (!empty($data['gender'])) ? $data['gender'] : '',
-			'dob' => (!empty($data['dob'])) ? new Carbon($data['dob']) : '',
+			'dob' => (!empty($data['dob'])) ? new Carbon($data['dob']) : Carbon::now(),
 			'confirmation_code' => md5(uniqid(mt_rand(), true)),
 			'confirmed' => 0,
 		];

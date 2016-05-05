@@ -133,6 +133,7 @@ class EloquentStaffRepository {
 			//For whatever reason this just wont work in the above call, so a second is needed for now
 			$user->status = isset($input['status']) ? 1 : 0;
 			$user->confirmed = isset($input['confirmed']) ? 1 : 0;
+            $user->dob=(!empty($input['dob'])) ? new Carbon($input['dob']) : '';
 			$user->save();
 
 			$this->checkUserRolesCount($roles);

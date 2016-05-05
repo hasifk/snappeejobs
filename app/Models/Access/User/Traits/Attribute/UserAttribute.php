@@ -24,12 +24,17 @@ trait UserAttribute {
             $this->attributes['password'] = $value;
     }
 
-/*    public function setDobAttribute($value){
-        if ( is_null($value) ) {
-            return  Carbon::now();
-        }
-        return Carbon::createFromFormat('d-m-Y h:i', $value);
-    }*/
+    public function setDobAttribute($value){
+        if ( is_null($value) ) :
+            $this->attributes['dob'] = Carbon::now();
+
+        else:
+            $date=new \DateTime($value);
+            $this->attributes['dob']=$date->format('Y-m-d');
+           
+
+        endif;
+    }
 
     /**
      * @return string

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDislikeJobseekersTable extends Migration
+class CreateDislikeJobsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,15 +12,15 @@ class CreateDislikeJobseekersTable extends Migration
      */
     public function up()
     {
-        Schema::create('dislike_jobseekers', function (Blueprint $table) {
+        Schema::create('dislike_jobs', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('jobseeker_id')->unsigned();
+            $table->integer('job_id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->timestamps();
 
-            $table->foreign('jobseeker_id')
+            $table->foreign('job_id')
                 ->references('id')
-                ->on('job_seeker_details')
+                ->on('jobs')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->foreign('user_id')
@@ -38,11 +38,11 @@ class CreateDislikeJobseekersTable extends Migration
      */
     public function down()
     {
-        Schema::table('dislike_jobseekers', function (Blueprint $table) {
-            $table->dropForeign('dislike_jobseekers_jobseeker_id_foreign');
-            $table->dropForeign('dislike_jobseekers_user_id_foreign');
+        Schema::table('dislike_jobs', function (Blueprint $table) {
+            $table->dropForeign('dislike_jobs_job_id_foreign');
+            $table->dropForeign('dislike_jobs_user_id_foreign');
         });
 
-        Schema::drop('dislike_jobseekers');
+        Schema::drop('dislike_jobs');
     }
 }

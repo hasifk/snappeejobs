@@ -93,7 +93,7 @@
 
         $(document).ready(function(){
             socket.on('user.{{ auth()->user()->id }}:jobseekerchat-received', function(data){
-                $(".mail_messages").append('<div class="mailbox-read-message"><div class="row"><div class="col-md-1"><img style="height: 25px; width: 25px;" src="'+ data.message_details.image +'" alt="User"></div><div class="col-md-9">'+ data.message_details.last_message +'</div><div class="col-md-2">'+ data.message_details.was_created +'</div></div></div><hr>');
+                $(".mail_messages").append('<div class="mailbox-read-message"><div class="row"><div class="col-md-1"><img style="height: 25px; width: 25px;" src="'+ data.message_details.image +'" alt="User"></div><div class="col-md-9">'+ data.message_details.last_message_original +'</div><div class="col-md-2">'+ data.message_details.was_created +'</div></div></div><hr>');
             });
         });
 

@@ -185,6 +185,23 @@ class JobsController extends Controller
         return json_encode(['status'=>1,'dislikes'=>$likes]);
     }
 
+    public function flagJob(Request $request){
+        $jobId = $request->get('jobId');
+        $jobName=Job::where('id',$jobId)->pluck('title');
+        $array['type'] = 'JobSeeker';
+        $array['heading']='with Name:'.( auth()->user() ? auth()->user()->name : 'Guest' ).' flagged'.$jobName;
+
+        \DB::table('jobs')
+            ->where('id',$jobId)
+            ->increment('flags');
+
+        $array['event'] = 'flagged';
+        $name = $this->userLogs->getActivityDescriptionForEvent($array);
+        Activity::log($name);
+
+        return json_encode(['status'=>1]);
+    }
+
     public function applyJob(Requests\Frontend\Job\ApplyJob $request){
         $status = $this->jobRepository->applyJob(auth()->user(), Job::findOrFail($request->get('jobId')));
         $jobName=Job::where('id',$request->get('jobId'))->pluck('title');

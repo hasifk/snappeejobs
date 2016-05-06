@@ -61,7 +61,7 @@
                     <h2>{{ $job->title }}</h2>
                     @if(auth()->user())
                     <div v-cloak v-show="!jobApplied" class="apply-button col-md-12">
-                        <button v-on:click="applyJob" class="btn btn-primary applyjob">APPLY NOW</button>
+                        <button style="margin-bottom: 25px;" v-on:click="applyJob" class="btn btn-primary applyjob">APPLY NOW</button>
                     </div>
                     <div v-cloak v-show="jobApplied" style="margin-top: 25px;" class="job-applied alert alert-info" transition="expand">
                         <span>@{{ notificationText }}</span>
@@ -268,6 +268,20 @@
                 },
 
                 cancelJobApplication: function(event){
+                    var that = this;
+                    $.ajax({
+                        url : '/jobs/job/dislike',
+                        method  : 'post',
+                        data : {
+                            jobId:this.jobId,
+                            '_token' : $('meta[name=_token]').attr("content")
+                        },
+                        success:function(data){
+                            data = $.parseJSON(data);
+                            JobView.jobLikes = Number(data.likes);
+                            $('img.likejob').attr('src', '/images/heart-icon.png');
+                        }
+                    });
                     $("#jobApplicationModal").modal('toggle');
                     $('.applyjob').button('reset');
                 },

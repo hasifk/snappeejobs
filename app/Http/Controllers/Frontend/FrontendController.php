@@ -46,9 +46,7 @@ class FrontendController extends Controller {
 		$skills = \DB::table('skills')->select(['id', 'name'])->get();
 		$job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
 		$countries = \DB::table('countries')->select(['id', 'name'])->get();
-		$jobs_landing = Job::orderBy('likes', 'desc')->limit(6)->get();
 		$jobsResult = $this->indexRepository->getprefJobsPaginated($request, config('jobs.default_per_page'));
-
 		$pref_jobs_landing = $jobsResult['jobs_pref'];
 
 
@@ -60,6 +58,7 @@ class FrontendController extends Controller {
 			endif;
 		endif;
 
+		$jobs_landing = Job::whereNotIn('id', $pref_jobs_landing->pluck('id')->toArray())->orderBy('likes', 'desc')->limit(6)->get();
 
 		$companies_landing = Company::orderBy('followers', 'desc')->limit(6)->get();
 		if ( auth()->user() && (!empty(auth()->user()->job_seeker_details)) ) {
@@ -103,7 +102,7 @@ class FrontendController extends Controller {
 			'job_categories' 	=> $job_categories,
 			'countries' 		=> $countries,
 			'states'    		=> $states,
-			'jobs_landing'    		=> $jobs_landing,
+			'jobs_landing'    	    => $jobs_landing,
 			'pref_jobs_landing'       =>$pref_jobs_landing,
 			'companies_landing'    =>$companies_landing,
 

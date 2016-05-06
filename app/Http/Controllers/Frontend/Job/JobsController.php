@@ -155,6 +155,36 @@ class JobsController extends Controller
 
     }
 
+    public function dislikeJob(Request $request){
+        $jobId = $request->get('jobId');
+        $jobName=Job::where('id',$jobId)->pluck('title');
+        $array['type'] = 'JobSeeker';
+        $array['heading']='with Name:'.auth()->user()->name.' disliked'.$jobName;
+
+
+        if (! \DB::table('dislike_jobs')->where('job_id', $jobId)->where('user_id', auth()->user()->id)->count() ) {
+            \DB::table('dislike_jobs')->insert([
+                'job_id'    => $jobId,
+                'user_id'   => auth()->user()->id,
+                'created_at'    => Carbon::now(),
+                'updated_at'    => Carbon::now()
+            ]);
+            \DB::table('jobs')
+                ->where('id',$jobId)
+                ->increment('dislikes');
+        }
+
+        $likes = \DB::table('jobs')
+            ->where('id',$jobId)
+            ->value('dislikes');
+
+        $array['event'] = 'disliked';
+        $name = $this->userLogs->getActivityDescriptionForEvent($array);
+        Activity::log($name);
+
+        return json_encode(['status'=>1,'dislikes'=>$likes]);
+    }
+
     public function applyJob(Requests\Frontend\Job\ApplyJob $request){
         $status = $this->jobRepository->applyJob(auth()->user(), Job::findOrFail($request->get('jobId')));
         $jobName=Job::where('id',$request->get('jobId'))->pluck('title');

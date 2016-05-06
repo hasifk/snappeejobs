@@ -583,14 +583,16 @@
                     <div class="customers">
                         <div class="">
                             <div class="col-md-6 col-md-offset-3">
-                                <div class="col-xs-4 c-list"><img src="images/customer1.png" /></div>
-                                <div class="col-xs-4 c-list current">
-                                    <img src="images/customer2.png" />
-                                    <span><img src="images/qoute.png" /></span>
-                                    <h3>Kate Coghlan</h3>
-                                    <p>Art Director, Brick Media</p>
+                                <div class="row owl-carousel">
+                                    <div class="col-xs-4 c-list"><img src="images/customer1.png" /></div>
+                                    <div class="col-xs-4 c-list current">
+                                        <img src="images/customer2.png" />
+                                        <span><img src="images/qoute.png" /></span>
+                                        <h3>Kate Coghlan</h3>
+                                        <p>Art Director, Brick Media</p>
+                                    </div>
+                                    <div class="col-xs-4 c-list"><img src="images/customer3.png" /></div>
                                 </div>
-                                <div class="col-xs-4 c-list"><img src="images/customer3.png" /></div>
                             </div>
                         </div>
                     </div>
@@ -833,6 +835,27 @@
                     $('#state_id').html(listitems);
                 });
             });
+
+
+            $('.owl-carousel').owlCarousel({
+                loop:true,
+                nav:false,
+                autoplay:true,
+                autoplayTimeout:1000,
+                autoplayHoverPause:false,
+                responsive:{
+                    0:{
+                        items:3
+                    },
+                    600:{
+                        items:3
+                    },
+                    1000:{
+                        items:3
+                    }
+                }
+            })
+
         </script>
 
 </body>

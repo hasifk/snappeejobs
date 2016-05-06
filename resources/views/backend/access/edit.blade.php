@@ -86,7 +86,7 @@
                             id="dob"
                             value="{{ $user->dob }}"
                     >
-                    
+
                 </div>
             </div>
 

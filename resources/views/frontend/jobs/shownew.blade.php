@@ -60,12 +60,14 @@
                     <div class="clearfix"></div>
                     <h2>{{ $job->title }}</h2>
                     @if(auth()->user())
+                        @roles(['User'])
                     <div v-cloak v-show="!jobApplied" class="apply-button col-md-12">
                         <button style="margin-bottom: 25px;" v-on:click="applyJob" class="btn btn-primary applyjob">APPLY NOW</button>
                     </div>
                     <div v-cloak v-show="jobApplied" style="margin-top: 25px;" class="job-applied alert alert-info" transition="expand">
                         <span>@{{ notificationText }}</span>
                     </div>
+                        @endauth
                     @endif
 
                     <br>
@@ -86,7 +88,9 @@
                             </li>
                         </ul>
                     </div>
+                    @roles(['User'])
                     <a v-on:click="applyJob" href="#" class="btn-primary MB-60 applyjob">APPLY NOW</a>
+                    @endauth
                     <a href="{{ route('jobs.next', $job->id) }}" class="btn-primary MB-60">NEXT JOB</a>
 
 

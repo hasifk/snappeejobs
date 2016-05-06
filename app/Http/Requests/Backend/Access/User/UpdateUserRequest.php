@@ -29,7 +29,7 @@ class UpdateUserRequest extends Request {
 			'email'					=>	'required|email',
 			'name'					=>  'required',
 			'gender'                => 'required|in:male,female',
-			'age'                   => 'required|integer',
+			'dob'                   => 'required|date',
 		];
 	}
 }

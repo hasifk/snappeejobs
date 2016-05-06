@@ -36,6 +36,12 @@ trait UserAttribute {
         endif;
     }
 
+    public function getDobAttribute($value){
+
+        return Carbon::parse($value)->format('d/m/Y');
+
+    }
+
     /**
      * @return string
      */

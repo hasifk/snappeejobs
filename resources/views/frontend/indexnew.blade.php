@@ -587,7 +587,7 @@
                                             to wear to my first Chartbeat interview. All the advice just made the whole
                                             process less stressful.
                                         </p>
-                                        <img src="images/customer1.png"/>
+                                        <img style="width: 100px; height: 100px;" src="images/customer1.png"/>
                                         <h3>Kate Coghlan</h3>
                                         <p>Art Director, Brick Media</p>
                                     </div>
@@ -596,7 +596,7 @@
                                             to wear to my first Chartbeat interview. All the advice just made the whole
                                             process less stressful.
                                         </p>
-                                        <img src="images/customer2.png"/>
+                                        <img style="width: 100px; height: 100px;" src="images/customer2.png"/>
                                         <h3>Kate Coghlan</h3>
                                         <p>Art Director, Brick Media</p>
                                     </div>
@@ -605,7 +605,7 @@
                                             to wear to my first Chartbeat interview. All the advice just made the whole
                                             process less stressful.
                                         </p>
-                                        <img src="images/customer3.png"/>
+                                        <img style="width: 100px; height: 100px;" src="images/customer3.png"/>
                                         <h3>Kate Coghlan</h3>
                                         <p>Art Director, Brick Media</p>
                                     </div>
@@ -857,13 +857,11 @@
 
             $('.owl-carousel').owlCarousel({
                 loop:true,
-                nav:false,
-                autoplay:true,
-                autoplayTimeout:1000,
-                autoplayHoverPause:false,
+                margin:10,
+                nav:true,
                 responsive:{
                     0:{
-                        items:3
+                        items:1
                     }
                 }
             })

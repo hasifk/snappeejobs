@@ -53,7 +53,7 @@ class FrontendController extends Controller {
 		if(count($pref_jobs_landing)>0):
 			if(count($pref_jobs_landing)<4):
 				$joblimit=6-count($pref_jobs_landing);
-				$pref_jobs_landing1 = Job::orderBy('likes', 'desc')->limit($joblimit)->get();
+				$pref_jobs_landing1 = Job::orderBy('likes', 'desc')->limit($joblimit)->where('likes','>','0')->get();
 				$pref_jobs_landing=$pref_jobs_landing->merge($pref_jobs_landing1);
 			endif;
 		endif;

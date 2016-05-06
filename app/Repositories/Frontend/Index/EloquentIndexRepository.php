@@ -71,7 +71,7 @@ class EloquentIndexRepository {
         }
 
         if ( $request->get('pref_jobs') ) {
-            if ( auth()->user() && (!empty(auth()->user()->job_seeker_details)) ) {
+            if ( auth()->user() && (!empty(auth()->user()->job_seeker_details->id)) ) {
                 $searchObj1 = DB::table('job_seeker_details')
                     ->join('category_preferences_job_seeker', 'category_preferences_job_seeker.user_id', '=', 'job_seeker_details.id')
                     ->join('category_preferences_jobs', 'category_preferences_jobs.job_category_id', '=', 'category_preferences_job_seeker.job_category_id')

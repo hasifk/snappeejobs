@@ -22,6 +22,7 @@ class CreateJobsTable extends Migration
             $table->integer('state_id')->unsigned();
             $table->integer('likes')->unsigned();
             $table->integer('dislikes')->unsigned();
+            $table->integer('flags')->unsigned();
             $table->text('description');
             $table->boolean('status');
             $table->boolean('published')->default(false);

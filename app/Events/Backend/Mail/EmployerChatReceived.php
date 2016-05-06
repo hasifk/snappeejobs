@@ -34,6 +34,7 @@ class EmployerChatReceived extends Event implements ShouldBroadcast
         $this->message_details = new \stdClass();
 
         $this->message_details->{'last_message'} = str_limit($latest_message, 35);
+        $this->message_details->{'last_message_original'} = $latest_message;
         $this->message_details->{'image'} = User::find(auth()->user()->id)->getPictureAttribute(25, 25);
         $this->message_details->{'thread_id'} = $thread_id;
         $this->message_details->{'was_created'} = Carbon::parse($this->thread->updated_at)->diffForHumans();

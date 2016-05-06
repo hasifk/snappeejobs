@@ -211,7 +211,7 @@
                             @endforeach
 
                         @else
-                            <h3>No results found.</h3>
+                            <h3 style="margin-bottom: 100px;" class="text-center">No Companies found</h3>
                         @endif
 
                     </div>

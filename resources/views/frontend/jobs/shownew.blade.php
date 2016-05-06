@@ -52,7 +52,7 @@
                                 @endauth
                             @endif
                             <br>
-                            <a style="color: #337ab7;" href="#" class="flag"><img src="/images/flag-down.png" /> Flag this job as down</a>
+                            <a v-on:click="flagJob" style="color: #337ab7;" href="#" class="flag"><img src="/images/flag-down.png" /> Flag this job as down</a>
                         </div>
                     </div>
 
@@ -208,6 +208,22 @@
                             data = $.parseJSON(data);
                             JobView.jobLikes = Number(data.likes);
                             $('img.likejob').attr('src', '/images/heart-icon.png');
+                        }
+                    });
+
+                },
+
+                flagJob:function(event){
+                    var that = this;
+                    $.ajax({
+                        url : '/jobs/job/flag',
+                        method  : 'post',
+                        data : {
+                            jobId:this.jobId,
+                            '_token' : $('meta[name=_token]').attr("content")
+                        },
+                        success:function(data){
+                            swal('Flagged the job down.');
                         }
                     });
 

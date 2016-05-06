@@ -144,7 +144,9 @@
                                 <div class="col-md-4 company-desc">
 
                                     <div class="sidetop company-container">
+                                        @roles(['User'])
                                         <a class="followcompany" v-on:click="followCompany" href="#"><img src="/images/heart-{{ $followingStatus=='following' ? 'icon' : 'grey' }}.png" /></a>
+                                        @endauth
                                         <img style="width: 282px; height: 44px;;" src="{{ $company->logo_image }}" />
                                     </div>
 

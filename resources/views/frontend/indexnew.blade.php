@@ -209,35 +209,57 @@
             @if( auth()->guest() )
 
             <header style="display: block;">
-                    <div class="home-banner">
+                <div class="home-banner">
+                    <nav class="">
                         <div class="container">
-                            <div class="row">
-                                <div class="col-md-5 top-head">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                        data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                            </div>
+                            <div id="navbar" class="navbar-collapse collapse">
+                                <ul class="nav navbar-nav">
+                                    <li class="active"><a href="#">HOME</a></li>
+                                    <li><a href="/companies">EXPLORE</a></li>
+                                    <li><a href="/companies">COMPANIES</a></li>
+                                    <li><a href="/advice">GET ADVICE</a></li>
+                                    <li><a href="/employers">FOR EMPLOYERS</a></li>
+                                </ul>
+                                <ul class="nav navbar-nav navbar-right top-head">
                                     <a href="/employers">For Employers</a>
                                     <a href="/auth/login"> Sign In</a>
                                     <a href="/auth/register" class="signup-btn">Sign Up</a>
-                                </div>
+                                </ul>
                             </div>
-                            <div class="home-logo text-center"><img src="images/snap-logo.png" /></div>
-                            <h1>The best way to find a job</h1>
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <form v-on:submit.prevent="showModal($event)" action="" class="form-inline text-center">
-                                        <div class="form-group">
-                                            <label class="sr-only" for="">Your name</label>
-                                            <input v-model="name" type="text" class="form-control input-lg" id="name" placeholder="Your name">
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="sr-only" for="">Your email</label>
-                                            <input v-model="email" type="email" class="form-control input-lg" id="email" placeholder="Your email">
-                                        </div>
-                                        <button type="submit" class="btn btn-primary btn-lg">Sign up</button>
-                                    </form>
-                                </div>
+                        </div>
+                    </nav>
+                    <div class="container">
+                        <div class="home-logo text-center"><img src="images/snap-logo.png"/></div>
+                        <h1>The best way to find a job</h1>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <form v-on:submit.prevent="showModal($event)" action="" class="form-inline text-center">
+                                    <div class="form-group">
+                                        <label class="sr-only" for="">Your name</label>
+                                        <input v-model="name" type="text" class="form-control input-lg" id="name"
+                                               placeholder="Your name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="sr-only" for="">Your email</label>
+                                        <input v-model="email" type="email" class="form-control input-lg" id="email"
+                                               placeholder="Your email">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-lg">Sign up</button>
+                                </form>
                             </div>
-
                         </div>
                     </div>
+                    </nav>
+                </div>
             </header>
 
             @endif

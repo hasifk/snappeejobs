@@ -1538,3 +1538,51 @@ body.frontend .alert {
 h1.company_detail {
     margin-bottom: 0px;
 }
+
+.home-banner {
+    position: relative;
+}
+.home-banner nav {
+    background-color: transparent;
+    position: absolute;
+    z-index: 12;
+    width: 100%;
+
+}
+.home-banner .navbar-toggle .icon-bar {
+    background-color: #fff;
+}
+.home-banner .navbar-nav > li > a {
+    color: #fff;
+}
+.home-banner .nav > li > a:focus, .home-banner .nav > li > a:hover {
+    color: #000;
+}
+.top-head {
+    padding-top: 10px;
+}
+@media (max-width :767px) {
+    .top-head {
+        float: none;
+        text-align: left;
+        padding-top: 0;
+    }
+    .top-head a {
+        margin: 0;
+    }
+    .home-banner .top-head a.signup-btn {
+        text-align: center;
+    }
+}
+
+.owl-item {
+    text-align: center;
+}
+.owl-item h3 {
+    margin: 3px 0;
+    font-size: 16px;
+}
+.owl-item p {
+    font-size: 13px;
+    margin: 0 0 3px 0;
+}

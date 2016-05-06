@@ -15,14 +15,14 @@ elixir(function(mix) {
                 './resources/assets/js/bootstrap/dist/css/bootstrap.min.css',
                 './resources/assets/js/bootstrap/dist/css/bootstrap-theme.min.css',
                 './resources/assets/js/font-awesome/css/font-awesome.css',
+                './resources/assets/js/owl.carousel/dist/assets/owl.carousel.min.css',
+                './resources/assets/js/owl.carousel/dist/assets/owl.theme.default.min.css',
                 'frontend/style.css',
                 'frontend/photogallery.css',
                 './resources/assets/js/dropzone/dist/min/dropzone.min.css',
                 './resources/assets/js/select2/dist/css/select2.min.css',
                 './resources/assets/js/bootstrap-datepicker/dist/css/bootstrap-datepicker.css',
-                './resources/assets/js/sweetalert/dist/sweetalert.css',
-                './resources/assets/js/owl.carousel/dist/assets/owl.carousel.min.css',
-                './resources/assets/js/owl.carousel/dist/assets/owl.theme.default.min.css'
+                './resources/assets/js/sweetalert/dist/sweetalert.css'
             ], 'public/css/frontend.css')
         .scripts([ // Combine front-end scripts
                 'jquery/dist/jquery.min.js',

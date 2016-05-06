@@ -31,7 +31,7 @@ trait UserAttribute {
         else:
             $date=new \DateTime($value);
             $this->attributes['dob']=$date->format('Y-m-d');
-           
+
 
         endif;
     }

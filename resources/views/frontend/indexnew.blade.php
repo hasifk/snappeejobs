@@ -224,7 +224,7 @@
                             <div id="navbar" class="navbar-collapse collapse">
                                 <ul class="nav navbar-nav">
                                     <li class="active"><a href="#">HOME</a></li>
-                                    <li><a href="/companies">EXPLORE</a></li>
+                                    <li><a href="/jobs">EXPLORE</a></li>
                                     <li><a href="/companies">COMPANIES</a></li>
                                     <li><a href="/advice">GET ADVICE</a></li>
                                     <li><a href="/employers">FOR EMPLOYERS</a></li>
@@ -609,7 +609,7 @@
                                             to wear to my first Chartbeat interview. All the advice just made the whole
                                             process less stressful.
                                         </p>
-                                        <img style="width: 100px; height: 100px;" src="images/customer1.png"/>
+                                        <img style="width: 100px; height: 100px; margin: 0 auto;" src="images/customer1.png"/>
                                         <h3>Kate Coghlan</h3>
                                         <p>Art Director, Brick Media</p>
                                     </div>
@@ -618,7 +618,7 @@
                                             to wear to my first Chartbeat interview. All the advice just made the whole
                                             process less stressful.
                                         </p>
-                                        <img style="width: 100px; height: 100px;" src="images/customer2.png"/>
+                                        <img style="width: 100px; height: 100px; margin: 0 auto;" src="images/customer2.png"/>
                                         <h3>Kate Coghlan</h3>
                                         <p>Art Director, Brick Media</p>
                                     </div>
@@ -627,7 +627,7 @@
                                             to wear to my first Chartbeat interview. All the advice just made the whole
                                             process less stressful.
                                         </p>
-                                        <img style="width: 100px; height: 100px;" src="images/customer3.png"/>
+                                        <img style="width: 100px; height: 100px; margin: 0 auto;" src="images/customer3.png"/>
                                         <h3>Kate Coghlan</h3>
                                         <p>Art Director, Brick Media</p>
                                     </div>

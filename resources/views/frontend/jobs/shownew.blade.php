@@ -46,7 +46,9 @@
                             </a>
                             @if(auth()->user())
                                 @roles(['User'])
-                            <a v-on:click="likeJob" href="#" class="btn-fav">
+
+
+                            <a  v-on:click="likeJob"  href="#" class="btn-fav">
                                 <img class="likejob" src="/images/heart-{{ $job_liked ? 'icon' : 'grey' }}.png" />
                             </a>
                                 @endauth
@@ -211,11 +213,18 @@
                         success:function(data){
                             data = $.parseJSON(data);
                             JobView.jobLikes = Number(data.likes);
+                            if(data.toggle=='liked')
+                            {
                             $('img.likejob').attr('src', '/images/heart-icon.png');
+                            }
+                            else {
+                                $('img.likejob').attr('src', '/images/heart-grey.png');
+                            }
                         }
                     });
 
                 },
+
 
                 flagJob:function(event){
                     var that = this;

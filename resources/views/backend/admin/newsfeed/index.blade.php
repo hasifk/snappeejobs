@@ -21,14 +21,20 @@
         </tr>
     </thead>
     <tbody>
-        <?php $f = 1; ?>
-        @foreach ($newsfeeds as $newsfeed)
+    <?php $f = 1; ?>
+    @foreach ($newsfeeds as $newsfeed)
+        <?php $newsfed=strip_tags($newsfeed->news); ?>
         <tr>
             <td>{{ $f++ }}</td>
-            <td><?php echo strip_tags($newsfeed->news); ?></td>
+            <td><?php
+                if(strlen($newsfed)>100)
+                    echo substr($newsfed,0,100)."...";
+                else
+                    echo $newsfed;
+                ?></td>
             <td>{!! $newsfeed->action_buttons !!}</td>
         </tr>
-        @endforeach
+    @endforeach
     </tbody>
 </table>
 <div class="pull-left">

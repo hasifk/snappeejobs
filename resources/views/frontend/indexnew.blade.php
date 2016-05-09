@@ -223,16 +223,14 @@
                             </div>
                             <div id="navbar" class="navbar-collapse collapse">
                                 <ul class="nav navbar-nav">
-                                    <li class="active"><a href="#">HOME</a></li>
+                                    <li class="active"><a href="/">HOME</a></li>
                                     <li><a href="/jobs">EXPLORE</a></li>
                                     <li><a href="/companies">COMPANIES</a></li>
                                     <li><a href="/advice">GET ADVICE</a></li>
-                                    <li><a href="/employers">FOR EMPLOYERS</a></li>
                                 </ul>
                                 <ul class="nav navbar-nav navbar-right top-head">
                                     <a href="/employers">For Employers</a>
                                     <a href="/auth/login"> Sign In</a>
-                                    <a href="/auth/register" class="signup-btn">Sign Up</a>
                                 </ul>
                             </div>
                         </div>

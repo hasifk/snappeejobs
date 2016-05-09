@@ -223,16 +223,14 @@
                             </div>
                             <div id="navbar" class="navbar-collapse collapse">
                                 <ul class="nav navbar-nav">
-                                    <li class="active"><a href="#">HOME</a></li>
+                                    <li class="active"><a href="/">HOME</a></li>
                                     <li><a href="/jobs">EXPLORE</a></li>
                                     <li><a href="/companies">COMPANIES</a></li>
                                     <li><a href="/advice">GET ADVICE</a></li>
-                                    <li><a href="/employers">FOR EMPLOYERS</a></li>
                                 </ul>
                                 <ul class="nav navbar-nav navbar-right top-head">
                                     <a href="/employers">For Employers</a>
                                     <a href="/auth/login"> Sign In</a>
-                                    <a href="/auth/register" class="signup-btn">Sign Up</a>
                                 </ul>
                             </div>
                         </div>
@@ -553,18 +551,16 @@
             </div>
             <div class="row">
                 <div class="cl-logos">
-                    <img src="images/lg-amazon.png" />
-                    <img src="images/lg-uber.png" />
-                    <img src="images/lg-microsoft.png" />
-                    <img src="images/lg-google.png" />
-                    <img src="images/lg-yahoo.png" />
-                    <img src="images/lg-flipkart.png" />
-                    <img src="images/lg-cadburry.png" />
-                    <img src="images/lg-boss.png" />
-                    <img src="images/lg-fujifilm.png" />
-                    <img src="images/lg-fedex.png" />
-                    <img src="images/lg-vaio.png" />
-                    <img src="images/lg-comcast.png" />
+                    <img src="images/Company1.png" />
+                    <img src="images/Company2.png" />
+                    <img src="images/Company3.png" />
+                    <img src="images/Company4.png" />
+                    <img src="images/Company5.png" />
+                    <img src="images/Company6.png" />
+                    <img src="images/Company7.png" />
+                    <img src="images/Company8.png" />
+                    <img src="images/Company9.png" />
+                    <img src="images/Company10.png" />
                 </div>
             </div>
         </section>

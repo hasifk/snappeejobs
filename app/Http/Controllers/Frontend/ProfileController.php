@@ -517,6 +517,23 @@ class ProfileController extends Controller {
 		return view('frontend.user.profile.images' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ));
 	}
 
+	public function getimages(){
+		$jobSeeker = auth()->user()->jobseeker_details;
+		$jobSeekerObj = JobSeeker::find($jobSeeker->id);
+		$images = [];
+
+		foreach ($jobSeekerObj->images as $image) {
+			$images[] = [
+				'filename' 	=> $image->filename,
+				'path' 		=> $image->path,
+				'extension' => $image->extension,
+				'image'		=> $image->image,
+				'size' 		=> Storage::size($image->path.$image->filename.'.'.$image->extension)
+			];
+		}
+		return response()->json($images);
+	}
+
 	public function uploadImages(ProfileImagesUploadRequest $request){
         $array['type'] = 'Image';
         $array['heading']='has been Uploaded';
@@ -582,15 +599,21 @@ class ProfileController extends Controller {
 			->where('extension', $request->get('extension'));
 
 		if ( $imageObject->count() ) {
+
 			Storage::delete(
 				$request->get('path').
 				$request->get('filename').
 				'.'.
 				$request->get('extension')
 			);
+
 			$imageObject->delete();
 
 			$this->users->updateProfileCompleteness(auth()->user());
+
+			foreach (config('image.thumbnails.jobseeker_images') as $image) {
+				\Storage::delete($request->get('path').$request->get('filename').$image['width'].'x'.$image['height'].'.'.$request->get('extension'));
+			}
 
 			return response()->json(['status' => 1]);
 		} else {

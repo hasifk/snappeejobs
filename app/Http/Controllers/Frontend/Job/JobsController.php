@@ -128,7 +128,7 @@ class JobsController extends Controller
 
         $jobId = $request->get('jobId');
         $jobName=Job::where('id',$jobId)->pluck('title');
-
+        $ev='liked';
 
 
         if (! \DB::table('like_jobs')->where('job_id', $jobId)->where('user_id', auth()->user()->id)->count() ) {
@@ -148,7 +148,7 @@ class JobsController extends Controller
                     ->where('id',$jobId)
                     ->decrement('dislikes');
             }
-            $ev='liked';
+
         }
         if (! \DB::table('dislike_jobs')->where('job_id', $jobId)->where('user_id', auth()->user()->id)->count() ) {
                 \DB::table('dislike_jobs')->insert([
@@ -175,7 +175,7 @@ class JobsController extends Controller
             ->value('likes');
 
         $array['type'] = 'JobSeeker';
-        $array['heading']='with Name:'.auth()->user()->name.$ev.$jobName;
+        $array['heading']='with Name:'.auth()->user()->name.' '.$ev.' '.$jobName;
         $array['event'] = $ev;
         $name = $this->userLogs->getActivityDescriptionForEvent($array);
         Activity::log($name);

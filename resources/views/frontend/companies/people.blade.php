@@ -1,8 +1,8 @@
-@extends('frontend.layouts.master')
+@extends('frontend.layouts.masternew')
 
 @section('content')
 
-<div class="col-md-3 col-md-offset-1">
+<div class="col-md-3 col-md-offset-1" style="margin-top: 7%; margin-bottom: 50px;">
     <h2>
         <a href="/companies/{{ $company->url_slug }}">{{ $company->title }}</a>
     </h2>

@@ -12,15 +12,16 @@
         </div>
         <div id="navbar" class="notifications-header navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="{{ Active::pattern(['/home', '/']) }}">{!! link_to('/', 'HOME') !!}</li>
+                <li class="{{ Active::pattern(['home', '/']) }}">{!! link_to('/', 'HOME') !!}</li>
                 @if ( !access()->hasRole('User'))
-                    <li class="{{ Active::pattern(['/employers']) }}">{!! link_to('/employers', 'EMPLOYERS') !!}</li>
+                    <li class="{{ Active::pattern(['employers']) }}">{!! link_to('/employers', 'EMPLOYERS') !!}</li>
                 @endif
-                <li class="{{ Active::pattern(['/companies']) }}">{!! link_to('/companies', 'COMPANIES') !!}</li>
-                <li class="{{ Active::pattern(['/jobs']) }}">{!! link_to('/jobs', 'JOBS' ) !!}</li>
+                <li class="{{ Active::pattern(['companies', 'companies*']) }}">{!! link_to('/companies', 'COMPANIES') !!}</li>
+                <li class="{{ Active::pattern(['jobs', 'job*']) }}">{!! link_to('/jobs', 'JOBS' ) !!}</li>
                 @role('Employer')
-                <li class="{{ Active::pattern(['/jobseekers']) }}">{!! link_to('/jobseekers', 'JOBSEEKERS' ) !!}</li>
+                <li class="{{ Active::pattern(['jobseekers']) }}">{!! link_to('/jobseekers', 'JOBSEEKERS' ) !!}</li>
                 @endauth
+                <li class="{{ Active::pattern(['get-advice']) }}">{!! link_to('/get-advice', 'GET ADVICE' ) !!}</li>
             </ul>
 
 

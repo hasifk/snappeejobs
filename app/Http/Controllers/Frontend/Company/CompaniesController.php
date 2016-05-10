@@ -131,7 +131,7 @@ class CompaniesController extends Controller
         }
      else
         {
-         CompanyFollowers::where('user_id',auth()->user()->id)->delete();
+         CompanyFollowers::where('user_id',auth()->user()->id)->where('company_id',$companyId)->delete();
          Company::where('id',$companyId)->decrement('followers');
 
             $followerStatus='Follow';

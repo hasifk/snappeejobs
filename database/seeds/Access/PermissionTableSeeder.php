@@ -732,6 +732,17 @@ class PermissionTableSeeder extends Seeder {
 		 * Project and Tasks
 		 */
 
+		$permission_model = config('access.permission');
+		$createBlog = new $permission_model;
+		$createBlog->name = 'create-blog';
+		$createBlog->display_name = 'Create Blog';
+		$createBlog->system = true;
+		$createBlog->group_id = 7;
+		$createBlog->sort = 8;
+		$createBlog->created_at = Carbon::now();
+		$createBlog->updated_at = Carbon::now();
+		$createBlog->save();
+
 		if(env('DB_DRIVER') == 'mysql')
 			DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 	}

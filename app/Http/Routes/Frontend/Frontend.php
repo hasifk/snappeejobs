@@ -28,6 +28,8 @@ $router->group(['middleware' => 'auth'], function ()
 	post('profile/videos', 'ProfileController@uploadVideos')->name('frontend.profile.upload_videos');
 	post('profile/videolinks', 'ProfileController@storeVideoLinks')->name('frontend.profile.store_video_links');
 	get('profile/images', 'ProfileController@images')->name('frontend.profile.images');
+	get('profile/getimages', 'ProfileController@getimages')->name('frontend.profile.getimages');
+	get('profile/deleteimage', 'ProfileController@deleteImage')->name('frontend.profile.deleteimage');
 	post('profile/images', 'ProfileController@uploadImages')->name('frontend.profile.upload_images');
 	post('profile/delete_images', 'ProfileController@deleteImage')->name('frontend.profile.delete_images');
 	get('profile/socialmedia', 'ProfileController@socialmedia')->name('frontend.profile.socialmedia');

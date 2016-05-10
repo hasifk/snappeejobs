@@ -42,17 +42,20 @@
                     maxFilesize: 5,
                     init: function() {
                         var thisDropZone = this;
-                        var imageData = '';
-                        $.each(profile_images, function(key, value){
-                            var mockFile = {
-                                name: value.filename+'.'+value.extension,
-                                size: value.size,
-                                filename: value.filename,
-                                path: value.path,
-                                extension: value.extension
-                            };
-                            thisDropZone.options.addedfile.call(thisDropZone, mockFile);
-                            thisDropZone.options.thumbnail.call(thisDropZone, mockFile, value.image);
+
+                        $.get('/profile/getimages', function(data) {
+                            $.each(data, function(key,value){
+                                var mockFile = {
+                                    name: value.filename+'.'+value.extension,
+                                    size: value.size,
+                                    filename: value.filename,
+                                    path: value.path,
+                                    extension: value.extension
+                                };
+
+                                thisDropZone.options.addedfile.call(thisDropZone, mockFile);
+                                thisDropZone.options.thumbnail.call(thisDropZone, mockFile, value.image);
+                            })
                         });
                     },
                     accept: function (file, done) {

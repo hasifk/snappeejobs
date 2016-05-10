@@ -56,6 +56,15 @@ class RoleTableSeeder extends Seeder {
 		$user->updated_at = Carbon::now();
 		$user->save();
 
+		// Blog Writers
+		$role_model = config('access.role');
+		$user = new $role_model;
+		$user->name = 'Blogger';
+		$user->sort = 5;
+		$user->created_at = Carbon::now();
+		$user->updated_at = Carbon::now();
+		$user->save();
+
 		if(env('DB_DRIVER') == 'mysql')
 			DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 	}

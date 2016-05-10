@@ -84,6 +84,10 @@ public function getActivityDescriptionForEvent($eventName)
     {
         return $eventName['type'] .' liked-The '.$eventName['type'].' '.$eventName['heading'].'-'.$author;
     }
+    if ($eventName['event'] == 'disliked')
+    {
+        return $eventName['type'] .' disliked-The '.$eventName['type'].' '.$eventName['heading'].'-'.$author;
+    }
     if ($eventName['event'] == 'job application status change to applied')
     {
         return $eventName['type'] .' status changed-The '.$eventName['type'].' '.$eventName['heading'].'-'.$author;

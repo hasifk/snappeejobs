@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Frontend\Job;
 
+use App\Models\Job\DisLikeJobs;
 use App\Models\Job\Job;
+use App\Models\Job\LikeJobs;
 use App\Models\JobSeeker\JobSeeker;
 use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use App\Repositories\Frontend\Job\EloquentJobRepository;
@@ -126,8 +128,7 @@ class JobsController extends Controller
 
         $jobId = $request->get('jobId');
         $jobName=Job::where('id',$jobId)->pluck('title');
-        $array['type'] = 'JobSeeker';
-        $array['heading']='with Name:'.auth()->user()->name.' liked'.$jobName;
+        $ev='liked';
 
 
         if (! \DB::table('like_jobs')->where('job_id', $jobId)->where('user_id', auth()->user()->id)->count() ) {
@@ -140,18 +141,46 @@ class JobsController extends Controller
             \DB::table('jobs')
                 ->where('id',$jobId)
                 ->increment('likes');
+            if (\DB::table('dislike_jobs')->where('job_id', $jobId)->where('user_id', auth()->user()->id)->count() )
+            {
+                DisLikeJobs::where('job_id', $jobId)->where('user_id', auth()->user()->id)->delete();
+                \DB::table('jobs')
+                    ->where('id',$jobId)
+                    ->decrement('dislikes');
+            }
+
         }
+        if (! \DB::table('dislike_jobs')->where('job_id', $jobId)->where('user_id', auth()->user()->id)->count() ) {
+                \DB::table('dislike_jobs')->insert([
+                    'job_id'    => $jobId,
+                    'user_id'   => auth()->user()->id,
+                    'created_at'    => Carbon::now(),
+                    'updated_at'    => Carbon::now()
+                ]);
+                \DB::table('jobs')
+                    ->where('id',$jobId)
+                    ->increment('dislikes')
+                    ->decrement('likes');
+            if (\DB::table('like_jobs')->where('job_id', $jobId)->where('user_id', auth()->user()->id)->count() )
+            {
+
+                LikeJobs::where('job_id',$jobId)->where('user_id', auth()->user()->id)->delete();
+            }
+                $ev='disliked';
+            }
+
 
         $likes = \DB::table('jobs')
             ->where('id',$jobId)
             ->value('likes');
 
-
-        $array['event'] = 'liked';
+        $array['type'] = 'JobSeeker';
+        $array['heading']='with Name:'.auth()->user()->name.' '.$ev.' '.$jobName;
+        $array['event'] = $ev;
         $name = $this->userLogs->getActivityDescriptionForEvent($array);
         Activity::log($name);
 
-        return json_encode(['status'=>1,'likes'=>$likes]);
+        return json_encode(['status'=>1,'likes'=>$likes,'toggle'=>$ev]);
 
     }
 

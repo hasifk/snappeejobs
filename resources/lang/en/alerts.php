@@ -40,6 +40,10 @@ return [
         'updated_password' => "The user's password was successfully updated.",
         'confirmation_email' => 'A new confirmation e-mail has been sent to the address on file.'
 
+    ],
+    'blogger' => [
+        'created' => 'The blogger was successfully created.',
+
     ]
 
 ];

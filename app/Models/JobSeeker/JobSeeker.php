@@ -51,5 +51,9 @@ class JobSeeker extends Model
     public function images(){
         return $this->hasMany('App\Models\JobSeeker\JobSeekerImage', 'user_id');
     }
+    public function role(){
+        return $this->hasOne('App\Models\Access\Role\AssignedRoles','user_id', 'user_id');
+    }
+
 
 }

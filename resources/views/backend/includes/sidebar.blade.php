@@ -175,6 +175,27 @@
                 @endauth
                 @endauth
 
+                  @roles(['Administrator'])
+                  <li class="{{ Active::pattern('admin/bloggers') }} treeview">
+                      <a href="#">
+                          <i class="fa fa-file-text-o"></i>
+                        <span>
+                          Bloggers
+                        </span>
+                      </a>
+                      <ul class="treeview-menu {{ Active::pattern('admin/bloggers/*', 'menu-open') }}"
+                          style="display: none; {{ Active::pattern('admin/employer/mail/*', 'display: block;') }}">
+
+                  <li class="{{ Active::pattern('admin/bloggers/*') }}">
+                      <a href="{!!url(route('backend.createbloggers'))!!}">{{ 'Create Blogger' }}</a>
+                  </li>
+                          <li class="{{ Active::pattern('admin/availablebloggers/*') }}">
+                              <a href="{!!url(route('backend.availablebloggers'))!!}">{{ 'Available Bloggers' }}</a>
+                          </li>
+                  </ul>
+                  </li>
+                  @endauth
+
                 @roles(['Employer', 'Employer Staff'])
                   @permission('mail-view-private-messages')
                     <li class="{{ Active::pattern('admin/employer/mail/dashboard') }} treeview">

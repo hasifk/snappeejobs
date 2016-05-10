@@ -27,5 +27,9 @@ get('employeranalytics/companyinterestmap', 'EmployerAnalyticsController@company
 get('socialmediafeeds/addtwitterinfo', 'SocialMediaFeedsController@addtwitterinfo')->name('backend.addtwitterinfo');
 post('socialmediafeeds/storetwitterinfo', 'SocialMediaFeedsController@storetwitterinfo')->name('backend.storetwitterinfo');
 get('socialmediafeeds/twitterfeeds', 'SocialMediaFeedsController@twitterfeeds')->name('backend.twitterfeeds');
+get('bloggers/createblogger', 'BloggerController@createBlogger')->name('backend.createbloggers');
+post('bloggers/storeblogger', 'BloggerController@storeBlogger')->name('backend.storebloggers');
+get('bloggers/availablebloggers', 'BloggerController@availableBloggers')->name('backend.availablebloggers');
+
 
 

@@ -1,8 +1,8 @@
 @extends('frontend.layouts.masternew')
 
-@section('search_div')
+@section('content')
 
-    <div class="container com-search margin-top" style="margin-top: 7%">
+    <div class="container com-search margin-top" style="margin-top: 7%;  margin-bottom: 50px;">
         @if(!empty($contact))
             <div class="row">
                 <h3>{{$contact->header}}</h3>

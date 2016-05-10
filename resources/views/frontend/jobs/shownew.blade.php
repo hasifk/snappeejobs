@@ -60,7 +60,7 @@
 
 
                     <div class="clearfix"></div>
-                    <h2>{{ $job->title }}</h2>
+                    <h2 style="margin-left: 15px;">{{ $job->title }}</h2>
                     @if(auth()->user())
                         @roles(['User'])
                     <div v-cloak v-show="!jobApplied" class="apply-button col-md-12">
@@ -74,9 +74,9 @@
 
                     <br>
 
-                    {!! $job->description !!}
+                    <div style="margin-left: 15px;">{!! $job->description !!}</div>
 
-                    <h3><strong>About This Job</strong></h3>
+                    <h3 style="margin-left: 15px;"><strong>About This Job</strong></h3>
                     <div class="col-lg-8 about-job">
                         <ul>
                             <li ><a href="#" class="level">{{ str_studly($job->level) }}</a></li>

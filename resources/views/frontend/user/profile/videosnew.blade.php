@@ -34,9 +34,50 @@
 
                         @if(!empty($videolink))
                             @if($videolink->vimeo_id!=Null)
-                                <iframe  style="max-width: 100%;" src="https://player.vimeo.com/video/{{$videolink->vimeo_id}}?title=0&byline=0&portrait=0"  frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+                                <style>
+                                    .embed-container {
+                                        position: relative;
+                                        padding-bottom: 56.25%;
+                                        height: 0;
+                                        overflow: hidden;
+                                        max-width: 100%;
+                                    }
+                                    .embed-container iframe, .embed-container object, .embed-container embed {
+                                        position: absolute;
+                                        top: 0;
+                                        left: 0;
+                                        width: 100%;
+                                        height: 100%;
+                                    }
+                                </style>
+                                <div class='embed-container'>
+                                    <iframe src='http://player.vimeo.com/video/{{$videolink->vimeo_id}}'
+                                            frameborder='0'
+                                            webkitAllowFullScreen
+                                            mozallowfullscreen
+                                            allowFullScreen
+                                    ></iframe>
+                                </div>
                             @else
-                                <iframe  style="max-width: 100%;"  src="//www.youtube.com/embed/{{$videolink->youtube_id}}" frameborder="0" allowfullscreen=""></iframe>
+                                <style>
+                                    .embed-container {
+                                        position: relative;
+                                        padding-bottom: 56.25%;
+                                        height: 0; overflow:
+                                        hidden;
+                                        max-width: 100%;
+                                    }
+                                    .embed-container iframe, .embed-container object, .embed-container embed {
+                                        position: absolute;
+                                        top: 0;
+                                        left: 0;
+                                        width: 100%;
+                                        height: 100%;
+                                    }
+                                </style>
+                                <div class='embed-container'>
+                                    <iframe src="//www.youtube.com/embed/{{$videolink->youtube_id}}" frameborder="0" allowfullscreen></iframe>
+                                </div>
                             @endif
                         @endif
 

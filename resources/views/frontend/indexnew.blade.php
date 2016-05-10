@@ -229,8 +229,9 @@
                                     <li><a href="/advice">GET ADVICE</a></li>
                                 </ul>
                                 <ul class="nav navbar-nav navbar-right top-head">
-                                    <a href="/employers">For Employers</a>
-                                    <a href="/auth/login"> Sign In</a>
+                                    <li><a href="/employers">For Employers</a></li>
+                                    <li><a href="/auth/login"> Sign In</a></li>
+                                    <li><a href="/auth/register" class="signup-btn">Sign Up</a></li>
                                 </ul>
                             </div>
                         </div>

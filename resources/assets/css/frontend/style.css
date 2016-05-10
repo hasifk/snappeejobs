@@ -797,7 +797,7 @@ h5 {
     .bodycontent {
         padding-top: 5px;
     }
-    .navbar-default .navbar-toggle {
+    .navbar-toggle {
         margin-right: 0;
     }
 }
@@ -1543,7 +1543,7 @@ h1.company_detail {
     position: relative;
 }
 .home-banner nav {
-    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0.5);
     position: absolute;
     z-index: 12;
     width: 100%;

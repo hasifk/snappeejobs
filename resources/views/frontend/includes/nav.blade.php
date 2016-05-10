@@ -21,7 +21,7 @@
 					<li>{!! link_to('/jobseekers', 'JobSeekers' ) !!}</li>
 				</ul>
 
-				<ul class="nav navbar-nav navbar-right">
+				<ul class="nav navbar-nav navbar-right top-head">
 
 					@if (Auth::guest())
 						<li>{!! link_to('auth/login', trans('navs.login')) !!}</li>

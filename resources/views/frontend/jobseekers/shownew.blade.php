@@ -17,7 +17,7 @@
                                 <a href="#" class="likejobseeker btn-fav"><img src="/images/red-heart.png" align="absmiddle"> <span class="like">{{ $jobseeker->likes ? $jobseeker->likes : 0 }}</span></a>
                             </div>
                             <div class="profile-name">
-                                <h1>Simon Cross</h1>
+                                <h1>{{ $jobseeker_user->name }}</h1>
                                 <p><img src="/images/loc-icongrey.png"> {{ $jobseeker_user->statename }}, {{ $jobseeker_user->countryname }}</p>
                             </div>
                             {{--<div class="cn-socials">--}}

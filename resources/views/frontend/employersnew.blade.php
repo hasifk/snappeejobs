@@ -121,7 +121,7 @@
                                 <h3><strong>A Professional Profile</strong></h3>
                                 <p>We create (and you approve) a fully branded profile that aligns with and showcases your employment branding goals.</p>
                             </div>
-                            <div class="col-sm-4 trans-blue-dark">
+                            <div class="col-sm-4 trans-blue">
                                 <h3><strong>Promoted Content</strong></h3>
                                 <p>We're content marketing experts. We'll promote your profile, open jobs, and unique culture in articles, social media, and dedicated emails.</p>
                             </div>

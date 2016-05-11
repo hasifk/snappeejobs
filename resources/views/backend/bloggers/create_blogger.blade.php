@@ -2,9 +2,7 @@
 
 @section ('title', 'Blogger Management | Create New Blogger')
 
-@section ('before-styles-end')
-    {!! HTML::style('css/plugin/jquery.onoff.css') !!}
-@stop
+
 
 @section('page-header')
     <h1>
@@ -16,7 +14,7 @@
 
 
 @section('content')
-    @include('backend.access.includes.partials.header-buttons')
+
 
     {!! Form::open(['route' => ['backend.storebloggers'], 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'post']) !!}
 

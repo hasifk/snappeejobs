@@ -26,6 +26,8 @@ class DatabaseSeeder extends Seeder {
 		$this->call(JobApplicationStatusTableSeeder::class);
 		$this->call(CustomTableSeeder::class);
 		$this->call(CmsTableSeeder::class);
+		$this->call(BlogsCategoryTableSeeder::class);
+        $this->call(BlogsSubCatsTableSeeder::class);
 
 		if(env('DB_DRIVER')=='mysql')
 			DB::statement('SET FOREIGN_KEY_CHECKS=1;');

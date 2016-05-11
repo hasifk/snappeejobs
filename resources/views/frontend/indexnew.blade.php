@@ -184,12 +184,20 @@
         <section class="user-home">
             <div class="cl-logos featured ftr-logos">
                 <div class="container">
-                    <span>As featured in</span>
-                    <img src="images/tnw.png" />
-                    <img src="images/lg-entpr.png" />
-                    <img src="images/lg-giga.png" />
-                    <img src="images/lg-fast.png" />
-                    <img src="images/lg-wired.png" />
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div style="padding: 20px 0">As featured in</div>
+                        </div>
+                        <div class="col-sm-10">
+                            <div class="owl-carousel owl-featured">
+                                <div class="item"><img src="images/tnw.png" /></div>
+                                <div class="item"><img src="images/lg-entpr.png" /></div>
+                                <div class="item"><img src="images/lg-giga.png" /></div>
+                                <div class="item"><img src="images/lg-fast.png" /></div>
+                                <div class="item"><img src="images/lg-wired.png" /></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -598,7 +606,7 @@
                     <div class="clearfix"></div>
                     <div class="customers">
                         <div class="col-md-6 col-md-offset-3">
-                            <div class="owl-carousel">
+                            <div class="owl-carousel owl-reviews">
                                 <div class="item">
                                     <p>Aside from actually finding my job on The Muse, it helped me figure out what
                                         to wear to my first Chartbeat interview. All the advice just made the whole
@@ -658,12 +666,20 @@
         </section>
         <section class="container featurd">
             <div class="cl-logos featured">
-                As featured in
-                <img src="images/tnw.png">
-                <img src="images/lg-entpr.png">
-                <img src="images/lg-giga.png">
-                <img src="images/lg-fast.png">
-                <img src="images/lg-wired.png">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <div style="padding: 20px 0">As featured in</div>
+                    </div>
+                    <div class="col-sm-10">
+                        <div class="owl-carousel owl-featured">
+                            <div class="item"><img src="images/tnw.png" /></div>
+                            <div class="item"><img src="images/lg-entpr.png" /></div>
+                            <div class="item"><img src="images/lg-giga.png" /></div>
+                            <div class="item"><img src="images/lg-fast.png" /></div>
+                            <div class="item"><img src="images/lg-wired.png" /></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
         @endif
@@ -871,7 +887,7 @@
             });
 
 
-            $('.owl-carousel').owlCarousel({
+            $('.owl-reviews').owlCarousel({
                 loop:true,
                 margin:10,
                 nav:false,
@@ -880,6 +896,19 @@
                     0:{
                         items:1
                     }
+                }
+            })
+            $('.owl-featured').owlCarousel({
+                loop:true,
+                margin:10,
+                nav:false,
+                dots:false,
+                autoWidth:true,
+                responsive:{
+                    1023:{ items:5 },
+                    991:{ items:4 },
+                    767:{ items:3 },
+                    0:{ items:2 }
                 }
             })
 

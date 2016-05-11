@@ -78,6 +78,9 @@ h5 {
 .MB-60 {
     margin-bottom: 60px;
 }
+img {
+    max-width: 100%;
+}
 .home-banner {
     background: url(../images/head_banner.jpg) no-repeat;
     background-size: cover;
@@ -164,9 +167,6 @@ h5 {
 .cl-logos {
     text-align: center;
     padding-bottom: 50px;
-}
-.cl-logos img {
-    margin: 0 15px 15px;
 }
 .snap-jobs {
     -webkit-box-sizing: border-box;
@@ -1632,4 +1632,10 @@ h1.company_detail {
 }
 .owl-dots .owl-dot.active span, .owl-dots .owl-dot:hover span {
     background: #869791
+}
+.owl-featured .owl-item {
+    text-align: center;
+}
+.owl-featured .owl-item img {
+    width: auto;
 }

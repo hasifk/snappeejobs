@@ -153,6 +153,10 @@ class EloquentJobSeekerRepository {
         {
             $vimeo_id = $match[5];
         }
+
+        // Deleteing the old link
+        \DB::table('job_seeker_video_links')->where('user_id', auth()->user()->jobseeker_details->id)->delete();
+
            $jobSeeker = auth()->user()->jobseeker_details;
            $store_videolink=new JobSeekerVideoLinks;
             $store_videolink->user_id=$jobSeeker->id;

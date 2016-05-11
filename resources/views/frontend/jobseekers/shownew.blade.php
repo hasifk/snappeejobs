@@ -59,6 +59,13 @@
                                 @if($jobseeker_user->country_id || $jobseeker_user->state_id)
                                 <li>Location   :   {{ $jobseeker_user->statename }}, {{ $jobseeker_user->countryname }}</li>
                                 @endif
+                                @if($jobseeker_user->providers()->count())
+                                    <li>Social Media Connected :
+                                        @foreach($jobseeker_user->providers as $provider)
+                                            {{ ucfirst($provider->provider) }}
+                                        @endforeach
+                                    </li>
+                                @endif
                             </ul>
 
 
@@ -126,6 +133,55 @@
                                 </video>
                                 @endforeach
                             </div>
+                            @elseif($jobseeker->videoLink()->count())
+                                @foreach($jobseeker->videoLink as $video)
+                                    @if($video->vimeo_id!=Null)
+                                        <style>
+                                            .embed-container {
+                                                position: relative;
+                                                padding-bottom: 56.25%;
+                                                height: 0;
+                                                overflow: hidden;
+                                                max-width: 100%;
+                                            }
+                                            .embed-container iframe, .embed-container object, .embed-container embed {
+                                                position: absolute;
+                                                top: 0;
+                                                left: 0;
+                                                width: 100%;
+                                                height: 100%;
+                                            }
+                                        </style>
+                                        <div class='embed-container'>
+                                            <iframe src='http://player.vimeo.com/video/{{$video->vimeo_id}}'
+                                                    frameborder='0'
+                                                    webkitAllowFullScreen
+                                                    mozallowfullscreen
+                                                    allowFullScreen
+                                            ></iframe>
+                                        </div>
+                                    @else
+                                        <style>
+                                            .embed-container {
+                                                position: relative;
+                                                padding-bottom: 56.25%;
+                                                height: 0; overflow:
+                                                    hidden;
+                                                max-width: 100%;
+                                            }
+                                            .embed-container iframe, .embed-container object, .embed-container embed {
+                                                position: absolute;
+                                                top: 0;
+                                                left: 0;
+                                                width: 100%;
+                                                height: 100%;
+                                            }
+                                        </style>
+                                        <div class='embed-container'>
+                                            <iframe src="//www.youtube.com/embed/{{$video->youtube_id}}" frameborder="0" allowfullscreen></iframe>
+                                        </div>
+                                    @endif
+                                @endforeach
                             @endif
                         </div>
                     </div>

@@ -100,7 +100,18 @@
                         {!! Form::open(array('url' =>  route('frontend.profile.store_video_links'),'class' => 'form-inline')) !!}
                         {{ csrf_field() }}
                         <div class="form-group">
-                            <input type="text" name="videolink" class="form-control" value="{{old('videolink')}}" placeholder="https://www.youtube.com"/>
+                            <?php
+                            if(!empty($videolink)) {
+                                if($videolink->vimeo_id!=Null) {
+                                    $video_link = 'https://vimeo.com/'.$videolink->vimeo_id;
+                                } else {
+                                    $video_link = 'https://www.youtube.com/watch?v='.$videolink->youtube_id;
+                                }
+                            } else {
+                                $video_link = '';
+                            }
+                            ?>
+                            <input type="text" name="videolink" class="form-control" value="{{old('videolink') ? old('videolink') : $video_link}}" placeholder="https://www.youtube.com"/>
                         </div>
                         <button type="submit" class="btn btn-md">Save</button>
                         {!! Form::close() !!}

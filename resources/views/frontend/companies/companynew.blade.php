@@ -186,12 +186,12 @@
                                             @elseif(str_contains($socialMedia->url,'instagram.'))
                                                 <div class="instagram-acc">
                                                     <h3>{{ $company->title }} on Instagram</h3>
-                                                    <div align="right"><img src="/images/fbook-acc.png"/></div>
+                                                    <div align="right"><img src="/images/instagram-acc.png"/></div>
                                                 </div>
                                             @elseif(str_contains($socialMedia->url,'pinterest.'))
                                                 <div class="pinterest-acc">
                                                     <h3>{{ $company->title }} on Pinterest</h3>
-                                                    <div align="right"><img src="/images/fbook-acc.png"/></div>
+                                                    <div align="right"><img src="/images/pinterest-acc.png"/></div>
                                                 </div>
                                             @endif
                                         @endforeach

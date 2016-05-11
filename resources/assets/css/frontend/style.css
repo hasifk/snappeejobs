@@ -78,6 +78,9 @@ h5 {
 .MB-60 {
     margin-bottom: 60px;
 }
+img {
+    max-width: 100%;
+}
 .home-banner {
     background: url(../images/head_banner.jpg) no-repeat;
     background-size: cover;
@@ -164,9 +167,6 @@ h5 {
 .cl-logos {
     text-align: center;
     padding-bottom: 50px;
-}
-.cl-logos img {
-    margin: 0 15px 15px;
 }
 .snap-jobs {
     -webkit-box-sizing: border-box;
@@ -644,10 +644,10 @@ h5 {
 .trans-blue {
     background: rgba(67, 181, 219, .8);
     padding: 10px 30px;
+    transition: all 0.5s ease-in-out;
 }
-.trans-blue-dark {
+.trans-blue:hover {
     background: rgba(20, 124, 158, .8);
-    padding: 10px 30px;
 }
 @media (max-width:767px) {
     .empl-feature {
@@ -1632,4 +1632,10 @@ h1.company_detail {
 }
 .owl-dots .owl-dot.active span, .owl-dots .owl-dot:hover span {
     background: #869791
+}
+.owl-featured .owl-item {
+    text-align: center;
+}
+.owl-featured .owl-item img {
+    width: auto;
 }

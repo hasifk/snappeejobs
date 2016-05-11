@@ -892,6 +892,9 @@
                 margin:10,
                 nav:false,
                 dots:true,
+                autoplay:true,
+                autoplayTimeout:2000,
+                autoplayHoverPause:false,
                 responsive:{
                     0:{
                         items:1
@@ -903,7 +906,10 @@
                 margin:10,
                 nav:false,
                 dots:false,
-                autoWidth:true,
+                autoWidth:false,
+                autoplay:true,
+                autoplayTimeout:2000,
+                autoplayHoverPause:false,
                 responsive:{
                     1023:{ items:5 },
                     991:{ items:4 },

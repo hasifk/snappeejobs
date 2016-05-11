@@ -644,10 +644,10 @@ img {
 .trans-blue {
     background: rgba(67, 181, 219, .8);
     padding: 10px 30px;
+    transition: all 0.5s ease-in-out;
 }
-.trans-blue-dark {
+.trans-blue:hover {
     background: rgba(20, 124, 158, .8);
-    padding: 10px 30px;
 }
 @media (max-width:767px) {
     .empl-feature {

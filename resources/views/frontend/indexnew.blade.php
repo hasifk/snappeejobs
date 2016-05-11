@@ -597,38 +597,36 @@
                     </div>
                     <div class="clearfix"></div>
                     <div class="customers">
-                        <div class="">
-                            <div class="col-md-6 col-md-offset-3">
-                                <div class="row owl-carousel">
-                                    <div class="item">
-                                        <p>Aside from actually finding my job on The Muse, it helped me figure out what
-                                            to wear to my first Chartbeat interview. All the advice just made the whole
-                                            process less stressful.
-                                        </p>
-                                        <img style="width: 100px; height: 100px; margin: 0 auto;" src="images/customer1.png"/>
-                                        <h3>Kate Coghlan</h3>
-                                        <p>Art Director, Brick Media</p>
-                                    </div>
-                                    <div class="item">
-                                        <p>Aside from actually finding my job on The Muse, it helped me figure out what
-                                            to wear to my first Chartbeat interview. All the advice just made the whole
-                                            process less stressful.
-                                        </p>
-                                        <img style="width: 100px; height: 100px; margin: 0 auto;" src="images/customer2.png"/>
-                                        <h3>Kate Coghlan</h3>
-                                        <p>Art Director, Brick Media</p>
-                                    </div>
-                                    <div class="item">
-                                        <p>Aside from actually finding my job on The Muse, it helped me figure out what
-                                            to wear to my first Chartbeat interview. All the advice just made the whole
-                                            process less stressful.
-                                        </p>
-                                        <img style="width: 100px; height: 100px; margin: 0 auto;" src="images/customer3.png"/>
-                                        <h3>Kate Coghlan</h3>
-                                        <p>Art Director, Brick Media</p>
-                                    </div>
-
+                        <div class="col-md-6 col-md-offset-3">
+                            <div class="owl-carousel">
+                                <div class="item">
+                                    <p>Aside from actually finding my job on The Muse, it helped me figure out what
+                                        to wear to my first Chartbeat interview. All the advice just made the whole
+                                        process less stressful.
+                                    </p>
+                                    <img style="width: 100px; height: 100px; margin: 0 auto;" src="images/customer1.png"/>
+                                    <h3>Kate Coghlan</h3>
+                                    <p>Art Director, Brick Media</p>
                                 </div>
+                                <div class="item">
+                                    <p>Aside from actually finding my job on The Muse, it helped me figure out what
+                                        to wear to my first Chartbeat interview. All the advice just made the whole
+                                        process less stressful.
+                                    </p>
+                                    <img style="width: 100px; height: 100px; margin: 0 auto;" src="images/customer2.png"/>
+                                    <h3>Kate Coghlan</h3>
+                                    <p>Art Director, Brick Media</p>
+                                </div>
+                                <div class="item">
+                                    <p>Aside from actually finding my job on The Muse, it helped me figure out what
+                                        to wear to my first Chartbeat interview. All the advice just made the whole
+                                        process less stressful.
+                                    </p>
+                                    <img style="width: 100px; height: 100px; margin: 0 auto;" src="images/customer3.png"/>
+                                    <h3>Kate Coghlan</h3>
+                                    <p>Art Director, Brick Media</p>
+                                </div>
+                        
                             </div>
                         </div>
                     </div>
@@ -876,7 +874,8 @@
             $('.owl-carousel').owlCarousel({
                 loop:true,
                 margin:10,
-                nav:true,
+                nav:false,
+                dots:true,
                 responsive:{
                     0:{
                         items:1

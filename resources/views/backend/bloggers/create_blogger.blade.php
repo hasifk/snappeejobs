@@ -22,7 +22,7 @@
         <label class="col-lg-2 control-label">Select Blogger</label>
         <div class="col-lg-10">
             @if(!empty($users))
-          <select name="blogger_id" id="blogger_id" class="form-control">
+          <select name="blogger_id" id="blogger_id" class="form-control select2">
               @foreach($users as $user)
               <option value="{{ $user->id }}">{{$user->name}}</option>
               @endforeach

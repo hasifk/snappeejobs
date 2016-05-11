@@ -29,7 +29,7 @@
         </tr>
         </thead>
         <tbody>
-
+        @if(!empty($bloggers))
         @foreach($bloggers as $user)
 
             <tr>
@@ -62,6 +62,7 @@
 
 
         @endforeach
+            @endif
         </tbody>
     </table>
 

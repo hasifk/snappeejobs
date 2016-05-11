@@ -12145,7 +12145,6 @@ h5 {
 }
 
 .top-head {
-  padding-top: 40px;
   text-align: right;
   color: #fff;
   float: right;
@@ -12155,14 +12154,8 @@ h5 {
   color: #fff;
   text-decoration: none;
   display: inline-block;
-  margin: 15px;
+  margin: 10px;
   font-size: 15px;
-}
-
-@media (max-width:359px) {
-  .top-head a {
-    margin: 0 5px;
-  }
 }
 
 .top-head a.signup-btn:hover,
@@ -13954,10 +13947,6 @@ h1.company_detail {
 .home-banner .nav > li > a:focus,
 .home-banner .nav > li > a:hover {
   color: #000;
-}
-
-.top-head {
-  padding-top: 10px;
 }
 
 @media (max-width :767px) {

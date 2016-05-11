@@ -20,6 +20,7 @@ $router->group(['namespace' => 'Frontend'], function () use ($router)
 	require(__DIR__ . "/Routes/Frontend/Access.php");
 	require(__DIR__ . "/Routes/Frontend/JobSeekers.php");
 	require(__DIR__ . "/Routes/Frontend/Information.php");
+	require(__DIR__ . "/Routes/Frontend/Blogs.php");
 });
 
 /**

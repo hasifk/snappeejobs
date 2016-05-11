@@ -16,7 +16,13 @@ class CreateBlogsTable extends Migration
             $table->increments('id')->unsigned();
             $table->integer('blog_category_id')->unsigned();
             $table->integer('blog_sub_cat_id')->unsigned();
-            $table->string('name');
+            $table->string('author');
+            $table->string('avatar_filename');
+            $table->string('avatar_extension');
+            $table->string('avatar_path');
+            $table->string('image');
+            $table->longText('content');
+            $table->string('video_link');
             $table->timestamps();
         });
     }

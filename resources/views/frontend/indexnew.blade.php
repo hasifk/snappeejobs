@@ -842,6 +842,15 @@
                     }
                 }
             });
+
+            $('#registrationModal').on('hidden.bs.modal', function () {
+                if ( ! homeRegisterApp.confirmed ) {
+                    swal('You would receive an email from Snap it very shortly. Please follow the steps to confirm the account.');
+                    homeRegisterApp.name = '';
+                    homeRegisterApp.email = '';
+                }
+            });
+
             @if( auth()->user() && access()->hasRole('User') )
                     @if( auth()->user()->avatar_filename )
                     @if(

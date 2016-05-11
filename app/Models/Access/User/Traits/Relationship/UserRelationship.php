@@ -36,7 +36,7 @@ trait UserRelationship {
      * @return mixed
      */
     public function providers() {
-        return $this->hasMany(UserProvider::class);
+        return $this->hasMany(UserProvider::class, 'user_id');
     }
 
     public function employerPlan(){

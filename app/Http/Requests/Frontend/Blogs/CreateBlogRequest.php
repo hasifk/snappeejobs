@@ -27,12 +27,9 @@ class CreateBlogRequest extends Request {
     {
         return [
             'heading' 		=> 'required|max:255',
-            'author_img' 	=> 'required',
-            'img'  => 'required',
             'blog_category'	=> 'required',
             'blog_sub_cat'		=> 'required',
             'content'=> 'required',
-            'videolink'  => 'required',
         ];
     }
 

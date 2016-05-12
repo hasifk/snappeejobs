@@ -20,7 +20,7 @@ $router->group(['namespace' => 'Frontend'], function () use ($router)
 	require(__DIR__ . "/Routes/Frontend/Access.php");
 	require(__DIR__ . "/Routes/Frontend/JobSeekers.php");
 	require(__DIR__ . "/Routes/Frontend/Information.php");
-	require(__DIR__ . "/Routes/Frontend/Blogs.php");
+
 });
 
 /**
@@ -53,9 +53,10 @@ $router->group(['namespace' => 'Backend'], function () use ($router)
 			require(__DIR__ . "/Routes/Backend/JobSeekers.php");
                         require(__DIR__ . "/Routes/Backend/Newsfeed.php");
                         require(__DIR__ . "/Routes/Backend/Cms.php");
-			require(__DIR__ . "/Routes/Backend/Newsfeed.php");
+
                         require(__DIR__ . "/Routes/Backend/Logs.php");
 			require(__DIR__ . "/Routes/Backend/Projects.php");
+            require(__DIR__ . "/Routes/Frontend/Blogs.php");
 		});
 	});
 });

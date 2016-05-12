@@ -13,6 +13,10 @@ $router->group(['namespace' => 'Blogs'], function () use ($router)
         get('blogs/manageblogs', 'BlogsController@index')->name('blogs.manageblogs');
         get('blogs/createblogs', 'BlogsController@createBlog')->name('blogs.create');
         post('blogs/saveblogs', 'BlogsController@saveBlog')->name('frontend.blogsave');
+        get('get-subcats/{id}', function($id){
+            $sub_cats = DB::table('blog_sub_cats')->where('blog_category_id', $id)->select(['id', 'name'])->get();
+            return response()->json($sub_cats);
+        });
     });
 
     /**

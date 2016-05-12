@@ -35,7 +35,17 @@
                                 </div>
                                 
                             </div>
-                            
+                            <div class="form-group col-xs-6">
+
+                                <div class="row">
+
+                                    <label>Author's Image</label>
+
+                                    <input type="file" name="author_img" class="form-control">
+
+                                </div>
+
+                            </div>
                             <div class="form-group col-xs-6">
                                 
                                 <div class="row">
@@ -52,9 +62,13 @@
                                 @if(!empty($categories))
                                 <label for="exampleInputPassword1">Select Category</label>
                                 
-                                <select name="type" class="select2">
+                                <select name="blog_category" id="blog_category" class="select2">
+                                    <option value="">Please select</option>
                                     @foreach($categories as $category1)
-                                    <option value="{{$category1->id}}">{{$category1->name}}</option>
+
+                                    <option value="{{$category1->id}}"
+                                            {{ old('blog_category') && $country->id == old('blog_category') ? 'selected="selected"' : '' }}>
+                                        {{$category1->name}}</option>
                                    @endforeach
                                     
                                 </select>
@@ -66,9 +80,12 @@
                                 @if(!empty($sub_categories))
                                     <label for="exampleInputPassword1">Select Sub Category</label>
 
-                                    <select name="type" class="select2">
+                                    <select name="blog_sub_cat" id="blog_sub_cat" class="select2">
+                                        <option value="">Please select</option>
                                         @foreach($sub_categories as $category1)
-                                            <option value="{{$category1->id}}">{{$category1->name}}</option>
+                                            <option value="{{$category1->id}}"
+                                                    {{ old('blog_sub_cat') && $state->id == old('blog_sub_cat') ? 'selected="selected"' : '' }}
+                                            >{{$category1->name}}</option>
                                         @endforeach
 
                                     </select>
@@ -82,7 +99,10 @@
                                 <textarea class="form-control textarea" name="content" cols="30" rows="5"></textarea>
                                 
                             </div>
-                            
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Video Link</label>
+                            <input type="text" name="videolink" class="form-control" value="{{old('videolink')}}" placeholder="https://www.youtube.com"/>
+                            </div>
                         </div>
                          
                          <!-- /.box-body -->
@@ -97,4 +117,21 @@
         </div>
     </div>
 </section>
+@endsection
+
+@section('after-scripts-end')
+    <script>
+        $(document).ready(function(){
+            $('#blog_category').on('change', function(){
+                $.getJSON('/get-subcats/'+$(this).val(), function(json){
+                    var listitems = '<option value="">Please select</option>';
+                    $.each(json,function(key, value)
+                    {
+                        listitems += '<option value=' + value.id + '>' + value.name + '</option>';
+                    });
+                    $('#blog_sub_cat').html(listitems);
+                });
+            });
+        });
+    </script>
 @endsection

@@ -11,6 +11,8 @@ $router->group(['namespace' => 'Blogs'], function () use ($router)
     $router->group(['middleware' => 'auth'], function ()
     {
         get('blogs/manageblogs', 'BlogsController@index')->name('blogs.manageblogs');
+        get('blogs/createblogs', 'BlogsController@createBlog')->name('blogs.create');
+        post('blogs/saveblogs', 'BlogsController@saveBlog')->name('frontend.blogsave');
     });
 
     /**

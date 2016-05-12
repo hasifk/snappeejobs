@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Frontend\Blogs;
 
 use App\Models\Access\User\User;
+use App\Models\Blogs\BlogCategories;
+use App\Models\Blogs\BlogSubCategories;
 use App\Models\JobSeeker\JobSeeker;
 use App\Repositories\Frontend\JobSeeker\EloquentJobSeekerRepository;
 use Carbon\Carbon;
@@ -37,7 +39,7 @@ class BlogsController extends Controller
     public function index(Request $request)
     {
 
-        $countries = \DB::table('countries')->select(['id', 'name'])->get();
+       /* $countries = \DB::table('countries')->select(['id', 'name'])->get();
         $skills = \DB::table('skills')->select(['id', 'name'])->get();
         $job_categories = \DB::table('job_categories')->select(['id', 'name'])->get();
 
@@ -65,51 +67,26 @@ class BlogsController extends Controller
             'categories'        => $job_categories,
             'job_seekers'       => $jobSeekers,
             'paginator'         => $paginator
-        ];
+        ];*/
 
-        return view('frontend.jobseekers.index' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ), $view);
+        return view('frontend.blogs.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $jobSeeker = JobSeeker::findOrFail($id);
-        $jobSeekerUser = User::find($jobSeeker->user_id);
+ /**************************************************************************************************/
+  public function createBlog()
+  {
+      $view = [
+          'categories' => BlogCategories::all(),
+          'sub_categories' => BlogSubCategories::all(),
+      ];
+      return view('frontend.blogs.create',$view);
+  }
+    /**************************************************************************************************/
+    public function SaveBlog(CmsRequests $request) {
 
-        return view('frontend.jobseekers.show' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ), [ 'jobseeker' => $jobSeeker, 'jobseeker_user' => $jobSeekerUser ]);
     }
+    /**************************************************************************************************/
+    public function showCms($id) {
 
-    public function likeJob(Request $request){
-
-        $id = $request->get('jobSeekerId');
-
-        if (! \DB::table('like_jobseekers')->where('jobseeker_id', $id)->where('user_id', auth()->user()->id)->count() ) {
-            \DB::table('like_jobseekers')->insert([
-                'jobseeker_id'      => $id,
-                'user_id'           => auth()->user()->id,
-                'created_at'        => Carbon::now(),
-                'updated_at'        => Carbon::now()
-            ]);
-            \DB::table('job_seeker_details')
-                ->where('id',$id)
-                ->increment('likes');
-        }
-
-        $likes = \DB::table('job_seeker_details')
-            ->where('id',$id)
-            ->value('likes');
-
-        return json_encode(['status'=>1,'likes'=>$likes]);
     }
-
-    public function appliedJobs(){
-        $applied =$this->repository->getAppliedJobs();
-        return view('frontend.jobseekers.applied_jobs' . ( env('APP_DESIGN') == 'new' ? 'new' : "" ),['applied'	=> $applied ]);
-    }
-
 }

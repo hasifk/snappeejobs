@@ -91,7 +91,7 @@
                         </ul>
                     </div>
                     @roles(['User'])
-                    <a v-on:click="applyJob" href="#" class="btn-primary MB-60 applyjob">APPLY NOW</a>
+                    <a v-on:click="applyJob"  v-show="!jobApplied" href="#" class="btn-primary MB-60 applyjob">APPLY NOW</a>
                     @endauth
                     <a href="{{ route('jobs.next', $job->id) }}" class="btn-primary MB-60">NEXT JOB</a>
 

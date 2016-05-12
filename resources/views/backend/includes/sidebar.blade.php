@@ -33,6 +33,7 @@
               <ul class="sidebar-menu">
                 <li class="header">{{ trans('menus.general') }}</li>
 
+                @roles(['Administrator', 'Employer', 'Employer Staff'])
                 <!-- Optionally, you can add icons to the links -->
                 <li class="{{ Active::pattern('admin/dashboard') }}">
                   <a href="{!!route('backend.dashboard')!!}">
@@ -40,6 +41,7 @@
                     <span>{{ trans('menus.dashboard') }}</span>
                   </a>
                 </li>
+                @endauth
 
                 @role('Administrator')
                     @permission('view-access-management')
@@ -193,6 +195,17 @@
                               <a href="{!!url(route('backend.availablebloggers'))!!}">{{ 'Available Bloggers' }}</a>
                           </li>
                   </ul>
+                  </li>
+                  @endauth
+
+                  @role('Blogger')
+                  <li class="{{ Active::pattern('admin/cms/*') }}">
+                    <a href="/blogs/createblogs">
+                      <i class="fa fa-file-text-o"></i>
+                      <span>
+                        {{ 'Create Blog' }}
+                      </span>
+                    </a>
                   </li>
                   @endauth
 

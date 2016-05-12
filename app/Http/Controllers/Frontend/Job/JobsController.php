@@ -150,24 +150,6 @@ class JobsController extends Controller
             }
 
         }
-        if (! \DB::table('dislike_jobs')->where('job_id', $jobId)->where('user_id', auth()->user()->id)->count() ) {
-                \DB::table('dislike_jobs')->insert([
-                    'job_id'    => $jobId,
-                    'user_id'   => auth()->user()->id,
-                    'created_at'    => Carbon::now(),
-                    'updated_at'    => Carbon::now()
-                ]);
-                \DB::table('jobs')
-                    ->where('id',$jobId)
-                    ->increment('dislikes')
-                    ->decrement('likes');
-            if (\DB::table('like_jobs')->where('job_id', $jobId)->where('user_id', auth()->user()->id)->count() )
-            {
-
-                LikeJobs::where('job_id',$jobId)->where('user_id', auth()->user()->id)->delete();
-            }
-                $ev='disliked';
-            }
 
 
         $likes = \DB::table('jobs')
@@ -201,6 +183,16 @@ class JobsController extends Controller
             \DB::table('jobs')
                 ->where('id',$jobId)
                 ->increment('dislikes');
+        }
+
+        if ( $request->get('cancel') == 'true' ) {
+            \DB::table('jobs')
+                ->where('id',$jobId)
+                ->decrement('likes');
+            \DB::table('like_jobs')
+                ->where('job_id', $jobId)
+                ->where('user_id', auth()->user()->id)
+                ->delete();
         }
 
         $likes = \DB::table('jobs')

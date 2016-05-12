@@ -80,7 +80,7 @@
                                     </a>
                                     <a href="{!!route('frontend.profile.videos')!!}" class="btn btn-default btn-sm">
                                         Upload Videos
-                                        @if( $user->jobseeker_details && ( ! \DB::table('job_seeker_video_profiles')->where('user_id', $user->jobseeker_details->id)->count() ) )
+                                        @if( $user->jobseeker_details && ( ( ! \DB::table('job_seeker_video_profiles')->where('user_id', $user->jobseeker_details->id)->count() ) && ( ! \DB::table('job_seeker_video_links')->where('user_id', $user->jobseeker_details->id)->count() ) ) )
                                             <span style="margin: 0; padding: 0;" class="profile-alert-icon glyphicon glyphicon-info-sign"></span>
                                         @endif
                                     </a>

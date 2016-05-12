@@ -303,6 +303,7 @@
                         method  : 'post',
                         data : {
                             jobId:this.jobId,
+                            cancel:true,
                             '_token' : $('meta[name=_token]').attr("content")
                         },
                         success:function(data){

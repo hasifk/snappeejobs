@@ -486,6 +486,7 @@ class ProfileController extends Controller {
           $array['event'] = 'uploaded';
           $name = $this->userLogs->getActivityDescriptionForEvent($array);
           Activity::log($name);
+		  $this->users->updateProfileCompleteness(auth()->user());
         $request->session()->flash('success', $videolink);
         else:
         $request->session()->flash('failure','Failed to Store VideoLink.Please try again. ') ;

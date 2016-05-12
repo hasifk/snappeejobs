@@ -335,7 +335,7 @@ class EloquentUserRepository implements UserContract {
 		$user->jobseeker_details && $user->jobseeker_details->has_resume ? ++$points : '';
 		$user->jobseeker_details && $user->jobseeker_details->preferences_saved ? ++$points : '';
 
-		$job_seeker && $job_seeker->videos->count() ? ++$points : '';
+		$job_seeker && $job_seeker->videos->count() ? ++$points : ( $job_seeker && $job_seeker->videoLink->count() ? ++$points : '' );
 		$job_seeker && $job_seeker->images->count() ? ++$points : '';
 
 		\DB::table('job_seeker_details')->where('user_id', $user->id)->update(['profile_completeness' => $points]);

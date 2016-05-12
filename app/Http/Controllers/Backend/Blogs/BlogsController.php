@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Frontend\Blogs;
+namespace App\Http\Controllers\Backend\Blogs;
 
 use App\Models\Access\User\User;
 use App\Models\Blogs\BlogCategories;
 use App\Models\Blogs\BlogSubCategories;
 use App\Models\JobSeeker\JobSeeker;
+use App\Repositories\Backend\Blogs\EloquentBlogRepository;
 use App\Repositories\Frontend\JobSeeker\EloquentJobSeekerRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -24,7 +25,7 @@ class BlogsController extends Controller
      * JobSeekerController constructor.
      * @param EloquentJobSeekerRepository $repository
      */
-    public function __construct(EloquentJobSeekerRepository $repository)
+    public function __construct(EloquentBlogRepository $repository)
     {
 
         $this->repository = $repository;
@@ -69,7 +70,7 @@ class BlogsController extends Controller
             'paginator'         => $paginator
         ];*/
 
-        return view('frontend.blogs.index');
+        return view('backend.blogs.index');
     }
 
  /**************************************************************************************************/
@@ -79,11 +80,13 @@ class BlogsController extends Controller
           'categories' => BlogCategories::all(),
           'sub_categories' => BlogSubCategories::all(),
       ];
-      return view('frontend.blogs.create',$view);
+      return view('backend.blogs.create',$view);
   }
     /**************************************************************************************************/
-    public function SaveBlog(CmsRequests $request) {
+    public function SaveBlog(Requests\Backend\Blogs\BlogRequest $request) {
 
+        $this->repository->save($request);
+        return redirect()->route('blogs.manageblogs');
     }
     /**************************************************************************************************/
     public function showCms($id) {

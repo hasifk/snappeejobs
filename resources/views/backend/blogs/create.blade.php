@@ -28,9 +28,9 @@
                                 
                                 <div class="row">
                                     
-                                <label>Heading</label>
+                                <label>Author</label>
                                 
-                                <input type="text" name="heading" class="form-control" placeholder="Heading">
+                                <input type="text" name="author" class="form-control" placeholder="Author's Name">
                                 
                                 </div>
                                 
@@ -52,7 +52,7 @@
                                     
                                 <label>Image</label>
                                 
-                                <input type="file" name="img" class="form-control">
+                                <input type="file" name="image" class="form-control">
                                 
                                 </div>
                                 

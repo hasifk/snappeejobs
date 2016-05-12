@@ -1,4 +1,4 @@
-<?php namespace App\Http\Requests\Frontend\Blogs;
+<?php namespace App\Http\Requests\Backend\Blogs;
 
 use App\Http\Requests\Request;
 
@@ -6,7 +6,7 @@ use App\Http\Requests\Request;
  * Class RegisterRequest
  * @package App\Http\Requests\Frontend\Access
  */
-class CreateBlogRequest extends Request {
+class BlogRequest extends Request {
 
     /**
      * Determine if the user is authorized to make this request.
@@ -26,9 +26,10 @@ class CreateBlogRequest extends Request {
     public function rules()
     {
         return [
-            'heading' 		=> 'required|max:255',
+            'author' 		=> 'required|max:255',
             'blog_category'	=> 'required',
             'blog_sub_cat'		=> 'required',
+            'videolink'                 => 'required|youtube_vimeo',
             'content'=> 'required',
         ];
     }
@@ -36,7 +37,9 @@ class CreateBlogRequest extends Request {
     public function messages(){
         return [
             'blog_category.required'           => 'Blog Category is required',
-            'blog_sub_cat.required'             => 'Blog subCategory is required'
+            'blog_sub_cat.required'             => 'Blog subCategory is required',
+             'videolink.required'                => 'Youtube/vimeo Field cannot be empty',
+            'videolink.youtube_vimeo'                => 'Please enter a valid Youtube/vimeo link'
         ];
     }
 }

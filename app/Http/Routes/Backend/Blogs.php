@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Frontend Access Controllers
+ * Backend Access Controllers
  */
 $router->group(['namespace' => 'Blogs'], function () use ($router)
 {

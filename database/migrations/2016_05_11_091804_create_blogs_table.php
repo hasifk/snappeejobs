@@ -14,6 +14,7 @@ class CreateBlogsTable extends Migration
     {
         Schema::create('blogs', function (Blueprint $table) {
             $table->increments('id')->unsigned();
+            $table->integer('user_id')->unsigned();
             $table->integer('blog_category_id')->unsigned();
             $table->integer('blog_sub_cat_id')->unsigned();
             $table->string('author');
@@ -22,7 +23,8 @@ class CreateBlogsTable extends Migration
             $table->string('avatar_path');
             $table->string('image');
             $table->longText('content');
-            $table->string('video_link');
+            $table->string('youtube_id');
+            $table->string('vimeo_id');
             $table->timestamps();
         });
     }
@@ -34,6 +36,9 @@ class CreateBlogsTable extends Migration
      */
     public function down()
     {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign('users_user_id_foreign');
+        });
         Schema::table('blog_categories', function (Blueprint $table) {
             $table->dropForeign('blog_categories_blog_category_id_foreign');
         });

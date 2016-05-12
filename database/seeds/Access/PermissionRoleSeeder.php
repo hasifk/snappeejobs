@@ -76,9 +76,15 @@ class PermissionRoleSeeder extends Seeder
 
     public function addBlogPermissionToBlogger(){
 
+        $viewbackend_permission = \DB::table('permissions')->where('name', 'view-backend')->value('id');
         $create_blog_permission = \DB::table('permissions')->where('name', 'create-blog')->value('id');
         $blogger_role = \DB::table('roles')->where('name', 'Blogger')->value('id');
 
+        \DB::table('permission_role')->insert([
+            'permission_id'   => $viewbackend_permission,
+            'role_id'         => $blogger_role
+        ]);
+        
         \DB::table('permission_role')->insert([
             'permission_id'   => $create_blog_permission,
             'role_id'         => $blogger_role

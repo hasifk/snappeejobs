@@ -8,7 +8,7 @@ $router->group(['namespace' => 'Blogs'], function () use ($router)
     /**
      * These routes require the user to be logged in
      */
-    $router->group(['middleware' => 'auth'], function ()
+    $router->group([], function ()
     {
         get('blogs/manageblogs', 'BlogsController@index')->name('blogs.manageblogs');
         get('blogs/createblogs', 'BlogsController@createBlog')->name('blogs.create');

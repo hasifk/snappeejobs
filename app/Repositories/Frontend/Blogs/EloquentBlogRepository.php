@@ -34,12 +34,6 @@ class EloquentBlogRepository
         return $blogs;
     }
 
-    public function getNext($id)
-    {
-        $next =Blogs::where('blogs.id', '<>', $id)
-            ->orderByRaw('RAND()')
-            ->first();
-        return $next;
-    }
+
 
 }

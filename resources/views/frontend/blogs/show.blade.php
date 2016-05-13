@@ -14,7 +14,8 @@
 
                     </h1>
                     <div class="boxWrap">
-                        {!! $blog->getImagethumbAttribute(750, 350) !!}
+                        {!! $blog->image !!}
+
 
                     </div>
 
@@ -28,7 +29,6 @@
                            {!! $blog->content !!}
                     </div>
 
-                    <a href="{{ route('blogs.next', $blog->id) }}" class="btn-primary MB-60">NEXT BLOG</a>
 
 
 

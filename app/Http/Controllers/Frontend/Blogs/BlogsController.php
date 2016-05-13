@@ -46,6 +46,21 @@ class BlogsController extends Controller
 
         return view('frontend.blogs.index',$view);
     }
+
+    public function search($category_slug = '', $sub_category_slug = '', Request $request)
+    {
+
+        $blogs = $this->repository->getBlogs($category_slug, $sub_category_slug);
+
+        $view = [
+            'categories'=>BlogCategories::all(),
+            'subcategories'=>BlogSubCategories::all(),
+            'blogs' => $blogs,
+        ];
+
+        return view('frontend.blogs.index',$view);
+    }
+
     /**************************************************************************************************/
 
     public function show($id) {

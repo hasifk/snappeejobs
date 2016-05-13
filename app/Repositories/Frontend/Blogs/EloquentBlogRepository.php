@@ -16,10 +16,22 @@ class EloquentBlogRepository
         return Blogs::where('user_id', auth()->user()->id)->where('id', $id)->first();
     }
 
-    public function getBlogs()
+    public function getBlogs($category_slug = '', $sub_category_slug = '')
     {
-        return Blogs::orderBy('Blogs.id', 'desc')
+        $blogsObject = Blogs::whereNotNull('title');
+        if ( $category_slug ) {
+            $category_id = \DB::table('blog_categories')->where('url_slug', $category_slug)->value('id');
+            $blogsObject->where('blog_category_id', $category_id);
+        }
+        if ( $sub_category_slug ) {
+            $sub_category_id = \DB::table('blog_sub_cats')->where('url_slug', $sub_category_slug)->value('id');
+            $blogsObject->where('blog_sub_cat_id', $sub_category_id);
+        }
+
+        $blogs = $blogsObject->orderBy('blogs.id', 'desc')
             ->paginate(10);
+
+        return $blogs;
     }
 
     public function getNext($id)

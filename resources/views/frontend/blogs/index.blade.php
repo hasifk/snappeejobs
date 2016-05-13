@@ -51,6 +51,49 @@
 
 @section('content')
 
+    <div class="bodycontent">
+
+        <div class="container cnt-body">
+
+            <div class="row">
+
+                <div class="col-md-10 col-md-offset-1 col-sm-12 companies">
+
+                    <h1>Explore Jobs</h1>
+
+                    <div class="row">
+
+                        @if (count($blogs) > 0)
+                            @foreach($blogs as $blog)
+                                <div class="col-sm-6 col-md-4 thumbs">
+                                    <div>
+                                        {!! $blog->getImagethumbAttribute(297, 218) !!}
+                                    </div>
+                                    <br>
+                                    <a href="#">{{ $blog->title }}</a>
+                                    <p>
+                                        By {{ $blog->author }}
+                                    </p>
+                                </div>
+                            @endforeach
+
+                            <div class="pages">
+                                <div class="col-sm-7">
+                                    <ul class="pagination">
+                                        {!! $blogs->render() !!}
+                                    </ul>
+                                </div>
+
+                            </div>
+
+                        @endif
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 

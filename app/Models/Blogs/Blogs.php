@@ -44,13 +44,13 @@ class Blogs extends Model
         return \DB::table('users')->where('id', $this->user_id)->value('name');
     }
 
-    public function getImagethumbAttribute(){
+    public function getImagethumbAttribute($width = 25, $height = 25){
         if ($this->avatar_filename && $this->avatar_extension && $this->avatar_path) {
             return '<img src="'.
             'https://s3-'. env('AWS_S3_REGION', 'eu-west-1') .'.amazonaws.com/'.
             env('AWS_S3_BUCKET', 'snappeejobs').'/'.
-            $this->avatar_path.$this->avatar_filename.'25x25.'.$this->avatar_extension .
-            '" alt="image" style="height: 25px; width: 25px;">';
+            $this->avatar_path.$this->avatar_filename.$width.'x'.$height.'.'.$this->avatar_extension .
+            '" alt="image" style="height: '.$height.'px; width: '.$width.'px;">';
         } else {
             return '';
         }

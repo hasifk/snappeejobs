@@ -56,4 +56,15 @@ class Blogs extends Model
         }
     }
 
+    public function getImageAttribute(){
+        if ($this->avatar_filename && $this->avatar_extension && $this->avatar_path) {
+            return '<img src="'.
+            'https://s3-'. env('AWS_S3_REGION', 'eu-west-1') .'.amazonaws.com/'.
+            env('AWS_S3_BUCKET', 'snappeejobs').'/'.
+            $this->avatar_path.$this->avatar_filename.'350x750.'.$this->avatar_extension .
+            '" alt="image" style="height: 350px; width: 750px;">';
+        } else {
+            return '';
+        }
+    }
 }

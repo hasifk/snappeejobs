@@ -35,7 +35,19 @@ class BlogsController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index($category_slug = '', $sub_category_slug = '', Request $request)
+    public function index(Request $request)
+    {
+
+        $view = [
+            'categories'=>BlogCategories::all(),
+            'subcategories'=>BlogSubCategories::all(),
+            'blogs' => $this->repository->getBlogs(),
+        ];
+
+        return view('frontend.blogs.index',$view);
+    }
+
+    public function search($category_slug = '', $sub_category_slug = '', Request $request)
     {
 
         $blogs = $this->repository->getBlogs($category_slug, $sub_category_slug);
@@ -48,6 +60,7 @@ class BlogsController extends Controller
 
         return view('frontend.blogs.index',$view);
     }
+
     /**************************************************************************************************/
 
     public function show($id) {

@@ -14,7 +14,7 @@
 
                     </h1>
                     <div class="boxWrap">
-                        {!! $blog->getImageAttribute() !!}
+                        {!! $blog->image !!}
 
 
                     </div>

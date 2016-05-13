@@ -35,13 +35,15 @@ class BlogsController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index($category_slug = '', $sub_category_slug = '', Request $request)
     {
+
+        $blogs = $this->repository->getBlogs($category_slug, $sub_category_slug);
 
         $view = [
             'categories'=>BlogCategories::all(),
             'subcategories'=>BlogSubCategories::all(),
-            'blogs' => $this->repository->getBlogs(),
+            'blogs' => $blogs,
         ];
 
         return view('frontend.blogs.index',$view);

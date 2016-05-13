@@ -200,6 +200,14 @@
 
                   @role('Blogger')
                   <li class="{{ Active::pattern('admin/cms/*') }}">
+                      <a href="{!!url(route('blogs.manageblogs'))!!}">
+                          <i class="fa fa-file-text-o"></i>
+                      <span>
+                        {{ 'Blogs' }}
+                      </span>
+                      </a>
+                  </li>
+                  <li class="{{ Active::pattern('admin/cms/*') }}">
                     <a href="{!!url(route('blogs.create'))!!}">
                       <i class="fa fa-file-text-o"></i>
                       <span>

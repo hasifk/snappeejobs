@@ -10,7 +10,7 @@
 
 @section('content')
 
-    @include('frontend.includes.partials.blogs.header-buttons')
+
 
 <section class="content">
     <div class="row" id='notification_add'>

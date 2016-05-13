@@ -10,37 +10,37 @@
 
 @section('content')
 
-    @include('frontend.includes.partials.blogs.header-buttons')
+
 
     <table class="table table-striped table-bordered table-hover">
         <thead>
         <tr>
             <th>No</th>
-            <th>Heading</th>
-            <th>Type</th>
-            <th>Published</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>SubCategory</th>
             <th>Actions</th>
         </tr>
         </thead>
         <tbody>
         <?php $f=1; ?>
-     {{--   @foreach ($cms as $value)
+        @foreach ($blogs as $value)
             <tr>
                 <td>{{ $f++ }}</td>
-                <td>{{ str_limit($value->header, $limit =80, $end = '...') }}</td>
-                <td>{{ $value->type }}</td>
-                <td>{!! $value->published_text !!}</td>
+                <td>{{ str_limit($value->author, $limit =80, $end = '...') }}</td>
+                <td>{{ $value->blog_category_id }}</td>
+                <td>{{ $value->blog_sub_cat_id }}</td>
                 <td>{!! $value->action_buttons !!}</td>
             </tr>
-        @endforeach--}}
+        @endforeach
         </tbody>
     </table>
     <div class="pull-left">
-      {{--  {!! count($cms) !!} CMS Total--}}
+        {!! count($blogs) !!} CMS Total
     </div>
 
     <div class="pull-right">
-       {{-- {!! $cms->render() !!}--}}
+        {!! $blogs->render() !!}
     </div>
     <div class="clearfix"></div>
 @endsection

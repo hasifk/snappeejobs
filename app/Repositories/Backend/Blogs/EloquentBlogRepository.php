@@ -1,16 +1,8 @@
 <?php namespace App\Repositories\Backend\Blogs;
 
-use App\Events\Frontend\Job\JobApplied;
-use App\Models\Access\User\JobVisitor;
-use App\Models\Access\User\User;
+
 use App\Models\Blogs\Blogs;
-use App\Models\Job\Job;
-use App\Models\JobSeeker\JobSeeker;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use GeoIP;
+
 use Auth;
 use Storage;
 /**
@@ -19,6 +11,11 @@ use Storage;
  */
 class EloquentBlogRepository
 {
+    public function getBlogs()
+    {
+        return Blogs::where('user_id', Auth::user()->id)->orderBy('blogs.id', 'desc')
+            ->paginate(10);
+    }
     public function save($request)
     {
         $userid = Auth::user()->id;

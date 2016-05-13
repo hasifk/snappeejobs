@@ -27,7 +27,7 @@
                                 <div class="row">
 
                                     <label>Title</label>
-
+                                    <input type="hidden" name="id" value="{{ $blog->id }}">
                                     <input type="text" name="title" class="form-control" value="{{ old('title') ? old('title') : $blog->title }}" placeholder="Blog Title">
 
                                 </div>

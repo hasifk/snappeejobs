@@ -57,8 +57,8 @@ class EloquentBlogRepository
 
             // Delete the old image.
             if ($request->has('id') && $obj->avatar_filename && $obj->avatar_extension && $obj->avatar_path ) {
-                if ( \Storage::has($obj->avatar_path.$obj->avatar_filename.$obj->avatar_extension) ) {
-                    \Storage::delete($obj->avatar_path.$obj->avatar_filename.$obj->avatar_extension);
+                if ( \Storage::has($obj->avatar_path.$obj->avatar_filename.'.'.$obj->avatar_extension) ) {
+                    \Storage::delete($obj->avatar_path.$obj->avatar_filename.'.'.$obj->avatar_extension);
                     foreach (config('image.thumbnails.blog_photo') as $image) {
                         \Storage::delete($obj->avatar_path.$obj->avatar_filename.$image['width'].'x'.$image['height'].'.'.$obj->avatar_extension );
                     }

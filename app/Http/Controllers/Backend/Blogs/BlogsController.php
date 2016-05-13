@@ -72,7 +72,7 @@ class BlogsController extends Controller
     public function SaveBlog(Requests\Backend\Blogs\BlogRequest $request) {
 
         $this->repository->save($request);
-        return redirect()->route('Blogs.manageblogs');
+        return redirect()->route('Blogs');
     }
     /**************************************************************************************************/
     public function showCms($id) {

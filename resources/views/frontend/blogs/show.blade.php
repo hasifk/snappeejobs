@@ -14,7 +14,7 @@
 
                     </h1>
                     <div class="boxWrap">
-                        {!! $blog->image !!}
+                        {!! $blog->getImagethumbAttribute(750, 350) !!}
 
                     </div>
 
@@ -25,7 +25,7 @@
 
 
                     <div class="col-lg-8 about-job">
-                           {{ $blog->content }}
+                           {!! $blog->content !!}
                     </div>
 
                     <a href="{{ route('blogs.next', $blog->id) }}" class="btn-primary MB-60">NEXT BLOG</a>

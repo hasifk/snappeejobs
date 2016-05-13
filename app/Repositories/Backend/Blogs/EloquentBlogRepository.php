@@ -74,12 +74,11 @@ class EloquentBlogRepository
             $obj->avatar_path = $filePath;
             $obj->save();
 
-            // Resize User Profile Image
-            $profile_image = \Image::make($avatar);
-
             \Storage::disk('local')->put($filePath.$avatar->getClientOriginalName(), file_get_contents($avatar));
 
+            // Resize User Profile Image
             foreach (config('image.thumbnails.blog_photo') as $image) {
+                $profile_image = \Image::make($avatar);
                 $profile_image->resize($image['width'], $image['height'])->save( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) );
                 \Storage::put($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() , file_get_contents( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) ) );
                 \Storage::setVisibility($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension(), 'public');

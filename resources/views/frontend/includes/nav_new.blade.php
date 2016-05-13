@@ -88,9 +88,7 @@
                         @role('User')
                         <li>{!! link_to_route('jobseeker.appliedjobs', trans('navs.applied_jobs')) !!}</li>
                         @endauth
-                        @role('Blogger')
-                        <li>{!! link_to_route('Blogs', trans('Blogs')) !!}</li>
-                        @endauth
+
 
                         <li>{!! link_to('auth/logout', trans('navs.logout')) !!}</li>
                     </ul>

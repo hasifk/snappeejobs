@@ -27,7 +27,7 @@ return [
     'register' => 'Register',
     'button' => 'Button',
     'applied_jobs' => 'Applied Jobs',
-    'blogs' => 'Manage Blogs',
+    'Blogs' => 'Manage Blogs',
 
 
 ];

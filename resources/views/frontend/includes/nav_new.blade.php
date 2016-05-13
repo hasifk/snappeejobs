@@ -21,7 +21,7 @@
                 @role('Employer')
                 <li class="{{ Active::pattern(['jobseekers']) }}">{!! link_to('/jobseekers', 'JOBSEEKERS' ) !!}</li>
                 @endauth
-                <li class="{{ Active::pattern(['get-advice']) }}">{!! link_to('/get-advice', 'GET ADVICE' ) !!}</li>
+                <li class="{{ Active::pattern(['get-blogs']) }}">{!! link_to('/get-blogs', 'GET ADVICE' ) !!}</li>
             </ul>
 
 
@@ -89,7 +89,7 @@
                         <li>{!! link_to_route('jobseeker.appliedjobs', trans('navs.applied_jobs')) !!}</li>
                         @endauth
                         @role('Blogger')
-                        <li>{!! link_to_route('blogs.manageblogs', trans('navs.blogs')) !!}</li>
+                        <li>{!! link_to_route('Blogs', trans('Blogs')) !!}</li>
                         @endauth
 
                         <li>{!! link_to('auth/logout', trans('navs.logout')) !!}</li>

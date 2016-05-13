@@ -36,7 +36,7 @@
         </tbody>
     </table>
     <div class="pull-left">
-        {!! count($blogs) !!} CMS Total
+        {!! count($blogs) !!} Blogs Total
     </div>
 
     <div class="pull-right">

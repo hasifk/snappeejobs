@@ -18,7 +18,7 @@
             </li>
             
             <li>
-                <a href="{{route('backend.admin.blogs')}}">Blogs</a>
+                <a href="{{route('Blogs')}}">Blogs</a>
             </li>
             
         </ul>

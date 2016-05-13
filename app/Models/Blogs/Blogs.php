@@ -10,7 +10,7 @@ class Blogs extends Model
 {
 
 
-    protected $table = 'blogs';
+    protected $table = 'Blogs';
 
     protected $guarded = ['id'];
 
@@ -33,7 +33,7 @@ class Blogs extends Model
     }
 
     private function editLink() {
-        return '<a href="'.route('blogs.edit', $this->id).'" class="btn btn-xs btn-primary"><i class="fa fa-pencil" data-toggle="tooltip" data-placement="top" title="Edit"></i></a>';;
+        return '<a href="'.route('Blogs.edit', $this->id).'" class="btn btn-xs btn-primary"><i class="fa fa-pencil" data-toggle="tooltip" data-placement="top" title="Edit"></i></a>';;
     }
 
     public function getActionButtonsAttribute(){

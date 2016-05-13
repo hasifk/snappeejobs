@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Backend\Blogs;
+namespace App\Http\Controllers\Frontend\Blogs;
 
 use App\Models\Access\User\User;
 use App\Models\Blogs\BlogCategories;
 use App\Models\Blogs\BlogSubCategories;
-use App\Models\JobSeeker\JobSeeker;
-use App\Repositories\Backend\Blogs\EloquentBlogRepository;
+use App\Repositories\Frontend\Blogs\EloquentBlogRepository;
 use App\Repositories\Frontend\JobSeeker\EloquentJobSeekerRepository;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -41,10 +39,10 @@ class BlogsController extends Controller
     {
 
         $view = [
-            'blogs' => $this->repository->getBlogs(),
+            'Blogs' => $this->repository->getBlogs(),
         ];
 
-        return view('backend.blogs.index',$view);
+        return view('frontend.blogs.index',$view);
     }
 
     public function editBlog(Request $request, $id){
@@ -56,7 +54,7 @@ class BlogsController extends Controller
             'categories' => BlogCategories::all(),
             'sub_categories' => BlogSubCategories::all()
         ];
-        return view('backend.blogs.edit',$view);
+        return view('backend.Blogs.edit',$view);
     }
     
  /**************************************************************************************************/
@@ -66,7 +64,7 @@ class BlogsController extends Controller
           'categories' => BlogCategories::all(),
           'sub_categories' => BlogSubCategories::all(),
       ];
-      return view('backend.blogs.create',$view);
+      return view('backend.Blogs.create',$view);
   }
     /**************************************************************************************************/
     public function SaveBlog(Requests\Backend\Blogs\BlogRequest $request) {

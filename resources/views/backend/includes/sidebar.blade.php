@@ -200,7 +200,7 @@
 
                   @role('Blogger')
                   <li class="{{ Active::pattern('admin/cms/*') }}">
-                      <a href="{!!url(route('blogs.manageblogs'))!!}">
+                      <a href="{!!url(route('Blogs'))!!}">
                           <i class="fa fa-file-text-o"></i>
                       <span>
                         {{ 'Blogs' }}
@@ -208,7 +208,7 @@
                       </a>
                   </li>
                   <li class="{{ Active::pattern('admin/cms/*') }}">
-                    <a href="{!!url(route('blogs.create'))!!}">
+                    <a href="{!!url(route('Blogs'))!!}">
                       <i class="fa fa-file-text-o"></i>
                       <span>
                         {{ 'Create Blog' }}

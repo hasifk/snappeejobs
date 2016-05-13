@@ -1,4 +1,4 @@
-<?php namespace App\Repositories\Backend\Blogs;
+<?php namespace App\Repositories\Frontend\Blogs;
 
 
 use App\Models\Blogs\Blogs;
@@ -18,7 +18,7 @@ class EloquentBlogRepository
 
     public function getBlogs()
     {
-        return Blogs::where('user_id', Auth::user()->id)->orderBy('Blogs.id', 'desc')
+        return Blogs::orderBy('Blogs.id', 'desc')
             ->paginate(10);
     }
     public function save($request)

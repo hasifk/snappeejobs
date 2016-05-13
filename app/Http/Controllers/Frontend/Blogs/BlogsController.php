@@ -20,7 +20,7 @@ class BlogsController extends Controller
     private $repository;
 
     /**
-     * JobSeekerController constructor.
+     * BlogsController constructor.
      * @param EloquentJobSeekerRepository $repository
      */
     public function __construct(EloquentBlogRepository $repository)

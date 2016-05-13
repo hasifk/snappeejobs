@@ -21,7 +21,7 @@
                 @role('Employer')
                 <li class="{{ Active::pattern(['jobseekers']) }}">{!! link_to('/jobseekers', 'JOBSEEKERS' ) !!}</li>
                 @endauth
-                <li class="{{ Active::pattern(['get-blogs']) }}">{!! link_to('/get-blogs', 'GET ADVICE' ) !!}</li>
+                <li class="{{ Active::pattern(['get-blogs']) }}">{!! link_to('advice', 'GET ADVICE' ) !!}</li>
             </ul>
 
 

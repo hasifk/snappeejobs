@@ -34,6 +34,4 @@ class EloquentBlogRepository
         return $blogs;
     }
 
-
-
 }

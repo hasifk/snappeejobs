@@ -75,7 +75,13 @@ class BlogsController extends Controller
         return redirect()->route('Blogs');
     }
     /**************************************************************************************************/
-    public function showCms($id) {
+    public function delete($id) {
+
+        $this->repository->deleteBlog($id);
+
+        return back();
 
     }
+
+    /**************************************************************************************************/
 }

@@ -49,7 +49,7 @@
 @section('after-scripts-end')
     <script>
         $(document).ready(function(){
-            $('.cms_delete').on('click', function(){
+            $('.blog_delete').on('click', function(){
                 if(confirm("Are you sure want to delete")){
                     return true;
                 }

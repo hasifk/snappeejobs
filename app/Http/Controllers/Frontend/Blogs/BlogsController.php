@@ -46,7 +46,7 @@ class BlogsController extends Controller
 
         return view('frontend.blogs.index',$view);
     }
-
+    /**************************************************************************************************/
     public function search($category_slug = '', $sub_category_slug = '', Request $request)
     {
 
@@ -71,6 +71,7 @@ class BlogsController extends Controller
     }
 
     /**************************************************************************************************/
+
 
 
 }

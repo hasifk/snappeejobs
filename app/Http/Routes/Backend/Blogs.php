@@ -18,10 +18,11 @@ $router->group(['namespace' => 'Blogs'], function () use ($router)
             $sub_cats = DB::table('blog_sub_cats')->where('blog_category_id', $id)->select(['id', 'name'])->get();
             return response()->json($sub_cats);
         });
+        get('blogs/deleteblogs/{id}', 'BlogsController@delete')->name('Blogs.delete');
     });
 
     /**
-     * These reoutes require the user NOT be logged in
+     * These routes require the user NOT be logged in
      */
 
 

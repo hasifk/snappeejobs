@@ -94,5 +94,12 @@ class EloquentBlogRepository
 
     }
 
+    public function deleteBlog($id) {
+        $obj = Blogs::find($id);
+        $obj->detachImage();
+        $obj->delete();
+        return true;
+    }
+
 
 }

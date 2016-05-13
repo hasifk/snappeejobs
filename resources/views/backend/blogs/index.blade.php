@@ -17,6 +17,7 @@
         <tr>
             <th>No</th>
             <th>Author</th>
+            <th>Title</th>
             <th>Category</th>
             <th>SubCategory</th>
             <th>Actions</th>
@@ -27,7 +28,8 @@
         @foreach ($blogs as $value)
             <tr>
                 <td>{{ $f++ }}</td>
-                <td>{{ str_limit($value->author, 80) }}</td>
+                <td>{{ $value->author }}</td>
+                <td>{{ $value->title }}</td>
                 <td>{{ $value->categoryname }}</td>
                 <td>{{ $value->subcategoryname}}</td>
                 <td>{!! $value->action_buttons !!}</td>

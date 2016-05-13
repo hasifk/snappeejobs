@@ -40,6 +40,10 @@ class Blogs extends Model
         return $this->editLink();
     }
 
+    public function getAuthorAttribute(){
+        return \DB::table('users')->where('id', $this->user_id)->value('name');
+    }
+
     public function getImagethumbAttribute(){
         if ($this->avatar_filename && $this->avatar_extension && $this->avatar_path) {
             return '<img src="'.

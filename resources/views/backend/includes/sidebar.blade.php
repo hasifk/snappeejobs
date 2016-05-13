@@ -208,7 +208,7 @@
                       </a>
                   </li>
                   <li class="{{ Active::pattern('admin/cms/*') }}">
-                    <a href="{!!url(route('Blogs'))!!}">
+                    <a href="{!!url(route('Blogs.create'))!!}">
                       <i class="fa fa-file-text-o"></i>
                       <span>
                         {{ 'Create Blog' }}

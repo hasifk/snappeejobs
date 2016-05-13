@@ -10,7 +10,7 @@ $router->group(['namespace' => 'Blogs'], function () use ($router)
      */
     $router->group([], function ()
     {
-        get('get-blogs', 'BlogsController@index')->name('Blogs.frontend.index');
+        get('advice', 'BlogsController@index')->name('Blogs.frontend.index');
 
     });
 

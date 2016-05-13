@@ -14,32 +14,38 @@ class BlogsCategoryTableSeeder extends Seeder
         $categories = [
 
             [
-                'name'       => 'CAREER ADVICE ',
+                'name'       => 'Career Advice',
+                'url_slug'       => 'career-advice',
                 'created_at'    => \Carbon\Carbon::now(),
                 'updated_at'    => \Carbon\Carbon::now()
             ],
             [
-                'name'       => 'JOB SEARCH ',
+                'name'       => 'Job Search',
+                'url_slug'       => 'job-search',
                 'created_at'    => \Carbon\Carbon::now(),
                 'updated_at'    => \Carbon\Carbon::now()
             ],
             [
-                'name'       => 'CAREER PATHS ',
+                'name'       => 'Career Paths',
+                'url_slug'       => 'career-paths',
                 'created_at'    => \Carbon\Carbon::now(),
                 'updated_at'    => \Carbon\Carbon::now()
             ],
             [
-                'name'       => 'MANAGEMENT ',
+                'name'       => 'Management',
+                'url_slug'       => 'management',
                 'created_at'    => \Carbon\Carbon::now(),
                 'updated_at'    => \Carbon\Carbon::now()
             ],
             [
-                'name'       => 'TOOLS & SKILLS ',
+                'name'       => 'Tools & Skills',
+                'url_slug'       => 'tools-skills',
                 'created_at'    => \Carbon\Carbon::now(),
                 'updated_at'    => \Carbon\Carbon::now()
             ],
             [
-                'name'       => 'BREAKROOM ',
+                'name'       => 'Breakroom ',
+                'url_slug'       => 'breakroom',
                 'created_at'    => \Carbon\Carbon::now(),
                 'updated_at'    => \Carbon\Carbon::now()
             ],

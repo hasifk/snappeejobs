@@ -16,6 +16,7 @@ class CreateBlogSubCatsTable extends Migration
             $table->increments('id')->unsigned();
             $table->integer('blog_category_id')->unsigned();
             $table->string('name');
+            $table->string('url_slug');
             $table->timestamps();
         });
     }

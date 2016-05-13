@@ -16,6 +16,7 @@
                     <div class="boxWrap">
                         {!! $blog->getImageAttribute() !!}
 
+
                     </div>
 
 
@@ -25,7 +26,7 @@
 
 
                     <div class="col-lg-8 about-job">
-                           {{ $blog->content }}
+                           {!! $blog->content !!}
                     </div>
 
 

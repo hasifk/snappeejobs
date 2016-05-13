@@ -13,7 +13,7 @@ class EloquentBlogRepository
 {
 
     public function getBlog($id){
-        return Blogs::where('user_id', auth()->user()->id)->where('id', $id)->first();
+        return Blogs::where('id', $id)->first();
     }
 
     public function getBlogs($category_slug = '', $sub_category_slug = '')
@@ -34,12 +34,6 @@ class EloquentBlogRepository
         return $blogs;
     }
 
-    public function getNext($id)
-    {
-        $next =Blogs::where('blogs.id', '<>', $id)
-            ->orderByRaw('RAND()')
-            ->first();
-        return $next;
-    }
+
 
 }

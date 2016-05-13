@@ -59,7 +59,7 @@
 
                 <div class="col-md-10 col-md-offset-1 col-sm-12 companies">
 
-                    <h1>Explore Jobs</h1>
+                    <h1>Explore Blogs</h1>
 
                     <div class="row">
 

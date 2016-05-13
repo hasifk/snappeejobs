@@ -14,7 +14,7 @@
 
                     </h1>
                     <div class="boxWrap">
-                        {!! $blog->image !!}
+                        {!! $blog->getImageAttribute() !!}
 
                     </div>
 
@@ -28,7 +28,6 @@
                            {{ $blog->content }}
                     </div>
 
-                    <a href="{{ route('blogs.next', $blog->id) }}" class="btn-primary MB-60">NEXT BLOG</a>
 
 
 

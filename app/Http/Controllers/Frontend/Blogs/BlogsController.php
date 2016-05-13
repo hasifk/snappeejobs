@@ -71,12 +71,6 @@ class BlogsController extends Controller
     }
 
     /**************************************************************************************************/
-    public function next($id) {
-        $view = [
-            'blog' => $this->repository->getNext($id)
-        ];
-        return view('frontend.blogs.show',$view);
-    }
- /***************************************************************************************************/
+
 
 }

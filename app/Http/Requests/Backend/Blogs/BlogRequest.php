@@ -6,7 +6,8 @@ use App\Http\Requests\Request;
  * Class RegisterRequest
  * @package App\Http\Requests\Frontend\Access
  */
-class BlogRequest extends Request {
+class BlogRequest extends Request
+{
 
     /**
      * Determine if the user is authorized to make this request.
@@ -26,20 +27,21 @@ class BlogRequest extends Request {
     public function rules()
     {
         return [
-            'author' 		=> 'required|max:255',
-            'blog_category'	=> 'required',
-            'blog_sub_cat'		=> 'required',
-            'videolink'                 => 'required|youtube_vimeo',
-            'content'=> 'required',
+            'title' => 'required|max:255',
+            'blog_category' => 'required',
+            'blog_sub_cat' => 'required',
+            'videolink' => 'youtube_vimeo',
+            'content' => 'required',
         ];
     }
 
-    public function messages(){
+    public function messages()
+    {
         return [
-            'blog_category.required'           => 'Blog Category is required',
-            'blog_sub_cat.required'             => 'Blog subCategory is required',
-             'videolink.required'                => 'Youtube/vimeo Field cannot be empty',
-            'videolink.youtube_vimeo'                => 'Please enter a valid Youtube/vimeo link'
+            'blog_category.required' => 'Blog Category is required',
+            'blog_sub_cat.required' => 'Blog subCategory is required',
+            'videolink.required' => 'Youtube/vimeo Field cannot be empty',
+            'videolink.youtube_vimeo' => 'Please enter a valid Youtube/vimeo link'
         ];
     }
 }

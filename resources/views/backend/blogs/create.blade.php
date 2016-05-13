@@ -23,42 +23,31 @@
                     <form method="POST" action="{{ route('frontend.blogsave') }}" accept-charset="UTF-8" role="form" enctype='multipart/form-data' >
                          {{ csrf_field() }}
                         <div class="box-body">
-                            
+
                             <div class="form-group col-xs-12">
-                                
-                                <div class="row">
-                                    
-                                <label>Author</label>
-                                
-                                <input type="text" name="author" class="form-control" placeholder="Author's Name">
-                                
-                                </div>
-                                
-                            </div>
-                            <div class="form-group col-xs-6">
 
                                 <div class="row">
 
-                                    <label>Author's Image</label>
+                                <label>Title</label>
 
-                                    <input type="file" name="author_img" class="form-control">
+                                <input type="text" name="title" class="form-control" placeholder="Blog Title">
 
                                 </div>
 
                             </div>
-                            <div class="form-group col-xs-6">
+                            <div class="form-group col-xs-12">
                                 
                                 <div class="row">
                                     
                                 <label>Image</label>
                                 
-                                <input type="file" name="image" class="form-control">
+                                <input type="file" name="file" class="form-control">
                                 
                                 </div>
                                 
                             </div>
                             
-                            <div class="form-group col-xs-6">
+                            <div class="form-group col-xs-12">
                                 @if(!empty($categories))
                                 <label for="exampleInputPassword1">Select Category</label>
                                 
@@ -76,7 +65,7 @@
                                 
                             </div>
 
-                            <div class="form-group col-xs-6">
+                            <div class="form-group col-xs-12">
                                 @if(!empty($sub_categories))
                                     <label for="exampleInputPassword1">Select Sub Category</label>
 

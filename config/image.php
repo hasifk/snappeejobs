@@ -139,8 +139,17 @@ return array(
                 'height' => 25,
                 'width'  => 25,
             ]
+        ],
+        'blog_photo' => [
+            [
+                'height' => 218,
+                'width'  => 297,
+            ],
+            [
+                'height' => 350,
+                'width'  => 750,
+            ]
         ]
-
     ]
 
 );

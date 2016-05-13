@@ -18,63 +18,89 @@
             <!-- left column -->
             <div class="col-md-12">
                 <div class="box box-primary">
-                    <!--                <div class="box-header with-border">
-                                        <h3 class="box-title">Add Push Notifications</h3>
-                                    </div> /.box-header -->
-                    <!-- form start -->
-                    <form method="POST" action="{{ route('backend.admin.cmssave') }}" accept-charset="UTF-8" role="form" enctype='multipart/form-data' >
-                         {{ csrf_field() }}
+                    <form method="POST" action="{{ route('frontend.blogsave') }}" accept-charset="UTF-8" role="form" enctype='multipart/form-data' >
+                        {{ csrf_field() }}
                         <div class="box-body">
-                            
+
                             <div class="form-group col-xs-12">
+
                                 <div class="row">
-                                <label for="exampleInputPassword1">Heading</label>
-                                <input type="text" name="heading" class="form-control" placeholder="Heading" value="{{$cms->header}}">
+
+                                    <label>Title</label>
+
+                                    <input type="text" name="title" class="form-control" value="{{ old('title') ? old('title') : $blog->title }}" placeholder="Blog Title">
+
                                 </div>
+
                             </div>
-                            
-                            <div class="form-group col-xs-6">
-                                
+                            <div class="form-group col-xs-12">
+
                                 <div class="row">
-                                    
-                                <label for="exampleInputPassword1">Image</label>
-                                
-                                <input type="file" name="img" class="form-control" value="">
-                                
+
+                                    <label>
+                                        Image
+                                        {!! $blog->imagethumb !!}
+                                    </label>
+
+                                    <input type="file" name="file" class="form-control">
+
                                 </div>
-                                
+
                             </div>
-                            <?php if(!empty($cms->img)):
-                            $class="col-xs-4"; 
-                             ?>
-                            <div class="form-group col-xs-2">
-                                <img src="{!! $cms->getAvatarImage(25) !!}" width="60" height="50">
+
+                            <div class="form-group col-xs-12">
+                                @if(!empty($categories))
+                                    <label for="exampleInputPassword1">Select Category</label>
+
+                                    <select name="blog_category" id="blog_category" class="select2">
+                                        <option value="">Please select</option>
+                                        @foreach($categories as $category1)
+
+                                            <option value="{{$category1->id}}"
+                                                    {{ old('blog_category') && $category1->id == old('blog_category') ? 'selected="selected"' : ( $blog->blog_category_id && $category1->id == $blog->blog_category_id ? 'selected="selected"' : '' ) }}>
+                                                {{$category1->name}}</option>
+                                        @endforeach
+
+                                    </select>
+                                @endif
+
                             </div>
-                           <?php
-                           else:
-                               $class="col-xs-6";
-                           
-                           endif; ?> 
-                            <div class="form-group <?php echo $class;?>">
-                                
-                                <label for="exampleInputPassword1">Select Type</label>
-                               {!! Form::select('type', array('Article' => 'Article', 'Blog' => 'Blog'),$cms->type,array('class'=>'form-control')) !!}
+
+                            <div class="form-group col-xs-12">
+                                @if(!empty($sub_categories))
+                                    <label for="exampleInputPassword1">Select Sub Category</label>
+
+                                    <select name="blog_sub_cat" id="blog_sub_cat" class="select2">
+                                        <option value="">Please select</option>
+                                        @foreach($sub_categories as $category1)
+                                            <option value="{{$category1->id}}"
+                                                    {{ old('blog_sub_cat') && $category1->id == old('blog_sub_cat') ? 'selected="selected"' : ( $blog->blog_sub_cat_id && $category1->id == $blog->blog_sub_cat_id ? 'selected="selected"' : '' ) }}
+                                            >{{$category1->name}}</option>
+                                        @endforeach
+
+                                    </select>
+                                @endif
+
                             </div>
-                            
+
                             <div class="form-group">
+
                                 <label for="exampleInputPassword1">Content</label>
-                                <textarea class="form-control textarea" name="content" cols="30" rows="5">{{ $cms->content }}</textarea>
+                                <textarea class="form-control textarea" name="content" cols="30" rows="5">{{ old('content') ? old('content') : $blog->content }}</textarea>
+
                             </div>
-                            
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Video Link</label>
+                                <input type="text" name="videolink" class="form-control" value="{{ old('videolink') ? old('videolink') : $blog->videolink }}" placeholder="https://www.youtube.com"/>
+                            </div>
                         </div>
-                         
-                         <!-- /.box-body -->
+
+                        <!-- /.box-body -->
 
                         <div class="box-footer">
-                            {!! Form::hidden('id',$cms->id) !!}
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="submit" class="btn btn-primary">Update</button>
                         </div>
-                         
+
                     </form>
                 </div><!-- /.box -->
             </div>

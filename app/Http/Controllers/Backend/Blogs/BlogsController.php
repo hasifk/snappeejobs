@@ -47,6 +47,18 @@ class BlogsController extends Controller
         return view('backend.blogs.index',$view);
     }
 
+    public function editBlog(Request $request, $id){
+
+        $blog = $this->repository->getBlog($id);
+
+        $view = [
+            'blog' => $blog,
+            'categories' => BlogCategories::all(),
+            'sub_categories' => BlogSubCategories::all()
+        ];
+        return view('backend.blogs.edit',$view);
+    }
+    
  /**************************************************************************************************/
   public function createBlog()
   {

@@ -27,9 +27,9 @@
         @foreach ($blogs as $value)
             <tr>
                 <td>{{ $f++ }}</td>
-                <td>{{ str_limit($value->author, $limit =80, $end = '...') }}</td>
-                <td>{{ $value->blog_category_id }}</td>
-                <td>{{ $value->blog_sub_cat_id }}</td>
+                <td>{{ str_limit($value->author, 80) }}</td>
+                <td>{{ $value->categoryname }}</td>
+                <td>{{ $value->subcategoryname}}</td>
                 <td>{!! $value->action_buttons !!}</td>
             </tr>
         @endforeach

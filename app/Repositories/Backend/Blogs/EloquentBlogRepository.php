@@ -11,6 +11,11 @@ use Storage;
  */
 class EloquentBlogRepository
 {
+
+    public function getBlog($id){
+        return Blogs::where('user_id', auth()->user()->id)->where('id', $id)->first();
+    }
+
     public function getBlogs()
     {
         return Blogs::where('user_id', Auth::user()->id)->orderBy('blogs.id', 'desc')
@@ -27,6 +32,7 @@ class EloquentBlogRepository
             $obj->user_id = $userid;
         }
         $obj->title = $request->title;
+        $obj->content = $request->content;
         $link=$request->videolink;
         $youtube_id=$vimeo_id='';
         if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $link, $match))

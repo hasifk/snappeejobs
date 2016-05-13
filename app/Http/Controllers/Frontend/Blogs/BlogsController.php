@@ -39,7 +39,9 @@ class BlogsController extends Controller
     {
 
         $view = [
-            'Blogs' => $this->repository->getBlogs(),
+            'categories'=>BlogCategories::all(),
+            'subcategories'=>BlogSubCategories::all(),
+            'blogs' => $this->repository->getBlogs(),
         ];
 
         return view('frontend.blogs.index',$view);

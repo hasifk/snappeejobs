@@ -65,7 +65,7 @@ class EloquentBlogRepository
                 }
             }
 
-            $filePath = "cms/" . $obj->id ."/avatar/";
+            $filePath = "blogs/" . $obj->id ."/avatar/";
             Storage::put($filePath. $avatar->getClientOriginalName() , file_get_contents($avatar));
             Storage::setVisibility($filePath. $avatar->getClientOriginalName(), 'public');
 

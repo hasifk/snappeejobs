@@ -1,14 +1,9 @@
 @extends('frontend.layouts.masternew')
 
 @section('search_div')
-
     <div class="container com-search">
-
         <div class="row">
-
             <div class="col-md-8 col-sm-12 col-md-offset-2">
-
-
                 @if(!empty($categories))
                 <div class="body-wrap">
                     <div>
@@ -48,11 +43,9 @@
                     </div>
                 </div>
                 @endif
-
             </div>
         </div>
     </div>
-
 @endsection
 
 

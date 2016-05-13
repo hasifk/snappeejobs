@@ -46,36 +46,22 @@ class BlogsController extends Controller
 
         return view('frontend.blogs.index',$view);
     }
+    /**************************************************************************************************/
 
-    public function editBlog(Request $request, $id){
-
-        $blog = $this->repository->getBlog($id);
-
+    public function show($id) {
         $view = [
-            'blog' => $blog,
-            'categories' => BlogCategories::all(),
-            'sub_categories' => BlogSubCategories::all()
+        'blog' => $this->repository->getBlog($id)
         ];
-        return view('backend.Blogs.edit',$view);
+        return view('frontend.blogs.show',$view);
     }
-    
- /**************************************************************************************************/
-  public function createBlog()
-  {
-      $view = [
-          'categories' => BlogCategories::all(),
-          'sub_categories' => BlogSubCategories::all(),
-      ];
-      return view('backend.Blogs.create',$view);
-  }
-    /**************************************************************************************************/
-    public function SaveBlog(Requests\Backend\Blogs\BlogRequest $request) {
 
-        $this->repository->save($request);
-        return redirect()->route('Blogs.manageblogs');
-    }
     /**************************************************************************************************/
-    public function showCms($id) {
-
+    public function next($id) {
+        $view = [
+            'blog' => $this->repository->getNext($id)
+        ];
+        return view('frontend.blogs.show',$view);
     }
+ /***************************************************************************************************/
+
 }

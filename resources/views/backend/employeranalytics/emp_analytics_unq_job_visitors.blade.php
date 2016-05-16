@@ -13,9 +13,6 @@
 @endsection
 
 @section('content')
-    <div class="row">
-
-
 
 
         @roles(['Employer', 'Employer Staff'])
@@ -63,8 +60,6 @@
             </div><!-- /.box -->
         @endif
         @endauth
-
-    </div>
 
 
 

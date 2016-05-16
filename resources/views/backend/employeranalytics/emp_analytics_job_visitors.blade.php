@@ -13,7 +13,6 @@
 @endsection
 
 @section('content')
-    <div class="row">
 
 
 
@@ -64,7 +63,7 @@
         @endif
         @endauth
 
-    </div>
+    
 
 
 

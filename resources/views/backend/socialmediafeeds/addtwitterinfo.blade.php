@@ -13,7 +13,7 @@
 @endsection
 
 @section('content')
-    <div class="row">
+    
         @if (Session::has('tw_success'))
             <div class="alert alert-success">{{ Session::get('tw_success') }}</div>
         @endif
@@ -47,8 +47,6 @@
 
 
         @endauth
-
-    </div>
 
 
 

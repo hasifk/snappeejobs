@@ -15,20 +15,25 @@
                     </h1>
                     <div class="boxWrap">
                         {!! $blog->image !!}
-
-
                     </div>
 
 
                     <div class="clearfix"></div>
 
 
-
-
-                    <div class="col-lg-8 about-job">
-                           {!! $blog->content !!}
+                    <div style="padding: 10px;" class="col-lg-8 about-job">
+                           <p>
+                               {!! $blog->content !!}
+                           </p>
                     </div>
-
+                    
+                    <div class="col-lg-8 about-job">
+                        @if($blog->authorimage)
+                        {!! $blog->authorimage !!}
+                        @endif
+                        <br>
+                        {{ $blog->authoraboutme }}
+                    </div>
 
 
 

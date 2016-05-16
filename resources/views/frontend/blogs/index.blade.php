@@ -70,7 +70,7 @@
                                         {!! $blog->getImagethumbAttribute(297, 218) !!}
                                     </div>
                                     <br>
-                                    <a href="#">{{ $blog->title }}</a>
+                                    <a href="{{ route('blogs.view', $blog->id) }}">{{ $blog->title }}</a>
                                     <p>
                                         By {{ $blog->author }}
                                     </p>

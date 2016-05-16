@@ -61,7 +61,7 @@
                 </p>
 
                 <p>
-                    Resume : <a href="{{ $job_application->jobseeker->resume }}" class="btn btn-primary">Download</a>
+                    Resume : <a href="{{ $job_application->jobseeker->resume }}" target="blank" class="btn btn-primary">Download</a>
                 </p>
 
             @endif

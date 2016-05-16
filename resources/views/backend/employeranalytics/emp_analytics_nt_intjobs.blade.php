@@ -13,7 +13,6 @@
 @endsection
 
 @section('content')
-    <div class="row">
 
 
 
@@ -43,7 +42,7 @@
         </div>
         @endauth
 
-    </div>
+    
 
 
 

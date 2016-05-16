@@ -2,8 +2,8 @@
 
 @section('page-header')
 <h1>
-SnappeeJobs
-<small>{{ trans('strings.backend.dashboard_title') }}</small>
+    SnappeeJobs
+    <small>{{ trans('strings.backend.dashboard_title') }}</small>
 </h1>
 @endsection
 
@@ -13,7 +13,6 @@ SnappeeJobs
 @endsection
 
 @section('content')
-<div class="row">
 
 
 
@@ -27,39 +26,38 @@ SnappeeJobs
 
 
 <div class="box">
-<div class="box-header with-border">
-<h3 class="box-title">Company Visitors</h3>
-</div><!-- /.box-header -->
-<div class="box-body">
-<table class="table table-bordered">
-<tr>
-<th>Name</th>
-<th>Country</th>
-<th>Latitude</th>
-<th style="width: 40px">Longitude</th>
-</tr>
+    <div class="box-header with-border">
+        <h3 class="box-title">Company Visitors</h3>
+    </div><!-- /.box-header -->
+    <div class="box-body">
+        <table class="table table-bordered">
+            <tr>
+                <th>Name</th>
+                <th>Country</th>
+                <th>Latitude</th>
+                <th style="width: 40px">Longitude</th>
+            </tr>
 
-@foreach($company_visitors as $cmp)
-<tr>
-<td>Guest.</td>
-<td>{{$cmp->country}}</td>
-<td>
-{{$cmp->latitude}}
-</td>
-<td>{{$cmp->longitude}}</td>
-</tr>
-@endforeach
-<div class="col-md-12 center-block">
-{!! $company_visitors->render() !!}
-</div>
-</table>
-</div><!-- /.box-body -->
+            @foreach($company_visitors as $cmp)
+            <tr>
+                <td>Guest.</td>
+                <td>{{$cmp->country}}</td>
+                <td>
+                    {{$cmp->latitude}}
+                </td>
+                <td>{{$cmp->longitude}}</td>
+            </tr>
+            @endforeach
+            <div class="col-md-12 center-block">
+                {!! $company_visitors->render() !!}
+            </div>
+        </table>
+    </div><!-- /.box-body -->
 
 </div><!-- /.box -->
 @endif
 @endauth
 
-</div>
 
 
 

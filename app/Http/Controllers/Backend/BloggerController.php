@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Controller;
 
+use App\Http\Requests\Backend\Blogs\MakeBlogApprovedRequest;
 use App\Http\Requests\Backend\Employer\SocialFeeds\TwitterInfoRequest;
 use App\Models\Access\User\User;
 use App\Repositories\Backend\Blogger\EloquentBloggerRepository;
@@ -80,6 +81,32 @@ EloquentBloggerRepository $repository,RoleRepositoryContract $role)
     }
     /************************************************************************************************************/
 
+    public function approveBlogs(Request $request)
+    {
+        if ( access()->hasRole('Administrator') ) {
+            $blogs= $this->repository->getBlogs();
+
+            $view = [
+                'blogs' => $blogs,
+            ];
+
+            return view('backend.bloggers.blogs_to_approve', $view);
+        }
+
+    }
+    /************************************************************************************************************/
+    public function storeApproval(Request $request)
+    {
+        if ( access()->hasRole('Administrator') ) {
+          $this->repository->storeApproval($request);
+
+
+
+            return back()->withFlashSuccess('Your Blog approval status updated successfully.');;
+        }
+
+    }
+    /************************************************************************************************************/
 
 
 

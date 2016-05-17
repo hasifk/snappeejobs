@@ -54,7 +54,7 @@
 
                 <div class="col-md-6">
                     <h2>Office life at {{ $company->title }} </h2>
-                    <p> {{ $company->office_life }} </p>
+                    <p> {{ $company->office_life }} </p> 
                 </div>
 
                 <!--<div class="col-md-5">

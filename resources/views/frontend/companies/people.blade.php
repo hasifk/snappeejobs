@@ -16,8 +16,11 @@
         </div>
         <div class="panel-body">
             <div class="col-md-8">
-                <!--<img src="{{ $people->path . $people->filename . $people->extension }}" alt="company photo" width="400">-->
+                @if($people->path)
+                <img src="{{env('APP_S3_URL') . $people->path . $people->filename. '295x297.' .$people->extension }}" alt="company photo" width="680" height="380">
+               @else
                 <img src="http://dummyimage.com/680x380/888/000.jpg" alt="company photo" >
+                @endif
             </div>
 
             <div class="col-md-4">
@@ -44,7 +47,7 @@
                 @unless($ppl->id == $people->id)
                 <div class="col-md-4">
                     <a href="/companies/{{ $company->url_slug }}/people/{{ $ppl->id }}">
-                        <img src="{{ $ppl->path . $ppl->filename . $ppl->extension }}" alt="people company" >
+                        <img src="{{env('APP_S3_URL').$ppl->path . $ppl->filename . '295x297.' . $ppl->extension }}" alt="people company" >
                         <h3>
                             {{ $ppl->name }}
                         </h3>

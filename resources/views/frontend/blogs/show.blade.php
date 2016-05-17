@@ -1,6 +1,10 @@
 @extends('frontend.layouts.masternew')
 
-
+@section('after-styles-end')
+    <style>
+        
+    </style>
+@endsection
 
 @section('content')
 @if(!empty($blog))
@@ -28,60 +32,72 @@
                     </div>
                     
                     <br clear="all">
-                    @if($blog->youtube_id)
-                        <style>
-                            .embed-container {
-                                position: relative;
-                                padding-bottom: 56.25%;
-                                height: 0; overflow:
-                                    hidden;
-                                max-width: 100%;
-                            }
-                            .embed-container iframe, .embed-container object, .embed-container embed {
-                                position: absolute;
-                                top: 0;
-                                left: 0;
-                                width: 100%;
-                                height: 100%;
-                            }
-                        </style>
-                        <div class='embed-container'>
-                            <iframe src="//www.youtube.com/embed/{{$blog->youtube_id}}" frameborder="0" allowfullscreen></iframe>
-                        </div>
-                    @elseif($blog->vimeo_id)
-                        <style>
-                            .embed-container {
-                                position: relative;
-                                padding-bottom: 56.25%;
-                                height: 0;
-                                overflow: hidden;
-                                max-width: 100%;
-                            }
-                            .embed-container iframe, .embed-container object, .embed-container embed {
-                                position: absolute;
-                                top: 0;
-                                left: 0;
-                                width: 100%;
-                                height: 100%;
-                            }
-                        </style>
-                        <div class='embed-container'>
-                            <iframe src='http://player.vimeo.com/video/{{$blog->vimeo_id}}'
-                                    frameborder='0'
-                                    webkitAllowFullScreen
-                                    mozallowfullscreen
-                                    allowFullScreen
-                            ></iframe>
-                        </div>
-                    @endif    
-
-                    <div class="col-lg-8 about-job">
-                        @if($blog->authorimage)
-                        {!! $blog->authorimage !!}
+                    
+                    <div class="col-sm-8">
+                        @if($blog->youtube_id)
+                            <style>
+                                .embed-container {
+                                    position: relative;
+                                    padding-bottom: 56.25%;
+                                    height: 0; overflow:
+                                        hidden;
+                                    max-width: 100%;
+                                }
+                                .embed-container iframe, .embed-container object, .embed-container embed {
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    width: 100%;
+                                    height: 100%;
+                                }
+                            </style>
+                            <div class='embed-container'>
+                                <iframe src="//www.youtube.com/embed/{{$blog->youtube_id}}" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                        @elseif($blog->vimeo_id)
+                            <style>
+                                .embed-container {
+                                    position: relative;
+                                    padding-bottom: 56.25%;
+                                    height: 0;
+                                    overflow: hidden;
+                                    max-width: 100%;
+                                }
+                                .embed-container iframe, .embed-container object, .embed-container embed {
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    width: 100%;
+                                    height: 100%;
+                                }
+                            </style>
+                            <div class='embed-container'>
+                                <iframe src='http://player.vimeo.com/video/{{$blog->vimeo_id}}'
+                                        frameborder='0'
+                                        webkitAllowFullScreen
+                                        mozallowfullscreen
+                                        allowFullScreen
+                                ></iframe>
+                            </div>
                         @endif
-                        <br>
-                        {{ $blog->authoraboutme }}
                     </div>    
+
+                    <br clear="all">
+                    <hr>
+
+                    <div class="media">
+                        @if($blog->authorimage)
+                        <a class="pull-left">
+                            {!! $blog->authorimage !!}
+                        </a>
+                        @endif
+                        <div class="media-body">
+                            <h4 class="media-heading"></h4>
+                            {{ $blog->authoraboutme }}
+                        </div>
+                    </div>
+                    <br>
+                    <br>
     </div>
 </section>
     @endif

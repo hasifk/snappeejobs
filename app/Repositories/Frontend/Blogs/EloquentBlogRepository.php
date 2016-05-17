@@ -13,7 +13,7 @@ class EloquentBlogRepository
 {
 
     public function getBlog($id){
-        return Blogs::where('id', $id)->first();
+        return Blogs::where('id', $id)->where('approved_at','!=','null')->first();
     }
 
     public function getBlogs($category_slug = '', $sub_category_slug = '')

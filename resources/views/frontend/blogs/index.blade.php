@@ -65,6 +65,7 @@
 
                         @if (count($blogs) > 0)
                             @foreach($blogs as $blog)
+                                @if($blog->approved_at!=null)
                                 <div class="col-sm-6 col-md-4 thumbs">
                                     <div>
                                         {!! $blog->getImagethumbAttribute(297, 218) !!}
@@ -75,6 +76,7 @@
                                         By {{ $blog->author }}
                                     </p>
                                 </div>
+                                @endif
                             @endforeach
 
                             <div class="pages">

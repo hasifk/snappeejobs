@@ -7,8 +7,9 @@
 @endsection
 
 @section('content')
-@if(!empty($blog))
+
 <section style="margin-top: 50px;">
+    @if(!empty($blog))
     <div class="bodycontent">
         <div class="container">
             <div class="job-view row job-details">
@@ -99,8 +100,14 @@
                     <br>
                     <br>
     </div>
-</section>
+    @else
+                    <div class="container com-search margin-top" style="margin-top: 7%; margin-bottom: 50px;">
+                    <h3>Nothing Found</h3>
+              </div>
     @endif
+</section>
+
+
  @endsection
 @section('after-scripts-end')
 

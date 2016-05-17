@@ -1,6 +1,6 @@
 @extends ('backend.layouts.master')
 
-@section ('title', 'Bloggers')
+@section ('title', 'Jobseekers')
 
 @section('page-header')
     <h1>

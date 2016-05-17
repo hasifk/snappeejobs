@@ -71,15 +71,15 @@ class Blogs extends Model
         }
     }
 
-    public function getAuthorimageAttribute($width = 90, $height = 90){
+    public function getAuthorimageAttribute($width = 90, $height = 90, $class = 'img-circle'){
         $width = 90;
         $author = \DB::table('users')->where('id', $this->user_id)->first(['avatar_filename', 'avatar_extension', 'avatar_path']);        
         if ($author->avatar_filename && $author->avatar_extension && $author->avatar_path) {
-            return '<img src="'.
+            return '<img class="'. $class .'" src="'.
             'https://s3-'. env('AWS_S3_REGION', 'eu-west-1') .'.amazonaws.com/'.
             env('AWS_S3_BUCKET', 'snappeejobs').'/'.
             $author->avatar_path.$author->avatar_filename.$width.'x'.$height.'.'.$author->avatar_extension .
-            '" alt="image" style="height: '.$height.'px; width: '.$width.'px;">';
+            '" alt="image">';
         } else {
             return '';
         }

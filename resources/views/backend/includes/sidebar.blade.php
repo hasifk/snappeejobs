@@ -194,6 +194,9 @@
                           <li class="{{ Active::pattern('admin/availablebloggers/*') }}">
                               <a href="{!!url(route('backend.availablebloggers'))!!}">{{ 'Available Bloggers' }}</a>
                           </li>
+                          <li class="{{ Active::pattern('admin/approveblogs/*') }}">
+                              <a href="{!!url(route('backend.approveblogs'))!!}">{{ 'Approve Blogs' }}</a>
+                          </li>
                   </ul>
                   </li>
                   @endauth

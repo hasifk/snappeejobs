@@ -24,6 +24,7 @@ class CreateBlogsTable extends Migration
             $table->longText('content');
             $table->string('youtube_id');
             $table->string('vimeo_id');
+            $table->dateTime('approved_at')->nullable()->default(null);
             $table->timestamps();
         });
     }

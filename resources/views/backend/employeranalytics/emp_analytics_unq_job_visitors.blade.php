@@ -40,7 +40,7 @@
                                 @if($job->visitors==1)
                                 <tr>
                                     <td><a href="{{ route('jobs.view' , [ $job->url_slug , $job->title_url_slug ] ) }}">{{ $job->title }}</a></td>
-                                    <td><a href="{{ route('jobseeker.show' , [ $job->user_id ] ) }}">{{ $job->name }}</a></td>
+                                    <td><a href="{{ route('backend.employerjobseekers.show' , [ $job->jobseeker ] ) }}">{{ $job->name }}</a></td>
                                     <td>{{$job->country}}</td>
                                     <td>
                                         {{$job->latitude}}

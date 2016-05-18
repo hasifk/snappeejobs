@@ -38,7 +38,7 @@
                     @foreach($company_unique_visitors as $cmp)
                             @if($cmp->visitors==1)
                             <tr>
-                                <td> <a href="{{ route('jobseeker.show' , [ $cmp->user_id ] ) }}">{{ $cmp->name }}</a></td>
+                                <td> <a href="{{ route('backend.employerjobseekers.show' , [ $cmp->jobseeker ] )  }}">{{ $cmp->name }}</a></td>
                                 <td>{{$cmp->country}}</td>
                                 <td>
                                     {{$cmp->latitude}}

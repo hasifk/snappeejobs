@@ -50,6 +50,7 @@ DashboardRepository $dashboard) {
                                 'job_seeker_details.id',
                                 'users.name',
                                 \DB::raw('users.id AS userid'),
+                                \DB::raw('job_seeker_details.id as jobseeker')
                             ])->paginate(config('jobs.default_per_page'));
             $view = [
                 'interested_jobs' => $interested_jobs,

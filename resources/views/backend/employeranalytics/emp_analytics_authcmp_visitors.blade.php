@@ -41,7 +41,7 @@
                     @if(count($company_auth_visitors)>0)
                         @foreach($company_auth_visitors as $cmp)
                             <tr>
-                                <td> <a href="{{ route('jobseeker.show' , [ $cmp->user_id ] ) }}">{{ $cmp->name }}</a></td>
+                                <td> <a href="{{ route('backend.employerjobseekers.show' , [ $cmp->jobseeker ] ) }}">{{ $cmp->name }}</a></td>
                                 <td>{{$cmp->country}}</td>
                                 <td>
                                     {{$cmp->latitude}}

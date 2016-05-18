@@ -34,7 +34,7 @@
                 @endif
                 @if($jobseeker_user->state_id)
                     <tr>
-                        <td>Country</td>
+                        <td>State</td>
                         <td>{{ $jobseeker_user->statename }}</td>
                     </tr>
                 @endif

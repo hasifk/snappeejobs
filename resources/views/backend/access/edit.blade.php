@@ -180,9 +180,11 @@
         </div><!--well-->
 
     @if ($user->id == 1)
-        {!! Form::hidden('status', 1) !!}
-        {!! Form::hidden('confirmed', 1) !!}
-        {!! Form::hidden('assignees_roles[]', 1) !!}
+        <input type="hidden" name="status" value="1">
+        <input type="hidden" name="confirmed" value="1">
+        <input type="hidden" name="assignees_roles[]" value="1">
+        <input type="hidden" name="gender" value="{{ $user->gender ? $user->gender : 'male' }}">
+        <input type="hidden" name="dob" value="{{ $user->dob }}">
     @endif
 
     {!! Form::close() !!}

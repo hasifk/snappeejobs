@@ -1,16 +1,16 @@
 @extends ('backend.layouts.master')
 
-@section ('title', 'Edit CMS')
+@section ('title', 'Edit Blog')
 
 @section('page-header')
 <h1>
-    Edit CMS - Articles/Blogs
+    Edit Blogs
 </h1>
 @endsection
 
 @section('content')
 
-@include('backend.admin.includes.partials.cms.header-buttons')
+
 
 <section class="content">
     <div class="row" id='notification_add'>

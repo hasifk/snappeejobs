@@ -13,7 +13,13 @@ class EloquentBlogRepository
 {
 
     public function getBlog($id){
-        return Blogs::where('id', $id)->where('approved_at','!=','null')->first();
+        if ( access()->hasRole('Administrator') ) {
+            return Blogs::where('id', $id)->first();
+        }
+        else
+        {
+            return Blogs::where('id', $id)->where('approved_at', '!=', 'null')->first();
+        }
     }
 
     public function getBlogs($category_slug = '', $sub_category_slug = '')

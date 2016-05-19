@@ -74,7 +74,7 @@
                 <tr>
                     <td>Name</td>
                     <td>
-                        {{ $job_application->jobseeker->name }}
+                        <a href="{{ route('backend.employerjobseekers.show' , [ $job_seeker ] ) }}" target="blank"> {{ $job_application->jobseeker->name }}</a>
                     </td>
                 </tr>
                 <tr>

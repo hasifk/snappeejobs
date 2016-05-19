@@ -43,7 +43,9 @@
                                         @endif
                                     </td>
                                     <td>
+                                        @if($application->thread_id)
                                         <a href="{{ route('frontend.message', $application->thread_id) }}" class="btn btn-primary">Conversation</a>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

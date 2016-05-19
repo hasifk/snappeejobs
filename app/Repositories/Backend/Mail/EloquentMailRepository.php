@@ -150,6 +150,29 @@ class EloquentMailRepository
         return $inbox;
     }
 
+    public function applicationinbox($per_page, $status = 1, $order_by = 'threads.updated_at', $sort = 'desc'){
+        $inbox = \DB::table('thread_participants')
+            ->join('threads','thread_participants.thread_id','=','threads.id')
+            ->join('users','thread_participants.sender_id','=','users.id')
+            ->whereNull('thread_participants.deleted_at')
+            ->whereNotNull('threads.application_id')
+            ->where('thread_participants.user_id',auth()->user()->id)
+            ->orderBy('thread_participants.updated_at')
+            ->select([
+                'users.name',
+                'threads.subject',
+                'threads.last_message',
+                'threads.message_count',
+                'threads.created_at',
+                'threads.updated_at',
+                'thread_participants.thread_id',
+                'thread_participants.read_at',
+            ])
+            ->orderBy($order_by, $sort)->paginate($per_page);
+
+        return $inbox;
+    }
+
     public function sent($per_page, $status = 1, $order_by = 'threads.updated_at', $sort = 'desc'){
         $inbox = \DB::table('thread_participants')
             ->join('threads','thread_participants.thread_id','=','threads.id')

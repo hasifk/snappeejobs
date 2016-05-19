@@ -153,14 +153,37 @@
 
                 @roles(['Employer', 'Employer Staff'])
                 @permission('employer-jobs-view-jobapplications')
-                <li class="{{ Active::pattern('admin/employer/jobs/*') }}">
-                  <a href="{!!route('admin.employer.jobs.applications')!!}">
-                    <i class="fa fa-suitcase"></i>
+                  <li class="{{ Active::pattern('admin/employer/jobs/applications/*') }}" treeview>
+
+                      <a href="#">
+                          <i class="fa fa-suitcase"></i>
+                        <span>
+                           Job Applications
+                        </span>
+                      </a>
+                      <ul class="treeview-menu {{ Active::pattern('admin/employer/jobs/applications/*', 'menu-open') }}"
+                          style="display: none; {{ Active::pattern('admin/employer/jobs/applications/*', 'display: block;') }}">
+
+                          <li class="{{ Active::pattern('admin/employer/jobs/applications/*') }}">
+                              <a href="{!!route('admin.employer.jobs.applications')!!}">
+                                  <i class="fa fa-suitcase"></i>
                         <span>
                           Job Applications
                         </span>
-                  </a>
-                </li>
+                              </a>
+                          </li>
+                          <li class="{{ Active::pattern('admin/employer/jobs/applications/*') }}">
+                              <a href="{!!route('admin.employer.jobs.applicationinbox')!!}">
+                                  <i class="fa fa-suitcase"></i>
+                        <span>
+                          Job Applications Inbox
+                        </span>
+                              </a>
+                          </li>
+
+                      </ul>
+                  </li>
+
                 @endauth
                 @endauth
 

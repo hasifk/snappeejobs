@@ -39,6 +39,7 @@ class JobsController extends Controller
      */
     private $permissions;
     private $userLogs;
+    private $mail;
     /**
      * JobsController constructor.
      * @param EloquentJobRepository $jobs
@@ -46,12 +47,13 @@ class JobsController extends Controller
      * @param PermissionRepositoryContract $permissions
      */
     public function __construct(EloquentJobRepository $jobs, RoleRepositoryContract $roles, PermissionRepositoryContract $permissions,
-LogsActivitysRepository $userLogs)
+LogsActivitysRepository $userLogs,EloquentMailRepository $mail)
     {
         $this->jobs = $jobs;
         $this->roles = $roles;
         $this->permissions = $permissions;
         $this->userLogs = $userLogs;
+        $this->mail = $mail;
     }
 
     /**
@@ -302,7 +304,16 @@ LogsActivitysRepository $userLogs)
 
         return view('backend.employer.jobs.application', $view);
     }
+/************************************************************************************************************************/
+    public function applicationinbox(){
 
+        $view = [
+            'inbox' => $this->mail->applicationinbox(config('access.users.default_per_page'))
+        ];
+
+        return view('backend.employer.jobs.applicationinbox', $view);
+    }
+ /******************************************************************************************************************************/
     public function applicationChangeStatus(JobApplicationChangeStatus $request, $id){
 
         $job_application_id = \DB::table('job_applications')

@@ -27,6 +27,7 @@ $router->group([
         post('jobs/manage-application-status/edit/{id}', 'JobsController@updateApplicationStatus')->name('admin.employer.jobs.manage.applicationstatus.update');
 
         get('jobs/applications', 'JobsController@applications')->name('admin.employer.jobs.applications');
+        get('jobs/applicationinbox', 'JobsController@applicationinbox')->name('admin.employer.jobs.applicationinbox');
         get('jobs/application/{id}', 'JobsController@application')->name('admin.employer.jobs.application');
         post('jobs/application/accept/{id}', 'JobsController@acceptJobApplication')->name('admin.employer.jobs.application.accept');
         post('jobs/application/decline/{id}', 'JobsController@declineJobApplication')->name('admin.employer.jobs.application.decline');

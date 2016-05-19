@@ -33,12 +33,12 @@
 
             <div class="form-group">
               <label for="">Password</label>
-              <input type="text" class="form-control" name="password" placeholder="Password">
+              <input type="password" class="form-control" name="password" placeholder="Password">
             </div>
 
             <div class="form-group">
               <label for="">Confirm Password</label>
-              <input type="text" class="form-control" name="password_confirmation" placeholder="Confirm Password">
+              <input type="password" class="form-control" name="password_confirmation" placeholder="Confirm Password">
             </div>
 
             <div class="form-group">

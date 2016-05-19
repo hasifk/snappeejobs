@@ -25,7 +25,7 @@
             @if($job->likes>0)
                 <li class="list-group-item">
                     <a href="{{ route('jobs.view' , [ $job->company->url_slug , $job->title_url_slug ] ) }}">{{ $job->title }}</a>
-                    Liked by:<a href="{{ route('jobseeker.show' , [ $job->id ] ) }}">{{ $job->name }}</a>
+                    Liked by:<a href="{{ route('backend.employerjobseekers.show' , [ $job->jobseeker ] ) }}">{{ $job->name }}</a>
                 </li>
 
             @endif

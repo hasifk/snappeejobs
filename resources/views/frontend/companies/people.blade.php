@@ -47,7 +47,11 @@
                 @unless($ppl->id == $people->id)
                 <div class="col-md-4">
                     <a href="/companies/{{ $company->url_slug }}/people/{{ $ppl->id }}">
+                        @if($ppl->path)
                         <img src="{{env('APP_S3_URL').$ppl->path . $ppl->filename . '295x297.' . $ppl->extension }}" alt="people company" >
+                        @else
+                        <img src="http://dummyimage.com/295x297/888/000.jpg" alt="company photo" >
+                        @endif
                         <h3>
                             {{ $ppl->name }}
                         </h3>

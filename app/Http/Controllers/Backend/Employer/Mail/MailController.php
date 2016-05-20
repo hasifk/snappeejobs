@@ -128,6 +128,11 @@ class MailController extends Controller
         $thread = Thread::find($thread_id);
 
         if ( $thread->application_id ) {
+            $jobApplication=JobApplication::find( $thread->application_id);
+            $thread->subject = 'Job Application - ' .
+            $jobApplication->job->title . ' - ' .
+            $jobApplication->job->company->title;
+            $thread->save();
             event(new JobSeekerChatReceived($thread->id));
         }
 

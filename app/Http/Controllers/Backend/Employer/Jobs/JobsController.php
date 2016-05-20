@@ -353,19 +353,20 @@ LogsActivitysRepository $userLogs,EloquentMailRepository $mail)
         $jobApplication->accepted_at = Carbon::now();
 
         $jobApplication->save();
+        $subject='Job Application - ' .
+            $jobApplication->job->title . ' - ' .
+            $jobApplication->job->company->title;
 
         $request->merge([
             'to'            => $jobApplication->user_id,
-            'subject'       => 'Job Application - ' .
-                                $jobApplication->job->title . ' - ' .
-                                $jobApplication->job->company->title,
+            'subject'       => $subject,
             'message'       => 'The recruiter of the ' . $jobApplication->job->company->title .
                                 ' wants to chat with you regarding the opening for the post of ' .
                                 $jobApplication->job->title
         ]);
 
         $thread = $mailRepository->sendPrivateMessage($request);
-
+        $thread->subject = $subject;
         $thread->application_id = $jobApplication->id;
         $thread->employer_id = auth()->user()->id;
 

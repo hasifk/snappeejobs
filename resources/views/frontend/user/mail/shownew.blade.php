@@ -55,7 +55,7 @@
 
                     <div class="well">
                         <div class="pull-left">
-                            <a href="{{route('admin.access.users.index')}}" class="btn btn-danger btn-xs">{{ 'Discard' }}</a>
+                            <a href="{{route('jobseeker.appliedjobs')}}" class="btn btn-danger btn-xs">{{ 'Discard' }}</a>
                         </div>
 
                         <div class="pull-right">

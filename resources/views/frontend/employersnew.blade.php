@@ -134,7 +134,7 @@
                 </div>
             </div>
         </div>
-
+</section>
 @endsection
 
 @section('after-scripts-end')

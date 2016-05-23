@@ -90,12 +90,16 @@
                             </li>
                         </ul>
                     </div>
+                    <div class="col-xs-12 col-sm-5 col-lg-4">
                     @roles(['User'])
+                    
                     <a v-on:click="applyJob"  v-show="!jobApplied" href="#" class="btn-primary MB-60 applyjob">APPLY NOW</a>
+                    
                     @endauth
+                   
+                    
                     <a href="{{ route('jobs.next', $job->id) }}" class="btn-primary MB-60">NEXT JOB</a>
-
-
+                    </div>
                     <!-- Modal Body -->
                     <div class="modal" id="jobApplicationModal" tabindex="-1" role="dialog" aria-labelledby="jobApplicationModalLabel">
                         <div class="modal-dialog" role="document">

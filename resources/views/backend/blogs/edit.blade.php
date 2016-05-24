@@ -39,7 +39,7 @@
 
                                     <label>
                                         Image
-                                        {!! $blog->imagethumb !!}
+                                        {!! $blog->getImagethumbAttribute(25,25) !!}
                                     </label>
 
                                     <input type="file" name="file" class="form-control">

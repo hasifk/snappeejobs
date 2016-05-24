@@ -146,6 +146,10 @@ return array(
                 'width'  => 25,
             ],
             [
+                'height' => 50,
+                'width'  => 60,
+            ],
+            [
                 'height' => 218,
                 'width'  => 297,
             ],

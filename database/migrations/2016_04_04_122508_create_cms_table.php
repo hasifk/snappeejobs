@@ -18,7 +18,9 @@ class CreateCmsTable extends Migration
             $table->text('header');
             $table->string('type');
             $table->longText('content');
-            $table->string('img');
+            $table->string('cms_filename');
+            $table->string('cms_extension');
+            $table->string('cms_path');
             $table->integer('published')->default(0);
             $table->timestamps();
 

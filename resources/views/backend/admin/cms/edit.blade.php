@@ -44,11 +44,11 @@
                                 </div>
                                 
                             </div>
-                            <?php if(!empty($cms->img)):
+                            <?php if(!empty($cms->getImageAttribute('25','25'))):
                             $class="col-xs-4"; 
                              ?>
                             <div class="form-group col-xs-2">
-                                <img src="{!! $cms->getAvatarImage(25) !!}" width="60" height="50">
+                                {!! $cms->getImageAttribute('60','50')!!}
                             </div>
                            <?php
                            else:

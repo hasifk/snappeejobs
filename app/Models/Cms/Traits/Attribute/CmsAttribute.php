@@ -52,13 +52,19 @@ trait CmsAttribute {
             return '<a href="'.route('backend.admin.cms.publish', [$this->id]).'" class="btn btn-xs btn-info"><i class="fa fa-eye" data-toggle="tooltip" data-placement="top" title="Publish"></i></a> ';
         }
     }
-    public function getAvatarImage($size) {
-        if ( $this->img ) {
-            return 'https://s3-'. env('AWS_S3_REGION', 'eu-west-1') .'.amazonaws.com/'.
+
+    public function getImageAttribute($width,$height){
+        if ($this->cms_filename && $this->cms_extension && $this->cms_path) {
+            return '<img src="'.
+            'https://s3-'. env('AWS_S3_REGION', 'eu-west-1') .'.amazonaws.com/'.
             env('AWS_S3_BUCKET', 'snappeejobs').'/'.
-            $this->img;
-        } 
+            $this->cms_path.$this->cms_filename.$width.'x'.$height.'.'.$this->cms_extension .
+            '" alt="image" style="height: '.$height.'px; width:'.$width.'px;">';
+        } else {
+            return '';
+        }
     }
+
     /**
      * @return string
      */

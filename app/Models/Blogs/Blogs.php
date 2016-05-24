@@ -47,7 +47,7 @@ class Blogs extends Model
         return \DB::table('users')->where('id', $this->user_id)->value('name');
     }
 
-    public function getImagethumbAttribute($width = 25, $height = 25){
+    public function getImagethumbAttribute($width, $height){
         if ($this->avatar_filename && $this->avatar_extension && $this->avatar_path) {
             return '<img src="'.
             'https://s3-'. env('AWS_S3_REGION', 'eu-west-1') .'.amazonaws.com/'.
@@ -91,9 +91,10 @@ class Blogs extends Model
 
     public function detachImage(){
         if ($this->avatar_filename && $this->avatar_extension && $this->avatar_path) {
-            Storage::delete($this->avatar_path.$this->avatar_filename.'750x350.'.$this->avatar_extension);
-            Storage::delete($this->avatar_path.$this->avatar_filename.'297x218.'.$this->avatar_extension);
-            Storage::delete($this->avatar_path.$this->avatar_filename.'25x25.'.$this->avatar_extension);
+            foreach (config('image.thumbnails.blog_photo') as $image) {
+                Storage::delete($this->avatar_path . $this->avatar_filename . $image['width'] . 'x' . $image['height'].'.' . $this->avatar_extension);
+            }
+
             Storage::delete($this->avatar_path.$this->avatar_filename.'.'.$this->avatar_extension);
         }
     }

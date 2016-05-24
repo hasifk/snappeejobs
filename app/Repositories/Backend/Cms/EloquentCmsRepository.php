@@ -25,7 +25,7 @@ class EloquentCmsRepository {
             $obj->user_id = $userid;
         }
         $obj->header = $request->heading;
-        if (!empty($request->img)):
+  /*      if (!empty($request->img)):
             $avatar = $request->img;
             if ($avatar->isValid()) {
                 $filePath = "cms/" . $userid . '/';
@@ -38,12 +38,13 @@ class EloquentCmsRepository {
 
                 $obj->img = $filePath . $fileName;
             }
-        endif;
-
+        endif;*/
+        /*$obj->attachCMSImage($request->img);*/
         $obj->content = $request->content;
         $obj->type = $request->type;
 
         $obj->save();
+        $obj->attachCMSImage($request->img);
         
     }
 
@@ -53,8 +54,8 @@ class EloquentCmsRepository {
 
     public function delete($id) {
         $obj = $this->find($id);
-        if(!empty($obj->img)):
-        Storage::delete($obj->img);
+        if($obj):
+            $obj->detachCMSImage();
         endif;
         Cms::where('id', $id)->delete();
     }

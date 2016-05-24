@@ -28,13 +28,13 @@
         <tr>
             <th>Content</th><td>{!! $cms->content !!}</td>
         </tr>
-        @if(!empty($cms->img))
+
         <tr>
             <th>Image</th>
-            <th><img src="{!! $cms->getAvatarImage(25) !!}" width="100" height="100"></th>
+            <th>{!! $cms->getImageAttribute('297','218') !!}</th>
             
         </tr>
-        @endif
+
         <tr>
             <th></th>
             <th>

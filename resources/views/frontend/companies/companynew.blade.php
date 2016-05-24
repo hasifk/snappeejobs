@@ -147,7 +147,11 @@
                                         @roles(['User'])
                                         <a class="followcompany" v-on:click="followCompany" href="#"><img src="/images/heart-{{ $followingStatus=='following' ? 'icon' : 'grey' }}.png" /></a>
                                         @endauth
-                                        <img style="width: 282px; height: 44px;;" src="{{ $company->logo_image }}" />
+                                        @if(!empty($company->logo))
+                            <img style="width: 288px; height: 44px;" src="{{ $company->logo_image }}" />
+                            @else
+                            <img style="width: 288px; height: 44px;" src="https://placeholdit.imgix.net/~text?txtsize=28&txt=No%20image&w=288&h=44" />
+                            @endif
                                     </div>
 
                                     @if ( $company->photos->count() )

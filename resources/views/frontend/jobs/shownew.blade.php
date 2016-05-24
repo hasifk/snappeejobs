@@ -36,8 +36,10 @@
                         @endif
                         <div class="boxImage" style="background-image:url('{{ $job_main_image }}');"></div>
                         <div class="boxContent company-desc">
-                            @if($job->company->logo_image)
-                            <img style="width: 288px; height: 44px;;" src="{{ $job->company->logo_image }}" />
+                            @if(!empty($job->company->logo))
+                            <img style="width: 288px; height: 44px;" src="{{ $job->company->logo_image }}" />
+                            @else
+                            <img style="width: 288px; height: 44px;" src="https://placeholdit.imgix.net/~text?txtsize=28&txt=No%20image&w=288&h=44" />
                             @endif
                             <p>{{ $job->company->description }}</p>
                             <a style="color: #337ab7;" href="mailto:?Subject=Thought you'd like to see inside {{ $job->company->title }}&body=Hey! I recently discovered Just Snapt It!, which showcases cool companies and what it's like to work there. When I saw the profile of {{ $job->company->title }}, I thought of you. Hope you enjoy! It's at: {{ $job->company->url_slug }}">
@@ -170,7 +172,9 @@
 
             </div>
         </div>
-
+</div>
+            </div>
+        </div>
     </div>
 </section>
     @endif

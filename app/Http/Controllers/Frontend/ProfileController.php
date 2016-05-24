@@ -2,11 +2,13 @@
 
 use App\Events\Backend\Mail\EmployerChatReceived;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Backend\Employer\Mail\EmployerMailDeleteRequest;
 use App\Http\Requests\Frontend\Access\PreferencesSaveRequest;
 use App\Http\Requests\Frontend\Access\ProfileImagesUploadRequest;
 use App\Http\Requests\Frontend\Access\ProfileVideoUploadRequest;
 use App\Http\Requests\Frontend\Access\ResumeUploadRequest;
 use App\Http\Requests\Frontend\JobSeeker\JobSeekerVideoLinkRequest;
+use App\Http\Requests\Frontend\Mail\JobSeekerThreadDeleteRequest;
 use App\Http\Requests\Frontend\User\JobSeekerReplyMessage;
 use App\Models\Access\User\User;
 use App\Models\JobSeeker\JobSeeker;
@@ -722,5 +724,24 @@ class ProfileController extends Controller {
 			->route('frontend.message', $thread_id)
 			->withFlashSuccess('Successfully sent the reply');
 	}
+
+    public function deletethread(JobSeekerThreadDeleteRequest $request, $id,EloquentMailRepository $mailRepository)
+    {
+
+        $array['type'] = 'Email';
+        $recipient=\DB::table('threads')
+            ->where('id',$id)->first();
+        $array['heading']='Subject:  '.$recipient->subject;
+        if($mailRepository->deleteUserThread($id))
+        {
+            $array['event'] = 'deleted';
+
+            $name = $this->userLogs->getActivityDescriptionForEvent($array);
+            Activity::log($name);
+        }
+
+        return redirect()->route(
+            'jobseeker.appliedjobs')->withFlashSuccess('Successfully deleted the thread');
+    }
 
 }

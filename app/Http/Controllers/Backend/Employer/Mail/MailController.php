@@ -177,7 +177,7 @@ class MailController extends Controller
         $recipient=\DB::table('threads')
             ->where('id',$id)->first();
         $array['heading']='Subject:  '.$recipient->subject;
-        if($this->mail->deleteThread($id))
+        if($this->mail->deleteUserThread($id))
         {
             $array['event'] = 'deleted';
 

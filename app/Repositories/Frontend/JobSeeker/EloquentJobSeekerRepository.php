@@ -4,6 +4,8 @@ use App\Models\Company\Company;
 use App\Models\Job\Job;
 use App\Models\Job\JobApplication\JobApplication;
 use App\Models\JobSeeker\JobSeeker;
+use App\Models\Mail\Thread;
+use App\Repositories\Backend\Mail\EloquentMailRepository;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -14,6 +16,13 @@ use Illuminate\Support\Facades\DB;
  * @package App\Repositories\User
  */
 class EloquentJobSeekerRepository {
+
+    public $jbSeekerMail;
+    public function __construct(EloquentMailRepository $jbSeekerMail)
+    {
+
+        $this->jbSeekerMail = $jbSeekerMail;
+    }
 
     public function getJobsSeekersPaginated(Request $request, $per_page, $order_by = 'users.created_at', $sort = 'desc') {
 
@@ -153,6 +162,7 @@ class EloquentJobSeekerRepository {
                 'job_applications.created_at',
                 'job_applications.accepted_at',
                 'job_applications.declined_at',
+                'companies.employer_id',
                 \DB::raw('companies.title AS company_title')
             ])
             ->get();
@@ -160,6 +170,18 @@ class EloquentJobSeekerRepository {
         if ( $applied ) {
             foreach ($applied as $key => $item) {
                 $applied[$key]->{'thread_id'} = \DB::table('threads')->where('application_id', $item->id)->value('id');
+                if(!$applied[$key]->{'thread_id'}):
+                    if(is_null($item->declined_at) && $item->accepted_at):
+                   if($this->jbSeekerMail->shouldCreateNewThread($item->id,$userid)):
+                       $subject='Job Application - ' .
+                           $item->title . ' - ' .
+                           $item->company_title;
+                       $newThread=$this->jbSeekerMail->createThread1( $subject,'Welcome',$item->id,$item->employer_id);
+                       $this->jbSeekerMail->createMessage1($newThread->id,$userid,'Welcome');
+                       $this->jbSeekerMail->connectThreadUsers1($newThread,$userid,$item->employer_id);
+                       endif;
+                    endif;
+                    endif;
             }
         }
 

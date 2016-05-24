@@ -8,6 +8,7 @@ use App\Exceptions\GeneralException;
 use App\Models\Access\User\User;
 use App\Models\Company\Company;
 use App\Models\Mail\Thread;
+use App\Models\Thread\ThreadParticipant;
 use App\Repositories\Backend\Role\RoleRepositoryContract;
 use App\Repositories\Frontend\Auth\AuthenticationContract;
 use Carbon\Carbon;
@@ -198,8 +199,8 @@ class EloquentMailRepository
 
     public function getThread($id){
 
-        \DB::table('thread_participants')
-            ->where('thread_id', $id)
+         ThreadParticipant::
+             where('thread_id', $id)
             ->where('user_id', auth()->user()->id)
             ->update(['read_at' => Carbon::now() ]);
 
@@ -217,6 +218,19 @@ class EloquentMailRepository
             ]);
 
         return;
+    }
+
+    public function deleteUserThread($id){
+        $this->findOrThrowException($id);
+
+        \DB::table('thread_participants')
+            ->where('thread_id', $this->thread->id)
+            ->where('user_id', $this->user->user()->id)
+            ->update([
+                'deleted_at'    => Carbon::now()
+            ]);
+      Thread::where('id',$this->thread->id)->delete();
+        return true;
     }
 
     public function getUnReadMessages(){
@@ -330,6 +344,52 @@ class EloquentMailRepository
             'created_at'    => Carbon::now(),
             'updated_at'    => Carbon::now(),
         ]);
+    }
+
+
+    public function connectThreadUsers1(Thread $thread, $userid,$senderID){
+
+        $count = \DB::table('thread_participants')
+            ->where('thread_id', $thread->id)
+            ->where('user_id', $userid)
+            ->where('sender_id', $senderID)
+            ->count();
+
+        if ( $count ) {
+            return;
+        }
+
+        \DB::table('thread_participants')->insert([
+            'thread_id'     => $thread->id,
+            'user_id'       => $userid,
+            'sender_id'     => $senderID,
+            'created_at'    => Carbon::now(),
+            'updated_at'    => Carbon::now(),
+        ]);
+    }
+
+    public function createMessage1($threadId,$userId,$message){
+
+        \DB::table('messages')->insert([
+            'thread_id'     =>$threadId,
+            'sender_id'     =>$userId,
+            'content'       =>$message,
+            'created_at'    => Carbon::now(),
+            'updated_at'    => Carbon::now(),
+        ]);
+    }
+    public function createThread1($subject,$message,$applicationId,$employerId){
+
+        $thread = Thread::create([
+            'subject'               => $subject,
+            'last_message'          => $message,
+            'application_id'        =>$applicationId,
+            'employer_id'           =>$employerId,
+            'message_count'         => 1
+        ]);
+
+        return $thread;
+
     }
 
 }

@@ -45,5 +45,6 @@ $router->group(['middleware' => 'auth'], function ()
 	get('message/{id}', 'ProfileController@viewThread')->name('frontend.message');
 	post('message/reply/{id}', 'ProfileController@replyThread')->name('frontend.message.reply');
 	delete('message/delete/{id}', 'ProfileController@destroyThread')->name('frontend.message.destroy');
+    delete('jobseekermail/{thread_id}', 'ProfileController@deletethread')->name('frontend.mail.destroy')->where(['thread_id' => '[0-9]+']);
 
 });

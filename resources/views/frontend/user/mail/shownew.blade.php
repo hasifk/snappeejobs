@@ -21,7 +21,7 @@
 
                 <div style="margin-bottom: 25px;" class="mailbox-controls with-border text-center">
                     <div class="btn-group">
-                        <a href="{{ route('admin.employer.mail.destroy', $thread->id) }}" data-method="delete" class="btn btn-default btn-sm">
+                        <a href="{{ route('frontend.mail.destroy', $thread->id) }}" data-method="delete" class="btn btn-default btn-sm">
                             <i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="Delete"></i>
                             Delete
                         </a>

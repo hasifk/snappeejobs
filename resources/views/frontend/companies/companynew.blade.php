@@ -148,9 +148,9 @@
                                         <a class="followcompany" v-on:click="followCompany" href="#"><img src="/images/heart-{{ $followingStatus=='following' ? 'icon' : 'grey' }}.png" /></a>
                                         @endauth
                                         @if(!empty($company->logo))
-                            <img style="width: 288px; height: 44px;" src="{{ $company->logo_image }}" />
+                            <img style="width: 100%; height: 44px;" src="{{ $company->logo_image }}" />
                             @else
-                            <img style="width: 288px; height: 44px;" src="https://placeholdit.imgix.net/~text?txtsize=28&txt=No%20image&w=288&h=44" />
+                            <img style="width:100%; height: 44px;" src="https://placeholdit.imgix.net/~text?txtsize=28&txt=No%20image&w=288&h=44" />
                             @endif
                                     </div>
 

@@ -24,16 +24,18 @@ class PreferencesSaveRequest extends Request
     public function rules()
     {
         return [
-            'job_categories'            => 'required|array',
             'skills'                    => 'required|array',
+            'job_categories'            => 'required|array',
+            'industries'                => 'required|array',
             'size'                      => 'required|in:small,medium,big',
         ];
     }
 
     public function messages(){
         return [
-            'job_categories.required'           => 'Please enter the job categories',
             'skills.required'                   => 'Please enter the skills',
+            'job_categories.required'           => 'Please enter the job categories',
+            'industries.required'               => 'Please enter the Preffered Industries',
             'size.require'                      => 'Please select the company type preference'
         ];
     }

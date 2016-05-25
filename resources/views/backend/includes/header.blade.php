@@ -66,9 +66,11 @@
                         <li>
                           <!-- inner menu: contains the messages -->
                           <ul class="menu">
-
+                              <?php
+                                  $job_appl_style='style="background-color: #ffd2f1"';
+                                   ?>
                               <li v-for="job_application in job_applications | orderBy 'created_at' job_applications_order"><!-- start message -->
-                                <a href="/admin/employer/jobs/application/@{{ job_application.id }}">
+                                <a href="/admin/employer/jobs/application/@{{ job_application.id }}" style="background-color: #ffd2f1" >
                                   <div class="pull-left">
                                     <!-- User Image -->
                                     <img src="@{{ job_application.image }}" class="img-circle" alt="User Image"/>

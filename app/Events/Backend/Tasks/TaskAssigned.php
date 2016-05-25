@@ -68,10 +68,15 @@ class TaskAssigned extends Event implements ShouldBroadcast
             }
         } else {
             $staffs = array_diff($this->currentMembers, $this->previousMembers);
-
+            if($staffs):
             foreach ($staffs as $staff) {
                 $broadCastOn[] = 'employer_task.'.$staff;
             }
+            else:
+                foreach ($this->currentMembers as $staff) {
+                    $broadCastOn[] = 'employer_task.'.$staff;
+                }
+                endif;
         }
 
         return $broadCastOn;

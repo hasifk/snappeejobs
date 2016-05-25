@@ -184,16 +184,14 @@ class DashboardController extends Controller {
                 ->join('jobs', 'jobs.id', '=', 'job_applications.job_id')
                 ->join('users', 'job_applications.user_id', '=', 'users.id')
                 ->where('jobs.company_id', auth()->user()->companyId)
-                ->where(function($query) {
-                    $query->whereNull('job_applications.accepted_at')
-                    ->whereNull('job_applications.declined_at');
-                })
                 ->select([
                     'job_applications.id',
                     'jobs.title',
                     'users.name',
                     \DB::raw('users.id AS user_id'),
-                    'job_applications.created_at'
+                    'job_applications.created_at',
+                    'job_applications.accepted_at',
+                    'job_applications.declined_at',
                 ])
                 ->get();
 

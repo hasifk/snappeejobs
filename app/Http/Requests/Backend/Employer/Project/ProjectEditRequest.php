@@ -24,7 +24,11 @@ class ProjectEditRequest extends Request
      */
     public function rules()
     {
-
+        return [
+            'title'         => 'required',
+            'members'       => 'required|array',
+            'job_listings'  => 'required|array'
+        ];
         $id = $this->segment(3);
 
         $project_belongs_to_user = \DB::table('projects')->where('employer_id', auth()->user()->employer_id)->where('id', $id)->count();
@@ -55,9 +59,8 @@ class ProjectEditRequest extends Request
 
         }
 
-        return [
-            //
-        ];
+
+
     }
 
     private function throwException($message){

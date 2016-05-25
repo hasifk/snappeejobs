@@ -239,7 +239,7 @@ class EloquentMailRepository
             ->join('threads','thread_participants.thread_id','=','threads.id')
             ->join('users','thread_participants.sender_id','=','users.id')
             ->whereNull('thread_participants.deleted_at')
-            ->whereNull('thread_participants.read_at')
+            /*->whereNull('thread_participants.read_at')*/
             ->where('thread_participants.user_id',auth()->user()->id)
             ->count();
 
@@ -248,7 +248,7 @@ class EloquentMailRepository
         $unread_messages = \DB::table('thread_participants')
             ->join('threads','thread_participants.thread_id','=','threads.id')
             ->join('users','thread_participants.sender_id','=','users.id')
-            ->whereNull('thread_participants.read_at')
+           /* ->whereNull('thread_participants.read_at')*/
             ->whereNull('thread_participants.deleted_at')
             ->where('thread_participants.user_id',auth()->user()->id)
             ->orderBy('thread_participants.updated_at')

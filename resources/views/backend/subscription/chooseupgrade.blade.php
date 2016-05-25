@@ -19,7 +19,7 @@
 @stop
 
 @section('content')
-@include('backend.employer.includes.partials.settings.header-buttons')
+
 
 <section class="section">
     <div class="section-headlines">

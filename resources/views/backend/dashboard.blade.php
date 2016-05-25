@@ -334,9 +334,9 @@
                 <div class="box-body">
                     <ul class="products-list product-list-in-box newsfeed_notifications_list">
                         @foreach($newsfeed_notifications as $employer_notification)
-
-                        <li class="item">
                             @if($employer_notification->notification_type == 'news_feed_created')
+                        <li class="item">
+
                             <div style="margin-left: 25px;" class="product-info">
                                 <a href="#" class="product-title">
                                     {!!   unserialize ($employer_notification->details)['newsfeed']['news'] !!}
@@ -349,9 +349,9 @@
                                 </span>
                                 by {{ unserialize($employer_notification->details)['adminuser']['name'] }}
                             </div>
-                            @endif
-                        </li>
 
+                        </li>
+                            @endif
                         @endforeach
 
                     </ul>

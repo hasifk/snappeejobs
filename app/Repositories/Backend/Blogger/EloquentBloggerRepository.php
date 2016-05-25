@@ -19,7 +19,6 @@ class EloquentBloggerRepository {
         return User::whereNotIn('id',array(auth()->user()->id))->paginate(10);
 
 
-
     }
 
 /****************************************************************************************************/

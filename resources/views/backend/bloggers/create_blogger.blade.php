@@ -21,10 +21,15 @@
     <div class="form-group">
         <label class="col-lg-2 control-label">Select Blogger</label>
         <div class="col-lg-10">
-            @if(!empty($users))
+
+        @if(!empty($users))
           <select name="blogger_id" id="blogger_id" class="form-control select2">
               @foreach($users as $user)
+                  @if ( $user->hasRole('Blogger') )
+                      @continue
+                      @else
               <option value="{{ $user->id }}">{{$user->name}}</option>
+                  @endif
               @endforeach
           </select>
             @endif

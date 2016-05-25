@@ -30,7 +30,7 @@
                                         <option
                                                 value="{{ $skill->id }}"
                                                 {{ old('skills')
-                                                && in_array($skill->id, old('skills')) ? 'checked="checked"' : '' }}
+                                                && in_array($skill->id, old('skills')) ? 'selected="selected"' : '' }}
                                                 {{ !old('skills') && ( $job_seeker && $job_seeker->skills)
                                                     && in_array($skill->id, array_pluck($job_seeker->skills->toArray(), 'id')) ? 'selected="selected"' : '' }}
                                         >
@@ -58,7 +58,7 @@
                                         <option
                                                 value="{{ $job_category->id }}"
                                                 {{ old('job_categories')
-                                                && in_array($job_category->id, old('job_categories')) ? 'checked="checked"' : '' }}
+                                                && in_array($job_category->id, old('job_categories')) ? 'selected="selected"' : '' }}
                                                 {{ !old('job_categories') && ( $job_seeker && $job_seeker->categories)
                                                     && in_array($job_category->id, array_pluck($job_seeker->categories->toArray(), 'id')) ? 'selected="selected"' : '' }}
                                         >
@@ -86,7 +86,7 @@
                                         <option
                                                 value="{{ $industry->id }}"
                                                 {{ old('industries')
-                                                && in_array($industry->id, old('industries')) ? 'checked="checked"' : '' }}
+                                                && in_array($industry->id, old('industries')) ? 'selected="selected"' : '' }}
                                                 {{ !old('industries') && ( $job_seeker && $job_seeker->industries)
                                                     && in_array($industry->id, array_pluck($job_seeker->industries->toArray(), 'id')) ? 'selected="selected"' : '' }}
                                         >

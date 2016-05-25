@@ -80,7 +80,7 @@ class DashboardRepository
     {
         $newsfeed_notifications = \DB::table('employer_notifications')
             ->where('user_id', auth()->user()->id)
-            ->get();
+            ->paginate(5);
 
         return $newsfeed_notifications;
     }
@@ -122,7 +122,7 @@ class DashboardRepository
                 $employer_notifications = \DB::table('employer_notifications')
                     ->where('employer_id', auth()->user()->employer_id)
                     ->where('user_id', auth()->user()->id)
-                    ->get();
+                    ->paginate(10);
 
                 return $employer_notifications;
         }

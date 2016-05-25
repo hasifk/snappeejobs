@@ -316,7 +316,7 @@
     @endif
 
 
-    <div class="col-md-6 pull-right" >
+    <div class="col-xs-12 col-md-6 pull-right" >
 
         <div class="newsfeed_notifications">
 

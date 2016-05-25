@@ -33,33 +33,13 @@
         @foreach($bloggers as $user)
 
             <tr>
-
-
-                    @if ($user->roles()->count() > 0)
-
-                            <?php
-                           foreach ($user->roles as $role):
-
-
-                            if($role->name=='Blogger'):
-                                    ?>
+                @if ( $user->hasRole('Blogger') )
                             <td>{!! $user->id !!}</td>
                             <td>{!! $user->name !!}</td>
                             <td>{!! link_to("mailto:".$user->email, $user->email) !!}</td>
-                          <?php
-                                break;
-                                endif;
-                               endforeach;
-                      ?>
-                    @else
-                        None
+
                     @endif
-
-
-
             </tr>
-
-
 
         @endforeach
             @endif

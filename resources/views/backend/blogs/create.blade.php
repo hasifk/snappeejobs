@@ -112,7 +112,7 @@
     <script>
         $(document).ready(function(){
             $('#blog_category').on('change', function(){
-                $.getJSON('/get-subcats/'+$(this).val(), function(json){
+                $.getJSON('/admin/blogs/getsubcats/'+$(this).val(), function(json){
                     var listitems = '<option value="">Please select</option>';
                     $.each(json,function(key, value)
                     {

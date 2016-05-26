@@ -47,11 +47,12 @@
                                 
                             </div>
                             
-                            <div class="form-group col-xs-12">
+                            <div class="form-group col-sm-5">
+                                <div class="row">
                                 @if(!empty($categories))
                                 <label for="exampleInputPassword1">Select Category</label>
                                 
-                                <select name="blog_category" id="blog_category" class="select2">
+                                <select name="blog_category" id="blog_category" class="select2 form-control">
                                     <option value="">Please select</option>
                                     @foreach($categories as $category1)
 
@@ -62,14 +63,15 @@
                                     
                                 </select>
                                 @endif
-                                
+                                </div>
                             </div>
 
-                            <div class="form-group col-xs-12">
+                            <div class="form-group col-sm-6 col-lg-offset-1 col-md-offset-1 col-sm-offset-1">
+                               <div class="row">
                                 @if(!empty($sub_categories))
                                     <label for="exampleInputPassword1">Select Sub Category</label>
 
-                                    <select name="blog_sub_cat" id="blog_sub_cat" class="select2">
+                                    <select name="blog_sub_cat" id="blog_sub_cat" class="select2 form-control">
                                         <option value="">Please select</option>
                                         @foreach($sub_categories as $category1)
                                             <option value="{{$category1->id}}"
@@ -79,7 +81,7 @@
 
                                     </select>
                                 @endif
-
+                               </div>
                             </div>
 
                             <div class="form-group">

@@ -56,7 +56,7 @@
                                     @foreach($categories as $category1)
 
                                     <option value="{{$category1->id}}"
-                                            {{ old('blog_category') && $country->id == old('blog_category') ? 'selected="selected"' : '' }}>
+                                            {{ old('blog_category') && $category1->id == old('blog_category') ? 'selected="selected"' : '' }}>
                                         {{$category1->name}}</option>
                                    @endforeach
                                     
@@ -73,7 +73,7 @@
                                         <option value="">Please select</option>
                                         @foreach($sub_categories as $category1)
                                             <option value="{{$category1->id}}"
-                                                    {{ old('blog_sub_cat') && $state->id == old('blog_sub_cat') ? 'selected="selected"' : '' }}
+                                                    {{ old('blog_sub_cat') && $category1->id == old('blog_sub_cat') ? 'selected="selected"' : '' }}
                                             >{{$category1->name}}</option>
                                         @endforeach
 

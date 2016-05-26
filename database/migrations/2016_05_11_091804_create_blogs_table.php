@@ -12,7 +12,7 @@ class CreateBlogsTable extends Migration
      */
     public function up()
     {
-        Schema::create('Blogs', function (Blueprint $table) {
+        Schema::create('blogs', function (Blueprint $table) {
             $table->increments('id')->unsigned();
             $table->integer('user_id')->unsigned();
             $table->integer('blog_category_id')->unsigned();

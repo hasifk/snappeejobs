@@ -18,7 +18,7 @@ class EloquentBlogRepository
 
     public function getBlogs()
     {
-        return Blogs::where('user_id', Auth::user()->id)->orderBy('Blogs.id', 'desc')
+        return Blogs::where('user_id', Auth::user()->id)->orderBy('id', 'desc')
             ->paginate(10);
     }
     public function save($request)

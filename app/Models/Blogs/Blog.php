@@ -6,11 +6,11 @@ namespace App\Models\Blogs;
 
 use Illuminate\Database\Eloquent\Model;
 use Storage;
-class Blogs extends Model
+class Blog extends Model
 {
 
 
-    protected $table = 'Blogs';
+    protected $table = 'blogs';
 
     protected $guarded = ['id'];
 

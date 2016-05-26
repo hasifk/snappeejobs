@@ -1,7 +1,7 @@
 <?php namespace App\Repositories\Backend\Blogs;
 
 
-use App\Models\Blogs\Blogs;
+use App\Models\Blogs\Blog;
 
 use Auth;
 use Storage;
@@ -13,12 +13,12 @@ class EloquentBlogRepository
 {
 
     public function getBlog($id){
-        return Blogs::where('user_id', auth()->user()->id)->where('id', $id)->first();
+        return Blog::where('user_id', auth()->user()->id)->where('id', $id)->first();
     }
 
     public function getBlogs()
     {
-        return Blogs::where('user_id', Auth::user()->id)->orderBy('id', 'desc')
+        return Blog::where('user_id', Auth::user()->id)->orderBy('id', 'desc')
             ->paginate(10);
     }
     public function save($request)
@@ -26,9 +26,9 @@ class EloquentBlogRepository
         $userid = Auth::user()->id;
 
         if ($request->has('id'))
-            $obj = Blogs::find($request->id);
+            $obj = Blog::find($request->id);
         else {
-            $obj = new Blogs();
+            $obj = new Blog();
             $obj->user_id = $userid;
         }
         $obj->title = $request->title;
@@ -94,7 +94,7 @@ class EloquentBlogRepository
     }
 
     public function deleteBlog($id) {
-        $obj = Blogs::find($id);
+        $obj = Blog::find($id);
         $obj->detachImage();
         $obj->delete();
         return true;

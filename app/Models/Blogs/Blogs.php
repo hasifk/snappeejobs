@@ -10,7 +10,7 @@ class Blogs extends Model
 {
 
 
-    protected $table = 'blogs';
+    protected $table = 'Blogs';
 
     protected $guarded = ['id'];
 

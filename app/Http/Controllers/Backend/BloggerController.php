@@ -95,20 +95,22 @@ EloquentBloggerRepository $repository,RoleRepositoryContract $role)
 
     }
     /************************************************************************************************************/
-    public function storeApproval(Request $request)
+    public function approve($id, Request $request)
     {
         if ( access()->hasRole('Administrator') ) {
-          $this->repository->storeApproval($request);
+            if ($this->repository->approve($id))
 
-
-
-            return back()->withFlashSuccess('Your Blog approval status updated successfully.');;
+                return back()->withFlashSuccess('The blog was successfully approved.');
         }
-
     }
     /************************************************************************************************************/
+    public function disapprove($id, Request $request)
+    {
+        if ( access()->hasRole('Administrator') ) {
+            if ($this->repository->disapprove($id))
 
-
-
+                return back()->withFlashSuccess('The blog was successfully disapproved.');
+        }
+    }
 
 }

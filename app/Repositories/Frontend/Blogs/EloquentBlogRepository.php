@@ -34,7 +34,7 @@ class EloquentBlogRepository
             $blogsObject->where('blog_sub_cat_id', $sub_category_id);
         }
 
-        $blogs = $blogsObject->orderBy('blogs.id', 'desc')
+        $blogs = $blogsObject->orderBy('id', 'desc')
             ->paginate(10);
 
         return $blogs;

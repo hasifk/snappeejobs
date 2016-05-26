@@ -2,7 +2,7 @@
 
 
 use App\Models\Access\User\User;
-use App\Models\Blogs\Blogs;
+use App\Models\Blogs\Blog;
 use Carbon\Carbon;
 
 
@@ -24,7 +24,7 @@ class EloquentBloggerRepository {
 /****************************************************************************************************/
     public function getBlogs()
     {
-        return Blogs::orderBy('Blogs.id', 'desc')
+        return Blog::orderBy('id', 'desc')
             ->paginate(10);
     }
 
@@ -36,7 +36,7 @@ class EloquentBloggerRepository {
             else:
                 $approval=null;
             endif;
-       Blogs::where('id',$request->id)->update(['approved_at' => $approval]);
+       Blog::where('id',$request->id)->update(['approved_at' => $approval]);
         return true;
     }
 

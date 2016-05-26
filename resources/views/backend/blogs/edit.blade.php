@@ -108,3 +108,20 @@
     </div>
 </section>
 @endsection
+
+@section('after-scripts-end')
+    <script>
+        $(document).ready(function(){
+            $('#blog_category').on('change', function(){
+                $.getJSON('/admin/blogs/getsubcats/'+$(this).val(), function(json){
+                    var listitems = '<option value="">Please select</option>';
+                    $.each(json,function(key, value)
+                    {
+                        listitems += '<option value=' + value.id + '>' + value.name + '</option>';
+                    });
+                    $('#blog_sub_cat').html(listitems);
+                });
+            });
+        });
+    </script>
+@endsection

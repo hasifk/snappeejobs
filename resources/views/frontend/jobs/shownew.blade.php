@@ -73,9 +73,6 @@
                     </div>
                         @endauth
                     @endif
-
-                    <br>
-
                     <div style="margin-left: 15px;">{!! $job->description !!}</div>
 
                     <h3 style="margin-left: 15px;"><strong>About This Job</strong></h3>

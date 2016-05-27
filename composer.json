@@ -27,7 +27,8 @@
 		"predis/predis": "^1.0",
 		"torann/geoip": "0.2.*@dev",
 		"thujohn/twitter": "^2.1",
-		"spatie/activitylog": "^2.4"
+		"spatie/activitylog": "^2.4",
+		"codeception/codeception": "^2.1"
 
 
 	},

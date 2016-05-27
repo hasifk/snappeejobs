@@ -4,7 +4,7 @@
 
 @section('page-header')
 <h1>
-    Create Company Profile
+    Create News Feed
 </h1>
 @endsection
 

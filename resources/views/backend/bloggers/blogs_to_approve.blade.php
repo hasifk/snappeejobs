@@ -33,20 +33,10 @@
         @foreach($blogs as $blog)
 
             <tr>
+                <td>{!! $blog->id !!}</td>
+                <td><a href="{{ route('blogs.view', $blog->id) }}">{{ $blog->title }}</a></td>
+                <td>{!!$blog->approved_button!!}</td>
 
-
-                            <td>{!! $blog->id !!}</td>
-                            <td><a href="{{ route('blogs.view', $blog->id) }}">{{ $blog->title }}</a></td>
-                {!! Form::open(['route' => ['backend.storeapproval'], 'class' => 'form-horizontal', 'role' => 'form', 'method' => 'post']) !!}
-                @if($blog->approved_at!=null)
-                            <td>{!! Form::checkbox('approval_status','', true, array('id' => 'approval_status'))!!}</td>
-                    @else
-                    <td>{!! Form::checkbox('approval_status','','',array('id' => 'approval_status')) !!}</td>
-                    @endif
-                {!!   Form::hidden('id', $blog->id) !!}
-                {!!   Form::hidden('approval', $blog->approved_at, array('id' => 'approval')) !!}
-               <td> {!! Form::submit('Update Approval Status', array('class' => 'btn btn-success btn-xs')) !!}</td>
-                {!! Form::close() !!}
             </tr>
 
 
@@ -65,22 +55,7 @@
 
     <div class="clearfix"></div>
 
-@stop
-
-
-@section('after-scripts-end')
-<script>
-    $(document).ready(function () {
-        $('#approval_status').on('change', function () {
-            if($(this).is(':checked')) {
-                $('#approval').val(1)
-            }
-            else
-            {
-                $('#approval').val(0);
-            }
-        });
-    });
-</script>
 @endsection
+
+
 

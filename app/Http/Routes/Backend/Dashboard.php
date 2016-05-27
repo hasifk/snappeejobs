@@ -31,7 +31,8 @@ get('bloggers/createblogger', 'BloggerController@createBlogger')->name('backend.
 post('bloggers/storeblogger', 'BloggerController@storeBlogger')->name('backend.storebloggers');
 get('bloggers/availablebloggers', 'BloggerController@availableBloggers')->name('backend.availablebloggers');
 get('bloggers/approveblogs', 'BloggerController@approveBlogs')->name('backend.approveblogs');
-post('bloggers/storeapproval', 'BloggerController@storeApproval')->name('backend.storeapproval');
+get('bloggers/approve/{id}', 'BloggerController@approve')->name('backend.blogapprove');
+get('bloggers/disapprove/{id}', 'BloggerController@disapprove')->name('backend.blogdisapprove');
 
 
 

@@ -29,17 +29,18 @@ class EloquentBloggerRepository {
     }
 
 /*********************************************************************************************/
-    public function storeApproval($request)
-    {
-        if($request->approval==1):
-            $approval=Carbon::now();
-            else:
-                $approval=null;
-            endif;
-       Blog::where('id',$request->id)->update(['approved_at' => $approval]);
+    public function approve($id) {
+        $approval=Carbon::now();
+        Blog::where('id',$id)->update(['approved_at' => $approval]);
+
+            return true;
+    }
+    /*********************************************************************************************/
+    public function disapprove($id) {
+
+        Blog::where('id',$id)->update(['approved_at' => null]);
+
         return true;
     }
-
     /*********************************************************************************************/
-
 }

@@ -234,13 +234,14 @@ class EloquentMailRepository
     }
 
     public function getUnReadMessages(){
-
+        $oneWeekAgo = \Carbon\Carbon::now()->subDays(7);
         $unread_count = \DB::table('thread_participants')
             ->join('threads','thread_participants.thread_id','=','threads.id')
             ->join('users','thread_participants.sender_id','=','users.id')
             ->whereNull('thread_participants.deleted_at')
            /* ->whereNull('thread_participants.read_at')*/
             ->where('thread_participants.user_id',auth()->user()->id)
+            ->where('thread_participants.updated_at', '>', $oneWeekAgo)
             ->count();
 
         $this->unReadMessageCount = $unread_count;
@@ -251,6 +252,7 @@ class EloquentMailRepository
            /* ->whereNull('thread_participants.read_at')*/
             ->whereNull('thread_participants.deleted_at')
             ->where('thread_participants.user_id',auth()->user()->id)
+            ->where('thread_participants.updated_at', '>', $oneWeekAgo)
             ->orderBy('thread_participants.updated_at')
             ->select([
                 'users.id',

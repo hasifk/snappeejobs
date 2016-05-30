@@ -29,9 +29,9 @@
                           @foreach($unread_messages as $unread_message)
                           <li><!-- start message -->
                             @role('Administrator')
-                            <a href="{{ route('admin.mail.view', $unread_message->thread_id) }}">
+                            <a class="{{ $unread_message->read_at ? 'readmessage' : 'unreadmessage' }}" href="{{ route('admin.mail.view', $unread_message->thread_id) }}">
                             @else
-                                <a href="{{ route('admin.employer.mail.view', $unread_message->thread_id) }}">
+                                <a class="{{ $unread_message->read_at ? 'readmessage' : 'unreadmessage' }}" href="{{ route('admin.employer.mail.view', $unread_message->thread_id) }}">
                             @endauth
                               <div class="pull-left">
                                 <!-- User Image -->
@@ -66,11 +66,10 @@
                         <li>
                           <!-- inner menu: contains the messages -->
                           <ul class="menu">
-                              <?php
-                                  $job_appl_style='style="background-color: #ffd2f1"';
-                                   ?>
                               <li v-for="job_application in job_applications | orderBy 'created_at' job_applications_order"><!-- start message -->
-                                <a href="/admin/employer/jobs/application/@{{ job_application.id }}" style="background-color: #ffd2f1" >
+                                <a
+                                  href="/admin/employer/jobs/application/@{{ job_application.id }}"
+                                >
                                   <div class="pull-left">
                                     <!-- User Image -->
                                     <img src="@{{ job_application.image }}" class="img-circle" alt="User Image"/>

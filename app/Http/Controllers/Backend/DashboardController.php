@@ -184,6 +184,7 @@ class DashboardController extends Controller {
                 ->join('jobs', 'jobs.id', '=', 'job_applications.job_id')
                 ->join('users', 'job_applications.user_id', '=', 'users.id')
                 ->where('jobs.company_id', auth()->user()->companyId)
+                ->whereNull('job_applications.accepted_at')
                 ->select([
                     'job_applications.id',
                     'jobs.title',

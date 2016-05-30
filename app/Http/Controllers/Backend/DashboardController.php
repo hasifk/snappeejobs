@@ -215,6 +215,7 @@ class DashboardController extends Controller {
             ->select([
                 \DB::raw('task_project.title AS task_title'),
                 \DB::raw('projects.title AS project_title'),
+                \DB::raw('task_project.id AS new_task_id'),
                 'staff_task.task_id',
                 'staff_task.created_at',
                 'users.name',

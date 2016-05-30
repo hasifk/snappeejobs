@@ -104,7 +104,7 @@
                             <li>
                                 <ul class="menu">
                                     <li v-for="task_assigned in tasks_assigned | orderBy 'created_at' job_applications_order">
-                                        <a href="#">
+                                        <a href="/admin/show-task/@{{ task_assigned.new_task_id }}">
                                             <div class="pull-left">
                                                 <img src="@{{ task_assigned.image }}" class="img-circle" alt="User Image"/>
                                             </div>

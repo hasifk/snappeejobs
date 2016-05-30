@@ -13,6 +13,7 @@
               <!-- Navbar Right Menu -->
               <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
+                  @role('Employer')
                   <!-- Messages: style can be found in dropdown.less-->
                   @if ($unread_messages_count)
                   <li class="dropdown messages-menu">
@@ -178,6 +179,7 @@
                       </li>
                     </ul>
                   </li>
+                  @endauth
                   <!-- User Account Menu -->
                   <li class="dropdown user user-menu">
                     <!-- Menu Toggle Button -->

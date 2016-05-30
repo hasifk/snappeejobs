@@ -53,13 +53,16 @@ $I9->wantTo('Ensure admin NewsFeeds page works');
 $I9->amOnPage('/admin/newsfeeds');
 $I9->click('#newnewsfeed');
 $I9->see('News Feed');
-
+/*
 $I10 = new AcceptanceTester($scenario);
 $I10->wantTo('Ensure admin Cms page works');
 $I10->amOnPage('/admin/cms');
 $I10->click('#cms_create');
-$I10->click('#cms_all');
-$I10->click('#cms_articles');
-$I10->click('#cms_blogs');
 $I10->see('CMS Management');
+$I10->click('#cms_all');
+$I10->see('CMS Management');
+$I10->click('#cms_articles');
+$I10->see('CMS Management');
+$I10->click('#cms_blogs');
+$I10->see('CMS Management');*/
 

@@ -31,7 +31,7 @@ class StoreUserRequest extends Request {
             'password'				=>	'required|alpha_num|min:6|confirmed',
             'password_confirmation'	=>	'required|alpha_num|min:6',
             'gender'                => 'required|in:male,female',
-            'age'                   => 'required|integer',
+            'dob'                   => 'required|date',
         ];
     }
 }

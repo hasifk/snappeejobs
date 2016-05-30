@@ -72,12 +72,20 @@
             </div>
         </div>
 
-        <div class="form-group">
-            {!! Form::label('age', "Age", ['class' => 'col-lg-2 control-label']) !!}
-            <div class="col-lg-10">
-                {!! Form::text('age', null, ['class' => 'form-control', 'placeholder' => "Age"]) !!}
-            </div>
+    <div class="form-group">
+        {!! Form::label('dob', "DOB", ['class' => 'col-lg-2 control-label']) !!}
+        <div class="col-lg-10">
+            <input
+                    class="form-control bootstrap-datepicker"
+                    placeholder="Date of Birth"
+                    name="dob"
+                    type="text"
+                    id="dob"
+                    value="{{ old('dob') }}"
+            >
+
         </div>
+    </div>
 
         <div class="form-group">
             <label class="col-lg-2 control-label">{{ trans('validation.attributes.active') }}</label>

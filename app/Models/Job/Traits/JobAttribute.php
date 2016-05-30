@@ -176,11 +176,13 @@ trait JobAttribute
     }
 
     public function getPublishedButtonAttribute(){
+        if (access()->can('employer-jobs-publish')):
         if ( $this->published ) {
             return '<a href="'.route('admin.employer.jobs.hide', [$this->id]).'" class="btn btn-xs btn-info"><i class="fa fa-eye-slash" data-toggle="tooltip" data-placement="top" title="Hide"></i></a> ';
         } else {
             return '<a href="'.route('admin.employer.jobs.publish', [$this->id]).'" class="btn btn-xs btn-info"><i class="fa fa-eye" data-toggle="tooltip" data-placement="top" title="Publish"></i></a> ';
         }
+            endif;
     }
 
     public function getDeleteButtonAttribute() {

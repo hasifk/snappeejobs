@@ -36,9 +36,25 @@
                         Delete
                     </a>
                     <a href="{{ $job_application->jobseeker->resume }}" class="btn btn-default btn-sm">Download Resume</a>
-                </div>
-            </div>
 
+                </div>
+                </div>
+            @if(!empty($available_staffs))
+                <div class="mailbox-controls with-border text-center">
+                    <label>Please Attach an employer staff with this thread</label>
+                <div class="btn-group">
+                    <form method="POST" action="{{ route('admin.employer.mail.attachparticipant') }}" accept-charset="UTF-8" role="form" enctype='multipart/form-data' >
+                        {{ csrf_field() }}
+                    <select name="employer_staff" class="select2">
+                       @foreach($available_staffs as $staff)
+                            <option value="{{$staff->id}}">{{$staff->name}}</option>
+                        @endforeach
+                    </select>
+                        <input type="submit" value="Attach" class="btn btn-primary">
+                        </form>
+                    </div>
+            </div>
+            @endif
             <div class="mail_messages">
                 @foreach($thread->messages as $message)
                 <div class="mailbox-read-message">

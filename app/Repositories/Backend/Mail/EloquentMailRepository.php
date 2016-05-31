@@ -206,7 +206,25 @@ class EloquentMailRepository
 
         return Thread::findOrFail($id);
     }
+/*********************************************************************************************************************/
+    public function getStaff($id){
+        $user_id=auth()->user()->id;
+        $role=3;
+       return ThreadParticipant::join('users', function ($join) use ($user_id) {
+                $join->on('users.id', '!=', 'thread_participants.user_id')
+                    ->where('users.employer_id', '=', $user_id);
+            })
+            ->join('assigned_roles', function ($join) use ($role) {
+                $join->on('assigned_roles.user_id', '=', 'users.id')
+                    ->where('assigned_roles.role_id', '=', $role);
+            })->where('thread_id', $id) ->groupBy('users.id')
+            ->select([
+                'users.id',
+                'users.name'
+            ])->get();
 
+    }
+/*********************************************************************************************************************/
     public function deleteThread($id){
         $this->findOrThrowException($id);
 

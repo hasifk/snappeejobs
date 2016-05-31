@@ -23,6 +23,6 @@ $router->group([
         get('mail/inbox', 'MailController@inbox')->name('admin.employer.mail.inbox');
         get('mail/sent', 'MailController@sent')->name('admin.employer.mail.sent');
         get('mail/view/{thread_id}', 'MailController@show')->name('admin.employer.mail.view')->where(['thread_id' => '[0-9]+']);
-
+        post('mail/attachchatparticipant', 'MailController@attachParticipant')->name('admin.employer.mail.attachparticipant');
     });
 });

@@ -113,15 +113,32 @@ class MailController extends Controller
         $thread = $this->mail->getThread($thread_id);
 
         $job_application = JobApplication::find($thread->application_id);
-
+        $available_staffs=$this->mail->getStaff($thread_id);
         $view = [
             'thread'            => $thread,
-            'job_application'   => $job_application
+            'job_application'   => $job_application,
+            'available_staffs'   => $available_staffs
         ];
 
         return view('backend.employer.mail.show', $view);
     }
+/********************************************************************************************************/
+    public function attachParticipant(Request $request)
+    {
 
+        $thread = $this->mail->getThread($thread_id);
+
+        $job_application = JobApplication::find($thread->application_id);
+        $available_staffs=$this->mail->getStaff($thread_id);
+        $view = [
+            'thread'            => $thread,
+            'job_application'   => $job_application,
+            'available_staffs'   => $available_staffs
+        ];
+
+        return view('backend.employer.mail.show', $view);
+    }
+ /***********************************************************************************************************/
     public function reply(Requests\Backend\Employer\Mail\EmployerMailReplyRequest $request, $thread_id){
         $this->mail->sendReply($request, $thread_id);
 

@@ -125,18 +125,17 @@ class MailController extends Controller
 /********************************************************************************************************/
     public function attachParticipant(Request $request)
     {
+        $thread=Thread::find($request->thread_id);
+        $userId=$request->employer_staff;
+        $senderId=$request->sender_id;
+        $check_participant=$this->mail->shouldAttachNewMember($thread,$userId);
+        if($check_participant):
+        $attachpeople = $this->mail->connectThreadUsers1($thread,$userId,$senderId);
 
-        $thread = $this->mail->getThread($thread_id);
-
-        $job_application = JobApplication::find($thread->application_id);
-        $available_staffs=$this->mail->getStaff($thread_id);
-        $view = [
-            'thread'            => $thread,
-            'job_application'   => $job_application,
-            'available_staffs'   => $available_staffs
-        ];
-
-        return view('backend.employer.mail.show', $view);
+        return back()->withFlashSuccess('User Successfully attached to the thread');
+            else:
+                return back()->withFlashWarning('Selected User was already attached to the thread');
+                endif;
     }
  /***********************************************************************************************************/
     public function reply(Requests\Backend\Employer\Mail\EmployerMailReplyRequest $request, $thread_id){

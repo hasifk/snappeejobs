@@ -27,7 +27,7 @@
                     <span class="mailbox-read-time pull-right">{{ \Carbon\Carbon::parse($thread->updated_at)->diffForHumans() }}</span></h5>
             </div>
 
-
+            @role('Employer')
             <!-- /.mailbox-read-info -->
             <div class="mailbox-controls with-border text-center">
                 <div class="btn-group">
@@ -39,9 +39,9 @@
 
                 </div>
                 </div>
-            @if(!empty($available_staffs))
+            @if(count($available_staffs)>0)
                 <div class="mailbox-controls with-border text-center">
-                    <label>Please Attach an employer staff with this thread</label>
+                    <label>Add more people to the thread</label>
                 <div class="btn-group">
                     <form method="POST" action="{{ route('admin.employer.mail.attachparticipant') }}" accept-charset="UTF-8" role="form" enctype='multipart/form-data' >
                         {{ csrf_field() }}
@@ -50,11 +50,14 @@
                             <option value="{{$staff->id}}">{{$staff->name}}</option>
                         @endforeach
                     </select>
+                        <input type="hidden" name="sender_id" value="{{ $thread->messages()->orderBy('created_at', 'desc')->first()->sender_id}}">
+                        <input type="hidden" name="thread_id" value="{{ $thread->messages()->orderBy('created_at', 'desc')->first()->thread_id}}">
                         <input type="submit" value="Attach" class="btn btn-primary">
                         </form>
                     </div>
             </div>
             @endif
+            @endauth
             <div class="mail_messages">
                 @foreach($thread->messages as $message)
                 <div class="mailbox-read-message">

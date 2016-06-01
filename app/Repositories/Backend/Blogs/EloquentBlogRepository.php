@@ -88,13 +88,14 @@ class EloquentBlogRepository
 
         }
 
-        return 'success';
+        return true;
 
 
     }
 
     public function deleteBlog($id) {
         $obj = Blog::find($id);
+        if(!empty($obj->avatar_path))
         $obj->detachImage();
         $obj->delete();
         return true;

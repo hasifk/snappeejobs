@@ -112,6 +112,18 @@ public function getActivityDescriptionForEvent($eventName)
     {
         return $eventName['type'] .' uploaded-The '.$eventName['type'].' '.$eventName['heading'].'-'.$author;
     }
+    if($eventName['event'] == 'new blogger')
+    {
+        return $eventName['type'] .' Created-The User '.$eventName['heading'].$eventName['type'].'-'.$author;
+    }
+    if($eventName['event'] == 'blog approved')
+    {
+        return $eventName['type'] .' Approved-The Blog '.$eventName['heading'].' is approved-'.$author;
+    }
+    if($eventName['event'] == 'blog disapproved')
+    {
+        return $eventName['type'] .' Disapproved-Blog '.$eventName['heading'].' of status changed to disapproved-'.$author;
+    }
     return '';
 }
 

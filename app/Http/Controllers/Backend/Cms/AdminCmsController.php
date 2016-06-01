@@ -48,13 +48,10 @@ class AdminCmsController extends Controller {
         $array['heading']='Heading of  " '.substr(strip_tags($request->heading),0,40).'..."';
         if ($request->has('id')):
             $array['event'] = 'updated';
-
-            $name = $this->userlogs->getActivityDescriptionForEvent($array);
         else:
             $array['event'] = 'created';
-
-            $name = $this->userlogs->getActivityDescriptionForEvent($array);
         endif;
+        $name = $this->userlogs->getActivityDescriptionForEvent($array);
         Activity::log($name);
         $user = $this->cmsRepository->save($request);
         

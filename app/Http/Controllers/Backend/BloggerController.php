@@ -36,6 +36,7 @@ EloquentBloggerRepository $repository,RoleRepositoryContract $role)
 
         $this->repository = $repository;
         $this->role = $role;
+        $this->userlogs = $userLogs;
     }
 
     /**
@@ -60,7 +61,13 @@ EloquentBloggerRepository $repository,RoleRepositoryContract $role)
     {
         if ( access()->hasRole('Administrator') ) {
             $user=User::find($request->blogger_id);
-            $user->attachRoles(array(5));
+            $username=$user->name;
+            $role=$user->attachRoles(array(5));
+                $array['type'] = "Blogger";
+                $array['event'] = 'new blogger';
+                $array['heading']=$username." assigned as ";
+                $name = $this->userlogs->getActivityDescriptionForEvent($array);
+                Activity::log($name);
             return redirect()->route('backend.dashboard')->withFlashSuccess(trans("alerts.blogger.created"));
 
         }
@@ -98,18 +105,30 @@ EloquentBloggerRepository $repository,RoleRepositoryContract $role)
     public function approve($id, Request $request)
     {
         if ( access()->hasRole('Administrator') ) {
-            if ($this->repository->approve($id))
-
+            if ($this->repository->approve($id)):
+                $blogs= $this->repository->getBlog($id);
+                $array['type'] = "Blog";
+                $array['event'] = 'blog approved';
+                $array['heading']="with name '".substr(strip_tags($blogs[0]->title),0,40)."...'";
+                $name = $this->userlogs->getActivityDescriptionForEvent($array);
+                Activity::log($name);
                 return back()->withFlashSuccess('The blog was successfully approved.');
+            endif;
         }
     }
     /************************************************************************************************************/
     public function disapprove($id, Request $request)
     {
         if ( access()->hasRole('Administrator') ) {
-            if ($this->repository->disapprove($id))
-
+            if ($this->repository->disapprove($id)):
+ $blogs= $this->repository->getBlog($id);
+                $array['type'] = "Blog";
+                $array['event'] = 'blog disapproved';
+                $array['heading']="with name '".substr(strip_tags($blogs[0]->title),0,40)."...'";
+                $name = $this->userlogs->getActivityDescriptionForEvent($array);
+                Activity::log($name);
                 return back()->withFlashSuccess('The blog was successfully disapproved.');
+            endif;
         }
     }
 

@@ -28,6 +28,11 @@ class EloquentBloggerRepository {
             ->paginate(10);
     }
 
+/****************************************************************************************************/
+    public function getBlog($id)
+    {
+        return Blog::where('id',$id)->get();
+    }
 /*********************************************************************************************/
     public function approve($id) {
         $approval=Carbon::now();

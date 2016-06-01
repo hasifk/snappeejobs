@@ -88,7 +88,7 @@ class EloquentBlogRepository
 
         }
 
-        return 'success';
+        return true;
 
 
     }

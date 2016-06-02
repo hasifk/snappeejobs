@@ -30,7 +30,7 @@
                 <td>{{ str_limit($value->header, $limit =80, $end = '...') }}</td>
                 <td>{{ $value->type }}</td>
                 <td>{!! $value->published_text !!}</td>
-                <td>{!! $value->action_buttons !!}</td>
+                <td id="cms_action">{!! $value->action_buttons !!}</td>
             </tr>
         @endforeach
         </tbody>

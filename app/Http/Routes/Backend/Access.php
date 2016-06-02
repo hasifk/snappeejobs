@@ -52,3 +52,15 @@ $router->group([
                 get('permisssion', 'PermissionController@showPermission')->name('admin.permission');
 	});
 });
+
+
+/**  Employer Admin Permission    */
+
+$router->group(['prefix' => 'access', 'namespace' => 'Access\Permission'
+	,'middleware' => [
+		'access.routeNeedsPermission:employer-users-view',
+		'access.routeNeedsSubscription'
+	]], function() use ($router)
+{
+	get('emppermisssion', 'PermissionController@showPermission')->name('admin.employer.permission');
+});

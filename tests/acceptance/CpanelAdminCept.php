@@ -6,8 +6,39 @@ $I->fillField('email', 'admin@admin.com');
 $I->fillField('password', 'eeppans');
 $I->click('#login');
 $I->see('Dashboard');
+$I->amOnPage('/profile/edit');
+$I->see('Update');
+$I->amOnPage('/auth/password/change');
+$I->see('Change');
+$I->amOnPage('/profile/favourites');
+$I->see('Favourites');
+$I->amOnPage('/admin/dashboard');
+$I->see('Employer Count');
+$I->amOnPage('/admin/access/users');
+$I->see('User Management');
+$I->amOnPage('/admin/subscription');
+$I->see('subscription');
+$I->amOnPage('/admin/companies');
+$I->see('Company Management');
+$I->amOnPage('/admin/jobseekers');
+$I->see('JobSeekers');
+$I->amOnPage('/admin/newsfeeds');
+$I->see('News Feed');
+$I->click('#newnewsfeed');
+$I->see('News Feed');
+$I->amOnPage('/admin/cms');
+$I->see('CMS Management');
+$I->click('#cms_action');
+$I->see('CMS Management');
+$I->click('#cms_create');
+/*$I->click('#cms_all');
+$I->click('#cms_articles');
+$I->click('#cms_blogs');*/
+$I->see('CMS Management');
 
 
+
+/*
 $I1 = new AcceptanceTester($scenario);
 $I1->wantTo('Ensure Profile Update works');
 $I1->amOnPage('/profile/edit');
@@ -52,17 +83,14 @@ $I9 = new AcceptanceTester($scenario);
 $I9->wantTo('Ensure admin NewsFeeds page works');
 $I9->amOnPage('/admin/newsfeeds');
 $I9->click('#newnewsfeed');
-$I9->see('News Feed');
+$I9->see('News Feed');*/
 
-$I10 = new AcceptanceTester($scenario);
+/*$I10 = new AcceptanceTester($scenario);
 $I10->wantTo('Ensure admin Cms page works');
 $I10->amOnPage('/admin/cms');
 $I10->click('#cms_create');
-$I10->see('CMS Management');
 $I10->click('#cms_all');
-$I10->see('CMS Management');
 $I10->click('#cms_articles');
-$I10->see('CMS Management');
 $I10->click('#cms_blogs');
-$I10->see('CMS Management');
+$I10->see('CMS Management');*/
 

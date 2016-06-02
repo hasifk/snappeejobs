@@ -128,7 +128,7 @@
                     </a>
                   </li>
                   <li class="{{ Active::pattern('admin/employer/groupchat') }}">
-                    <a href="{!! route('admin.permission') !!}">
+                    <a href="{!! route('admin.employer.permission') !!}">
                       <i class="fa fa-wechat"></i>
                           <span>
                             Permission

@@ -54,7 +54,7 @@ $router->group([
 });
 
 
-/**  Employer Admin Permission    */
+/**  Employer Permission    */
 
 $router->group(['prefix' => 'access', 'namespace' => 'Access\Permission'
 	,'middleware' => [

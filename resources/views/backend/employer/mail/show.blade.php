@@ -35,7 +35,7 @@
                         <i class="fa fa-trash" data-toggle="tooltip" data-placement="top" title="Delete"></i>
                         Delete
                     </a>
-                    <a href="{{ $job_application->jobseeker->resume }}" class="btn btn-default btn-sm">Download Resume</a>
+                    <a href="{{ $job_application->jobseeker->resume }}" target="blank" class="btn btn-default btn-sm">Download Resume</a>
 
                 </div>
                 </div>

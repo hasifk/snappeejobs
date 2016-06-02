@@ -28,10 +28,18 @@ $I->click('#newnewsfeed');
 $I->see('News Feed');
 $I->amOnPage('/admin/cms');
 $I->see('CMS Management');
-$I->amOnPage('/admin/cms_create');
+/*$I->amOnPage('/admin/cms_create');
 $I->see('CMS Management');
 $I->amOnPage('/admin/cms');
-$I->amOnPage('/admin/cms/lists/article');
-$I->see('CMS Management');
-
+$I->see('CMS Management');*/
+$I->amOnPage('/admin/bloggers/createblogger');
+$I->see('Blogger Management ');
+$I->amOnPage('/admin/bloggers/availablebloggers');
+$I->see('Bloggers');
+$I->amOnPage('/admin/bloggers/approveblogs');
+$I->see('Bloggers');
+$I->amOnPage('/admin/mail');
+$I->see('Mail Dashboard');
+$I->amOnPage('/admin/log_viewer/logs');
+$I->see('Log of all events');
 

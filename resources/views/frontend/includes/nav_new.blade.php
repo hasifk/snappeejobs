@@ -17,9 +17,9 @@
                     <li class="{{ Active::pattern(['employers']) }}">{!! link_to('/employers', 'EMPLOYERS') !!}</li>
                 @endif
                 <li class="{{ Active::pattern(['companies', 'companies*']) }}">{!! link_to('/companies', 'COMPANIES') !!}</li>
-                <li class="{{ Active::pattern(['jobs', 'job*']) }}">{!! link_to('/jobs', 'JOBS' ) !!}</li>
+                <li class="{{ Active::pattern(['jobs', 'job']) }}">{!! link_to('/jobs', 'JOBS' ) !!}</li>
                 @role('Employer')
-                <li class="{{ Active::pattern(['jobseekers','jobseekers']) }}">{!! link_to('/jobseekers', 'JOBSEEKERS' ) !!}</li>
+                <li class="{{ Active::pattern(['jobseekers','jobseekers*']) }}">{!! link_to('/jobseekers', 'JOBSEEKERS' ) !!}</li>
                 @endauth
                 <li class="{{ Active::pattern(['advice']) }}">{!! link_to('advice', 'GET ADVICE' ) !!}</li>
             </ul>

@@ -78,9 +78,9 @@ class DashboardRepository
     /**************************************************************************************************************/
     public function getNewsfeedNotifications()
     {
-        $newsfeed_notifications = \DB::table('employer_notifications')
-            ->where('user_id', auth()->user()->id)
-            ->paginate(5);
+        $newsfeed_notifications = EmployerNotification::where('from_admin',1)
+            ->where('user_id', auth()->user()->id)->orderBy('id', 'desc')
+            ->take(5)->get();
 
         return $newsfeed_notifications;
     }
@@ -121,8 +121,8 @@ class DashboardRepository
         public function getEmployerNotifications(){
                 $employer_notifications = \DB::table('employer_notifications')
                     ->where('employer_id', auth()->user()->employer_id)
-                    ->where('user_id', auth()->user()->id)
-                    ->paginate(10);
+                    ->where('user_id', auth()->user()->id)->orderBy('id', 'desc')
+                    ->take(5)->get();
 
                 return $employer_notifications;
         }

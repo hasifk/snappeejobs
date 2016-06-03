@@ -127,15 +127,18 @@
                           </span>
                     </a>
                   </li>
+                @endauth
+
+                  @roles(['Employer'])
                   <li class="{{ Active::pattern('admin/employer/groupchat') }}">
-                    <a href="{!! route('admin.employer.permission') !!}">
-                      <i class="fa fa-wechat"></i>
+                      <a href="{!! route('admin.employer.permission') !!}">
+                          <i class="fa fa-wechat"></i>
                           <span>
                             Permission
                           </span>
-                    </a>
+                      </a>
                   </li>
-                @endauth
+                  @endauth
 
                 @roles(['Employer', 'Employer Staff'])
                   @permission('employer-jobs-view')

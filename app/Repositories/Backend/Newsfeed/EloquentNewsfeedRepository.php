@@ -13,7 +13,7 @@ class EloquentNewsfeedRepository {
 
     public function getNewsfeedsPaginated() {
         return Newsfeed::orderBy('newsfeeds.id','desc')
-                        ->paginate(3);
+                        ->paginate(10);
     }
 
     public function save($request) {

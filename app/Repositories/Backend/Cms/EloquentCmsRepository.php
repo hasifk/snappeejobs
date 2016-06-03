@@ -25,21 +25,7 @@ class EloquentCmsRepository {
             $obj->user_id = $userid;
         }
         $obj->header = $request->heading;
-  /*      if (!empty($request->img)):
-            $avatar = $request->img;
-            if ($avatar->isValid()) {
-                $filePath = "cms/" . $userid . '/';
-                $extension = $avatar->getClientOriginalExtension(); // getting image extension
-
-                $fileName = rand(11111, 99999) . '.' . $extension; // rename image
-
-                Storage::put($filePath . $fileName, file_get_contents($avatar));
-                Storage::setVisibility($filePath . $fileName, 'public');
-
-                $obj->img = $filePath . $fileName;
-            }
-        endif;*/
-        /*$obj->attachCMSImage($request->img);*/
+  
         $obj->content = $request->content;
         $obj->type = $request->type;
 

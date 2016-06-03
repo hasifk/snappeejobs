@@ -334,12 +334,13 @@
                 <div class="box-body">
                     <ul class="products-list product-list-in-box newsfeed_notifications_list">
                         @foreach($newsfeed_notifications as $employer_notification)
-                            @if($employer_notification->notification_type == 'news_feed_created')
+                            @if(($employer_notification->notification_type == 'news_feed_created') ||
+                                ($employer_notification->notification_type == 'news_feed_updated'))
                         <li class="item">
 
                             <div style="margin-left: 25px;" class="product-info">
                                 <a href="#" class="product-title">
-                                    {!!   unserialize ($employer_notification->details)['newsfeed']['news'] !!}
+                                    {!! str_limit(unserialize ($employer_notification->details)['newsfeed']['news'],$limit =50, $end = '...')!!}
                                     <span class="label label-warning pull-right">
                                         {{ ucwords(str_replace('_', " ", $employer_notification->notification_type)) }}
                                     </span>

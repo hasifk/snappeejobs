@@ -28,10 +28,6 @@ $I->click('#newnewsfeed');
 $I->see('News Feed');
 $I->amOnPage('/admin/cms');
 $I->see('CMS Management');
-/*$I->amOnPage('/admin/cms_create');
-$I->see('CMS Management');
-$I->amOnPage('/admin/cms');
-$I->see('CMS Management');*/
 $I->amOnPage('/admin/bloggers/createblogger');
 $I->see('Blogger Management ');
 $I->amOnPage('/admin/bloggers/availablebloggers');

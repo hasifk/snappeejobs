@@ -25,7 +25,7 @@ class EloquentCmsRepository {
             $obj->user_id = $userid;
         }
         $obj->header = $request->heading;
-  
+
         $obj->content = $request->content;
         $obj->type = $request->type;
 

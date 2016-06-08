@@ -171,15 +171,20 @@ class ProfileController extends Controller {
 			auth()->user()->update($update_array);
 
 			// Resize User Profile Image
-			$profile_image = \Image::make($avatar);
+
 
 			\Storage::disk('local')->put($filePath.$avatar->getClientOriginalName(), file_get_contents($avatar));
 
 			foreach (config('image.thumbnails.user_profile_image') as $image) {
+				$profile_image = \Image::make($avatar);
 				$profile_image->resize($image['width'], $image['height'])->save( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) );
 				\Storage::put($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() , file_get_contents( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) ) );
 				\Storage::setVisibility($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension(), 'public');
 			}
+			$profile_image = \Image::make($avatar);
+			$profile_image->resize(136, 136)->save( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).'45x45_big.'.$avatar->getClientOriginalExtension() ) );
+			\Storage::put($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).'45x45_big.'.$avatar->getClientOriginalExtension() , file_get_contents( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).'45x45_big.'.$avatar->getClientOriginalExtension() ) ) );
+			\Storage::setVisibility($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).'45x45_big.'.$avatar->getClientOriginalExtension(), 'public');
 
 			\Storage::disk('local')->deleteDirectory($filePath);
 
@@ -226,15 +231,20 @@ class ProfileController extends Controller {
 			auth()->user()->update($update_array);
 
 			// Resize User Profile Image
-			$profile_image = \Image::make($avatar);
+
 
 			\Storage::disk('local')->put($filePath.$avatar->getClientOriginalName(), file_get_contents($avatar));
 
 			foreach (config('image.thumbnails.user_profile_image') as $image) {
+				$profile_image = \Image::make($avatar);
 				$profile_image->resize($image['width'], $image['height'])->save( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) );
 				\Storage::put($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() , file_get_contents( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) ) );
 				\Storage::setVisibility($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension(), 'public');
 			}
+			$profile_image = \Image::make($avatar);
+			$profile_image->resize(136, 136)->save( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).'45x45_big.'.$avatar->getClientOriginalExtension() ) );
+			\Storage::put($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).'45x45_big.'.$avatar->getClientOriginalExtension() , file_get_contents( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).'45x45_big.'.$avatar->getClientOriginalExtension() ) ) );
+			\Storage::setVisibility($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).'45x45_big.'.$avatar->getClientOriginalExtension(), 'public');
 
 			\Storage::disk('local')->deleteDirectory($filePath);
 
@@ -563,11 +573,12 @@ class ProfileController extends Controller {
 			$result = $jobSeekerObj->images()->create($insert_array);
 
 			// Resize User Profile Image
-			$profile_image = \Image::make($avatar);
+
 
 			\Storage::disk('local')->put($filePath.$avatar->getClientOriginalName(), file_get_contents($avatar));
 
 			foreach (config('image.thumbnails.jobseeker_images') as $image) {
+				$profile_image = \Image::make($avatar);
 				$profile_image->resize($image['width'], $image['height'])->save( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) );
 				\Storage::put($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() , file_get_contents( storage_path('app/' .$filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension() ) ) );
 				\Storage::setVisibility($filePath.pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME).$image['width'].'x'.$image['height'].'.'.$avatar->getClientOriginalExtension(), 'public');

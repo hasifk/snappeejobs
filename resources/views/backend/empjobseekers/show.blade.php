@@ -17,7 +17,11 @@
                 <tr>
                     <td>Profile Image</td>
                     <td>
-                        <img style="height: 50px; width: 50px;" src="{{ $jobseeker_user->getPictureAttribute(45, 45) }}" alt="{{ $jobseeker_user->name }}">
+                        <div class="jzoom" style="
+            width: 50px;
+            height: 50px;">
+                            <img src="{{ $jobseeker_user->getPictureAttribute(45, 45) }}" alt="{{ $jobseeker_user->name }}" style="height: 50px; width: 50px;">
+                        </div>
                     </td>
                 </tr>
                 @if($jobseeker_user->about_me)
@@ -144,9 +148,41 @@
 
             </table>
 
+
         </div>
 
     </div>
 
 @endsection
 
+@section('after-scripts-end')
+<script>
+    $(document).ready( function() {
+        $('.jzoom').jzoom({
+
+            // width / height of the magnifying glass
+            width: 136,
+            height: 136,
+
+            // where to position the zoomed image
+            position: "top",
+
+            // x/y offset in pixels.
+            offsetX: 20,
+            offsetY: 0,
+
+            // opacity level
+            opacity: 0.6,
+
+            // background color
+            bgColor: "#fff",
+
+            // loading text
+           /* loading: "Loading...",
+            suffixName:"_big"*/
+
+        });
+    })
+
+</script>
+@endsection

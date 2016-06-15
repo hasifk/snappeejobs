@@ -9,6 +9,7 @@ use App\Models\Project\Project;
 use App\Models\Task\Task;
 use App\Repositories\Backend\Logs\LogsActivitysRepository;
 use App\Repositories\Backend\Project\EloquentProjectRepository;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -262,8 +263,8 @@ class ProjectController extends Controller
 
     public function showTask(Requests\Backend\Employer\Task\ShowTaskViewRequest $request, $id){
 
+        Task::where('id',$id)->update(['read_at' => Carbon::now()]);
         $task = Task::find($id);
-
         $view = [
             'task' => $task
         ];

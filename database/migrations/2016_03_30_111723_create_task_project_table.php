@@ -18,6 +18,7 @@ class CreateTaskProjectTable extends Migration
             $table->string('title');
             $table->integer('created_by')->unsigned();
             $table->integer('employer_id')->unsigned();
+            $table->timestamp('read_at')->nullable()->default(null);;
             $table->softDeletes();
             $table->timestamps();
 

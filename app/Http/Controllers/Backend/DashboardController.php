@@ -209,8 +209,11 @@ class DashboardController extends Controller {
 
     public function task_assigned(Request $request) {
 
-        $tasks_assigned = \DB::table('staff_task')
-            ->join('task_project', 'task_project.id', '=', 'staff_task.task_id')
+        $tasks_assigned = \DB::table('staff_task')->
+            join('task_project', function ($join) {
+                $join->on('task_project.id', '!=','staff_task.task_id')
+                    ->whereNull('task_project.read_at');
+            })
             ->join('projects', 'projects.id', '=', 'task_project.project_id')
             ->join('users', 'projects.created_by', '=', 'users.id')
             ->where('staff_task.user_id', auth()->user()->id)

@@ -28,10 +28,10 @@
 
                                     <form role="form" action="{{ route('jobseeker.search') }}">
                                         <input type="hidden" name="search" value="1">
+                                   <div>
 
-                                    <div class="col-sm-9 col-md-10">
-                                        <div class="row">
-                                            <div class="col-sm-6">
+
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="categories">Categories</label>
                                                     <select
@@ -55,7 +55,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="skills">Skills</label>
                                                     <select
@@ -79,9 +79,9 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-sm-6">
+
+
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="country_id">Country</label>
                                                     <select name="country_id" id="country_id" class="form-control">
@@ -97,7 +97,7 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="state_id">State</label>
                                                     <select name="state_id" id="state_id" class="form-control">
@@ -113,10 +113,11 @@
                                                     </select>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="radio">
+
+                                        <div class="col-md-6">
                                             <div class="form-group">
-                                                Working on company which is
+
+                                                <label>Working on company which is</label>
                                                 <div class="checkbox">
                                                     <input
                                                             type="radio"
@@ -144,13 +145,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+
                                     <div class="col-sm-3 col-md-2 search-btn">
                                         <button type="submit" class="btn btn-primary">
                                             <img src="/images/lens-icon.png"> Search
                                         </button>
                                     </div>
-
+                                    </div>
                                     </form>
 
                                 </div>

@@ -36,7 +36,7 @@
             <div role="tabpanel" class="tab-pane active" id="groups" style="padding-top:20px">
 
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-xs-12 col-md-6">
                         <div class="alert alert-info">
                             <i class="fa fa-info-circle"></i> This section allows you to organize your permissions into groups to stay organized. Regardless of the group, the permissions are still individually assigned to each role.
                         </div><!--alert info-->
@@ -64,7 +64,7 @@
                         </div><!--master-list-->
                     </div><!--col-lg-4-->
 
-                    <div class="col-lg-6">
+                    <div class="col-xs-12 col-md-6">
                         <div class="alert alert-info">
                             <i class="fa fa-info-circle"></i> If you performed operations in the hierarchy section without refreshing this page, you will need to refresh to reflect the changes here.
                         </div><!--alert info-->

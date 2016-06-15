@@ -45,8 +45,8 @@
         </div>
 
         <div class="form-group">
-            {!! Form::label('gender', "Gender", ['class' => 'col-lg-4 control-label']) !!}
-            <div class="col-lg-6">
+            {!! Form::label('gender', "Gender", ['class' => 'col-md-4 control-label']) !!}
+            <div class="col-md-6">
                 <div class="checkbox">
                     <input
                             type="radio"
@@ -71,8 +71,8 @@
         </div>
 
         <div class="form-group">
-            {!! Form::label('dob', "Date of Birth", ['class' => 'col-lg-4 control-label']) !!}
-            <div class="col-lg-6">
+            {!! Form::label('dob', "Date of Birth", ['class' => 'col-md-4 control-label']) !!}
+            <div class="col-md-6">
                 <input
                         class="form-control bootstrap-datepicker"
                         placeholder="Date of Birth"
@@ -85,8 +85,8 @@
         </div>
 
         <div class="form-group">
-            <label for="office_life" class="col-lg-4 control-label">Country</label>
-            <div class="col-lg-6">
+            <label for="office_life" class="col-md-4 control-label">Country</label>
+            <div class="col-md-6">
                 <select name="country_id" id="country_id" class="form-control">
                     <option value="">Please select</option>
                     @foreach($countries as $country)
@@ -102,8 +102,8 @@
         </div>
 
         <div class="form-group">
-            <label for="office_life" class="col-lg-4 control-label">State</label>
-            <div class="col-lg-6">
+            <label for="office_life" class="col-md-4 control-label">State</label>
+            <div class="col-md-6">
                 <select name="state_id" id="state_id" class="form-control">
                     <option value="">Please select</option>
                     @foreach($states as $state)

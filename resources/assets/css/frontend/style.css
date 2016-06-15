@@ -25,6 +25,11 @@ h5 {
     border: 0px solid;
     background-color: #fff;
 }
+@media (min-width:768px) and (max-width:991px) {
+    .navbar {
+        font-size: 14px;
+    }
+}
 .navbar-brand {
     padding: 0 15px;
     height: 60px;

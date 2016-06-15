@@ -45,7 +45,7 @@ Trait BlogAttribute
             $this->avatar_path.$this->avatar_filename.$width.'x'.$height.'.'.$this->avatar_extension .
             '" alt="image" style="height: '.$height.'px; width: '.$width.'px;">';
         } else {
-            return '';
+            return '<img src="'.'https://placeholdit.imgix.net/~text?txtsize=28&txt='.$width.'%C3%97'.$height.'&w='.$width.'&h='.$height.'">';
         }
     }
 
@@ -57,7 +57,7 @@ Trait BlogAttribute
             $this->avatar_path.$this->avatar_filename.'750x350.'.$this->avatar_extension .
             '" alt="image" style="height: 350px; width: 750px;">';
         } else {
-            return '';
+            return '<img src="'.'https://placeholdit.imgix.net/~text?txtsize=28&txt=750%C3%97350&w=750&h=350'.'">';
         }
     }
 

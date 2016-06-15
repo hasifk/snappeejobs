@@ -118,7 +118,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class=class="radio">
+                                                <div class="col-md-6">
                                                     <div class="form-group">
                                                         <label for="level">Size</label>
                                                         <div class="checkbox">
@@ -246,6 +246,17 @@
                 } else if ( $(e.target).attr('href') == '#search_companies' ) {
                     history.pushState({}, 'Snappeejobs Search Companies', getNextURL());
                 }
+
+                $('#country_id').on('change', function(){
+                    $.getJSON('/get-states/'+$(this).val(), function(json){
+                        var listitems = '<option value="">Please select</option>';
+                        $.each(json,function(key, value)
+                        {
+                            listitems += '<option value=' + value.id + '>' + value.name + '</option>';
+                        });
+                        $('#state_id').html(listitems);
+                    });
+                });
             });
 
         });

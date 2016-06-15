@@ -227,6 +227,8 @@
                                     <div class="col-sm-6 col-md-4 thumbs">
                                         @if ( $job->company->photos->count() )
                                             <div> <img src="{{env('APP_S3_URL') .$job->company->photos->first()->path . $job->company->photos->first()->filename . '620x412.' . $job->company->photos->first()->extension }}" /></div>
+                                        @else
+                                            <div> <img src="https://placeholdit.imgix.net/~text?txtsize=28&txt=620%C3%97412&w=620&h=412" /></div>
                                             {{--<div><img src="images/companies/thumbtack.jpg" /></div>--}}
                                         @endif
                                         <a href="{{ route('jobs.view' , [ $job->company->url_slug , $job->title_url_slug ] ) }}"> <h2> {{ $job->title }}</h2></a>
@@ -285,7 +287,7 @@
 
         $(document).ready(function(){
             $('#country_id').on('change', function(){
-                $.getJSON('/admin/get-states/'+$(this).val(), function(json){
+                $.getJSON('/get-states/'+$(this).val(), function(json){
                     var listitems = '<option value="">Please select</option>';
                     $.each(json,function(key, value)
                     {

@@ -167,14 +167,14 @@
 
     <div class="form-group">
         <label for="description" class="col-lg-2 control-label">People</label>
-        <div class="col-md-10">
+        <div class="col-lg-10">
             <div class="row">
                 @if(( $company && $company->people->count() > 0 ))
                     <div class="col-md-12">
                         <label for="people_delete_1" class="col-lg-2">
                             Delete this person
                         </label>
-                        <div class="col-md-10">
+                        <div class="col-lg-10">
                             <input type="checkbox" value="{{ $company->people->first()->id }}" name="people_delete[]" id="people_delete_1" >
                         </div>
                     </div>
@@ -183,7 +183,7 @@
                     <label for="people_avatar_1" class="col-lg-2">
                         Avatar
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <input
                                 type="file"
                                 class="form-control"
@@ -208,7 +208,7 @@
                         <label for="people_avatar_1" class="col-lg-2">
                             Thumbnail
                         </label>
-                        <div class="col-md-10">
+                        <div class="col-lg-10">
                             {!! '<img style="height: 25px; width: 25px;" src="'. $company->people->first()->getPictureAttribute(25, 25) .'" alt="'.$company->people->first()->filename.'">' !!}
                         </div>
                     </div>
@@ -217,7 +217,7 @@
                     <label for="people_name_1" class="col-lg-2">
                         Name
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <input
                                 type="text"
                                 class="form-control"
@@ -234,7 +234,7 @@
                     <label for="job_position_1" class="col-lg-2">
                         Job Position
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <input
                                 type="text"
                                 class="form-control"
@@ -251,7 +251,7 @@
                     <label for="people_about_1" class="col-lg-2">
                         About
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <textarea class="form-control"
                                   name="people_about[]"
                                   id="people_about_1"
@@ -267,7 +267,7 @@
                     <label for="people_testimonial_1" class="col-lg-2">
                         Testimonial
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <textarea class="form-control"
                                   name="people_testimonial[]"
                                   id="people_testimonial_1"
@@ -285,7 +285,7 @@
                         <label for="people_delete_2" class="col-lg-2">
                             Delete this person
                         </label>
-                        <div class="col-md-10">
+                        <div class="col-lg-10">
                             <input type="checkbox" value="{{ $company->people()->skip(1)->take(1)->first()->id }}" name="people_delete[]" id="people_delete_2" >
                         </div>
                     </div>
@@ -294,7 +294,7 @@
                     <label for="people_avatar_2" class="col-lg-2">
                         Avatar
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <input
                                 type="file"
                                 class="form-control"
@@ -319,7 +319,7 @@
                         <label for="people_avatar_1" class="col-lg-2">
                             Thumbnail
                         </label>
-                        <div class="col-md-10">
+                        <div class="col-lg-10">
                             {!! '<img style="height: 25px; width: 25px;" src="'.
                                     $company->people()->skip(1)->take(1)->first()->getPictureAttribute(25, 25)
                                     .'" alt="'.$company->people()->skip(1)->take(1)->first()->filename.'">' !!}
@@ -330,7 +330,7 @@
                     <label for="people_name_2" class="col-lg-2">
                         Name
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <input
                                 type="text"
                                 class="form-control"
@@ -347,7 +347,7 @@
                     <label for="job_position_2" class="col-lg-2">
                         Job Position
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <input
                                 type="text"
                                 class="form-control"
@@ -364,7 +364,7 @@
                     <label for="people_about_2" class="col-lg-2">
                         About
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <textarea class="form-control"
                                   name="people_about[]"
                                   id="people_about_2"
@@ -380,7 +380,7 @@
                     <label for="people_testimonial_2" class="col-lg-2">
                         Testimonial
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <textarea class="form-control"
                                   name="people_testimonial[]"
                                   id="people_testimonial_2"
@@ -398,7 +398,7 @@
                         <label for="people_delete_3" class="col-lg-2">
                             Delete this person
                         </label>
-                        <div class="col-md-10">
+                        <div class="col-lg-10">
                             <input type="checkbox" value="{{ $company->people()->skip(2)->take(1)->first()->id }}" name="people_delete[]" id="people_delete_3" >
                         </div>
                     </div>
@@ -407,7 +407,7 @@
                     <label for="people_avatar_3" class="col-lg-2">
                         Avatar
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <input
                                 type="file"
                                 class="form-control"
@@ -432,7 +432,7 @@
                         <label for="people_avatar_1" class="col-lg-2">
                             Thumbnail
                         </label>
-                        <div class="col-md-10">
+                        <div class="col-lg-10">
                             {!! '<img style="height: 25px; width: 25px;" src="'.
                                     $company->people()->skip(2)->take(1)->first()->getPictureAttribute(25, 25)
                                     .'" alt="'.$company->people()->skip(2)->take(1)->first()->filename.'">' !!}
@@ -443,7 +443,7 @@
                     <label for="people_name_3" class="col-lg-2">
                         Name
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <input
                                 type="text"
                                 class="form-control"
@@ -460,7 +460,7 @@
                     <label for="job_position_3" class="col-lg-2">
                         Job Position
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <input
                                 type="text"
                                 class="form-control"
@@ -477,7 +477,7 @@
                     <label for="people_about_3" class="col-lg-2">
                         About
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <textarea class="form-control"
                                   name="people_about[]"
                                   id="people_about_3"
@@ -493,7 +493,7 @@
                     <label for="people_testimonial_3" class="col-lg-2">
                         Testimonial
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <textarea class="form-control"
                                   name="people_testimonial[]"
                                   id="people_testimonial_3"
@@ -511,7 +511,7 @@
                         <label for="people_delete_4" class="col-lg-2">
                             Delete this person
                         </label>
-                        <div class="col-md-10">
+                        <div class="col-lg-10">
                             <input type="checkbox" value="{{ $company->people()->skip(3)->take(1)->first()->id }}" name="people_delete[]" id="people_delete_4" >
                         </div>
                     </div>
@@ -520,7 +520,7 @@
                     <label for="people_avatar_4" class="col-lg-2">
                         Avatar
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <input
                                 type="file"
                                 class="form-control"
@@ -545,7 +545,7 @@
                         <label for="people_avatar_1" class="col-lg-2">
                             Thumbnail
                         </label>
-                        <div class="col-md-10">
+                        <div class="col-lg-10">
                             {!! '<img style="height: 25px; width: 25px;" src="'.
                                     $company->people()->skip(3)->take(1)->first()->getPictureAttribute(25, 25)
                                     .'" alt="'.$company->people()->skip(3)->take(1)->first()->filename.'">' !!}
@@ -556,7 +556,7 @@
                     <label for="people_name_4" class="col-lg-2">
                         Name
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <input
                                 type="text"
                                 class="form-control"
@@ -573,7 +573,7 @@
                     <label for="job_position_4" class="col-lg-2">
                         Job Position
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <input
                                 type="text"
                                 class="form-control"
@@ -590,7 +590,7 @@
                     <label for="people_about_4" class="col-lg-2">
                         About
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <textarea class="form-control"
                                   name="people_about[]"
                                   id="people_about_4"
@@ -606,7 +606,7 @@
                     <label for="people_testimonial_4" class="col-lg-2">
                         Testimonial
                     </label>
-                    <div class="col-md-10">
+                    <div class="col-lg-10">
                         <textarea class="form-control"
                                   name="people_testimonial[]"
                                   id="people_testimonial_4"
